@@ -6,7 +6,7 @@
 #include "SimulationState.h"
 #include "quadtree.h"
 
-class BoardModel;
+class BattleModel;
 class Fighter;
 class Unit;
 
@@ -17,7 +17,7 @@ public:
 	virtual ~SimulationListener();
 	virtual void OnShooting(const Shooting& shooting) = 0;
 	virtual void OnCasualty(const Casualty& casualty) = 0;
-	virtual BoardModel* GetBoardModel() const = 0;
+	virtual BattleModel* GetBoardModel() const = 0;
 };
 
 
