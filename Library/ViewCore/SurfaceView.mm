@@ -160,10 +160,10 @@
 
 		if (_touch != nullptr)
 		{
-			double timestamp = _touch->GetTimestamp();
+			double oldTimestamp = _touch->GetTimestamp();
 			_touch->Update([NSProcessInfo processInfo].systemUptime);
 
-			if (_touch->GetTimestamp() != timestamp && _touch->GetGesture() != nullptr)
+			if (_touch->GetTimestamp() != oldTimestamp && _touch->GetGesture() != nullptr)
 				_touch->GetGesture()->TouchMoved();
 		}
 
