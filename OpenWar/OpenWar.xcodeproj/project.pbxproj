@@ -13,6 +13,33 @@
 		411582A5175E07B4004F58D1 /* BattleView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 411582A0175E07B4004F58D1 /* BattleView.cpp */; };
 		411582CB175E0F1D004F58D1 /* EditorGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 411582C7175E0F1D004F58D1 /* EditorGesture.cpp */; };
 		411582CC175E0F1D004F58D1 /* EditorModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 411582C9175E0F1D004F58D1 /* EditorModel.cpp */; };
+		41158368175E15B4004F58D1 /* CommandAck.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158359175E15B4004F58D1 /* CommandAck.wav */; };
+		41158369175E15B4004F58D1 /* CommandMod.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115835A175E15B4004F58D1 /* CommandMod.wav */; };
+		4115836A175E15B4004F58D1 /* ButtonHighlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 4115835C175E15B4004F58D1 /* ButtonHighlight.png */; };
+		4115836B175E15B4004F58D1 /* ButtonNormal.png in Resources */ = {isa = PBXBuildFile; fileRef = 4115835D175E15B4004F58D1 /* ButtonNormal.png */; };
+		4115836C175E15B4004F58D1 /* ButtonSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 4115835E175E15B4004F58D1 /* ButtonSelected.png */; };
+		4115836D175E15B4004F58D1 /* EditorTools.png in Resources */ = {isa = PBXBuildFile; fileRef = 4115835F175E15B4004F58D1 /* EditorTools.png */; };
+		4115836E175E15B4004F58D1 /* Linen128x128.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158360175E15B4004F58D1 /* Linen128x128.png */; };
+		4115836F175E15B4004F58D1 /* MissileBlue16x16.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158361175E15B4004F58D1 /* MissileBlue16x16.png */; };
+		41158370175E15B4004F58D1 /* MissileGray16x16.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158362175E15B4004F58D1 /* MissileGray16x16.png */; };
+		41158371175E15B4004F58D1 /* MissileRed16x16.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158363175E15B4004F58D1 /* MissileRed16x16.png */; };
+		41158372175E15B4004F58D1 /* MovementBlue16x16.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158364175E15B4004F58D1 /* MovementBlue16x16.png */; };
+		41158373175E15B4004F58D1 /* MovementGray16x16.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158365175E15B4004F58D1 /* MovementGray16x16.png */; };
+		41158374175E15B4004F58D1 /* MovementRed16x16.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158366175E15B4004F58D1 /* MovementRed16x16.png */; };
+		41158375175E15B4004F58D1 /* TouchMarker.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158367175E15B4004F58D1 /* TouchMarker.png */; };
+		41158387175E15CC004F58D1 /* ArrowsFlying.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158379175E15CC004F58D1 /* ArrowsFlying.wav */; };
+		41158388175E15CC004F58D1 /* CavalryMarching.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837A175E15CC004F58D1 /* CavalryMarching.wav */; };
+		41158389175E15CC004F58D1 /* CavalryRunning.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837B175E15CC004F58D1 /* CavalryRunning.wav */; };
+		4115838A175E15CC004F58D1 /* InfantryFighting.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837C175E15CC004F58D1 /* InfantryFighting.wav */; };
+		4115838B175E15CC004F58D1 /* InfantryGrunting.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837D175E15CC004F58D1 /* InfantryGrunting.wav */; };
+		4115838C175E15CC004F58D1 /* InfantryMarching.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837E175E15CC004F58D1 /* InfantryMarching.wav */; };
+		4115838D175E15CC004F58D1 /* InfantryRunning.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837F175E15CC004F58D1 /* InfantryRunning.wav */; };
+		4115838E175E15CC004F58D1 /* MatchlockFire1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158380175E15CC004F58D1 /* MatchlockFire1.wav */; };
+		4115838F175E15CC004F58D1 /* MatchlockFire2.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158381175E15CC004F58D1 /* MatchlockFire2.wav */; };
+		41158390175E15CC004F58D1 /* MatchlockFire3.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158382175E15CC004F58D1 /* MatchlockFire3.wav */; };
+		41158391175E15CC004F58D1 /* MatchlockFire4.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158383175E15CC004F58D1 /* MatchlockFire4.wav */; };
+		41158392175E15CC004F58D1 /* Billboards.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158385175E15CC004F58D1 /* Billboards.png */; };
+		41158393175E15CC004F58D1 /* Texture256x256.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158386175E15CC004F58D1 /* Texture256x256.png */; };
 		413B6DFB175CE70B00AABF10 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B6DFA175CE70B00AABF10 /* Cocoa.framework */; };
 		413B6E05175CE70B00AABF10 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E03175CE70B00AABF10 /* InfoPlist.strings */; };
 		413B6E07175CE70B00AABF10 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 413B6E06175CE70B00AABF10 /* main.mm */; };
@@ -66,6 +93,33 @@
 		411582C8175E0F1D004F58D1 /* EditorGesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditorGesture.h; sourceTree = "<group>"; };
 		411582C9175E0F1D004F58D1 /* EditorModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EditorModel.cpp; sourceTree = "<group>"; };
 		411582CA175E0F1D004F58D1 /* EditorModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditorModel.h; sourceTree = "<group>"; };
+		41158359175E15B4004F58D1 /* CommandAck.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = CommandAck.wav; sourceTree = "<group>"; };
+		4115835A175E15B4004F58D1 /* CommandMod.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = CommandMod.wav; sourceTree = "<group>"; };
+		4115835C175E15B4004F58D1 /* ButtonHighlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ButtonHighlight.png; sourceTree = "<group>"; };
+		4115835D175E15B4004F58D1 /* ButtonNormal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ButtonNormal.png; sourceTree = "<group>"; };
+		4115835E175E15B4004F58D1 /* ButtonSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ButtonSelected.png; sourceTree = "<group>"; };
+		4115835F175E15B4004F58D1 /* EditorTools.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = EditorTools.png; sourceTree = "<group>"; };
+		41158360175E15B4004F58D1 /* Linen128x128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Linen128x128.png; sourceTree = "<group>"; };
+		41158361175E15B4004F58D1 /* MissileBlue16x16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MissileBlue16x16.png; sourceTree = "<group>"; };
+		41158362175E15B4004F58D1 /* MissileGray16x16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MissileGray16x16.png; sourceTree = "<group>"; };
+		41158363175E15B4004F58D1 /* MissileRed16x16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MissileRed16x16.png; sourceTree = "<group>"; };
+		41158364175E15B4004F58D1 /* MovementBlue16x16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MovementBlue16x16.png; sourceTree = "<group>"; };
+		41158365175E15B4004F58D1 /* MovementGray16x16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MovementGray16x16.png; sourceTree = "<group>"; };
+		41158366175E15B4004F58D1 /* MovementRed16x16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MovementRed16x16.png; sourceTree = "<group>"; };
+		41158367175E15B4004F58D1 /* TouchMarker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TouchMarker.png; sourceTree = "<group>"; };
+		41158379175E15CC004F58D1 /* ArrowsFlying.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ArrowsFlying.wav; sourceTree = "<group>"; };
+		4115837A175E15CC004F58D1 /* CavalryMarching.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = CavalryMarching.wav; sourceTree = "<group>"; };
+		4115837B175E15CC004F58D1 /* CavalryRunning.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = CavalryRunning.wav; sourceTree = "<group>"; };
+		4115837C175E15CC004F58D1 /* InfantryFighting.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = InfantryFighting.wav; sourceTree = "<group>"; };
+		4115837D175E15CC004F58D1 /* InfantryGrunting.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = InfantryGrunting.wav; sourceTree = "<group>"; };
+		4115837E175E15CC004F58D1 /* InfantryMarching.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = InfantryMarching.wav; sourceTree = "<group>"; };
+		4115837F175E15CC004F58D1 /* InfantryRunning.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = InfantryRunning.wav; sourceTree = "<group>"; };
+		41158380175E15CC004F58D1 /* MatchlockFire1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = MatchlockFire1.wav; sourceTree = "<group>"; };
+		41158381175E15CC004F58D1 /* MatchlockFire2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = MatchlockFire2.wav; sourceTree = "<group>"; };
+		41158382175E15CC004F58D1 /* MatchlockFire3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = MatchlockFire3.wav; sourceTree = "<group>"; };
+		41158383175E15CC004F58D1 /* MatchlockFire4.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = MatchlockFire4.wav; sourceTree = "<group>"; };
+		41158385175E15CC004F58D1 /* Billboards.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Billboards.png; sourceTree = "<group>"; };
+		41158386175E15CC004F58D1 /* Texture256x256.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Texture256x256.png; sourceTree = "<group>"; };
 		413B6DF7175CE70B00AABF10 /* Open War.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open War.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		413B6DFA175CE70B00AABF10 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		413B6DFD175CE70B00AABF10 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -181,16 +235,100 @@
 		411582A6175E0891004F58D1 /* OpenWar */ = {
 			isa = PBXGroup;
 			children = (
+				41158357175E15B4004F58D1 /* Media */,
 				41158299175E07A1004F58D1 /* Sources */,
 				413B6E00175CE70B00AABF10 /* Sources-Mac */,
 			);
 			name = OpenWar;
 			sourceTree = "<group>";
 		};
+		41158357175E15B4004F58D1 /* Media */ = {
+			isa = PBXGroup;
+			children = (
+				41158358175E15B4004F58D1 /* Sounds */,
+				4115835B175E15B4004F58D1 /* Textures */,
+			);
+			path = Media;
+			sourceTree = "<group>";
+		};
+		41158358175E15B4004F58D1 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				41158359175E15B4004F58D1 /* CommandAck.wav */,
+				4115835A175E15B4004F58D1 /* CommandMod.wav */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
+		4115835B175E15B4004F58D1 /* Textures */ = {
+			isa = PBXGroup;
+			children = (
+				4115835C175E15B4004F58D1 /* ButtonHighlight.png */,
+				4115835D175E15B4004F58D1 /* ButtonNormal.png */,
+				4115835E175E15B4004F58D1 /* ButtonSelected.png */,
+				4115835F175E15B4004F58D1 /* EditorTools.png */,
+				41158360175E15B4004F58D1 /* Linen128x128.png */,
+				41158361175E15B4004F58D1 /* MissileBlue16x16.png */,
+				41158362175E15B4004F58D1 /* MissileGray16x16.png */,
+				41158363175E15B4004F58D1 /* MissileRed16x16.png */,
+				41158364175E15B4004F58D1 /* MovementBlue16x16.png */,
+				41158365175E15B4004F58D1 /* MovementGray16x16.png */,
+				41158366175E15B4004F58D1 /* MovementRed16x16.png */,
+				41158367175E15B4004F58D1 /* TouchMarker.png */,
+			);
+			path = Textures;
+			sourceTree = "<group>";
+		};
+		41158376175E15CC004F58D1 /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				41158377175E15CC004F58D1 /* SamuraiWars */,
+			);
+			name = Modules;
+			path = ../Modules;
+			sourceTree = "<group>";
+		};
+		41158377175E15CC004F58D1 /* SamuraiWars */ = {
+			isa = PBXGroup;
+			children = (
+				41158378175E15CC004F58D1 /* Sounds */,
+				41158384175E15CC004F58D1 /* Textures */,
+			);
+			path = SamuraiWars;
+			sourceTree = "<group>";
+		};
+		41158378175E15CC004F58D1 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				41158379175E15CC004F58D1 /* ArrowsFlying.wav */,
+				4115837A175E15CC004F58D1 /* CavalryMarching.wav */,
+				4115837B175E15CC004F58D1 /* CavalryRunning.wav */,
+				4115837C175E15CC004F58D1 /* InfantryFighting.wav */,
+				4115837D175E15CC004F58D1 /* InfantryGrunting.wav */,
+				4115837E175E15CC004F58D1 /* InfantryMarching.wav */,
+				4115837F175E15CC004F58D1 /* InfantryRunning.wav */,
+				41158380175E15CC004F58D1 /* MatchlockFire1.wav */,
+				41158381175E15CC004F58D1 /* MatchlockFire2.wav */,
+				41158382175E15CC004F58D1 /* MatchlockFire3.wav */,
+				41158383175E15CC004F58D1 /* MatchlockFire4.wav */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
+		41158384175E15CC004F58D1 /* Textures */ = {
+			isa = PBXGroup;
+			children = (
+				41158385175E15CC004F58D1 /* Billboards.png */,
+				41158386175E15CC004F58D1 /* Texture256x256.png */,
+			);
+			path = Textures;
+			sourceTree = "<group>";
+		};
 		413B6DEE175CE70B00AABF10 = {
 			isa = PBXGroup;
 			children = (
 				413B6E9A175DD1F600AABF10 /* Library */,
+				41158376175E15CC004F58D1 /* Modules */,
 				411582A6175E0891004F58D1 /* OpenWar */,
 				413B6DF9175CE70B00AABF10 /* Frameworks */,
 				413B6DF8175CE70B00AABF10 /* Products */,
@@ -428,6 +566,33 @@
 				413B6E0B175CE70B00AABF10 /* Credits.rtf in Resources */,
 				413B6E11175CE70B00AABF10 /* Document.xib in Resources */,
 				413B6E14175CE70B00AABF10 /* MainMenu.xib in Resources */,
+				41158368175E15B4004F58D1 /* CommandAck.wav in Resources */,
+				41158369175E15B4004F58D1 /* CommandMod.wav in Resources */,
+				4115836A175E15B4004F58D1 /* ButtonHighlight.png in Resources */,
+				4115836B175E15B4004F58D1 /* ButtonNormal.png in Resources */,
+				4115836C175E15B4004F58D1 /* ButtonSelected.png in Resources */,
+				4115836D175E15B4004F58D1 /* EditorTools.png in Resources */,
+				4115836E175E15B4004F58D1 /* Linen128x128.png in Resources */,
+				4115836F175E15B4004F58D1 /* MissileBlue16x16.png in Resources */,
+				41158370175E15B4004F58D1 /* MissileGray16x16.png in Resources */,
+				41158371175E15B4004F58D1 /* MissileRed16x16.png in Resources */,
+				41158372175E15B4004F58D1 /* MovementBlue16x16.png in Resources */,
+				41158373175E15B4004F58D1 /* MovementGray16x16.png in Resources */,
+				41158374175E15B4004F58D1 /* MovementRed16x16.png in Resources */,
+				41158375175E15B4004F58D1 /* TouchMarker.png in Resources */,
+				41158387175E15CC004F58D1 /* ArrowsFlying.wav in Resources */,
+				41158388175E15CC004F58D1 /* CavalryMarching.wav in Resources */,
+				41158389175E15CC004F58D1 /* CavalryRunning.wav in Resources */,
+				4115838A175E15CC004F58D1 /* InfantryFighting.wav in Resources */,
+				4115838B175E15CC004F58D1 /* InfantryGrunting.wav in Resources */,
+				4115838C175E15CC004F58D1 /* InfantryMarching.wav in Resources */,
+				4115838D175E15CC004F58D1 /* InfantryRunning.wav in Resources */,
+				4115838E175E15CC004F58D1 /* MatchlockFire1.wav in Resources */,
+				4115838F175E15CC004F58D1 /* MatchlockFire2.wav in Resources */,
+				41158390175E15CC004F58D1 /* MatchlockFire3.wav in Resources */,
+				41158391175E15CC004F58D1 /* MatchlockFire4.wav in Resources */,
+				41158392175E15CC004F58D1 /* Billboards.png in Resources */,
+				41158393175E15CC004F58D1 /* Texture256x256.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
