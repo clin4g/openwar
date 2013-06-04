@@ -11,6 +11,8 @@
 		411582A3175E07B4004F58D1 /* BattleModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4115829C175E07B4004F58D1 /* BattleModel.cpp */; };
 		411582A4175E07B4004F58D1 /* BattleRendering.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4115829E175E07B4004F58D1 /* BattleRendering.cpp */; };
 		411582A5175E07B4004F58D1 /* BattleView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 411582A0175E07B4004F58D1 /* BattleView.cpp */; };
+		411582CB175E0F1D004F58D1 /* EditorGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 411582C7175E0F1D004F58D1 /* EditorGesture.cpp */; };
+		411582CC175E0F1D004F58D1 /* EditorModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 411582C9175E0F1D004F58D1 /* EditorModel.cpp */; };
 		413B6DFB175CE70B00AABF10 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B6DFA175CE70B00AABF10 /* Cocoa.framework */; };
 		413B6E05175CE70B00AABF10 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E03175CE70B00AABF10 /* InfoPlist.strings */; };
 		413B6E07175CE70B00AABF10 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 413B6E06175CE70B00AABF10 /* main.mm */; };
@@ -60,6 +62,10 @@
 		4115829F175E07B4004F58D1 /* BattleRendering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BattleRendering.h; sourceTree = "<group>"; };
 		411582A0175E07B4004F58D1 /* BattleView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BattleView.cpp; sourceTree = "<group>"; };
 		411582A1175E07B4004F58D1 /* BattleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BattleView.h; sourceTree = "<group>"; };
+		411582C7175E0F1D004F58D1 /* EditorGesture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EditorGesture.cpp; sourceTree = "<group>"; };
+		411582C8175E0F1D004F58D1 /* EditorGesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditorGesture.h; sourceTree = "<group>"; };
+		411582C9175E0F1D004F58D1 /* EditorModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EditorModel.cpp; sourceTree = "<group>"; };
+		411582CA175E0F1D004F58D1 /* EditorModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditorModel.h; sourceTree = "<group>"; };
 		413B6DF7175CE70B00AABF10 /* Open War.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open War.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		413B6DFA175CE70B00AABF10 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		413B6DFD175CE70B00AABF10 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -164,6 +170,10 @@
 				4115829F175E07B4004F58D1 /* BattleRendering.h */,
 				411582A0175E07B4004F58D1 /* BattleView.cpp */,
 				411582A1175E07B4004F58D1 /* BattleView.h */,
+				411582C7175E0F1D004F58D1 /* EditorGesture.cpp */,
+				411582C8175E0F1D004F58D1 /* EditorGesture.h */,
+				411582C9175E0F1D004F58D1 /* EditorModel.cpp */,
+				411582CA175E0F1D004F58D1 /* EditorModel.h */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -461,6 +471,8 @@
 				411582A3175E07B4004F58D1 /* BattleModel.cpp in Sources */,
 				411582A4175E07B4004F58D1 /* BattleRendering.cpp in Sources */,
 				411582A5175E07B4004F58D1 /* BattleView.cpp in Sources */,
+				411582CB175E0F1D004F58D1 /* EditorGesture.cpp in Sources */,
+				411582CC175E0F1D004F58D1 /* EditorModel.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
