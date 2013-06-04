@@ -41,6 +41,9 @@
 		41158392175E15CC004F58D1 /* Billboards.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158385175E15CC004F58D1 /* Billboards.png */; };
 		41158393175E15CC004F58D1 /* Texture256x256.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158386175E15CC004F58D1 /* Texture256x256.png */; };
 		41158398175E1E9D004F58D1 /* OpenWarSurface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41158396175E1E9D004F58D1 /* OpenWarSurface.cpp */; };
+		4115839F175E7B59004F58D1 /* ButtonGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41158399175E7B59004F58D1 /* ButtonGesture.cpp */; };
+		411583A0175E7B59004F58D1 /* ButtonRendering.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4115839B175E7B59004F58D1 /* ButtonRendering.cpp */; };
+		411583A1175E7B59004F58D1 /* ButtonView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4115839D175E7B59004F58D1 /* ButtonView.cpp */; };
 		413B6DFB175CE70B00AABF10 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B6DFA175CE70B00AABF10 /* Cocoa.framework */; };
 		413B6E05175CE70B00AABF10 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E03175CE70B00AABF10 /* InfoPlist.strings */; };
 		413B6E07175CE70B00AABF10 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 413B6E06175CE70B00AABF10 /* main.mm */; };
@@ -123,6 +126,12 @@
 		41158386175E15CC004F58D1 /* Texture256x256.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Texture256x256.png; sourceTree = "<group>"; };
 		41158396175E1E9D004F58D1 /* OpenWarSurface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenWarSurface.cpp; sourceTree = "<group>"; };
 		41158397175E1E9D004F58D1 /* OpenWarSurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenWarSurface.h; sourceTree = "<group>"; };
+		41158399175E7B59004F58D1 /* ButtonGesture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ButtonGesture.cpp; sourceTree = "<group>"; };
+		4115839A175E7B59004F58D1 /* ButtonGesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonGesture.h; sourceTree = "<group>"; };
+		4115839B175E7B59004F58D1 /* ButtonRendering.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ButtonRendering.cpp; sourceTree = "<group>"; };
+		4115839C175E7B59004F58D1 /* ButtonRendering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonRendering.h; sourceTree = "<group>"; };
+		4115839D175E7B59004F58D1 /* ButtonView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ButtonView.cpp; sourceTree = "<group>"; };
+		4115839E175E7B59004F58D1 /* ButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonView.h; sourceTree = "<group>"; };
 		413B6DF7175CE70B00AABF10 /* Open War.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open War.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		413B6DFA175CE70B00AABF10 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		413B6DFD175CE70B00AABF10 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -484,6 +493,12 @@
 		413B6F93175DF1CE00AABF10 /* ViewExtra */ = {
 			isa = PBXGroup;
 			children = (
+				41158399175E7B59004F58D1 /* ButtonGesture.cpp */,
+				4115839A175E7B59004F58D1 /* ButtonGesture.h */,
+				4115839B175E7B59004F58D1 /* ButtonRendering.cpp */,
+				4115839C175E7B59004F58D1 /* ButtonRendering.h */,
+				4115839D175E7B59004F58D1 /* ButtonView.cpp */,
+				4115839E175E7B59004F58D1 /* ButtonView.h */,
 				413B6F94175DF1CE00AABF10 /* TerrainGesture.cpp */,
 				413B6F95175DF1CE00AABF10 /* TerrainGesture.h */,
 				413B6F96175DF1CE00AABF10 /* TerrainView.cpp */,
@@ -644,6 +659,9 @@
 				411582CB175E0F1D004F58D1 /* EditorGesture.cpp in Sources */,
 				411582CC175E0F1D004F58D1 /* EditorModel.cpp in Sources */,
 				41158398175E1E9D004F58D1 /* OpenWarSurface.cpp in Sources */,
+				4115839F175E7B59004F58D1 /* ButtonGesture.cpp in Sources */,
+				411583A0175E7B59004F58D1 /* ButtonRendering.cpp in Sources */,
+				411583A1175E7B59004F58D1 /* ButtonView.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
