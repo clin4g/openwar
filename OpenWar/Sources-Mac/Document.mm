@@ -1,6 +1,8 @@
 /* This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt */
 
 #import "Document.h"
+#include "OpenWarSurface.h"
+
 
 @implementation Document
 
@@ -54,6 +56,16 @@
     NSException *exception = [NSException exceptionWithName:@"UnimplementedMethod" reason:[NSString stringWithFormat:@"%@ is unimplemented", NSStringFromSelector(_cmd)] userInfo:nil];
     @throw exception;
     return YES;
+}
+
+
+
+#pragma mark SurfaceFactory
+
+
+- (Surface*)createSurfaceWithSize:(glm::vec2)size forSurfaceView:(SurfaceView*)surfaceView pixelDensity:(float)pixelDensity;
+{
+    return new OpenWarSurface(size, pixelDensity);
 }
 
 

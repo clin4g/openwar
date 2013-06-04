@@ -1,9 +1,40 @@
 /* This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt */
 
 #include "SoundPlayer.h"
+#include "SoundLoader.h"
 
 
 SoundPlayer* SoundPlayer::singleton = nullptr;
+
+
+static void _LoadSound(SoundPlayer* soundPlayer, SoundBuffer soundBuffer, const char* name)
+{
+	SoundLoader sound(name);
+	soundPlayer->LoadSound(soundBuffer, sound.format, sound.data, sound.size, sound.freq);
+}
+
+
+void SoundPlayer::Initialize()
+{
+	if (SoundPlayer::singleton == nullptr)
+	{
+		SoundPlayer::singleton = new SoundPlayer();
+		_LoadSound(SoundPlayer::singleton, SoundBufferArrowsFlying, "ArrowsFlying");
+		_LoadSound(SoundPlayer::singleton, SoundBufferCavalryMarching, "CavalryMarching");
+		_LoadSound(SoundPlayer::singleton, SoundBufferCavalryRunning, "CavalryRunning");
+		_LoadSound(SoundPlayer::singleton, SoundBufferCommandAck, "CommandAck");
+		_LoadSound(SoundPlayer::singleton, SoundBufferCommandMod, "CommandMod");
+		_LoadSound(SoundPlayer::singleton, SoundBufferInfantryFighting, "InfantryFighting");
+		_LoadSound(SoundPlayer::singleton, SoundBufferInfantryGrunting, "InfantryGrunting");
+		_LoadSound(SoundPlayer::singleton, SoundBufferInfantryMarching, "InfantryMarching");
+		_LoadSound(SoundPlayer::singleton, SoundBufferInfantryRunning, "InfantryRunning");
+		_LoadSound(SoundPlayer::singleton, SoundBufferMatchlockFire1, "MatchlockFire1");
+		_LoadSound(SoundPlayer::singleton, SoundBufferMatchlockFire2, "MatchlockFire2");
+		_LoadSound(SoundPlayer::singleton, SoundBufferMatchlockFire3, "MatchlockFire3");
+		_LoadSound(SoundPlayer::singleton, SoundBufferMatchlockFire4, "MatchlockFire4");
+	}
+}
+
 
 
 SoundPlayer::SoundPlayer() :

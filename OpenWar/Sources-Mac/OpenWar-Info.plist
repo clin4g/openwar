@@ -9,7 +9,7 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>openwar</string>
+				<string>battle</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string></string>

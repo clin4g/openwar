@@ -40,6 +40,7 @@
 		41158391175E15CC004F58D1 /* MatchlockFire4.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158383175E15CC004F58D1 /* MatchlockFire4.wav */; };
 		41158392175E15CC004F58D1 /* Billboards.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158385175E15CC004F58D1 /* Billboards.png */; };
 		41158393175E15CC004F58D1 /* Texture256x256.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158386175E15CC004F58D1 /* Texture256x256.png */; };
+		41158398175E1E9D004F58D1 /* OpenWarSurface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41158396175E1E9D004F58D1 /* OpenWarSurface.cpp */; };
 		413B6DFB175CE70B00AABF10 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B6DFA175CE70B00AABF10 /* Cocoa.framework */; };
 		413B6E05175CE70B00AABF10 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E03175CE70B00AABF10 /* InfoPlist.strings */; };
 		413B6E07175CE70B00AABF10 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 413B6E06175CE70B00AABF10 /* main.mm */; };
@@ -120,6 +121,8 @@
 		41158383175E15CC004F58D1 /* MatchlockFire4.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = MatchlockFire4.wav; sourceTree = "<group>"; };
 		41158385175E15CC004F58D1 /* Billboards.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Billboards.png; sourceTree = "<group>"; };
 		41158386175E15CC004F58D1 /* Texture256x256.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Texture256x256.png; sourceTree = "<group>"; };
+		41158396175E1E9D004F58D1 /* OpenWarSurface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OpenWarSurface.cpp; sourceTree = "<group>"; };
+		41158397175E1E9D004F58D1 /* OpenWarSurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenWarSurface.h; sourceTree = "<group>"; };
 		413B6DF7175CE70B00AABF10 /* Open War.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open War.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		413B6DFA175CE70B00AABF10 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		413B6DFD175CE70B00AABF10 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -228,6 +231,8 @@
 				411582C8175E0F1D004F58D1 /* EditorGesture.h */,
 				411582C9175E0F1D004F58D1 /* EditorModel.cpp */,
 				411582CA175E0F1D004F58D1 /* EditorModel.h */,
+				41158396175E1E9D004F58D1 /* OpenWarSurface.cpp */,
+				41158397175E1E9D004F58D1 /* OpenWarSurface.h */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -638,6 +643,7 @@
 				411582A5175E07B4004F58D1 /* BattleView.cpp in Sources */,
 				411582CB175E0F1D004F58D1 /* EditorGesture.cpp in Sources */,
 				411582CC175E0F1D004F58D1 /* EditorModel.cpp in Sources */,
+				41158398175E1E9D004F58D1 /* OpenWarSurface.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -59,6 +59,8 @@ class SoundPlayer
 public:
 	static SoundPlayer* singleton;
 
+	static void Initialize();
+
 	SoundPlayer();
 	~SoundPlayer();
 
