@@ -67,12 +67,14 @@ void texture::init()
 
 
 
+#if TARGET_OS_IPHONE
 static bool CheckForExtension(NSString *searchName)
 {
     NSString *extensionsString = [NSString stringWithCString:(const char*)glGetString(GL_EXTENSIONS) encoding:NSASCIIStringEncoding];
     NSArray *extensionsNames = [extensionsString componentsSeparatedByString:@" "];
     return [extensionsNames containsObject: searchName];
 }
+#endif
 
 
 void texture::load(NSString *name)
