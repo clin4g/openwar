@@ -1,5 +1,18 @@
 /* This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt */
 
-#ifdef __OBJC__
-    #import <Cocoa/Cocoa.h>
-#endif
+#define GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED
+
+#import <Cocoa/Cocoa.h>
+#import <GLKit/GLKit.h>
+
+#include <algorithm>
+#include <map>
+#include <set>
+#include <string>
+#include <typeinfo>
+#include <vector>
+
+#define GLM_SWIZZLE
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
