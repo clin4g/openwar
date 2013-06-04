@@ -3,6 +3,10 @@
 #include "image.h"
 #include "bounds.h"
 
+#if TARGET_OS_IPHONE
+#include "renderer.h"
+#endif
+
 
 static int count_components(GLenum format)
 {

@@ -6,6 +6,12 @@
 #include "bounds.h"
 
 
+inline float mix_factor(float v0, float v1, float v)
+{
+	return (v - v0) / (v1 - v0);
+}
+
+
 inline double angle(glm::dvec2 v) {return atan2(v.y, v.x);}
 inline float angle(glm::vec2 v) {return atan2f(v.y, v.x);}
 
