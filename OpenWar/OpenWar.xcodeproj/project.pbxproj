@@ -30,6 +30,13 @@
 		413B6EDD175DE3CA00AABF10 /* sprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6ED6175DE3CA00AABF10 /* sprite.cpp */; };
 		413B6EDE175DE3CA00AABF10 /* string_shape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6ED8175DE3CA00AABF10 /* string_shape.cpp */; };
 		413B6EDF175DE3CA00AABF10 /* terrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EDA175DE3CA00AABF10 /* terrain.cpp */; };
+		413B6F8D175DF02F00AABF10 /* Gesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6F81175DF02F00AABF10 /* Gesture.cpp */; };
+		413B6F8E175DF02F00AABF10 /* Surface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6F83175DF02F00AABF10 /* Surface.cpp */; };
+		413B6F8F175DF02F00AABF10 /* SurfaceView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 413B6F86175DF02F00AABF10 /* SurfaceView.mm */; };
+		413B6F91175DF02F00AABF10 /* Touch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6F89175DF02F00AABF10 /* Touch.cpp */; };
+		413B6F92175DF02F00AABF10 /* View.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6F8B175DF02F00AABF10 /* View.cpp */; };
+		413B6F98175DF1CE00AABF10 /* TerrainGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6F94175DF1CE00AABF10 /* TerrainGesture.cpp */; };
+		413B6F99175DF1CE00AABF10 /* TerrainView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6F96175DF1CE00AABF10 /* TerrainView.cpp */; };
 		63F5562DF06735D208DDCBC2 /* vertexbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55841973B995647E88800 /* vertexbuffer.cpp */; };
 /* End PBXBuildFile section */
 
@@ -80,6 +87,20 @@
 		413B6ED9175DE3CA00AABF10 /* string_shape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = string_shape.h; sourceTree = "<group>"; };
 		413B6EDA175DE3CA00AABF10 /* terrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = terrain.cpp; sourceTree = "<group>"; };
 		413B6EDB175DE3CA00AABF10 /* terrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = terrain.h; sourceTree = "<group>"; };
+		413B6F81175DF02F00AABF10 /* Gesture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Gesture.cpp; sourceTree = "<group>"; };
+		413B6F82175DF02F00AABF10 /* Gesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gesture.h; sourceTree = "<group>"; };
+		413B6F83175DF02F00AABF10 /* Surface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Surface.cpp; sourceTree = "<group>"; };
+		413B6F84175DF02F00AABF10 /* Surface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Surface.h; sourceTree = "<group>"; };
+		413B6F85175DF02F00AABF10 /* SurfaceView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SurfaceView.h; sourceTree = "<group>"; };
+		413B6F86175DF02F00AABF10 /* SurfaceView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SurfaceView.mm; sourceTree = "<group>"; };
+		413B6F89175DF02F00AABF10 /* Touch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Touch.cpp; sourceTree = "<group>"; };
+		413B6F8A175DF02F00AABF10 /* Touch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Touch.h; sourceTree = "<group>"; };
+		413B6F8B175DF02F00AABF10 /* View.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = View.cpp; sourceTree = "<group>"; };
+		413B6F8C175DF02F00AABF10 /* View.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = View.h; sourceTree = "<group>"; };
+		413B6F94175DF1CE00AABF10 /* TerrainGesture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainGesture.cpp; sourceTree = "<group>"; };
+		413B6F95175DF1CE00AABF10 /* TerrainGesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TerrainGesture.h; sourceTree = "<group>"; };
+		413B6F96175DF1CE00AABF10 /* TerrainView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainView.cpp; sourceTree = "<group>"; };
+		413B6F97175DF1CE00AABF10 /* TerrainView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TerrainView.h; sourceTree = "<group>"; };
 		63F551486360CFC73276A2D4 /* vertexbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vertexbuffer.h; sourceTree = "<group>"; };
 		63F55841973B995647E88800 /* vertexbuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vertexbuffer.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -160,6 +181,8 @@
 				413B6E9B175DD20C00AABF10 /* Algorithms */,
 				413B6EB9175DE03400AABF10 /* RenderCore */,
 				413B6ED3175DE3CA00AABF10 /* RenderUtil */,
+				413B6F80175DF02F00AABF10 /* ViewCore */,
+				413B6F93175DF1CE00AABF10 /* ViewExtra */,
 			);
 			name = Library;
 			path = ../Library;
@@ -224,6 +247,34 @@
 				413B6EDB175DE3CA00AABF10 /* terrain.h */,
 			);
 			path = RenderUtil;
+			sourceTree = "<group>";
+		};
+		413B6F80175DF02F00AABF10 /* ViewCore */ = {
+			isa = PBXGroup;
+			children = (
+				413B6F81175DF02F00AABF10 /* Gesture.cpp */,
+				413B6F82175DF02F00AABF10 /* Gesture.h */,
+				413B6F83175DF02F00AABF10 /* Surface.cpp */,
+				413B6F84175DF02F00AABF10 /* Surface.h */,
+				413B6F85175DF02F00AABF10 /* SurfaceView.h */,
+				413B6F86175DF02F00AABF10 /* SurfaceView.mm */,
+				413B6F89175DF02F00AABF10 /* Touch.cpp */,
+				413B6F8A175DF02F00AABF10 /* Touch.h */,
+				413B6F8B175DF02F00AABF10 /* View.cpp */,
+				413B6F8C175DF02F00AABF10 /* View.h */,
+			);
+			path = ViewCore;
+			sourceTree = "<group>";
+		};
+		413B6F93175DF1CE00AABF10 /* ViewExtra */ = {
+			isa = PBXGroup;
+			children = (
+				413B6F94175DF1CE00AABF10 /* TerrainGesture.cpp */,
+				413B6F95175DF1CE00AABF10 /* TerrainGesture.h */,
+				413B6F96175DF1CE00AABF10 /* TerrainView.cpp */,
+				413B6F97175DF1CE00AABF10 /* TerrainView.h */,
+			);
+			path = ViewExtra;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -308,6 +359,13 @@
 				413B6EDD175DE3CA00AABF10 /* sprite.cpp in Sources */,
 				413B6EDE175DE3CA00AABF10 /* string_shape.cpp in Sources */,
 				413B6EDF175DE3CA00AABF10 /* terrain.cpp in Sources */,
+				413B6F8D175DF02F00AABF10 /* Gesture.cpp in Sources */,
+				413B6F8E175DF02F00AABF10 /* Surface.cpp in Sources */,
+				413B6F8F175DF02F00AABF10 /* SurfaceView.mm in Sources */,
+				413B6F91175DF02F00AABF10 /* Touch.cpp in Sources */,
+				413B6F92175DF02F00AABF10 /* View.cpp in Sources */,
+				413B6F98175DF1CE00AABF10 /* TerrainGesture.cpp in Sources */,
+				413B6F99175DF1CE00AABF10 /* TerrainView.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
