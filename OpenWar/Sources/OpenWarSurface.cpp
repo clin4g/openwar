@@ -75,7 +75,7 @@ void OpenWarSurface::ScreenSizeChanged()
 
 void OpenWarSurface::Update(double secondsSinceLastUpdate)
 {
-	_simulationRules->AdvanceTime(secondsSinceLastUpdate);
+	_simulationRules->AdvanceTime((float)secondsSinceLastUpdate);
 	_battleView->Update(secondsSinceLastUpdate);
 
 	int horseGallop = 0;
