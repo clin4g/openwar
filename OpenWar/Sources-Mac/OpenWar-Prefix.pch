@@ -2,6 +2,7 @@
 
 #define GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED
 
+#include <AudioToolbox/AudioToolbox.h>
 #import <Cocoa/Cocoa.h>
 #import <GLKit/GLKit.h>
 
@@ -11,6 +12,9 @@
 #include <string>
 #include <typeinfo>
 #include <vector>
+
+#include <OpenAL/al.h>
+#include <OpenAL/alc.h>
 
 #define GLM_SWIZZLE
 #include <glm/glm.hpp>
