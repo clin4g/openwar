@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		411582A2175E07B4004F58D1 /* BattleGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4115829A175E07B4004F58D1 /* BattleGesture.cpp */; };
+		411582A3175E07B4004F58D1 /* BattleModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4115829C175E07B4004F58D1 /* BattleModel.cpp */; };
+		411582A4175E07B4004F58D1 /* BattleRendering.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4115829E175E07B4004F58D1 /* BattleRendering.cpp */; };
+		411582A5175E07B4004F58D1 /* BattleView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 411582A0175E07B4004F58D1 /* BattleView.cpp */; };
 		413B6DFB175CE70B00AABF10 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B6DFA175CE70B00AABF10 /* Cocoa.framework */; };
 		413B6E05175CE70B00AABF10 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E03175CE70B00AABF10 /* InfoPlist.strings */; };
 		413B6E07175CE70B00AABF10 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 413B6E06175CE70B00AABF10 /* main.mm */; };
@@ -48,6 +52,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4115829A175E07B4004F58D1 /* BattleGesture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BattleGesture.cpp; sourceTree = "<group>"; };
+		4115829B175E07B4004F58D1 /* BattleGesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BattleGesture.h; sourceTree = "<group>"; };
+		4115829C175E07B4004F58D1 /* BattleModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BattleModel.cpp; sourceTree = "<group>"; };
+		4115829D175E07B4004F58D1 /* BattleModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BattleModel.h; sourceTree = "<group>"; };
+		4115829E175E07B4004F58D1 /* BattleRendering.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BattleRendering.cpp; sourceTree = "<group>"; };
+		4115829F175E07B4004F58D1 /* BattleRendering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BattleRendering.h; sourceTree = "<group>"; };
+		411582A0175E07B4004F58D1 /* BattleView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BattleView.cpp; sourceTree = "<group>"; };
+		411582A1175E07B4004F58D1 /* BattleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BattleView.h; sourceTree = "<group>"; };
 		413B6DF7175CE70B00AABF10 /* Open War.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open War.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		413B6DFA175CE70B00AABF10 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		413B6DFD175CE70B00AABF10 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -141,14 +153,35 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		41158299175E07A1004F58D1 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				4115829A175E07B4004F58D1 /* BattleGesture.cpp */,
+				4115829B175E07B4004F58D1 /* BattleGesture.h */,
+				4115829C175E07B4004F58D1 /* BattleModel.cpp */,
+				4115829D175E07B4004F58D1 /* BattleModel.h */,
+				4115829E175E07B4004F58D1 /* BattleRendering.cpp */,
+				4115829F175E07B4004F58D1 /* BattleRendering.h */,
+				411582A0175E07B4004F58D1 /* BattleView.cpp */,
+				411582A1175E07B4004F58D1 /* BattleView.h */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		411582A6175E0891004F58D1 /* OpenWar */ = {
+			isa = PBXGroup;
+			children = (
+				41158299175E07A1004F58D1 /* Sources */,
+				413B6E00175CE70B00AABF10 /* Sources-Mac */,
+			);
+			name = OpenWar;
+			sourceTree = "<group>";
+		};
 		413B6DEE175CE70B00AABF10 = {
 			isa = PBXGroup;
 			children = (
-				413B7026175DFEC800AABF10 /* AudioToolbox.framework */,
-				413B7024175DFEB900AABF10 /* CoreAudio.framework */,
-				413B7022175DFEA900AABF10 /* OpenAL.framework */,
 				413B6E9A175DD1F600AABF10 /* Library */,
-				413B6E00175CE70B00AABF10 /* OpenWar */,
+				411582A6175E0891004F58D1 /* OpenWar */,
 				413B6DF9175CE70B00AABF10 /* Frameworks */,
 				413B6DF8175CE70B00AABF10 /* Products */,
 			);
@@ -166,34 +199,36 @@
 			isa = PBXGroup;
 			children = (
 				413B6DFD175CE70B00AABF10 /* AppKit.framework */,
+				413B7026175DFEC800AABF10 /* AudioToolbox.framework */,
 				413B6DFA175CE70B00AABF10 /* Cocoa.framework */,
+				413B7024175DFEB900AABF10 /* CoreAudio.framework */,
 				413B6DFF175CE70B00AABF10 /* Foundation.framework */,
 				413B6ECF175DE18A00AABF10 /* GLKit.framework */,
+				413B7022175DFEA900AABF10 /* OpenAL.framework */,
 				413B6ED1175DE19200AABF10 /* OpenGL.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		413B6E00175CE70B00AABF10 /* OpenWar */ = {
+		413B6E00175CE70B00AABF10 /* Sources-Mac */ = {
 			isa = PBXGroup;
 			children = (
 				413B6E0C175CE70B00AABF10 /* Document.h */,
 				413B6E0D175CE70B00AABF10 /* Document.mm */,
 				413B6E0F175CE70B00AABF10 /* Document.xib */,
+				413B6E06175CE70B00AABF10 /* main.mm */,
 				413B6E12175CE70B00AABF10 /* MainMenu.xib */,
+				413B6E02175CE70B00AABF10 /* OpenWar-Info.plist */,
+				413B6E08175CE70B00AABF10 /* OpenWar-Prefix.pch */,
 				413B6E01175CE70B00AABF10 /* Supporting Files */,
 			);
-			name = OpenWar;
 			path = "Sources-Mac";
 			sourceTree = "<group>";
 		};
 		413B6E01175CE70B00AABF10 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				413B6E02175CE70B00AABF10 /* OpenWar-Info.plist */,
 				413B6E03175CE70B00AABF10 /* InfoPlist.strings */,
-				413B6E06175CE70B00AABF10 /* main.mm */,
-				413B6E08175CE70B00AABF10 /* OpenWar-Prefix.pch */,
 				413B6E09175CE70B00AABF10 /* Credits.rtf */,
 			);
 			name = "Supporting Files";
@@ -422,6 +457,10 @@
 				413B7002175DF88A00AABF10 /* SimulationState.cpp in Sources */,
 				413B7020175DFE9200AABF10 /* SoundLoader.cpp in Sources */,
 				413B7021175DFE9200AABF10 /* SoundPlayer.cpp in Sources */,
+				411582A2175E07B4004F58D1 /* BattleGesture.cpp in Sources */,
+				411582A3175E07B4004F58D1 /* BattleModel.cpp in Sources */,
+				411582A4175E07B4004F58D1 /* BattleRendering.cpp in Sources */,
+				411582A5175E07B4004F58D1 /* BattleView.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
