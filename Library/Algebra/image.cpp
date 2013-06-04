@@ -97,6 +97,9 @@ _context(nil)
 	if (image == nil)
 		image = [NSImage imageNamed:name];
 
+	if (image == nil)
+		image = [[[NSImage alloc] initWithContentsOfFile:name] autorelease];
+
 	if (image != nil)
 	{
 		_format = GL_RGBA;
