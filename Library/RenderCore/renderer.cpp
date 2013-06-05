@@ -10,15 +10,7 @@ void CHECK_ERROR_GL()
 #endif
 
 
-renderer<texture_vertex, texture_uniforms>* renderers::_distance_renderer = nullptr;
-renderer<color_vertex, gradient_uniforms>* renderers::_gradient_renderer = nullptr;
-renderer<color_vertex3, gradient_uniforms>* renderers::_gradient_renderer3 = nullptr;
-renderer<texture_vertex, ground_uniforms>* renderers::_ground_renderer = nullptr;
-renderer<texture_vertex, texture_uniforms>* renderers::_texture_renderer = nullptr;
-renderer<plain_vertex, color_uniforms>* renderers::_plain_renderer = nullptr;
-renderer<texture_vertex, texture_uniforms>* renderers::_opaque_texture_renderer = nullptr;
-renderer<texture_vertex, texture_alpha_uniforms>* renderers::_alpha_texture_renderer = nullptr;
-
+renderers* renderers::singleton = nullptr;
 
 
 
@@ -362,7 +354,7 @@ bool renderer_base::validate_program(GLuint program)
 
 
 
-void renderers::init()
+renderers::renderers()
 {
 	_distance_renderer = new renderer<texture_vertex, texture_uniforms>((
 		VERTEX_ATTRIBUTE(texture_vertex, _position),

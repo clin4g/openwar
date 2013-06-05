@@ -7,7 +7,8 @@
 
 
 
-ButtonRendering::ButtonRendering(float pixelDensity)
+ButtonRendering::ButtonRendering(renderers* r, float pixelDensity) :
+_renderers(r)
 {
 	_textureButtonBackground = new texture(@"ButtonNormal.png");
 	_textureButtonHighlight = new texture(@"ButtonHighlight.png");
@@ -71,7 +72,7 @@ void ButtonRendering::RenderCornerButton(bounds2f viewport, texture* texture, bo
 	uniforms._transform = sprite_transform(viewport).transform();
 	uniforms._texture = texture;
 
-	renderers::_texture_renderer->render(shape, uniforms);
+	_renderers->_texture_renderer->render(shape, uniforms);
 }
 
 
@@ -100,7 +101,7 @@ void ButtonRendering::RenderTextureRect(bounds2f viewport, texture* texture, bou
 		uniforms._transform = sprite_transform(viewport).transform();
 		uniforms._texture = texture;
 
-		renderers::_texture_renderer->render(shape, uniforms);
+		_renderers->_texture_renderer->render(shape, uniforms);
 	}
 	else
 	{
@@ -109,7 +110,7 @@ void ButtonRendering::RenderTextureRect(bounds2f viewport, texture* texture, bou
 		uniforms._texture = texture;
 		uniforms._alpha = alpha;
 
-		renderers::_alpha_texture_renderer->render(shape, uniforms);
+		_renderers->_alpha_texture_renderer->render(shape, uniforms);
 	}
 }
 

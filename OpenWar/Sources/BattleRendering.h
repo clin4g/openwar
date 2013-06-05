@@ -73,30 +73,29 @@ struct BattleRendering
 	};
 
 
-	static renderer<texture_billboard_vertex, texture_billboard_uniforms>* _texture_billboard_renderer;
-	static renderer<color_billboard_vertex, color_billboard_uniforms>* _color_billboard_renderer;
+	renderer<texture_billboard_vertex, texture_billboard_uniforms>* _texture_billboard_renderer;
+	renderer<color_billboard_vertex, color_billboard_uniforms>* _color_billboard_renderer;
 
-	static renderer<color_vertex3, ground_gradient_uniforms>* _ground_gradient_renderer;
-	static renderer<plain_vertex3, ground_color_uniforms>* _ground_plain_renderer;
-	static renderer<texture_vertex3, ground_texture_uniforms>* _ground_texture_renderer;
-	static renderer<plain_vertex, plain_uniforms>* _ground_shadow_renderer;
+	renderer<color_vertex3, ground_gradient_uniforms>* _ground_gradient_renderer;
+	renderer<plain_vertex3, ground_color_uniforms>* _ground_plain_renderer;
+	renderer<texture_vertex3, ground_texture_uniforms>* _ground_texture_renderer;
+	renderer<plain_vertex, plain_uniforms>* _ground_shadow_renderer;
 
-	static renderer<plain_vertex, ground_texture_uniforms>* _water_inside_renderer;
-	static renderer<plain_vertex, ground_texture_uniforms>* _water_border_renderer;
+	renderer<plain_vertex, ground_texture_uniforms>* _water_inside_renderer;
+	renderer<plain_vertex, ground_texture_uniforms>* _water_border_renderer;
 
-	static texture* _textureBackgroundLinen;
-	static texture* _textureBackgroundTerrain;
-	static texture* _textureUnitMarkers;
-	static texture* _textureMovementBlue;
-	static texture* _textureMovementGray;
-	static texture* _textureMovementRed;
-	static texture* _textureMissileBlue;
-	static texture* _textureMissileGray;
-	static texture* _textureMissileRed;
-	static texture* _textureBillboards;
-	static texture* _textureTouchMarker;
+	texture* _textureBackgroundLinen;
+	texture* _textureUnitMarkers;
+	texture* _textureMovementBlue;
+	texture* _textureMovementGray;
+	texture* _textureMovementRed;
+	texture* _textureMissileBlue;
+	texture* _textureMissileGray;
+	texture* _textureMissileRed;
+	texture* _textureBillboards;
+	texture* _textureTouchMarker;
 
-	static void Initialize();
+	BattleRendering();
 };
 
 

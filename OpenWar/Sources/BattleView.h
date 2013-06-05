@@ -21,8 +21,10 @@ class TrackingMarker;
 class UnitMarker;
 
 
-class BattleView : public TerrainView, BattleRendering
+class BattleView : public TerrainView
 {
+	renderers* _renderers;
+	BattleRendering* _battleRendering;
 	BattleModel* _boardModel;
 	Player _bluePlayer;
 
@@ -32,12 +34,12 @@ class BattleView : public TerrainView, BattleRendering
 	shape<plain_vertex> _shape_terrain_shadow;
 
 	// dynamic shapes
-	shape<texture_billboard_vertex> _texture_billboards1;
-	shape<texture_billboard_vertex> _texture_billboards2;
-	shape<color_billboard_vertex> _color_billboards;
+	shape<BattleRendering::texture_billboard_vertex> _texture_billboards1;
+	shape<BattleRendering::texture_billboard_vertex> _texture_billboards2;
+	shape<BattleRendering::color_billboard_vertex> _color_billboards;
 
-	std::vector<texture_billboard_vertex> _static_billboards;
-	std::vector<texture_billboard_vertex> _dynamic_billboards;
+	std::vector<BattleRendering::texture_billboard_vertex> _static_billboards;
+	std::vector<BattleRendering::texture_billboard_vertex> _dynamic_billboards;
 
 
 	shape<plain_vertex3> _shape_fighter_weapons;
@@ -60,7 +62,7 @@ class BattleView : public TerrainView, BattleRendering
 public:
 	terrain* _terrain;
 
-	BattleView(Surface* screen, BattleModel* boardModel, terrain* t, Player bluePlayer);
+	BattleView(Surface* screen, BattleModel* boardModel, renderers* r, BattleRendering* battleRendering, terrain* t, Player bluePlayer);
 	~BattleView();
 
 	BattleModel* GetBoardModel() const { return _boardModel; }
@@ -118,7 +120,7 @@ public:
 	void AppendShootingMarkerArrow(glm::vec3 p1, glm::vec3 p2, float t);
 	void AppendShootingMarkerBullet(glm::vec3 p1, glm::vec3 p2, float t);
 
-	texture_billboard_vertex MakeBillboardVertex(glm::vec2 position, float height, int i, int j, bool flipx = false, bool flipy = false);
+	BattleRendering::texture_billboard_vertex MakeBillboardVertex(glm::vec2 position, float height, int i, int j, bool flipx = false, bool flipy = false);
 
 	static void TexRectN(shape<texture_vertex>& shape, int size, int x, int y, int w, int h);
 	static void TexRect256(shape<texture_vertex>& shape, int x, int y, int w, int h);

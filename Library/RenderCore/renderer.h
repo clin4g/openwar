@@ -200,16 +200,18 @@ typedef renderer<texture_vertex, texture_uniforms> texture_renderer;
 
 struct renderers
 {
-	static renderer<texture_vertex, texture_uniforms>* _distance_renderer;
-	static renderer<color_vertex, gradient_uniforms>* _gradient_renderer;
-	static renderer<color_vertex3, gradient_uniforms>* _gradient_renderer3;
-	static renderer<texture_vertex, ground_uniforms>* _ground_renderer;
-	static renderer<plain_vertex, color_uniforms>* _plain_renderer;
-	static renderer<texture_vertex, texture_uniforms>* _texture_renderer;
-	static renderer<texture_vertex, texture_uniforms>* _opaque_texture_renderer;
-	static renderer<texture_vertex, texture_alpha_uniforms>* _alpha_texture_renderer;
+	static renderers* singleton;
 
-	static void init();
+	renderer<texture_vertex, texture_uniforms>* _distance_renderer;
+	renderer<color_vertex, gradient_uniforms>* _gradient_renderer;
+	renderer<color_vertex3, gradient_uniforms>* _gradient_renderer3;
+	renderer<texture_vertex, ground_uniforms>* _ground_renderer;
+	renderer<plain_vertex, color_uniforms>* _plain_renderer;
+	renderer<texture_vertex, texture_uniforms>* _texture_renderer;
+	renderer<texture_vertex, texture_uniforms>* _opaque_texture_renderer;
+	renderer<texture_vertex, texture_alpha_uniforms>* _alpha_texture_renderer;
+
+	renderers();
 };
 
 

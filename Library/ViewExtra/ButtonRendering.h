@@ -12,6 +12,7 @@ struct ButtonIcon;
 
 struct ButtonRendering
 {
+	renderers* _renderers;
 	string_font* _string_font;
 	string_shape* _string_shape;
 
@@ -35,7 +36,7 @@ struct ButtonRendering
 	ButtonIcon* buttonEditorToolWater;
 	ButtonIcon* buttonEditorToolTrees;
 
-	ButtonRendering(float pixelDensity);
+	ButtonRendering(renderers* r, float pixelDensity);
 
 	void RenderBackground(bounds2f viewport, bounds2f bounds);
 	void RenderHighlight(bounds2f viewport, bounds2f bounds);

@@ -6,7 +6,9 @@
 
 
 
-BattleView::BattleView(Surface* screen, BattleModel* boardModel, terrain* t, Player bluePlayer) : TerrainView(screen, boardModel->_simulationState->height),
+BattleView::BattleView(Surface* screen, BattleModel* boardModel, renderers* r, BattleRendering* battleRendering, terrain* t, Player bluePlayer) : TerrainView(screen, boardModel->_simulationState->height),
+_renderers(r),
+_battleRendering(battleRendering),
 _boardModel(boardModel),
 _bluePlayer(bluePlayer),
 _movementMarker_pathShape(),
@@ -130,7 +132,7 @@ void BattleView::UpdateTerrainTrees(bounds2f bounds)
 {
 	image* map = _boardModel->_simulationState->map;
 
-	auto pos = std::remove_if(_static_billboards.begin(), _static_billboards.end(), [bounds](const texture_billboard_vertex& v) {
+	auto pos = std::remove_if(_static_billboards.begin(), _static_billboards.end(), [bounds](const BattleRendering::texture_billboard_vertex& v) {
 		return bounds.contains(v._position.xy());
 	});
 	_static_billboards.erase(pos, _static_billboards.end());
@@ -357,9 +359,9 @@ void BattleView::RenderBackgroundLinen()
 
 	texture_uniforms uniforms;
 	uniforms._transform = GetFlip() ? glm::scale(glm::mat4x4(), glm::vec3(-1.0f, -1.0f, 1.0f)) : glm::mat4x4();
-	uniforms._texture = _textureBackgroundLinen;
+	uniforms._texture = _battleRendering->_textureBackgroundLinen;
 
-	renderers::_texture_renderer->render(shape, uniforms);
+	_renderers->_texture_renderer->render(shape, uniforms);
 }
 
 
@@ -368,7 +370,7 @@ void BattleView::RenderTerrainShadow()
 	plain_uniforms uniforms;
 	uniforms._transform = GetTransform();
 
-	_ground_shadow_renderer->render(_shape_terrain_shadow, uniforms);
+	_battleRendering->_ground_shadow_renderer->render(_shape_terrain_shadow, uniforms);
 }
 
 
@@ -398,7 +400,7 @@ void BattleView::RenderBackgroundSky()
 	gradient_uniforms uniforms;
 	uniforms._transform = GetFlip() ? glm::scale(glm::mat4x4(), glm::vec3(-1.0f, -1.0f, 1.0f)) : glm::mat4x4();
 
-	renderers::_gradient_renderer->render(shape, uniforms);
+	_renderers->_gradient_renderer->render(shape, uniforms);
 }
 
 
@@ -416,12 +418,12 @@ void BattleView::RenderTerrainGround()
 
 void BattleView::RenderTerrainWater()
 {
-	ground_texture_uniforms uniforms;
+	BattleRendering::ground_texture_uniforms uniforms;
 	uniforms._transform = GetTransform();
 	uniforms._texture = nullptr;
 
-	_water_inside_renderer->render(_shape_water_inside, uniforms);
-	_water_border_renderer->render(_shape_water_border, uniforms);
+	_battleRendering->_water_inside_renderer->render(_shape_water_inside, uniforms);
+	_battleRendering->_water_border_renderer->render(_shape_water_border, uniforms);
 }
 
 
@@ -435,10 +437,10 @@ void BattleView::RenderFighterWeapons()
 		AppendFighterWeapons(marker->_unit);
 	}
 
-	ground_color_uniforms uniforms3;
+	BattleRendering::ground_color_uniforms uniforms3;
 	uniforms3._transform = GetTransform();
 	uniforms3._color = glm::vec4(0.4, 0.4, 0.4, 0.6);
-	_ground_plain_renderer->render(_shape_fighter_weapons, uniforms3);
+	_battleRendering->_ground_plain_renderer->render(_shape_fighter_weapons, uniforms3);
 
 }
 
@@ -475,7 +477,7 @@ void BattleView::AppendCasualtyBillboards()
 		if (casualty.time <= 1)
 		{
 			glm::vec4 c = glm::mix(c1, casualty.player == Player1 ? cb : cr, casualty.time);
-			_color_billboards._vertices.push_back(color_billboard_vertex(casualty.position, c, 6.0));
+			_color_billboards._vertices.push_back(BattleRendering::color_billboard_vertex(casualty.position, c, 6.0));
 		}
 
 		float height = 0;
@@ -503,12 +505,12 @@ void BattleView::AppendCasualtyBillboards()
 		_dynamic_billboards.push_back(MakeBillboardVertex(casualty.position.xy(), height, i, j, flipX));
 	}
 
-	color_billboard_uniforms uniforms;
+	BattleRendering::color_billboard_uniforms uniforms;
 	uniforms._transform = GetTransform();
 	uniforms._upvector = GetCameraUpVector();
 	uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
 
-	_color_billboard_renderer->render(_color_billboards, uniforms);
+	_battleRendering->_color_billboard_renderer->render(_color_billboards, uniforms);
 }
 
 
@@ -571,7 +573,7 @@ void BattleView::AppendSmokeBillboards()
 				if (i > 7)
 					i = 7;
 				glm::vec2 texcoord = texsize * glm::vec2(i, 7);
-				_dynamic_billboards.push_back(texture_billboard_vertex(projectile.position, 1 + 3 * projectile.time, texcoord, texsize));
+				_dynamic_billboards.push_back(BattleRendering::texture_billboard_vertex(projectile.position, 1 + 3 * projectile.time, texcoord, texsize));
 			}
 		}
 	}
@@ -589,22 +591,22 @@ void BattleView::RenderTerrainBillboards()
 	float a = -GetCameraFacing();
 	float cos_a = cosf(a);
 	float sin_a = sinf(a);
-	for (texture_billboard_vertex& v : _texture_billboards1._vertices)
+	for (BattleRendering::texture_billboard_vertex& v : _texture_billboards1._vertices)
 		v._order = cos_a * v._position.x - sin_a * v._position.y;
 
-	std::sort(_texture_billboards1._vertices.begin(), _texture_billboards1._vertices.end(), [](const texture_billboard_vertex& a, const texture_billboard_vertex& b) {
+	std::sort(_texture_billboards1._vertices.begin(), _texture_billboards1._vertices.end(), [](const BattleRendering::texture_billboard_vertex& a, const BattleRendering::texture_billboard_vertex& b) {
 		return a._order > b._order;
 	});
 	_texture_billboards1.update(GL_STATIC_DRAW);
 
-	texture_billboard_uniforms uniforms;
+	BattleRendering::texture_billboard_uniforms uniforms;
 	uniforms._transform = GetTransform();
-	uniforms._texture = _textureBillboards;
+	uniforms._texture = _battleRendering->_textureBillboards;
 	uniforms._upvector = GetCameraUpVector();
 	uniforms._viewport_height = /*0.25 **/ renderer_base::pixels_per_point() * GetViewportBounds().height();
 	uniforms._min_point_size = 0;
 	uniforms._max_point_size = 1024;
-	_texture_billboard_renderer->render(_texture_billboards1, uniforms);
+	_battleRendering->_texture_billboard_renderer->render(_texture_billboards1, uniforms);
 }
 
 
@@ -617,10 +619,10 @@ void BattleView::RenderRangeMarkers()
 		{
 			BattleView::MakeRangeMarker(_rangeMarker_shape, unit->state.center, unit->state.direction, 20, unit->stats.maximumRange);
 
-			ground_gradient_uniforms uniforms;
+			BattleRendering::ground_gradient_uniforms uniforms;
 			uniforms._transform = GetTransform();
 
-			_ground_gradient_renderer->render(_rangeMarker_shape, uniforms);
+			_battleRendering->_ground_gradient_renderer->render(_rangeMarker_shape, uniforms);
 		}
 	}
 }
@@ -699,11 +701,11 @@ void BattleView::RenderUnitMarkers()
 		AppendUnitMarker(marker);
 	}
 
-	color_billboard_uniforms uniforms1;
+	BattleRendering::color_billboard_uniforms uniforms1;
 	uniforms1._transform = GetTransform();
 	uniforms1._upvector = GetCameraUpVector();
 	uniforms1._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
-	_color_billboard_renderer->render(_color_billboards, uniforms1);
+	_battleRendering->_color_billboard_renderer->render(_color_billboards, uniforms1);
 
 	float y = GetCameraDirection().z;
 	float x = sqrtf(1 - y * y);
@@ -718,9 +720,9 @@ void BattleView::RenderUnitMarkers()
 #endif
 	}
 
-	texture_billboard_uniforms uniforms2;
+	BattleRendering::texture_billboard_uniforms uniforms2;
 	uniforms2._transform = GetTransform();
-	uniforms2._texture = _textureUnitMarkers;
+	uniforms2._texture = _battleRendering->_textureUnitMarkers;
 	uniforms2._upvector = GetCameraUpVector();
 	uniforms2._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
 	uniforms2._min_point_size = (32 - 8 * a) * renderer_base::pixels_per_point();
@@ -734,8 +736,8 @@ void BattleView::RenderUnitMarkers()
 	_texture_billboards1.update(GL_STATIC_DRAW);
 
 	glDisable(GL_DEPTH_TEST);
-	_texture_billboard_renderer->render(_texture_billboards1, uniforms2);
-	_texture_billboard_renderer->render(_texture_billboards2, uniforms2);
+	_battleRendering->_texture_billboard_renderer->render(_texture_billboards1, uniforms2);
+	_battleRendering->_texture_billboard_renderer->render(_texture_billboards2, uniforms2);
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -774,8 +776,8 @@ void BattleView::AppendUnitMarker(UnitMarker* marker)
 		texsize = -texsize;
 	}
 
-	_texture_billboards1._vertices.push_back(texture_billboard_vertex(position, 32, texcoord1, texsize));
-	_texture_billboards2._vertices.push_back(texture_billboard_vertex(position, 32, texcoord2, texsize));
+	_texture_billboards1._vertices.push_back(BattleRendering::texture_billboard_vertex(position, 32, texcoord1, texsize));
+	_texture_billboards2._vertices.push_back(BattleRendering::texture_billboard_vertex(position, 32, texcoord2, texsize));
 }
 
 
@@ -788,12 +790,12 @@ void BattleView::RenderUnitMissileTarget(Unit* unit)
 		BattleView::MissileLine(_unitMarker_targetLineShape, unit->state.center, unit->missileTarget->state.center, scale);
 		BattleView::MissileHead(_unitMarker_targetHeadShape, unit->state.center, unit->missileTarget->state.center, scale);
 
-		ground_texture_uniforms uniforms;
+		BattleRendering::ground_texture_uniforms uniforms;
 		uniforms._transform = GetTransform();
-		uniforms._texture = unit->player == _bluePlayer ? _textureMissileBlue : _textureMissileRed;;
+		uniforms._texture = unit->player == _bluePlayer ? _battleRendering->_textureMissileBlue : _battleRendering->_textureMissileRed;;
 
-		_ground_texture_renderer->render(_unitMarker_targetLineShape, uniforms);
-		_ground_texture_renderer->render(_unitMarker_targetHeadShape, uniforms);
+		_battleRendering->_ground_texture_renderer->render(_unitMarker_targetLineShape, uniforms);
+		_battleRendering->_ground_texture_renderer->render(_unitMarker_targetHeadShape, uniforms);
 	}
 }
 
@@ -849,17 +851,17 @@ void BattleView::RenderTrackingMarker(TrackingMarker* marker)
 			glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
 			glm::vec2 texcoord = texsize * glm::vec2(marker->_unit->player != _bluePlayer ? 4 : 3, 0);
 
-			_texture_billboards1._vertices.push_back(texture_billboard_vertex(position, 32, texcoord, texsize));
+			_texture_billboards1._vertices.push_back(BattleRendering::texture_billboard_vertex(position, 32, texcoord, texsize));
 			_texture_billboards1.update(GL_STATIC_DRAW);
 
-			texture_billboard_uniforms uniforms;
+			BattleRendering::texture_billboard_uniforms uniforms;
 			uniforms._transform = GetTransform();
-			uniforms._texture = _textureUnitMarkers;
+			uniforms._texture = _battleRendering->_textureUnitMarkers;
 			uniforms._upvector = GetCameraUpVector();
 			uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
 			uniforms._min_point_size = 24 * renderer_base::pixels_per_point();
 			uniforms._max_point_size = 48 * renderer_base::pixels_per_point();
-			_texture_billboard_renderer->render(_texture_billboards1, uniforms);
+			_battleRendering->_texture_billboard_renderer->render(_texture_billboards1, uniforms);
 		}
 	}
 }
@@ -884,8 +886,8 @@ void BattleView::RenderTrackingShadow(TrackingMarker* marker)
 
 	texture_uniforms uniforms;
 	uniforms._transform = s.transform();//GetTransform() * matrix4::translate(p._x, p._y, 0) * matrix4::scale(scale, scale, 1);
-	uniforms._texture = _textureTouchMarker;
-	renderers::_texture_renderer->render(_trackingMarker_shadowShape, uniforms);
+	uniforms._texture = _battleRendering->_textureTouchMarker;
+	_renderers->_texture_renderer->render(_trackingMarker_shadowShape, uniforms);
 }
 
 
@@ -907,10 +909,10 @@ void BattleView::RenderTrackingPath(TrackingMarker* marker)
 
 		BattleView::Path(_trackingMarker_pathShape, mode, position, path, 0);
 
-		ground_texture_uniforms uniforms;
+		BattleRendering::ground_texture_uniforms uniforms;
 		uniforms._transform = GetTransform();
-		uniforms._texture = _textureMovementGray;
-		_ground_texture_renderer->render(_trackingMarker_pathShape, uniforms);
+		uniforms._texture = _battleRendering->_textureMovementGray;
+		_battleRendering->_ground_texture_renderer->render(_trackingMarker_pathShape, uniforms);
 	}
 }
 
@@ -925,14 +927,14 @@ void BattleView::RenderTrackingOrientation(TrackingMarker* marker)
 		BattleView::MissileLine(_trackingMarker_orientationShape, destination, orientation, 0.5);
 		BattleView::MissileHead(_trackingMarker_missileHeadShape, destination, orientation, 0.5);
 
-		ground_texture_uniforms uniforms;
+		BattleRendering::ground_texture_uniforms uniforms;
 		uniforms._transform = GetTransform();
-		uniforms._texture = _textureMissileGray;
+		uniforms._texture = _battleRendering->_textureMissileGray;
 
 		//_ground_texture_renderer3->render(_trackingMarker_orientationShape, uniforms);
 
 		if (marker->_orientationUnit != nullptr)
-			_ground_texture_renderer->render(_trackingMarker_missileHeadShape, uniforms);
+			_battleRendering->_ground_texture_renderer->render(_trackingMarker_missileHeadShape, uniforms);
 	}
 }
 
@@ -960,15 +962,15 @@ void BattleView::RenderTrackingFighters(TrackingMarker* marker)
 			glm::vec2 offsetRight = formation.towardRight * (float)Unit::GetFighterFile(fighter);
 			glm::vec2 offsetBack = formation.towardBack * (float)Unit::GetFighterRank(fighter);
 
-			_color_billboards._vertices.push_back(color_billboard_vertex(to_vector3(frontLeft + offsetRight + offsetBack, 0.5), color, 3.0));
+			_color_billboards._vertices.push_back(BattleRendering::color_billboard_vertex(to_vector3(frontLeft + offsetRight + offsetBack, 0.5), color, 3.0));
 		}
 
-		color_billboard_uniforms uniforms;
+		BattleRendering::color_billboard_uniforms uniforms;
 		uniforms._transform = GetTransform();
 		uniforms._upvector = GetCameraUpVector();
 		uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
 
-		_color_billboard_renderer->render(_color_billboards, uniforms);
+		_battleRendering->_color_billboard_renderer->render(_color_billboards, uniforms);
 	}
 }
 
@@ -1002,17 +1004,17 @@ void BattleView::RenderMovementMarker(Unit* unit)
 			glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
 			glm::vec2 texcoord = texsize * glm::vec2(unit->player != _bluePlayer ? 4 : 3, 0);
 
-			_texture_billboards1._vertices.push_back(texture_billboard_vertex(position, 32, texcoord, texsize));
+			_texture_billboards1._vertices.push_back(BattleRendering::texture_billboard_vertex(position, 32, texcoord, texsize));
 			_texture_billboards1.update(GL_STATIC_DRAW);
 
-			texture_billboard_uniforms uniforms;
+			BattleRendering::texture_billboard_uniforms uniforms;
 			uniforms._transform = GetTransform();
-			uniforms._texture = _textureUnitMarkers;
+			uniforms._texture = _battleRendering->_textureUnitMarkers;
 			uniforms._upvector = GetCameraUpVector();
 			uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
 			uniforms._min_point_size = 24 * renderer_base::pixels_per_point();
 			uniforms._max_point_size = 48 * renderer_base::pixels_per_point();
-			_texture_billboard_renderer->render(_texture_billboards1, uniforms);
+			_battleRendering->_texture_billboard_renderer->render(_texture_billboards1, uniforms);
 		}
 	}
 }
@@ -1036,10 +1038,10 @@ void BattleView::RenderMovementPath(Unit* unit)
 
 		Path(_movementMarker_pathShape, mode, position, path, unit->movement.path_t0);
 
-		ground_texture_uniforms uniforms;
+		BattleRendering::ground_texture_uniforms uniforms;
 		uniforms._transform = GetTransform();
-		uniforms._texture = unit->player == _bluePlayer ? _textureMovementBlue : _textureMovementRed;
-		_ground_texture_renderer->render(_movementMarker_pathShape, uniforms);
+		uniforms._texture = unit->player == _bluePlayer ? _battleRendering->_textureMovementBlue : _battleRendering->_textureMovementRed;
+		_battleRendering->_ground_texture_renderer->render(_movementMarker_pathShape, uniforms);
 	}
 }
 
@@ -1066,15 +1068,15 @@ void BattleView::RenderMovementFighters(Unit* unit)
 			glm::vec2 offsetRight = formation.towardRight * (float)Unit::GetFighterFile(fighter);
 			glm::vec2 offsetBack = formation.towardBack * (float)Unit::GetFighterRank(fighter);
 
-			_color_billboards._vertices.push_back(color_billboard_vertex(to_vector3(frontLeft + offsetRight + offsetBack, 0.5), color, 3.0));
+			_color_billboards._vertices.push_back(BattleRendering::color_billboard_vertex(to_vector3(frontLeft + offsetRight + offsetBack, 0.5), color, 3.0));
 		}
 
-		color_billboard_uniforms uniforms;
+		BattleRendering::color_billboard_uniforms uniforms;
 		uniforms._transform = GetTransform();
 		uniforms._upvector = GetCameraUpVector();
 		uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
 
-		_color_billboard_renderer->render(_color_billboards, uniforms);
+		_battleRendering->_color_billboard_renderer->render(_color_billboards, uniforms);
 	}
 }
 
@@ -1092,7 +1094,7 @@ void BattleView::RenderShootingMarkers()
 	glLineWidth(1);
 	gradient_uniforms uniforms;
 	uniforms._transform = GetTransform();
-	renderers::_gradient_renderer3->render(_missileMarker_shape, uniforms);
+	_renderers->_gradient_renderer3->render(_missileMarker_shape, uniforms);
 }
 
 
@@ -1168,7 +1170,7 @@ BattleRendering::texture_billboard_vertex BattleView::MakeBillboardVertex(glm::v
 
 	const float adjust = 0.5 - 2.0 / 64.0; // place texture 2 texels below ground
 	glm::vec3 p = to_vector3(position, adjust * height);
-	return texture_billboard_vertex(p, height, texcoord, texsize, 0.5);
+	return BattleRendering::texture_billboard_vertex(p, height, texcoord, texsize, 0.5);
 }
 
 

@@ -8,6 +8,7 @@
 
 class BattleGesture;
 class BattleModel;
+class BattleRendering;
 class BattleView;
 class ButtonGesture;
 class ButtonItem;
@@ -28,6 +29,10 @@ public: // TODO: just testing
 	SimulationState* _simulationState;
 	SimulationRules* _simulationRules;
 
+	renderers* _renderers;
+	BattleRendering* _battleRendering;
+	ButtonRendering* _buttonRendering;
+
 	BattleModel* _battleModel;
 	EditorModel* _editorModel;
 
@@ -41,7 +46,6 @@ public: // TODO: just testing
 	EditorGesture* _editorGesture;
 	ButtonGesture* _buttonGesture;
 
-	ButtonRendering* _buttonRendering;
 	ButtonItem* _buttonItemHand;
 	ButtonItem* _buttonItemPaint;
 	ButtonItem* _buttonItemErase;

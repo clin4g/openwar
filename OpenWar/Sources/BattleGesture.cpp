@@ -44,7 +44,7 @@ void BattleGesture::RenderHints()
 	plain_shape shape;
 	shape._mode = GL_LINES;
 
-	plain_sprite sprite(renderers::_plain_renderer);
+	plain_sprite sprite(renderers::singleton->_plain_renderer);
 	sprite._shape = &shape;
 	sprite._color = glm::vec4(0, 0, 0, 1);
 	sprite._viewport = _boardView->GetViewportBounds();

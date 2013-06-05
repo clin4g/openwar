@@ -17,6 +17,9 @@ OpenWarSurface::OpenWarSurface(glm::vec2 size, float pixelDensity) : Surface(siz
 _mode(Mode::None),
 _simulationState(nullptr),
 _simulationRules(nullptr),
+_renderers(nullptr),
+_battleRendering(nullptr),
+_buttonRendering(nullptr),
 _battleModel(nullptr),
 _editorModel(nullptr),
 _terrain(nullptr),
@@ -27,7 +30,6 @@ _terrainGesture(nullptr),
 _battleGesture(nullptr),
 _editorGesture(nullptr),
 _buttonGesture(nullptr),
-_buttonRendering(nullptr),
 _buttonItemHand(nullptr),
 _buttonItemPaint(nullptr),
 _buttonItemErase(nullptr),
@@ -36,11 +38,12 @@ _buttonItemHills(nullptr),
 _buttonItemWater(nullptr),
 _buttonItemTrees(nullptr)
 {
-	renderers::init();
-	BattleRendering::Initialize();
 	SoundPlayer::Initialize();
 
-	_buttonRendering = new ButtonRendering(pixelDensity);
+	_renderers = renderers::singleton = new renderers();
+	_battleRendering = new BattleRendering();
+	_buttonRendering = new ButtonRendering(_renderers, pixelDensity);
+
 	_buttonsTopLeft = new ButtonView(this, _buttonRendering, ButtonAlignment::TopLeft);
 	_buttonsTopRight = new ButtonView(this, _buttonRendering, ButtonAlignment::TopRight);
 
@@ -90,7 +93,7 @@ void OpenWarSurface::Reset(SimulationState* simulationState)
 	_battleModel->_player = Player1;
 	_battleModel->Initialize(_simulationState);
 
-	_battleView = new BattleView(this, _battleModel, _terrain, Player1);
+	_battleView = new BattleView(this, _battleModel, _renderers, _battleRendering, _terrain, Player1);
 	_battleView->Initialize(_simulationState);
 
 	_battleGesture = new BattleGesture(_battleView);
@@ -258,6 +261,9 @@ void OpenWarSurface::UpdateButtonsAndGestures()
 	_buttonsTopRight->Reset();
 	switch (_mode)
 	{
+		case Mode::None:
+			break;
+
 		case Mode::Editing:
 			if (_simulationState->time != 0)
 				_buttonsTopRight->AddButtonArea()->AddButtonItem(_buttonRendering->buttonIconRewind)->SetAction([this](){ ClickedRewind(); });

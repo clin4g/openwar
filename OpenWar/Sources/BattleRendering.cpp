@@ -3,31 +3,7 @@
 #include "BattleRendering.h"
 
 
-renderer<BattleRendering::texture_billboard_vertex, BattleRendering::texture_billboard_uniforms>* BattleRendering::_texture_billboard_renderer = nullptr;
-renderer<BattleRendering::color_billboard_vertex, BattleRendering::color_billboard_uniforms>* BattleRendering::_color_billboard_renderer = nullptr;
-renderer<color_vertex3, BattleRendering::ground_gradient_uniforms>* BattleRendering::_ground_gradient_renderer = nullptr;
-renderer<plain_vertex3, BattleRendering::ground_color_uniforms>* BattleRendering::_ground_plain_renderer = nullptr;
-renderer<texture_vertex3, BattleRendering::ground_texture_uniforms>* BattleRendering::_ground_texture_renderer = nullptr;
-renderer<plain_vertex, plain_uniforms>* BattleRendering::_ground_shadow_renderer = nullptr;
-
-renderer<plain_vertex, BattleRendering::ground_texture_uniforms>* BattleRendering::_water_inside_renderer = nullptr;
-renderer<plain_vertex, BattleRendering::ground_texture_uniforms>* BattleRendering::_water_border_renderer = nullptr;
-
-
-texture* BattleRendering::_textureBackgroundLinen = nullptr;
-texture* BattleRendering::_textureBackgroundTerrain = nullptr;
-texture* BattleRendering::_textureUnitMarkers = nullptr;
-texture* BattleRendering::_textureMovementBlue = nullptr;
-texture* BattleRendering::_textureMovementGray = nullptr;
-texture* BattleRendering::_textureMovementRed = nullptr;
-texture* BattleRendering::_textureMissileBlue = nullptr;
-texture* BattleRendering::_textureMissileGray = nullptr;
-texture* BattleRendering::_textureMissileRed = nullptr;
-texture* BattleRendering::_textureBillboards = nullptr;
-texture* BattleRendering::_textureTouchMarker = nullptr;
-
-
-void BattleRendering::Initialize()
+BattleRendering::BattleRendering()
 {
 	_texture_billboard_renderer = new renderer<texture_billboard_vertex, texture_billboard_uniforms>((
 			VERTEX_ATTRIBUTE(texture_billboard_vertex, _position),
@@ -388,9 +364,7 @@ void BattleRendering::Initialize()
 	_water_border_renderer->_blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
 
 
-
 	_textureBackgroundLinen = new texture(@"Linen128x128.png");
-	_textureBackgroundTerrain = new texture(@"Ground64x64.png");
 	_textureUnitMarkers = new texture(@"Texture256x256.png");
 	_textureMovementBlue = new texture(@"MovementBlue16x16.png");
 	_textureMovementGray = new texture(@"MovementGray16x16.png");
