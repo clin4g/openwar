@@ -20,7 +20,7 @@ static void init_bsplint_matrix()
 {
 	if (*glm::value_ptr(_bspline_matrix) == 1)
 	{
-		float k = (float) 1 / (float) 6;
+		float k = (float)1 / (float)6;
 
 		_bspline_matrix = glm::mat4x4(
 				-1 * k, 3 * k, -3 * k, 1 * k,
@@ -34,20 +34,23 @@ static void init_bsplint_matrix()
 }
 
 
-heightmap::heightmap(bounds2f bounds, const image& height, image* water, image* fords) :
+heightmap::heightmap(bounds2f bounds, image* map) :
 _heights(128, 128),
 _bounds(bounds),
 _height(124.5),
-_water(water),
-_fords(fords)
+_map(map)
 {
 	init_bsplint_matrix();
 	for (int x = 0; x < 128; ++x)
+	{
+		int xx = (int)(x * (double)map->_width / 128.0);
 		for (int y = 0; y < 128; ++y)
 		{
-			glm::vec4 c = height.get_pixel(x, y);
-			set_height(x, y, 0.5f + 124.5f * c.r);
+			int yy = (int)(y * (double)map->_height / 128.0);
+			glm::vec4 c = map->get_pixel(xx, yy);
+			set_height(x, y, 0.5f + 124.5f * c.a);
 		}
+	}
 }
 
 
@@ -55,8 +58,7 @@ heightmap::heightmap(bounds2f bounds, float height) :
 _heights(128, 128),
 _bounds(bounds),
 _height(height),
-_water(nullptr),
-_fords(nullptr)
+_map(nullptr)
 {
 	init_bsplint_matrix();
 }
@@ -88,8 +90,8 @@ float heightmap::get_height(glm::vec2 position) const
 {
 	matrix_size size = _heights.size();
 	glm::vec2 c = glm::vec2(size.n - 1, size.m - 1) * (position - _bounds.p11()) / _bounds.size();
-	int x = (int) floorf(c.x);
-	int y = (int) floorf(c.y);
+	int x = (int)floorf(c.x);
+	int y = (int)floorf(c.y);
 
 	glm::mat4x4 p;
 	glm::mat4x4::value_type* pp = glm::value_ptr(p);
@@ -106,15 +108,14 @@ float heightmap::get_height(glm::vec2 position) const
 
 	float height = glm::dot(u, _bspline_matrix_transpose * p * _bspline_matrix * v);
 
-	if (_water != nullptr)
+	if (_map != nullptr)
 	{
-		float water = _water->get_pixel((int) (position.x * 512.0 / 1024.0), (int) (position.y * 512.0 / 1024.0)).r;
-		height = glm::mix(height, -2.5f, glm::step(0.5f, water));
-	}
+		glm::vec4 c = _map->get_pixel((int)(position.x * 512.0 / 1024.0), (int)(position.y * 512.0 / 1024.0));
 
-	if (_fords != nullptr)
-	{
-		float fords = _fords->get_pixel((int) (position.x * 512.0 / 1024.0), (int) (position.y * 512.0 / 1024.0)).r;
+		float water = c.b;
+		height = glm::mix(height, -2.5f, glm::step(0.5f, water));
+
+		float fords = c.r;
 		height = glm::mix(height, -0.5f, glm::step(0.5f, fords));
 	}
 
@@ -136,21 +137,21 @@ bool heightmap::contains_water(bounds2f bounds) const
 	matrix_size size(512, 512);
 	glm::vec2 min = glm::vec2(size.n - 1, size.m - 1) * (bounds.min - _bounds.min) / _bounds.size();
 	glm::vec2 max = glm::vec2(size.n - 1, size.m - 1) * (bounds.max - _bounds.min) / _bounds.size();
-	int xmin = (int) floorf(min.x);
-	int ymin = (int) floorf(min.y);
-	int xmax = (int) ceilf(max.x);
-	int ymax = (int) ceilf(max.y);
+	int xmin = (int)floorf(min.x);
+	int ymin = (int)floorf(min.y);
+	int xmax = (int)ceilf(max.x);
+	int ymax = (int)ceilf(max.y);
 
-	for (int x = xmin; x <= xmax; ++x)
-		for (int y = ymin; y <= ymax; ++y)
-		{
-			if (_water != nullptr && _water->get_pixel(x, y).r >= 0.5)
-				return true;
-			if (_fords != nullptr && _fords->get_pixel(x, y).r >= 0.5)
-				return true;
-		}
-
-
+	if (_map != nullptr)
+	{
+		for (int x = xmin; x <= xmax; ++x)
+			for (int y = ymin; y <= ymax; ++y)
+			{
+				glm::vec4 c = _map->get_pixel(x, y);
+				if (c.b >= 0.5 || c.r >= 0.5)
+					return true;
+			}
+	}
 
 	return false;
 }
@@ -174,8 +175,8 @@ static float* intersect(ray r, const matrix& m)
 
 	bounds2f bounds_2(0, 0, size.m - 2, size.n - 2);
 
-	int x = (int) bounds_2.x().clamp(p.x);
-	int y = (int) bounds_2.y().clamp(p.y);
+	int x = (int)bounds_2.x().clamp(p.x);
+	int y = (int)bounds_2.y().clamp(p.y);
 	int flipX = r.direction.x < 0 ? 0 : 1;
 	int flipY = r.direction.y < 0 ? 0 : 1;
 	int dx = r.direction.x < 0 ? -1 : 1;

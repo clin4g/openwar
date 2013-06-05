@@ -128,7 +128,7 @@ struct random_iterator
 
 void BattleView::UpdateTerrainTrees(bounds2f bounds)
 {
-	image* forest = _boardModel->_simulationState->forest;
+	image* map = _boardModel->_simulationState->map;
 
 	auto pos = std::remove_if(_static_billboards.begin(), _static_billboards.end(), [bounds](const texture_billboard_vertex& v) {
 		return bounds.contains(v._position.xy());
@@ -156,7 +156,7 @@ void BattleView::UpdateTerrainTrees(bounds2f bounds)
 			{
 				float z = _heightmap->get_height(position);
 				if (z > 0
-						&& forest->get_pixel((int)(position.x / 2), (int)(position.y / 2)).r > 0.5
+						&& map->get_pixel((int)(position.x / 2), (int)(position.y / 2)).g > 0.5
 						&& _heightmap->get_normal(position).z >= 0.84)
 				{
 					_static_billboards.push_back(MakeBillboardVertex(position, 5, 0, i, flip, GetFlip()));

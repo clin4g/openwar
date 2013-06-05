@@ -22,6 +22,7 @@ class TerrainGesture;
 
 class OpenWarSurface : public Surface
 {
+public: // TODO: just testing
 	enum class Mode { Editing, Playing };
 	Mode _mode;
 	SimulationState* _simulationState;

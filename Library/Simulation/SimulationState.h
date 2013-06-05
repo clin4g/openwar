@@ -311,10 +311,7 @@ struct SimulationState
 	std::vector<Shooting> shootings;
 
 	heightmap* height;
-	image* heightx;
-	image* forest;
-	image* water;
-	image* fords;
+	image* map;
 
 	SimulationState();
 	~SimulationState();

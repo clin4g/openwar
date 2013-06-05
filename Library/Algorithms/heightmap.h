@@ -16,11 +16,10 @@ public:
 	matrix _heights;
 	bounds2f _bounds;
 	float _height;
-	image* _water;
-	image* _fords;
+	image* _map;
 
 public:
-	heightmap(bounds2f bounds, const image& height, image* water, image* fords);
+	heightmap(bounds2f bounds, image* map);
 	heightmap(bounds2f bounds, float height);
 	~heightmap();
 

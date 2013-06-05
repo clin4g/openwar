@@ -17,16 +17,28 @@ static SimulationState* LoadSimulationState()
 {
 	SimulationState* result = new SimulationState();
 
-	NSString* mapDir = @"/Users/nicke/Projects/Samurai/Media/Maps Textures";
-	NSString* mapName = @"Map1";
+	NSString* prefix = @"/Users/nicke/Desktop/Map/Map1";
 
+	image* map = new image(512, 512);
 
-	image height([NSString stringWithFormat:@"%@/%@-Height.png", mapDir, mapName]);
+	image fords([NSString stringWithFormat:@"%@-Fords.png", prefix]);
+	image forest([NSString stringWithFormat:@"%@-Forest.png", prefix]);
+	image water([NSString stringWithFormat:@"%@-Water.png", prefix]);
+	image height([NSString stringWithFormat:@"%@-Height.png", prefix]);
 
-	result->forest = new image([NSString stringWithFormat:@"%@/%@-Forest.png", mapDir, mapName]);
-	result->water = new image([NSString stringWithFormat:@"%@/%@-Water.png", mapDir, mapName]);
-	result->fords = new image([NSString stringWithFormat:@"%@/%@-Fords.png", mapDir, mapName]);
-	result->height = new heightmap(bounds2f(0, 0, 1024, 1024), height, result->water, result->fords);
+	for (int x = 0; x < 512; ++x)
+		for (int y = 0; y < 512; ++y)
+		{
+			glm::vec4 c;
+			c.r = fords.get_pixel(x, y).r;
+			c.g = forest.get_pixel(x, y).r;
+			c.b = water.get_pixel(x, y).r;
+			c.a = height.get_pixel(x, y).r;
+			map->set_pixel(x, y, c);
+		}
+
+	result->map = map;
+	result->height = new heightmap(bounds2f(0, 0, 1024, 1024), map);
 
 	result->AddUnit(Player1, 80, SimulationState::GetDefaultUnitStats(UnitPlatformSam, UnitWeaponKata), glm::vec2(500, 300));
 	result->AddUnit(Player2, 80, SimulationState::GetDefaultUnitStats(UnitPlatformSam, UnitWeaponKata), glm::vec2(500, 700));
@@ -67,7 +79,7 @@ _buttonItemTrees(nullptr)
 	_simulationRules = new SimulationRules(_simulationState);
 	_simulationRules->currentPlayer = Player1;
 
-	_terrain = new terrain(_simulationState->height, _simulationState->forest, pixelDensity > 1);
+	_terrain = new terrain(_simulationState->height, _simulationState->map, pixelDensity > 1);
 
 	_battleModel = new BattleModel(_simulationState);
 	_battleModel->_player = Player1;

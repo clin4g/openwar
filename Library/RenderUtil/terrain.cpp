@@ -28,7 +28,6 @@ static void render_terrain_inside(shape<terrain_vertex>& shape, const terrain_un
 				varying vec3 _position;
 				varying vec2 _terraincoord;
 				varying vec2 _colorcoord;
-				//varying float _normal_z;
 				varying float _brightness;
 
 				void main()
@@ -40,7 +39,6 @@ static void render_terrain_inside(shape<terrain_vertex>& shape, const terrain_un
 					_position = position;
 					_terraincoord = position.xy / 1024.0;
 					_colorcoord = vec2(brightness, 1.0 - (2.5 + position.z) / 128.0);
-					//_normal_z = normal.z;
 					_brightness = brightness;
 
 
@@ -52,20 +50,17 @@ static void render_terrain_inside(shape<terrain_vertex>& shape, const terrain_un
 			({
 				uniform sampler2D colors;
 				uniform sampler2D forest;
-				uniform sampler2D cliffs;
-				uniform sampler2D grass;
 
 				varying vec3 _position;
 				varying vec2 _terraincoord;
 				varying vec2 _colorcoord;
-				//varying float _normal_z;
 				varying float _brightness;
 
 				void main()
 				{
 					vec3 color = texture2D(colors, _colorcoord).rgb;
 
-					float f = step(0.0, _position.z) * smoothstep(0.475, 0.525, texture2D(forest, _terraincoord).r);
+					float f = step(0.0, _position.z) * smoothstep(0.475, 0.525, texture2D(forest, _terraincoord).g);
 					color = mix(color, vec3(0.2196, 0.3608, 0.1922), 0.3 * f);
 					color = mix(color, vec3(0), 0.03 * step(0.5, 1.0 - _brightness));
 
@@ -104,7 +99,6 @@ static void render_terrain_border(shape<terrain_vertex>& shape, const terrain_un
 				varying vec3 _position;
 				varying vec2 _terraincoord;
 				varying vec2 _colorcoord;
-				//varying float _normal_z;
 				varying float _brightness;
 
 				void main()
@@ -116,7 +110,6 @@ static void render_terrain_border(shape<terrain_vertex>& shape, const terrain_un
 					_position = position;
 					_terraincoord = position.xy / 1024.0;
 					_colorcoord = vec2(brightness, 1.0 - (2.5 + position.z) / 128.0);
-					//_normal_z = normal.z;
 					_brightness = brightness;
 
 
@@ -128,13 +121,10 @@ static void render_terrain_border(shape<terrain_vertex>& shape, const terrain_un
 			({
 				uniform sampler2D colors;
 				uniform sampler2D forest;
-				uniform sampler2D cliffs;
-				uniform sampler2D grass;
 
 				varying vec3 _position;
 				varying vec2 _terraincoord;
 				varying vec2 _colorcoord;
-				//varying float _normal_z;
 				varying float _brightness;
 
 				void main()
@@ -144,7 +134,7 @@ static void render_terrain_border(shape<terrain_vertex>& shape, const terrain_un
 
 					vec3 color = texture2D(colors, _colorcoord).rgb;
 
-					float f = step(0.0, _position.z) * smoothstep(0.475, 0.525, texture2D(forest, _terraincoord).r);
+					float f = step(0.0, _position.z) * smoothstep(0.475, 0.525, texture2D(forest, _terraincoord).g);
 					color = mix(color, vec3(0.2196, 0.3608, 0.1922), 0.3 * f);
 					color = mix(color, vec3(0), 0.03 * step(0.5, 1.0 - _brightness));
 

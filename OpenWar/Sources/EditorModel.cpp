@@ -92,16 +92,18 @@ void EditorModel::EditHills(glm::vec2 position, bool value)
 
 void EditorModel::EditWater(glm::vec2 position, bool value)
 {
-	glm::vec4 c = value ? glm::vec4(1) : glm::vec4(0.0);
-
 	int x0 = (int)(512 * position.x / 1024);
 	int y0 = (int)(512 * position.y / 1024);
 
-	image* water = _terrain->_heightmap->_water;
+	image* map = _terrain->_heightmap->_map;
 
 	for (int x = -5; x <= 5; ++x)
 		for (int y = -5; y <= 5; ++y)
-			water->set_pixel(x0 + x, y0 - y, c);
+		{
+			glm::vec4 c = map->get_pixel(x, y);
+			c.b = value ? 1 : 0;
+			map->set_pixel(x0 + x, y0 - y, c);
+		}
 
 	_terrain->update_heights(bounds2_from_center(position, 25));
 	_battleView->UpdateTerrainTrees(bounds2_from_center(position, 25));
@@ -110,17 +112,19 @@ void EditorModel::EditWater(glm::vec2 position, bool value)
 
 void EditorModel::EditTrees(glm::vec2 position, bool value)
 {
-	glm::vec4 c = value ? glm::vec4(1) : glm::vec4(0.0);
-
 	int x0 = (int)(512 * position.x / 1024);
 	int y0 = (int)(512 * position.y / 1024);
 
-	image* forest = _battleView->GetBoardModel()->_simulationState->forest;
+	image* map = _terrain->_heightmap->_map;
 
 	for (int x = -5; x <= 5; ++x)
 		for (int y = -5; y <= 5; ++y)
-			forest->set_pixel(x0 + x, y0 - y, c);
+		{
+			glm::vec4 c = map->get_pixel(x, y);
+			c.g = value ? 1 : 0;
+			map->set_pixel(x0 + x, y0 - y, c);
+		}
 
-	_terrain->_forest->load(*forest);
+	_terrain->_forest->load(*map);
 	_battleView->UpdateTerrainTrees(bounds2_from_center(position, 25));
 }
