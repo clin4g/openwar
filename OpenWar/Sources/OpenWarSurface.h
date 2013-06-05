@@ -23,7 +23,7 @@ class TerrainGesture;
 class OpenWarSurface : public Surface
 {
 public: // TODO: just testing
-	enum class Mode { Editing, Playing };
+	enum class Mode { None, Editing, Playing };
 	Mode _mode;
 	SimulationState* _simulationState;
 	SimulationRules* _simulationRules;
@@ -53,7 +53,9 @@ public: // TODO: just testing
 public:
 	OpenWarSurface(glm::vec2 size, float pixelDensity);
 	virtual ~OpenWarSurface();
-    
+
+	void Reset(SimulationState* simulationState);
+
 	virtual void ScreenSizeChanged();
 	virtual void Update(double secondsSinceLastUpdate);
 	virtual void Render();

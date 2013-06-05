@@ -54,16 +54,6 @@ _map(map)
 }
 
 
-heightmap::heightmap(bounds2f bounds, float height) :
-_heights(128, 128),
-_bounds(bounds),
-_height(height),
-_map(nullptr)
-{
-	init_bsplint_matrix();
-}
-
-
 heightmap::~heightmap()
 {
 }

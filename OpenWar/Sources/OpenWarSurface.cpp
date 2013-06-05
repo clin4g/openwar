@@ -13,42 +13,8 @@
 
 
 
-static SimulationState* LoadSimulationState()
-{
-	SimulationState* result = new SimulationState();
-
-	NSString* prefix = @"/Users/nicke/Desktop/Map/Map1";
-
-	image* map = new image(512, 512);
-
-	image fords([NSString stringWithFormat:@"%@-Fords.png", prefix]);
-	image forest([NSString stringWithFormat:@"%@-Forest.png", prefix]);
-	image water([NSString stringWithFormat:@"%@-Water.png", prefix]);
-	image height([NSString stringWithFormat:@"%@-Height.png", prefix]);
-
-	for (int x = 0; x < 512; ++x)
-		for (int y = 0; y < 512; ++y)
-		{
-			glm::vec4 c;
-			c.r = fords.get_pixel(x, y).r;
-			c.g = forest.get_pixel(x, y).r;
-			c.b = water.get_pixel(x, y).r;
-			c.a = height.get_pixel(x, y).r;
-			map->set_pixel(x, y, c);
-		}
-
-	result->map = map;
-	result->height = new heightmap(bounds2f(0, 0, 1024, 1024), map);
-
-	result->AddUnit(Player1, 80, SimulationState::GetDefaultUnitStats(UnitPlatformSam, UnitWeaponKata), glm::vec2(500, 300));
-	result->AddUnit(Player2, 80, SimulationState::GetDefaultUnitStats(UnitPlatformSam, UnitWeaponKata), glm::vec2(500, 700));
-
-	return result;
-}
-
-
 OpenWarSurface::OpenWarSurface(glm::vec2 size, float pixelDensity) : Surface(size, pixelDensity),
-_mode(Mode::Editing),
+_mode(Mode::None),
 _simulationState(nullptr),
 _simulationRules(nullptr),
 _battleModel(nullptr),
@@ -74,20 +40,6 @@ _buttonItemTrees(nullptr)
 	BattleRendering::Initialize();
 	SoundPlayer::Initialize();
 
-	_simulationState = LoadSimulationState();
-
-	_simulationRules = new SimulationRules(_simulationState);
-	_simulationRules->currentPlayer = Player1;
-
-	_terrain = new terrain(_simulationState->height, _simulationState->map, pixelDensity > 1);
-
-	_battleModel = new BattleModel(_simulationState);
-	_battleModel->_player = Player1;
-	_battleModel->Initialize(_simulationState);
-
-	_battleView = new BattleView(this, _battleModel, _terrain, Player1);
-	_battleView->Initialize(_simulationState);
-
 	_buttonRendering = new ButtonRendering(pixelDensity);
 	_buttonsTopLeft = new ButtonView(this, _buttonRendering, ButtonAlignment::TopLeft);
 	_buttonsTopRight = new ButtonView(this, _buttonRendering, ButtonAlignment::TopRight);
@@ -95,12 +47,6 @@ _buttonItemTrees(nullptr)
 	_buttonGesture = new ButtonGesture();
 	_buttonGesture->buttonViews.push_back(_buttonsTopLeft);
 	_buttonGesture->buttonViews.push_back(_buttonsTopRight);
-
-	_battleGesture = new BattleGesture(_battleView);
-	_terrainGesture = new TerrainGesture(_battleView);
-
-	_editorModel = new EditorModel(_battleView, _terrain);
-	_editorGesture = new EditorGesture(_battleView, _editorModel);
 
 	ButtonArea* toolButtonArea = _buttonsTopLeft->AddButtonArea(4);
 	_buttonItemHand = toolButtonArea->AddButtonItem(_buttonRendering->buttonEditorToolHand);
@@ -127,13 +73,45 @@ _buttonItemTrees(nullptr)
 
 OpenWarSurface::~OpenWarSurface()
 {
+
+}
+
+
+void OpenWarSurface::Reset(SimulationState* simulationState)
+{
+	_simulationState = simulationState;
+
+	_simulationRules = new SimulationRules(_simulationState);
+	_simulationRules->currentPlayer = Player1;
+
+	_terrain = new terrain(_simulationState->height, _simulationState->map, false);
+
+	_battleModel = new BattleModel(_simulationState);
+	_battleModel->_player = Player1;
+	_battleModel->Initialize(_simulationState);
+
+	_battleView = new BattleView(this, _battleModel, _terrain, Player1);
+	_battleView->Initialize(_simulationState);
+
+	_battleGesture = new BattleGesture(_battleView);
+	_terrainGesture = new TerrainGesture(_battleView);
+
+	_editorModel = new EditorModel(_battleView, _terrain);
+	_editorGesture = new EditorGesture(_battleView, _editorModel);
+
+	_simulationState->AddUnit(Player1, 80, SimulationState::GetDefaultUnitStats(UnitPlatformSam, UnitWeaponKata), glm::vec2(500, 300));
+	_simulationState->AddUnit(Player2, 80, SimulationState::GetDefaultUnitStats(UnitPlatformSam, UnitWeaponKata), glm::vec2(500, 700));
+
+	_mode = Mode::Editing;
+	UpdateButtonsAndGestures();
 }
 
 
 void OpenWarSurface::ScreenSizeChanged()
 {
 	bounds2f viewport = bounds2f(0, 0, GetSize());
-	_battleView->SetViewport(viewport);
+	if (_battleView != nullptr)
+		_battleView->SetViewport(viewport);
 	_buttonsTopLeft->SetViewport(viewport);
 	_buttonsTopRight->SetViewport(viewport);
 }
@@ -146,7 +124,8 @@ void OpenWarSurface::Update(double secondsSinceLastUpdate)
 		_simulationRules->AdvanceTime((float)secondsSinceLastUpdate);
 		UpdateSoundPlayer();
 	}
-	_battleView->Update(secondsSinceLastUpdate);
+	if (_battleView != nullptr)
+		_battleView->Update(secondsSinceLastUpdate);
 }
 
 
@@ -158,7 +137,8 @@ void OpenWarSurface::Render()
 	glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 
-	_battleView->Render();
+	if (_battleView != nullptr)
+		_battleView->Render();
 
 	_buttonsTopLeft->Render();
 	_buttonsTopRight->Render();
@@ -232,27 +212,36 @@ void OpenWarSurface::ClickedRewind()
 
 void OpenWarSurface::SetEditorMode(EditorMode editorMode)
 {
-	_editorModel->editorMode = editorMode;
-	UpdateButtonsAndGestures();
+	if (_editorModel != nullptr)
+	{
+		_editorModel->editorMode = editorMode;
+		UpdateButtonsAndGestures();
+	}
 }
 
 
 void OpenWarSurface::SetEditorFeature(EditorFeature editorFeature)
 {
-	_editorModel->editorFeature = editorFeature;
-	UpdateButtonsAndGestures();
+	if (_editorModel != nullptr)
+	{
+		_editorModel->editorFeature = editorFeature;
+		UpdateButtonsAndGestures();
+	}
 }
 
 
 void OpenWarSurface::UpdateButtonsAndGestures()
 {
-	_buttonItemHand->SetDisabled(_mode == Mode::Playing);
-	_buttonItemPaint->SetDisabled(_mode == Mode::Playing);
-	_buttonItemErase->SetDisabled(_mode == Mode::Playing);
-	_buttonItemSmear->SetDisabled(_mode == Mode::Playing);
-	_buttonItemHills->SetDisabled(_mode == Mode::Playing);
-	_buttonItemWater->SetDisabled(_mode == Mode::Playing);
-	_buttonItemTrees->SetDisabled(_mode == Mode::Playing);
+	_buttonItemHand->SetDisabled(_mode != Mode::Editing);
+	_buttonItemPaint->SetDisabled(_mode != Mode::Editing);
+	_buttonItemErase->SetDisabled(_mode != Mode::Editing);
+	_buttonItemSmear->SetDisabled(_mode != Mode::Editing);
+	_buttonItemHills->SetDisabled(_mode != Mode::Editing);
+	_buttonItemWater->SetDisabled(_mode != Mode::Editing);
+	_buttonItemTrees->SetDisabled(_mode != Mode::Editing);
+
+	if (_mode == Mode::None)
+		return;
 
 	_buttonItemHand->SetSelected(_editorModel->editorMode == EditorMode::Hand);
 	_buttonItemPaint->SetSelected(_editorModel->editorMode == EditorMode::Paint);

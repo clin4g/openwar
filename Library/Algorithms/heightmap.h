@@ -20,7 +20,6 @@ public:
 
 public:
 	heightmap(bounds2f bounds, image* map);
-	heightmap(bounds2f bounds, float height);
 	~heightmap();
 
 	matrix& heights() { return _heights; }
