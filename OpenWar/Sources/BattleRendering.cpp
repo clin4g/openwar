@@ -266,7 +266,7 @@ BattleRendering::BattleRendering()
 						{
 							vec4 p = transform * vec4(position, -2.5, 1);
 
-							_groundpos = position.xy;
+							_groundpos = position;
 
 							gl_Position = p;
 							gl_PointSize = 1.0;
@@ -280,7 +280,7 @@ BattleRendering::BattleRendering()
 						void main()
 						{
 							float d = distance(_groundpos, vec2(512.0, 512.0)) - 512.0;
-							float a = clamp(0.0, 1.0, 0.3 - d / 20.0);
+							float a = clamp(0.3 - d / 20.0, 0.0, 0.3);
 
 							gl_FragColor = vec4(0, 0, 0, a);
 						}
