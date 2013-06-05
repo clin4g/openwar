@@ -33,14 +33,15 @@ void ButtonGesture::TouchBegan(Touch* touch)
 		return;
 
 	for (ButtonView* buttonView : buttonViews)
-		for (ButtonArea* buttonArea : buttonView->GetButtonAreas())
-			for (ButtonItem* buttonItem : buttonArea->buttonItems)
-				if (buttonItem->HasAction()
-						&& !buttonItem->IsDisabled()
-						&& buttonItem->GetBounds().contains(touch->GetPosition()))
-				{
-					_buttonItem = buttonItem;
-				}
+		if (buttonView->GetScreen() == touch->GetSurface())
+			for (ButtonArea* buttonArea : buttonView->GetButtonAreas())
+				for (ButtonItem* buttonItem : buttonArea->buttonItems)
+					if (buttonItem->HasAction()
+							&& !buttonItem->IsDisabled()
+							&& buttonItem->GetBounds().contains(touch->GetPosition()))
+					{
+						_buttonItem = buttonItem;
+					}
 
 	if (_buttonItem != nullptr)
 	{
@@ -50,10 +51,11 @@ void ButtonGesture::TouchBegan(Touch* touch)
 	else
 	{
 		for (ButtonView* buttonView : buttonViews)
-			for (ButtonArea* buttonArea : buttonView->GetButtonAreas())
-			{
-				buttonArea->noaction();
-			}
+			if (buttonView->GetScreen() == touch->GetSurface())
+				for (ButtonArea* buttonArea : buttonView->GetButtonAreas())
+				{
+					buttonArea->noaction();
+				}
 	}
 }
 

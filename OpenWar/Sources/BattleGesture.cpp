@@ -82,6 +82,8 @@ void BattleGesture::RenderHints()
 
 void BattleGesture::TouchBegan(Touch* touch)
 {
+	if (touch->GetSurface() != _boardView->GetScreen())
+		return;
 	if (touch->GetGesture() != nullptr)
 		return;
 	if (!_boardView->GetViewportBounds().contains(touch->GetPosition()))

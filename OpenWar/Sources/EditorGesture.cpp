@@ -22,6 +22,8 @@ void EditorGesture::Update(double secondsSinceLastUpdate)
 
 void EditorGesture::TouchBegan(Touch* touch)
 {
+	if (touch->GetSurface() != _battleView->GetScreen())
+		return;
 	if (touch->GetGesture() != nullptr || !_touches.empty())
 		return;
 

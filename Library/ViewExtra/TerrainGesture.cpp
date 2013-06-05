@@ -95,6 +95,8 @@ void TerrainGesture::Update(double secondsSinceLastUpdate)
 
 void TerrainGesture::TouchBegan(Touch* touch)
 {
+	if (touch->GetSurface() != _terrainView->GetScreen())
+		return;
 	if (touch->HasGesture())
 		return;
 	if (!_terrainView->GetViewportBounds().contains(touch->GetPosition()))
