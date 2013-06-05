@@ -21,10 +21,11 @@ struct ButtonRendering
 	texture* _textureButtonIcons;
 	texture* _textureEditorTools;
 
-	ButtonIcon* buttonIconChat;
-	ButtonIcon* buttonIconHelp;
+	ButtonIcon* buttonIconPlay;
 	ButtonIcon* buttonIconPause;
-	ButtonIcon* buttonIconResume;
+	ButtonIcon* buttonIconRewind;
+	ButtonIcon* buttonIconHelp;
+	ButtonIcon* buttonIconChat;
 
 	ButtonIcon* buttonEditorToolHand;
 	ButtonIcon* buttonEditorToolPaint;

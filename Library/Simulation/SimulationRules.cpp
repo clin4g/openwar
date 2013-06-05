@@ -94,6 +94,8 @@ void SimulationRules::SimulateOneTimeStep()
 	ResolveMissileCombat();
 	RemoveCasualties();
 	RemoveDeadUnits();
+
+	_simulationState->time += _simulationState->timeStep;
 }
 
 

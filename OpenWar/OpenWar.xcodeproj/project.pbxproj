@@ -44,6 +44,7 @@
 		4115839F175E7B59004F58D1 /* ButtonGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41158399175E7B59004F58D1 /* ButtonGesture.cpp */; };
 		411583A0175E7B59004F58D1 /* ButtonRendering.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4115839B175E7B59004F58D1 /* ButtonRendering.cpp */; };
 		411583A1175E7B59004F58D1 /* ButtonView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4115839D175E7B59004F58D1 /* ButtonView.cpp */; };
+		411583B9175F2365004F58D1 /* ButtonIcons.png in Resources */ = {isa = PBXBuildFile; fileRef = 411583B8175F2365004F58D1 /* ButtonIcons.png */; };
 		413B6DFB175CE70B00AABF10 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B6DFA175CE70B00AABF10 /* Cocoa.framework */; };
 		413B6E05175CE70B00AABF10 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E03175CE70B00AABF10 /* InfoPlist.strings */; };
 		413B6E07175CE70B00AABF10 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 413B6E06175CE70B00AABF10 /* main.mm */; };
@@ -132,6 +133,7 @@
 		4115839C175E7B59004F58D1 /* ButtonRendering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonRendering.h; sourceTree = "<group>"; };
 		4115839D175E7B59004F58D1 /* ButtonView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ButtonView.cpp; sourceTree = "<group>"; };
 		4115839E175E7B59004F58D1 /* ButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonView.h; sourceTree = "<group>"; };
+		411583B8175F2365004F58D1 /* ButtonIcons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ButtonIcons.png; sourceTree = "<group>"; };
 		413B6DF7175CE70B00AABF10 /* Open War.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open War.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		413B6DFA175CE70B00AABF10 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		413B6DFD175CE70B00AABF10 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -280,6 +282,7 @@
 				4115835C175E15B4004F58D1 /* ButtonHighlight.png */,
 				4115835D175E15B4004F58D1 /* ButtonNormal.png */,
 				4115835E175E15B4004F58D1 /* ButtonSelected.png */,
+				411583B8175F2365004F58D1 /* ButtonIcons.png */,
 				4115835F175E15B4004F58D1 /* EditorTools.png */,
 				41158360175E15B4004F58D1 /* Linen128x128.png */,
 				41158361175E15B4004F58D1 /* MissileBlue16x16.png */,
@@ -613,6 +616,7 @@
 				41158391175E15CC004F58D1 /* MatchlockFire4.wav in Resources */,
 				41158392175E15CC004F58D1 /* Billboards.png in Resources */,
 				41158393175E15CC004F58D1 /* Texture256x256.png in Resources */,
+				411583B9175F2365004F58D1 /* ButtonIcons.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -234,6 +234,7 @@ Fighter* Unit::GetFighter(Unit* unit, int rank, int file)
 SimulationState::SimulationState() :
 lastUnitId(0),
 winner(PlayerNone),
+time(0),
 timeStep(1.0f / 15.0f),
 height(nullptr),
 heightx(nullptr),

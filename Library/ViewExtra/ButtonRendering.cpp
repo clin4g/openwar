@@ -12,17 +12,18 @@ ButtonRendering::ButtonRendering(float pixelDensity)
 	_textureButtonBackground = new texture(@"ButtonNormal.png");
 	_textureButtonHighlight = new texture(@"ButtonHighlight.png");
 	_textureButtonSelected = new texture(@"ButtonSelected.png");
-	_textureButtonIcons = new texture(@"ButtonText128x128.png");
+	_textureButtonIcons = new texture(@"ButtonIcons.png");
 
 	_string_font = new string_font(true, 18, pixelDensity);
 	_string_shape = new string_shape(_string_font);
 
 	_textureEditorTools = new texture(@"EditorTools.png");
 
-	buttonIconChat = new ButtonIcon(_textureButtonIcons, glm::vec2(28, 28), bounds2_from_corner(72, 0, 28, 28) / 128.0f);
-	buttonIconHelp = new ButtonIcon(_textureButtonIcons, glm::vec2(20, 28), bounds2_from_corner(54, 0, 20, 28) / 128.0f);
-	buttonIconPause = new ButtonIcon(_textureButtonIcons, glm::vec2(28, 28), bounds2_from_corner(26, 0, 28, 28) / 128.0f);
-	buttonIconResume = new ButtonIcon(_textureButtonIcons, glm::vec2(26, 28), bounds2_from_corner(0, 0, 26, 28) / 128.0f);
+	buttonIconPlay = new ButtonIcon(_textureButtonIcons, glm::vec2(25, 32), bounds2f(0, 0, 25, 32) / glm::vec2(128, 32));
+	buttonIconPause = new ButtonIcon(_textureButtonIcons, glm::vec2(25, 32), bounds2f(25, 0, 50, 32) / glm::vec2(128, 32));
+	buttonIconRewind = new ButtonIcon(_textureButtonIcons, glm::vec2(25, 32), bounds2f(50, 0, 75, 32) / glm::vec2(128, 32));
+	buttonIconHelp = new ButtonIcon(_textureButtonIcons, glm::vec2(25, 32), bounds2f(75, 0, 100, 32) / glm::vec2(128, 32));
+	buttonIconChat = new ButtonIcon(_textureButtonIcons, glm::vec2(25, 32), bounds2f(100, 0, 125, 32) / glm::vec2(128, 32));
 
 	buttonEditorToolHand = new ButtonIcon(_textureEditorTools, glm::vec2(32, 32), bounds2f(0.00, 0.0, 0.25, 0.5));
 	buttonEditorToolPaint = new ButtonIcon(_textureEditorTools, glm::vec2(32, 32), bounds2f(0.25, 0.0, 0.50, 0.5));

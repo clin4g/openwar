@@ -304,6 +304,7 @@ struct SimulationState
 {
 	int lastUnitId;
 	Player winner;
+	float time;
 	float timeStep;
 
 	std::map<int, Unit*> units;
