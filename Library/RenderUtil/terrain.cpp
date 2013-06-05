@@ -5,12 +5,42 @@
 
 
 
-static void render_terrain_inside(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms)
+struct terrain_renderers
 {
-	static renderer<terrain_vertex, terrain_uniforms>* _renderer = nullptr;
-	if (_renderer == nullptr)
+	renderer<terrain_vertex, terrain_uniforms>* _renderer1;
+	renderer<terrain_vertex, terrain_uniforms>* _renderer2;
+	renderer<terrain_edge_vertex, texture_uniforms>* _renderer3;
+	renderer<terrain_vertex, terrain_uniforms>* _renderer4;
+	renderer<terrain_vertex, terrain_uniforms>* _renderer5;
+	renderer<terrain_edge_vertex, plain_uniforms>* _renderer6;
+	renderer<texture_vertex, sobel_uniforms>* _renderer7;
+
+	terrain_renderers() :
+	_renderer1(nullptr),
+	_renderer2(nullptr),
+	_renderer3(nullptr),
+	_renderer4(nullptr),
+	_renderer5(nullptr),
+	_renderer6(nullptr),
+	_renderer7(nullptr)
 	{
-		_renderer = new renderer<terrain_vertex, terrain_uniforms>((
+	}
+
+	void render_terrain_inside(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms);
+	void render_terrain_border(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms);
+	void render_terrain_edge(shape<terrain_edge_vertex>& shape, const texture_uniforms& uniforms);
+	void render_depth_inside(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms);
+	void render_depth_border(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms);
+	void render_depth_edge(shape<terrain_edge_vertex>& shape, const plain_uniforms& uniforms);
+	void render_sobel(shape<texture_vertex>& shape, const sobel_uniforms& uniforms);
+};
+
+
+void terrain_renderers::render_terrain_inside(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms)
+{
+	if (_renderer1 == nullptr)
+	{
+		_renderer1 = new renderer<terrain_vertex, terrain_uniforms>((
 			VERTEX_ATTRIBUTE(terrain_vertex, _position),
 			VERTEX_ATTRIBUTE(terrain_vertex, _normal),
 			SHADER_UNIFORM(terrain_uniforms, _transform),
@@ -68,20 +98,19 @@ static void render_terrain_inside(shape<terrain_vertex>& shape, const terrain_un
 				}
 			})
 		));
-		_renderer->_blend_sfactor = GL_ONE;
-		_renderer->_blend_dfactor = GL_ZERO;
+		_renderer1->_blend_sfactor = GL_ONE;
+		_renderer1->_blend_dfactor = GL_ZERO;
 	}
-	_renderer->render(shape, uniforms);
+	_renderer1->render(shape, uniforms);
 }
 
 
 
-static void render_terrain_border(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms)
+void terrain_renderers::render_terrain_border(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms)
 {
-	static renderer<terrain_vertex, terrain_uniforms>* _renderer = nullptr;
-	if (_renderer == nullptr)
+	if (_renderer2 == nullptr)
 	{
-		_renderer = new renderer<terrain_vertex, terrain_uniforms>((
+		_renderer2 = new renderer<terrain_vertex, terrain_uniforms>((
 			VERTEX_ATTRIBUTE(terrain_vertex, _position),
 			VERTEX_ATTRIBUTE(terrain_vertex, _normal),
 			SHADER_UNIFORM(terrain_uniforms, _transform),
@@ -142,20 +171,19 @@ static void render_terrain_border(shape<terrain_vertex>& shape, const terrain_un
 				}
 			})
 		));
-		_renderer->_blend_sfactor = GL_ONE;
-		_renderer->_blend_dfactor = GL_ZERO;
+		_renderer2->_blend_sfactor = GL_ONE;
+		_renderer2->_blend_dfactor = GL_ZERO;
 	}
-	_renderer->render(shape, uniforms);
+	_renderer2->render(shape, uniforms);
 }
 
 
 
-static void render_terrain_edge(shape<terrain_edge_vertex>& shape, const texture_uniforms& uniforms)
+void terrain_renderers::render_terrain_edge(shape<terrain_edge_vertex>& shape, const texture_uniforms& uniforms)
 {
-	static renderer<terrain_edge_vertex, texture_uniforms>* _renderer = nullptr;
-	if (_renderer == nullptr)
+	if (_renderer3 == nullptr)
 	{
-		_renderer = new renderer<terrain_edge_vertex, texture_uniforms>((
+		_renderer3 = new renderer<terrain_edge_vertex, texture_uniforms>((
 			VERTEX_ATTRIBUTE(terrain_edge_vertex, _position),
 			VERTEX_ATTRIBUTE(terrain_edge_vertex, _height),
 			SHADER_UNIFORM(texture_uniforms, _transform),
@@ -193,20 +221,19 @@ static void render_terrain_edge(shape<terrain_edge_vertex>& shape, const texture
 				}
 			}))
 		);
-		_renderer->_blend_sfactor = GL_ONE;
-		_renderer->_blend_dfactor = GL_ZERO;
+		_renderer3->_blend_sfactor = GL_ONE;
+		_renderer3->_blend_dfactor = GL_ZERO;
 	}
-	_renderer->render(shape, uniforms);
+	_renderer3->render(shape, uniforms);
 }
 
 
 
-static void render_depth_inside(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms)
+void terrain_renderers::render_depth_inside(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms)
 {
-	static renderer<terrain_vertex, terrain_uniforms>* _renderer = nullptr;
-	if (_renderer == nullptr)
+	if (_renderer4 == nullptr)
 	{
-		_renderer = new renderer<terrain_vertex, terrain_uniforms>((
+		_renderer4 = new renderer<terrain_vertex, terrain_uniforms>((
 			VERTEX_ATTRIBUTE(terrain_vertex, _position),
 			VERTEX_ATTRIBUTE(terrain_vertex, _normal),
 			SHADER_UNIFORM(terrain_uniforms, _transform),
@@ -230,20 +257,19 @@ static void render_depth_inside(shape<terrain_vertex>& shape, const terrain_unif
 				}
 			})
 		));
-		_renderer->_blend_sfactor = GL_ONE;
-		_renderer->_blend_dfactor = GL_ZERO;
+		_renderer4->_blend_sfactor = GL_ONE;
+		_renderer4->_blend_dfactor = GL_ZERO;
 	}
-	_renderer->render(shape, uniforms);
+	_renderer4->render(shape, uniforms);
 }
 
 
 
-static void render_depth_border(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms)
+void terrain_renderers::render_depth_border(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms)
 {
-	static renderer<terrain_vertex, terrain_uniforms>* _renderer = nullptr;
-	if (_renderer == nullptr)
+	if (_renderer5 == nullptr)
 	{
-		_renderer = new renderer<terrain_vertex, terrain_uniforms>((
+		_renderer5 = new renderer<terrain_vertex, terrain_uniforms>((
 			VERTEX_ATTRIBUTE(terrain_vertex, _position),
 			VERTEX_ATTRIBUTE(terrain_vertex, _normal),
 			SHADER_UNIFORM(terrain_uniforms, _transform),
@@ -274,20 +300,19 @@ static void render_depth_border(shape<terrain_vertex>& shape, const terrain_unif
 				}
 			})
 		));
-		_renderer->_blend_sfactor = GL_ONE;
-		_renderer->_blend_dfactor = GL_ZERO;
+		_renderer5->_blend_sfactor = GL_ONE;
+		_renderer5->_blend_dfactor = GL_ZERO;
 	}
-	_renderer->render(shape, uniforms);
+	_renderer5->render(shape, uniforms);
 }
 
 
 
-static void render_depth_edge(shape<terrain_edge_vertex>& shape, const plain_uniforms& uniforms)
+void terrain_renderers::render_depth_edge(shape<terrain_edge_vertex>& shape, const plain_uniforms& uniforms)
 {
-	static renderer<terrain_edge_vertex, plain_uniforms>* _renderer = nullptr;
-	if (_renderer == nullptr)
+	if (_renderer6 == nullptr)
 	{
-		_renderer = new renderer<terrain_edge_vertex, plain_uniforms>((
+		_renderer6 = new renderer<terrain_edge_vertex, plain_uniforms>((
 			VERTEX_ATTRIBUTE(terrain_edge_vertex, _position),
 			VERTEX_ATTRIBUTE(terrain_edge_vertex, _height),
 			SHADER_UNIFORM(plain_uniforms, _transform),
@@ -312,20 +337,19 @@ static void render_depth_edge(shape<terrain_edge_vertex>& shape, const plain_uni
 				}
 			}))
 		);
-		_renderer->_blend_sfactor = GL_ONE;
-		_renderer->_blend_dfactor = GL_ZERO;
+		_renderer6->_blend_sfactor = GL_ONE;
+		_renderer6->_blend_dfactor = GL_ZERO;
 	}
-	_renderer->render(shape, uniforms);
+	_renderer6->render(shape, uniforms);
 }
 
 
 
-static void render_sobel(shape<texture_vertex>& shape, const sobel_uniforms& uniforms)
+void terrain_renderers::render_sobel(shape<texture_vertex>& shape, const sobel_uniforms& uniforms)
 {
-	static renderer<texture_vertex, sobel_uniforms>* _renderer = nullptr;
-	if (_renderer == nullptr)
+	if (_renderer7 == nullptr)
 	{
-		_renderer = new renderer<texture_vertex, sobel_uniforms>((
+		_renderer7 = new renderer<texture_vertex, sobel_uniforms>((
 			VERTEX_ATTRIBUTE(texture_vertex, _position),
 			VERTEX_ATTRIBUTE(texture_vertex, _texcoord),
 			SHADER_UNIFORM(sobel_uniforms, _transform),
@@ -401,10 +425,10 @@ static void render_sobel(shape<texture_vertex>& shape, const sobel_uniforms& uni
 				}
 			})
 		));
-		_renderer->_blend_sfactor = GL_SRC_ALPHA;
-		_renderer->_blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
+		_renderer7->_blend_sfactor = GL_SRC_ALPHA;
+		_renderer7->_blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
 	}
-	_renderer->render(shape, uniforms);
+	_renderer7->render(shape, uniforms);
 }
 
 
@@ -488,6 +512,8 @@ _colors(nullptr),
 _forest(nullptr),
 _heightmap(height)
 {
+	_renderers = new terrain_renderers();
+
 	if (render_edges)
 	{
 		_depth = new texture();
@@ -641,19 +667,19 @@ void terrain::render(const terrain_uniforms& uniforms)
 		terrain_uniforms du;
 		du._transform = uniforms._transform;
 
-		foreach_leaf(terrain_address(), [du](terrain_chunk& s) {
-			render_depth_inside(s._inside, du);
-			render_depth_border(s._border, du);
+		foreach_leaf(terrain_address(), [this, du](terrain_chunk& s) {
+			_renderers->render_depth_inside(s._inside, du);
+			_renderers->render_depth_border(s._border, du);
 		});
 
 		plain_uniforms pu;
 		pu._transform = uniforms._transform;
-		render_depth_edge(_shape_terrain_edge, pu);
+		_renderers->render_depth_edge(_shape_terrain_edge, pu);
 	}
 
-	foreach_leaf(terrain_address(), [uniforms](terrain_chunk& s) {
-		render_terrain_inside(s._inside, uniforms);
-		render_terrain_border(s._border, uniforms);
+	foreach_leaf(terrain_address(), [this, uniforms](terrain_chunk& s) {
+		_renderers->render_terrain_inside(s._inside, uniforms);
+		_renderers->render_terrain_border(s._border, uniforms);
 
 		/*glDisable(GL_DEPTH_TEST);
 		gradient_uniforms g;
@@ -665,7 +691,7 @@ void terrain::render(const terrain_uniforms& uniforms)
 	texture_uniforms tu;
 	tu._transform = uniforms._transform;
 	tu._texture = _colors;
-	render_terrain_edge(_shape_terrain_edge, tu);
+	_renderers->render_terrain_edge(_shape_terrain_edge, tu);
 
 	if (_depth != nullptr)
 	{
@@ -682,7 +708,7 @@ void terrain::render(const terrain_uniforms& uniforms)
 		sobel_uniforms su;
 		su._transform = glm::mat4x4();
 		su._depth = _depth;
-		render_sobel(shape, su);
+		_renderers->render_sobel(shape, su);
 
 		glDepthMask(true);
 		glEnable(GL_DEPTH_TEST);

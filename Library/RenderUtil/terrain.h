@@ -11,6 +11,8 @@
 #include "renderbuffer.h"
 
 
+struct terrain_renderers;
+
 struct terrain_address
 {
 	int _level; // level 0 has an unsplit chunk (1x1), level 1 is split 2x2, level 2 is split (2x2)x(2x2) and so on.
@@ -108,6 +110,7 @@ struct terrain
 	std::map<terrain_address, float> _lod;
 
 	shape<terrain_edge_vertex> _shape_terrain_edge;
+	terrain_renderers* _renderers;
 
 	terrain(heightmap* height, image* forest, bool render_edges);
 	~terrain();
