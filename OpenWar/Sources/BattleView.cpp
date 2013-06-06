@@ -296,6 +296,8 @@ void BattleView::Render()
 
 	_dynamic_billboards.clear();
 
+	glDisable(GL_DEPTH_TEST);
+
 	RenderBackgroundLinen();
 	RenderBackgroundSky();
 

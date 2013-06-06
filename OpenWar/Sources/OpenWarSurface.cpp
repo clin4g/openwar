@@ -135,10 +135,10 @@ void OpenWarSurface::Update(double secondsSinceLastUpdate)
 void OpenWarSurface::Render()
 {
 	glClearColor(0.9137f, 0.8666f, 0.7647f, 1.0f);
+	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
 
 	if (_battleView != nullptr)
 		_battleView->Render();
