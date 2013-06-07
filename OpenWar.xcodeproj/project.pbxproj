@@ -255,7 +255,7 @@
 				41158299175E07A1004F58D1 /* Sources */,
 				413B6E00175CE70B00AABF10 /* Sources-Mac */,
 			);
-			name = OpenWar;
+			path = OpenWar;
 			sourceTree = "<group>";
 		};
 		41158357175E15B4004F58D1 /* Media */ = {
@@ -301,8 +301,7 @@
 			children = (
 				41158377175E15CC004F58D1 /* SamuraiWars */,
 			);
-			name = Modules;
-			path = ../Modules;
+			path = Modules;
 			sourceTree = "<group>";
 		};
 		41158377175E15CC004F58D1 /* SamuraiWars */ = {
@@ -411,8 +410,7 @@
 				413B6F80175DF02F00AABF10 /* ViewCore */,
 				413B6F93175DF1CE00AABF10 /* ViewExtra */,
 			);
-			name = Library;
-			path = ../Library;
+			path = Library;
 			sourceTree = "<group>";
 		};
 		413B6E9B175DD20C00AABF10 /* Algorithms */ = {
@@ -772,15 +770,15 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Sources-Mac/OpenWar-Prefix.pch";
+				GCC_PREFIX_HEADER = "OpenWar/Sources-Mac/OpenWar-Prefix.pch";
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
 				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../External/glm\"";
-				INFOPLIST_FILE = "Sources-Mac/OpenWar-Info.plist";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/External/glm\"";
+				INFOPLIST_FILE = "OpenWar/Sources-Mac/OpenWar-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -795,15 +793,15 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Sources-Mac/OpenWar-Prefix.pch";
+				GCC_PREFIX_HEADER = "OpenWar/Sources-Mac/OpenWar-Prefix.pch";
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
 				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../External/glm\"";
-				INFOPLIST_FILE = "Sources-Mac/OpenWar-Info.plist";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/External/glm\"";
+				INFOPLIST_FILE = "OpenWar/Sources-Mac/OpenWar-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
