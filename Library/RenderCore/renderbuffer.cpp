@@ -20,6 +20,12 @@ renderbuffer::renderbuffer(GLenum internalformat, GLsizei width, GLsizei height)
 }
 
 
+void renderbuffer::resize(GLenum internalformat, GLsizei width, GLsizei height)
+{
+	glRenderbufferStorage(GL_RENDERBUFFER, internalformat, width, height);
+	CHECK_ERROR_GL();
+}
+
 
 renderbuffer::~renderbuffer()
 {

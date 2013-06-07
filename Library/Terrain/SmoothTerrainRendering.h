@@ -102,6 +102,7 @@ class SmoothTerrainRendering
 	int _framebuffer_width;
 	int _framebuffer_height;
 	framebuffer* _framebuffer;
+	renderbuffer* _colorbuffer;
 	texture* _depth;
 	texture* _colors;
 	texture* _mapTexture;

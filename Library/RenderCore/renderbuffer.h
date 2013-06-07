@@ -11,6 +11,8 @@ struct renderbuffer
 	renderbuffer(GLenum internalformat, GLsizei width, GLsizei height);
 	~renderbuffer();
 
+	void resize(GLenum internalformat, GLsizei width, GLsizei height);
+
 private:
 	renderbuffer(const renderbuffer&) {}
 	renderbuffer& operator=(const renderbuffer&) { return *this; }

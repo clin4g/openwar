@@ -502,6 +502,22 @@ static texture* create_colors()
 }
 
 
+static NSString* FramebufferStatusString(GLenum status)
+{
+	switch (status)
+	{
+		case GL_FRAMEBUFFER_COMPLETE: return @"GL_FRAMEBUFFER_COMPLETE";
+		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT: return @"GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT";
+		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: return @"GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT";
+#ifdef GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS
+		case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS: return @"GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS";
+#endif
+		case GL_FRAMEBUFFER_UNSUPPORTED: return @"GL_FRAMEBUFFER_UNSUPPORTED";
+		default: return [NSString stringWithFormat:@"0x%04x", (unsigned int)status];
+	}
+}
+
+
 
 SmoothTerrainRendering::SmoothTerrainRendering(SmoothTerrainModel* terrainModel, image* map, bool render_edges) :
 _terrainModel(terrainModel),
@@ -509,6 +525,7 @@ _mapImage(map),
 _framebuffer_width(0),
 _framebuffer_height(0),
 _framebuffer(nullptr),
+_colorbuffer(nullptr),
 _depth(nullptr),
 _colors(nullptr),
 _mapTexture(nullptr)
@@ -527,10 +544,18 @@ _mapTexture(nullptr)
 
 		UpdateDepthTextureSize();
 
+		_colorbuffer = new renderbuffer(GL_RGBA, _framebuffer_width, _framebuffer_height);
+
 		_framebuffer = new framebuffer();
+		_framebuffer->attach_color(_colorbuffer);
 		_framebuffer->attach_depth(_depth);
 		{
 			bind_framebuffer binding(*_framebuffer);
+			GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+			if (status != GL_FRAMEBUFFER_COMPLETE)
+			{
+				NSLog(@"CheckGLFramebuffer %@", FramebufferStatusString(status));
+			}
 		}
 	}
 
@@ -558,6 +583,7 @@ SmoothTerrainRendering::~SmoothTerrainRendering()
 	delete _colors;
 	delete _mapTexture;
 	delete _framebuffer;
+	delete _colorbuffer;
 	delete _depth;
 }
 
@@ -627,6 +653,9 @@ void SmoothTerrainRendering::UpdateDepthTextureSize()
 			glBindTexture(GL_TEXTURE_2D, _depth->id);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, _framebuffer_width, _framebuffer_height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_SHORT, NULL);
 			glBindTexture(GL_TEXTURE_2D, 0);
+
+			if (_colorbuffer != nullptr)
+				_colorbuffer->resize(GL_RGBA, _framebuffer_width, _framebuffer_height);
 		}
 	}
 }
