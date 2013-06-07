@@ -1,14 +1,13 @@
 /* This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt */
 
-#include "vertexbuffer.h"
-#include "renderer.h"
+#ifndef SMOOTHTERRAINRENDERING_H
+#define SMOOTHTERRAINRENDERING_H
 
-#ifndef TERRAIN_H
-#define TERRAIN_H
-
-#include "heightmap.h"
+#include "SmoothTerrainModel.h"
 #include "framebuffer.h"
 #include "renderbuffer.h"
+#include "vertexbuffer.h"
+#include "renderer.h"
 
 
 struct terrain_renderers;
@@ -62,7 +61,7 @@ struct terrain_uniforms
 	glm::mat4x4 _transform;
 	glm::vec3 _light_normal;
 	const texture* _colors;
-	const texture* _forest;
+	const texture* _map;
 };
 
 
@@ -95,16 +94,16 @@ struct sobel_uniforms
 
 
 
-struct terrain
+struct SmoothTerrainRendering
 {
 	int _framebuffer_width;
 	int _framebuffer_height;
 	framebuffer* _framebuffer;
 	texture* _depth;
 	texture* _colors;
-	texture* _forest;
+	texture* _map;
 
-	heightmap* _heightmap;
+	SmoothTerrainModel* _terrainModel;
 	std::map<terrain_address, terrain_chunk*> _chunks;
 	std::map<terrain_address, bool> _split;
 	std::map<terrain_address, float> _lod;
@@ -112,56 +111,56 @@ struct terrain
 	shape<terrain_edge_vertex> _shape_terrain_edge;
 	terrain_renderers* _renderers;
 
-	terrain(heightmap* height, image* forest, bool render_edges);
-	~terrain();
+	SmoothTerrainRendering(SmoothTerrainModel* terrainModel, image* map, bool render_edges);
+	~SmoothTerrainRendering();
 
-	void update_heights(bounds2f bounds);
+	void UpdateHeights(bounds2f bounds);
 
-	void update_depth_texture_size();
-	void initialize_edge();
+	void UpdateDepthTextureSize();
+	void InitializeEdge();
 
-	void render(const terrain_uniforms& uniforms);
-	void foreach_leaf(terrain_address chunk, std::function<void(terrain_chunk&)> f);
+	void Render(const terrain_uniforms& uniforms);
+	void ForEachLeaf(terrain_address chunk, std::function<void(terrain_chunk&)> f);
 
-	bool is_loaded(terrain_address chunk);
-	void load_chunk(terrain_address chunk, float priority);
-	void unload_chunk(terrain_address chunk);
+	bool IsLoaded(terrain_address chunk);
+	void LoadChunk(terrain_address chunk, float priority);
+	void UnloadChunk(terrain_address chunk);
 
-	void load_children(terrain_address chunk, float priority);
-	void request_load_children_unload_grand_children(terrain_address chunk, float priority);
-	void request_unload_children(terrain_address chunk);
+	void LoadChildren(terrain_address chunk, float priority);
+	void RequestLoadChildrenUnloadGrandChildren(terrain_address chunk, float priority);
+	void RequestUnloadChildren(terrain_address chunk);
 
-	terrain_chunk* create_node(terrain_address chunk);
+	terrain_chunk* CreateNode(terrain_address chunk);
 
-	bool is_split(terrain_address chunk);
-	void set_split(terrain_address chunk);
-	void clear_split(terrain_address chunk);
-	bool can_chunk_be_splitted(terrain_address chunk);
-	bool can_grand_parent_be_splitted(terrain_address chunk);
+	bool IsSplit(terrain_address chunk);
+	void SetSplit(terrain_address chunk);
+	void ClearSplit(terrain_address chunk);
+	bool CanChunkBeSplitted(terrain_address chunk);
+	bool CanGrandParentBeSplitted(terrain_address chunk);
 
-	void set_lod(terrain_address chunk, float lod);
-	float get_lod(terrain_address chunk);
+	void SetLod(terrain_address chunk, float lod);
+	float GetLod(terrain_address chunk);
 
-	bounds3f get_bounds(terrain_address chunk) const;
+	bounds3f GetBounds(terrain_address chunk) const;
 
-	void build_lines(shape<color_vertex3>& shape, terrain_address chunk);
-	void build_triangles(terrain_chunk* chunk);
+	void BuildLines(shape<color_vertex3>& shape, terrain_address chunk);
+	void BuildTriangles(terrain_chunk* chunk);
 
-	terrain_vertex make_terrain_vertex(float x, float y);
-	color_vertex3 make_color_vertex(float x, float y);
+	terrain_vertex MakeTerrainVertex(float x, float y);
+	color_vertex3 MakeColorVertex(float x, float y);
 };
 
 
 struct terrain_viewpoint
 {
-	terrain* _terrain;
+	SmoothTerrainRendering* _terrainRendering;
 	glm::vec3 _viewpoint;
 	float _near;
 	float _far;
 	int _near_lod;
 	float _distance_lod_max;
 
-	terrain_viewpoint(terrain* terrain);
+	terrain_viewpoint(SmoothTerrainRendering* terrainRendering);
 
 	void set_parameters(float errorLodMax, float maxPixelError, float screenWidth, float horizontalFOVDegrees);
 

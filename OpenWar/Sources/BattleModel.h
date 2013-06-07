@@ -3,7 +3,7 @@
 #ifndef BATTLEMODEL_H
 #define BATTLEMODEL_H
 
-#include "heightmap.h"
+#include "SmoothTerrainModel.h"
 #include "sprite.h"
 #include "vertexbuffer.h"
 #include "SimulationState.h"

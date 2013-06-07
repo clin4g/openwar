@@ -62,7 +62,7 @@ static SimulationState* LoadSimulationState(image* map)
 	}
 
 	result->map = map;
-	result->height = new heightmap(bounds2f(0, 0, 1024, 1024), map);
+	result->terrainModel = new SmoothTerrainModel(bounds2f(0, 0, 1024, 1024), map);
 
 	return result;
 }

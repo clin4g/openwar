@@ -1,6 +1,6 @@
 /* This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt */
 
-#include "terrain.h"
+#include "SmoothTerrainRendering.h"
 
 #ifndef EDITORMODEL_H
 #define EDITORMODEL_H
@@ -14,13 +14,13 @@ enum class EditorMode { Hand, Paint, Erase, Smear };
 class EditorModel
 {
 	BattleView* _battleView;
-	terrain* _terrain;
+	SmoothTerrainRendering* _terrainRendering;
 
 public:
 	EditorFeature editorFeature;
 	EditorMode editorMode;
 
-	EditorModel(BattleView* battleView, terrain* t);
+	EditorModel(BattleView* battleView, SmoothTerrainRendering* terrainRendering);
 
 	void ToolBegan(glm::vec2 position);
 	void ToolMoved(glm::vec2 position);

@@ -8,7 +8,7 @@
 #include "SimulationState.h"
 
 #include "sprite.h"
-#include "terrain.h"
+#include "SmoothTerrainRendering.h"
 #include "vertexbuffer.h"
 
 
@@ -60,9 +60,9 @@ class BattleView : public TerrainView
 
 
 public:
-	terrain* _terrain;
+	SmoothTerrainRendering* _terrainRendering;
 
-	BattleView(Surface* screen, BattleModel* boardModel, renderers* r, BattleRendering* battleRendering, terrain* t, Player bluePlayer);
+	BattleView(Surface* screen, BattleModel* boardModel, renderers* r, BattleRendering* battleRendering, SmoothTerrainRendering* terrainRendering, Player bluePlayer);
 	~BattleView();
 
 	BattleModel* GetBoardModel() const { return _boardModel; }

@@ -1,6 +1,6 @@
 /* This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt */
 
-#include "heightmap.h"
+#include "SmoothTerrainModel.h"
 #include "bspline.h"
 #include "image.h"
 
@@ -14,7 +14,7 @@ static bool almost_zero(float value)
 
 
 
-heightmap::heightmap(bounds2f bounds, image* map) :
+SmoothTerrainModel::SmoothTerrainModel(bounds2f bounds, image* map) :
 _heights(128, 128),
 _bounds(bounds),
 _height(124.5),
@@ -27,18 +27,18 @@ _map(map)
 		{
 			int yy = (int)(y * (double)map->_height / 128.0);
 			glm::vec4 c = map->get_pixel(xx, yy);
-			set_height(x, y, 0.5f + 124.5f * c.a);
+			SetHeight(x, y, 0.5f + 124.5f * c.a);
 		}
 	}
 }
 
 
-heightmap::~heightmap()
+SmoothTerrainModel::~SmoothTerrainModel()
 {
 }
 
 
-float heightmap::get_height(int x, int y) const
+float SmoothTerrainModel::GetHeight(int x, int y) const
 {
 	matrix_size size = _heights.size();
 	if (0 <= x && x < size.n && 0 <= y && y < size.m)
@@ -47,7 +47,7 @@ float heightmap::get_height(int x, int y) const
 }
 
 
-void heightmap::set_height(int x, int y, float h)
+void SmoothTerrainModel::SetHeight(int x, int y, float h)
 {
 	matrix_size size = _heights.size();
 	if (0 <= x && x < size.n && 0 <= y && y < size.m)
@@ -55,7 +55,7 @@ void heightmap::set_height(int x, int y, float h)
 }
 
 
-float heightmap::get_height(glm::vec2 position) const
+float SmoothTerrainModel::GetHeight(glm::vec2 position) const
 {
 	matrix_size size = _heights.size();
 	glm::vec2 c = glm::vec2(size.n - 1, size.m - 1) * (position - _bounds.p11()) / _bounds.size();
@@ -66,7 +66,7 @@ float heightmap::get_height(glm::vec2 position) const
 	glm::mat4x4::value_type* pp = glm::value_ptr(p);
 	for (int i = 0; i < 4; ++i)
 		for (int j = 0; j < 4; ++j)
-			pp[j + 4 * i] = get_height(x + j - 1, y + i - 1);
+			pp[j + 4 * i] = GetHeight(x + j - 1, y + i - 1);
 
 	glm::vec2 t = c - glm::vec2(x, y);
 
@@ -87,16 +87,16 @@ float heightmap::get_height(glm::vec2 position) const
 }
 
 
-glm::vec3 heightmap::get_normal(glm::vec2 position) const
+glm::vec3 SmoothTerrainModel::GetNormal(glm::vec2 position) const
 {
-	float h = get_height(position);
-	glm::vec3 v1 = glm::vec3(1, 0, get_height(position + glm::vec2(1, 0)) - h);
-	glm::vec3 v2 = glm::vec3(0, 1, get_height(position + glm::vec2(0, 1)) - h);
+	float h = GetHeight(position);
+	glm::vec3 v1 = glm::vec3(1, 0, GetHeight(position + glm::vec2(1, 0)) - h);
+	glm::vec3 v2 = glm::vec3(0, 1, GetHeight(position + glm::vec2(0, 1)) - h);
 	return glm::normalize(glm::cross(v1, v2));
 }
 
 
-bool heightmap::contains_water(bounds2f bounds) const
+bool SmoothTerrainModel::ContainsWater(bounds2f bounds) const
 {
 	matrix_size size(512, 512);
 	glm::vec2 min = glm::vec2(size.n - 1, size.m - 1) * (bounds.min - _bounds.min) / _bounds.size();
@@ -194,15 +194,15 @@ static float* intersect(ray r, const matrix& m)
 }
 
 
-const float* intersect(ray r, const heightmap& h)
+const float* SmoothTerrainModel::Intersect(ray r)
 {
-	matrix_size size = h.size();
-	bounds2f bounds = h.get_bounds();
+	matrix_size size = _heights.size();
+	bounds2f bounds = GetBounds();
 	glm::vec3 offset = glm::vec3(bounds.min, 0);
 	glm::vec3 scale = glm::vec3(glm::vec2(size.m - 1, size.n - 1) / bounds.size(), 1);
 
 	ray r2 = ray(scale * (r.origin - offset), glm::normalize(scale * r.direction));
-	const float* d = intersect(r2, h.heights());
+	const float* d = ::intersect(r2, _heights);
 	if (d == nullptr)
 		return nullptr;
 

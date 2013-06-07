@@ -1,6 +1,6 @@
 /* This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt */
 
-#include "terrain.h"
+#include "SmoothTerrainRendering.h"
 #include "image.h"
 
 
@@ -46,7 +46,7 @@ void terrain_renderers::render_terrain_inside(shape<terrain_vertex>& shape, cons
 			SHADER_UNIFORM(terrain_uniforms, _transform),
 			SHADER_UNIFORM(terrain_uniforms, _light_normal),
 			SHADER_UNIFORM(terrain_uniforms, _colors),
-			SHADER_UNIFORM(terrain_uniforms, _forest),
+			SHADER_UNIFORM(terrain_uniforms, _map),
 			VERTEX_SHADER
 			({
 				uniform mat4 transform;
@@ -79,7 +79,7 @@ void terrain_renderers::render_terrain_inside(shape<terrain_vertex>& shape, cons
 			FRAGMENT_SHADER
 			({
 				uniform sampler2D colors;
-				uniform sampler2D forest;
+				uniform sampler2D map;
 
 				varying vec3 _position;
 				varying vec2 _terraincoord;
@@ -90,7 +90,7 @@ void terrain_renderers::render_terrain_inside(shape<terrain_vertex>& shape, cons
 				{
 					vec3 color = texture2D(colors, _colorcoord).rgb;
 
-					float f = step(0.0, _position.z) * smoothstep(0.475, 0.525, texture2D(forest, _terraincoord).g);
+					float f = step(0.0, _position.z) * smoothstep(0.475, 0.525, texture2D(map, _terraincoord).g);
 					color = mix(color, vec3(0.2196, 0.3608, 0.1922), 0.3 * f);
 					color = mix(color, vec3(0), 0.03 * step(0.5, 1.0 - _brightness));
 
@@ -116,7 +116,7 @@ void terrain_renderers::render_terrain_border(shape<terrain_vertex>& shape, cons
 			SHADER_UNIFORM(terrain_uniforms, _transform),
 			SHADER_UNIFORM(terrain_uniforms, _light_normal),
 			SHADER_UNIFORM(terrain_uniforms, _colors),
-			SHADER_UNIFORM(terrain_uniforms, _forest),
+			SHADER_UNIFORM(terrain_uniforms, _map),
 			VERTEX_SHADER
 			({
 				uniform mat4 transform;
@@ -149,7 +149,7 @@ void terrain_renderers::render_terrain_border(shape<terrain_vertex>& shape, cons
 			FRAGMENT_SHADER
 			({
 				uniform sampler2D colors;
-				uniform sampler2D forest;
+				uniform sampler2D map;
 
 				varying vec3 _position;
 				varying vec2 _terraincoord;
@@ -163,7 +163,7 @@ void terrain_renderers::render_terrain_border(shape<terrain_vertex>& shape, cons
 
 					vec3 color = texture2D(colors, _colorcoord).rgb;
 
-					float f = step(0.0, _position.z) * smoothstep(0.475, 0.525, texture2D(forest, _terraincoord).g);
+					float f = step(0.0, _position.z) * smoothstep(0.475, 0.525, texture2D(map, _terraincoord).g);
 					color = mix(color, vec3(0.2196, 0.3608, 0.1922), 0.3 * f);
 					color = mix(color, vec3(0), 0.03 * step(0.5, 1.0 - _brightness));
 
@@ -503,14 +503,14 @@ static texture* create_colors()
 
 
 
-terrain::terrain(heightmap* height, image* forest, bool render_edges) :
+SmoothTerrainRendering::SmoothTerrainRendering(SmoothTerrainModel* terrainModel, image* map, bool render_edges) :
 _framebuffer_width(0),
 _framebuffer_height(0),
 _framebuffer(nullptr),
 _depth(nullptr),
 _colors(nullptr),
-_forest(nullptr),
-_heightmap(height)
+_map(nullptr),
+_terrainModel(terrainModel)
 {
 	_renderers = new terrain_renderers();
 
@@ -524,7 +524,7 @@ _heightmap(height)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glBindTexture(GL_TEXTURE_2D, 0);
 
-		update_depth_texture_size();
+		UpdateDepthTextureSize();
 
 		_framebuffer = new framebuffer();
 		_framebuffer->attach_depth(_depth);
@@ -541,30 +541,30 @@ _heightmap(height)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	_forest = new texture(*forest);
+	_map = new texture(*map);
 
 
-	load_chunk(terrain_address(), 0);
+	LoadChunk(terrain_address(), 0);
 
-	initialize_edge();
+	InitializeEdge();
 }
 
 
 
-terrain::~terrain()
+SmoothTerrainRendering::~SmoothTerrainRendering()
 {
 	for (std::pair<terrain_address, terrain_chunk*> i : _chunks)
 		delete i.second;
 
 	delete _colors;
-	delete _forest;
+	delete _map;
 	delete _framebuffer;
 	delete _depth;
 }
 
 
 
-void terrain::update_heights(bounds2f bounds)
+void SmoothTerrainRendering::UpdateHeights(bounds2f bounds)
 {
 	for (std::pair<terrain_address, terrain_chunk*> iter : _chunks)
 	{
@@ -575,8 +575,8 @@ void terrain::update_heights(bounds2f bounds)
 			glm::vec2 p = vertex._position.xy();
 			if (bounds.contains(p))
 			{
-				vertex._position.z = _heightmap->get_height(p);
-				vertex._normal = _heightmap->get_normal(p);
+				vertex._position.z = _terrainModel->GetHeight(p);
+				vertex._normal = _terrainModel->GetNormal(p);
 			}
 		}
 		chunk->_inside.update(GL_STATIC_DRAW);
@@ -586,8 +586,8 @@ void terrain::update_heights(bounds2f bounds)
 			glm::vec2 p = vertex._position.xy();
 			if (bounds.contains(p))
 			{
-				vertex._position.z = _heightmap->get_height(p);
-				vertex._normal = _heightmap->get_normal(p);
+				vertex._position.z = _terrainModel->GetHeight(p);
+				vertex._normal = _terrainModel->GetNormal(p);
 			}
 		}
 		chunk->_border.update(GL_STATIC_DRAW);
@@ -597,7 +597,7 @@ void terrain::update_heights(bounds2f bounds)
 			glm::vec2 p = _shape_terrain_edge._vertices[i]._position.xy();
 			if (bounds.contains(p))
 			{
-				float h = fmaxf(0, _heightmap->get_height(p)) + 0.25f;
+				float h = fmaxf(0, _terrainModel->GetHeight(p)) + 0.25f;
 				_shape_terrain_edge._vertices[i]._height = h;
 				_shape_terrain_edge._vertices[i]._position.z = h;
 			}
@@ -608,7 +608,7 @@ void terrain::update_heights(bounds2f bounds)
 
 
 
-void terrain::update_depth_texture_size()
+void SmoothTerrainRendering::UpdateDepthTextureSize()
 {
 	if (_depth != nullptr)
 	{
@@ -629,7 +629,7 @@ void terrain::update_depth_texture_size()
 
 
 
-void terrain::initialize_edge()
+void SmoothTerrainRendering::InitializeEdge()
 {
 	_shape_terrain_edge._mode = GL_TRIANGLE_STRIP;
 	_shape_terrain_edge._vertices.clear();
@@ -640,7 +640,7 @@ void terrain::initialize_edge()
 	{
 		float a = d * i;
 		glm::vec2 p = 512.01f * vector2_from_angle(a) + 512.0f;
-		float h = fmaxf(0, _heightmap->get_height(p)) + 0.25f;
+		float h = fmaxf(0, _terrainModel->GetHeight(p)) + 0.25f;
 
 		_shape_terrain_edge._vertices.push_back(terrain_edge_vertex(glm::vec3(p, h), h));
 		_shape_terrain_edge._vertices.push_back(terrain_edge_vertex(glm::vec3(p, -2.5), h));
@@ -654,11 +654,11 @@ void terrain::initialize_edge()
 
 
 
-void terrain::render(const terrain_uniforms& uniforms)
+void SmoothTerrainRendering::Render(const terrain_uniforms& uniforms)
 {
 	if (_framebuffer != nullptr)
 	{
-		update_depth_texture_size();
+		UpdateDepthTextureSize();
 
 		bind_framebuffer binding(*_framebuffer);
 
@@ -667,7 +667,7 @@ void terrain::render(const terrain_uniforms& uniforms)
 		terrain_uniforms du;
 		du._transform = uniforms._transform;
 
-		foreach_leaf(terrain_address(), [this, du](terrain_chunk& s) {
+		ForEachLeaf(terrain_address(), [this, du](terrain_chunk& s) {
 			_renderers->render_depth_inside(s._inside, du);
 			_renderers->render_depth_border(s._border, du);
 		});
@@ -677,7 +677,7 @@ void terrain::render(const terrain_uniforms& uniforms)
 		_renderers->render_depth_edge(_shape_terrain_edge, pu);
 	}
 
-	foreach_leaf(terrain_address(), [this, uniforms](terrain_chunk& s) {
+	ForEachLeaf(terrain_address(), [this, uniforms](terrain_chunk& s) {
 		_renderers->render_terrain_inside(s._inside, uniforms);
 		_renderers->render_terrain_border(s._border, uniforms);
 
@@ -717,12 +717,12 @@ void terrain::render(const terrain_uniforms& uniforms)
 
 
 
-void terrain::foreach_leaf(terrain_address chunk, std::function<void(terrain_chunk&)> f)
+void SmoothTerrainRendering::ForEachLeaf(terrain_address chunk, std::function<void(terrain_chunk&)> f)
 {
 	if (_split.find(chunk) != _split.end())
 	{
 		chunk.foreach_child([this, f](terrain_address child) {
-			foreach_leaf(child, f);
+			ForEachLeaf(child, f);
 		});
 	}
 	else if (_chunks.find(chunk) != _chunks.end())
@@ -733,21 +733,21 @@ void terrain::foreach_leaf(terrain_address chunk, std::function<void(terrain_chu
 
 
 
-bool terrain::is_loaded(terrain_address chunk)
+bool SmoothTerrainRendering::IsLoaded(terrain_address chunk)
 {
 	return _chunks.find(chunk) != _chunks.end();
 }
 
 
 
-void terrain::load_chunk(terrain_address chunk, float priority)
+void SmoothTerrainRendering::LoadChunk(terrain_address chunk, float priority)
 {
 	if (_chunks.find(chunk) == _chunks.end())
-		_chunks[chunk] = create_node(chunk);
+		_chunks[chunk] = CreateNode(chunk);
 }
 
 
-void terrain::unload_chunk(terrain_address chunk)
+void SmoothTerrainRendering::UnloadChunk(terrain_address chunk)
 {
 	_chunks.erase(chunk);
 }
@@ -755,29 +755,29 @@ void terrain::unload_chunk(terrain_address chunk)
 
 
 
-void terrain::load_children(terrain_address chunk, float priority)
+void SmoothTerrainRendering::LoadChildren(terrain_address chunk, float priority)
 {
 	if (priority < 0.5f)
 	{
-		request_unload_children(chunk);
+		RequestUnloadChildren(chunk);
 	}
 	else
 	{
-		request_load_children_unload_grand_children(chunk, priority);
+		RequestLoadChildrenUnloadGrandChildren(chunk, priority);
 	}
 }
 
 
 
-terrain_chunk* terrain::create_node(terrain_address chunk)
+terrain_chunk* SmoothTerrainRendering::CreateNode(terrain_address chunk)
 {
 	terrain_chunk* result = new terrain_chunk(chunk);
 
 	result->_parent = chunk._level != 0 ? _chunks[chunk.get_parent()] : nullptr;
-	result->_bounds = get_bounds(chunk);
+	result->_bounds = GetBounds(chunk);
 
-	build_lines(result->_lines, chunk);
-	build_triangles(result);
+	BuildLines(result->_lines, chunk);
+	BuildTriangles(result);
 
 	return result;
 }
@@ -787,46 +787,46 @@ terrain_chunk* terrain::create_node(terrain_address chunk)
 
 
 
-void terrain::request_load_children_unload_grand_children(terrain_address chunk, float priority)
+void SmoothTerrainRendering::RequestLoadChildrenUnloadGrandChildren(terrain_address chunk, float priority)
 {
 	chunk.foreach_child([this, priority](terrain_address child) {
-		if (!is_loaded(child))
-			load_chunk(child, priority);
+		if (!IsLoaded(child))
+			LoadChunk(child, priority);
 
-		request_unload_children(child);
+		RequestUnloadChildren(child);
 	});
 }
 
 
 
-void terrain::request_unload_children(terrain_address chunk)
+void SmoothTerrainRendering::RequestUnloadChildren(terrain_address chunk)
 {
 	chunk.foreach_child([this](terrain_address child) {
-		unload_chunk(child);
+		UnloadChunk(child);
 	});
 }
 
 
 
-bool terrain::is_split(terrain_address chunk)
+bool SmoothTerrainRendering::IsSplit(terrain_address chunk)
 {
 	return _split.find(chunk) != _split.end();
 }
 
 
 
-bool terrain::can_chunk_be_splitted(terrain_address chunk)
+bool SmoothTerrainRendering::CanChunkBeSplitted(terrain_address chunk)
 {
-	if (is_split(chunk))
+	if (IsSplit(chunk))
 		return true; // already split
 
 	if (!chunk.all_children([this](terrain_address child) {
-		return is_loaded(child);
+		return IsLoaded(child);
 	}))
 		return false;
 
 	if (!chunk.all_ancestors([this](terrain_address child) {
-		return can_chunk_be_splitted(child);
+		return CanChunkBeSplitted(child);
 	}))
 		return false;
 
@@ -838,26 +838,26 @@ bool terrain::can_chunk_be_splitted(terrain_address chunk)
 
 
 
-bool terrain::can_grand_parent_be_splitted(terrain_address chunk)
+bool SmoothTerrainRendering::CanGrandParentBeSplitted(terrain_address chunk)
 {
-	return chunk._level < 2 ? false : can_chunk_be_splitted(chunk.get_parent().get_parent());
+	return chunk._level < 2 ? false : CanChunkBeSplitted(chunk.get_parent().get_parent());
 }
 
 
 
-void terrain::set_split(terrain_address chunk)
+void SmoothTerrainRendering::SetSplit(terrain_address chunk)
 {
 	if (_split.find(chunk) == _split.end())
 		_split[chunk] = true;
 
 	chunk.foreach_ancestor([this](terrain_address ancestor) {
-		set_split(ancestor);
+		SetSplit(ancestor);
 	});
 }
 
 
 
-void terrain::clear_split(terrain_address chunk)
+void SmoothTerrainRendering::ClearSplit(terrain_address chunk)
 {
 	std::vector<terrain_address> s;
 	for (auto i : _split)
@@ -879,14 +879,14 @@ void terrain::clear_split(terrain_address chunk)
 
 
 
-void terrain::set_lod(terrain_address chunk, float lod)
+void SmoothTerrainRendering::SetLod(terrain_address chunk, float lod)
 {
 	_lod[chunk] = lod;
 }
 
 
 
-float terrain::get_lod(terrain_address chunk)
+float SmoothTerrainRendering::GetLod(terrain_address chunk)
 {
 	if (_lod.find(chunk) != _lod.end())
 		return _lod[chunk];
@@ -895,22 +895,22 @@ float terrain::get_lod(terrain_address chunk)
 
 
 
-bounds3f terrain::get_bounds(terrain_address chunk) const
+bounds3f SmoothTerrainRendering::GetBounds(terrain_address chunk) const
 {
-	glm::vec2 size = _heightmap->get_bounds().size() / (float)(1 << chunk._level);
-	glm::vec2 corner = _heightmap->get_bounds().min + size * glm::vec2(chunk._x, chunk._y);
+	glm::vec2 size = _terrainModel->GetBounds().size() / (float)(1 << chunk._level);
+	glm::vec2 corner = _terrainModel->GetBounds().min + size * glm::vec2(chunk._x, chunk._y);
 
 	glm::vec3 min = glm::vec3(corner, 0);
-	glm::vec3 max = glm::vec3(corner + size, _heightmap->max_height());
+	glm::vec3 max = glm::vec3(corner + size, _terrainModel->GetMaxHeight());
 
 	return bounds3f(min, max);
 }
 
 
 
-void terrain::build_lines(shape<color_vertex3>& shape, terrain_address chunk)
+void SmoothTerrainRendering::BuildLines(shape<color_vertex3>& shape, terrain_address chunk)
 {
-	bounds2f bounds = get_bounds(chunk).xy();
+	bounds2f bounds = GetBounds(chunk).xy();
 	glm::vec2 corner = bounds.p11();
 	glm::vec2 size = bounds.size();
 
@@ -932,13 +932,13 @@ void terrain::build_lines(shape<color_vertex3>& shape, terrain_address chunk)
 
 			if (y != ny)
 			{
-				shape._vertices.push_back(color_vertex3(glm::vec3(x1, y1, _heightmap->get_height(glm::vec2(x1, y1)) + d), black));
-				shape._vertices.push_back(color_vertex3(glm::vec3(x1, y2, _heightmap->get_height(glm::vec2(x1, y2)) + d), black));
+				shape._vertices.push_back(color_vertex3(glm::vec3(x1, y1, _terrainModel->GetHeight(glm::vec2(x1, y1)) + d), black));
+				shape._vertices.push_back(color_vertex3(glm::vec3(x1, y2, _terrainModel->GetHeight(glm::vec2(x1, y2)) + d), black));
 			}
 			if (x != nx)
 			{
-				shape._vertices.push_back(color_vertex3(glm::vec3(x1, y1, _heightmap->get_height(glm::vec2(x1, y1)) + d), black));
-				shape._vertices.push_back(color_vertex3(glm::vec3(x2, y1, _heightmap->get_height(glm::vec2(x2, y1)) + d), black));
+				shape._vertices.push_back(color_vertex3(glm::vec3(x1, y1, _terrainModel->GetHeight(glm::vec2(x1, y1)) + d), black));
+				shape._vertices.push_back(color_vertex3(glm::vec3(x2, y1, _terrainModel->GetHeight(glm::vec2(x2, y1)) + d), black));
 			}
 		}
 	shape.update(GL_STATIC_DRAW);
@@ -962,9 +962,9 @@ static int inside_circle(terrain_vertex v1, terrain_vertex v2, terrain_vertex v3
 
 
 
-void terrain::build_triangles(terrain_chunk* chunk)
+void SmoothTerrainRendering::BuildTriangles(terrain_chunk* chunk)
 {
-	bounds2f bounds = get_bounds(chunk->_address).xy();
+	bounds2f bounds = GetBounds(chunk->_address).xy();
 	glm::vec2 corner = bounds.p11();
 	glm::vec2 size = bounds.size();
 
@@ -985,10 +985,10 @@ void terrain::build_triangles(terrain_chunk* chunk)
 			float y1 = corner.y + size.y * y / ny;
 			float y2 = corner.y + size.y * (y + 1) / ny;
 
-			terrain_vertex v11 = make_terrain_vertex(x1, y1);
-			terrain_vertex v12 = make_terrain_vertex(x1, y2);
-			terrain_vertex v21 = make_terrain_vertex(x2, y1);
-			terrain_vertex v22 = make_terrain_vertex(x2, y2);
+			terrain_vertex v11 = MakeTerrainVertex(x1, y1);
+			terrain_vertex v12 = MakeTerrainVertex(x1, y2);
+			terrain_vertex v21 = MakeTerrainVertex(x2, y1);
+			terrain_vertex v22 = MakeTerrainVertex(x2, y2);
 
 			shape<terrain_vertex>* s = chunk->triangle_shape(inside_circle(v11, v22, v12));
 			if (s != nullptr)
@@ -1013,17 +1013,17 @@ void terrain::build_triangles(terrain_chunk* chunk)
 
 
 
-terrain_vertex terrain::make_terrain_vertex(float x, float y)
+terrain_vertex SmoothTerrainRendering::MakeTerrainVertex(float x, float y)
 {
 	glm::vec2 p = glm::vec2(x, y);
-	float z = _heightmap->get_height(p);
-	return terrain_vertex(glm::vec3(x, y, z), _heightmap->get_normal(p));
+	float z = _terrainModel->GetHeight(p);
+	return terrain_vertex(glm::vec3(x, y, z), _terrainModel->GetNormal(p));
 }
 
 
-color_vertex3 terrain::make_color_vertex(float x, float y)
+color_vertex3 SmoothTerrainRendering::MakeColorVertex(float x, float y)
 {
-	float h = _heightmap->get_height(glm::vec2(x, y));
+	float h = _terrainModel->GetHeight(glm::vec2(x, y));
 	float k = 0.7f + 0.25f * h / 60;
 	glm::vec4 c(0.3f, k, 0.3f, 1.0f);
 	return color_vertex3(glm::vec3(x, y, h), c);
@@ -1037,7 +1037,7 @@ color_vertex3 terrain::make_color_vertex(float x, float y)
 /***/
 
 
-terrain_viewpoint::terrain_viewpoint(terrain* terrain) : _terrain(terrain)
+terrain_viewpoint::terrain_viewpoint(SmoothTerrainRendering* terrainRendering) : _terrainRendering(terrainRendering)
 {
 }
 
@@ -1087,8 +1087,8 @@ float terrain_viewpoint::compute_lod(float distance) const
 
 void terrain_viewpoint::update()
 {
-	if (_terrain->is_split(terrain_address()))
-		_terrain->clear_split(terrain_address());
+	if (_terrainRendering->IsSplit(terrain_address()))
+		_terrainRendering->ClearSplit(terrain_address());
 
 	update(terrain_address());
 }
@@ -1097,29 +1097,29 @@ void terrain_viewpoint::update()
 
 void terrain_viewpoint::update(terrain_address chunk)
 {
-	if (!_terrain->is_loaded(chunk))
+	if (!_terrainRendering->IsLoaded(chunk))
 	{
-		_terrain->load_chunk(chunk, 1.0f);
+		_terrainRendering->LoadChunk(chunk, 1.0f);
 		return;
 	}
 
-	if (!chunk.all_children([this](terrain_address x) { return _terrain->is_loaded(x); }))
+	if (!chunk.all_children([this](terrain_address x) { return _terrainRendering->IsLoaded(x); }))
 	{
 		chunk.foreach_child([this](terrain_address x) {
-			if (!_terrain->is_loaded(x))
-				_terrain->load_chunk(x, 1.0);
+			if (!_terrainRendering->IsLoaded(x))
+				_terrainRendering->LoadChunk(x, 1.0);
 		});
 		return;
 	}
 
-	bounds3f boundingBox = _terrain->get_bounds(chunk);
+	bounds3f boundingBox = _terrainRendering->GetBounds(chunk);
 	float desiredLod = compute_lod(boundingBox);
 	float lowerLod = chunk._level;
 	float upperLod = chunk._level + 1;
 
-	if (desiredLod >= upperLod && _terrain->can_chunk_be_splitted(chunk))
+	if (desiredLod >= upperLod && _terrainRendering->CanChunkBeSplitted(chunk))
 	{
-		_terrain->set_split(chunk);
+		_terrainRendering->SetSplit(chunk);
 
 		chunk.foreach_child([this](terrain_address x) {
 			update(x);
@@ -1127,11 +1127,11 @@ void terrain_viewpoint::update(terrain_address chunk)
 	}
 	else
 	{
-		_terrain->set_lod(chunk, desiredLod);
+		_terrainRendering->SetLod(chunk, desiredLod);
 
 		float priority = desiredLod > lowerLod ? lowerLod : 0;
 
-		_terrain->load_children(chunk, priority);
+		_terrainRendering->LoadChildren(chunk, priority);
 	}
 }
 

@@ -236,7 +236,7 @@ lastUnitId(0),
 winner(PlayerNone),
 time(0),
 timeStep(1.0f / 15.0f),
-height(nullptr),
+terrainModel(nullptr),
 map(nullptr)
 {
 }
@@ -251,7 +251,7 @@ SimulationState::~SimulationState()
 		delete unit;
 	}
 
-	delete height;
+	delete terrainModel;
 	delete map;
 }
 

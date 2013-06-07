@@ -6,7 +6,7 @@
 #include "View.h"
 #include "matrix.h"
 #include "geometry.h"
-#include "heightmap.h"
+#include "SmoothTerrainModel.h"
 
 
 class TerrainView : public View
@@ -18,10 +18,10 @@ class TerrainView : public View
 	float _contentWidth;
 
 protected:
-	heightmap* _heightmap;
+	SmoothTerrainModel* _terrainModel;
 
 public:
-	TerrainView(Surface* screen, heightmap* height);
+	TerrainView(Surface* screen, SmoothTerrainModel* terrainModel);
 	virtual ~TerrainView();
 
 	bounds2f GetContentBounds() const { return _contentBounds; }
@@ -61,7 +61,7 @@ public:
 
 	glm::vec3 to_vector3(glm::vec2 p, float h = 1)
 	{
-		return glm::vec3(p, _heightmap->get_height(p) + h);
+		return glm::vec3(p, _terrainModel->GetHeight(p) + h);
 	}
 
 };

@@ -6,9 +6,9 @@
 
 
 
-EditorModel::EditorModel(BattleView* battleView, terrain* t) :
+EditorModel::EditorModel(BattleView* battleView, SmoothTerrainRendering* terrainRendering) :
 _battleView(battleView),
-_terrain(t),
+_terrainRendering(terrainRendering),
 editorMode(EditorMode::Hand),
 editorFeature(EditorFeature::Hills)
 {
@@ -75,17 +75,17 @@ void EditorModel::ToolEnded(glm::vec2 position)
 void EditorModel::EditHills(glm::vec2 position, bool value)
 {
 	float delta = value ? 0.1f : -0.1f;
-	int x0 = (int)(_terrain->_heightmap->size().m * position.x / 1024);
-	int y0 = (int)(_terrain->_heightmap->size().n * position.y / 1024);
+	int x0 = (int)(_terrainRendering->_terrainModel->GetSize().m * position.x / 1024);
+	int y0 = (int)(_terrainRendering->_terrainModel->GetSize().n * position.y / 1024);
 
 	for (int x = -5; x <= 5; ++x)
 		for (int y = -5; y <= 5; ++y)
 		{
-			float h = _terrain->_heightmap->get_height(x0 + x, y0 + y);
-			_terrain->_heightmap->set_height(x0 + x, y0 + y, fmaxf(0.1f, h + delta));
+			float h = _terrainRendering->_terrainModel->GetHeight(x0 + x, y0 + y);
+			_terrainRendering->_terrainModel->SetHeight(x0 + x, y0 + y, fmaxf(0.1f, h + delta));
 		}
 
-	_terrain->update_heights(bounds2_from_center(position, 25));
+	_terrainRendering->UpdateHeights(bounds2_from_center(position, 25));
 	_battleView->UpdateTerrainTrees(bounds2_from_center(position, 25));
 }
 
@@ -95,7 +95,7 @@ void EditorModel::EditWater(glm::vec2 position, bool value)
 	int x0 = (int)(512 * position.x / 1024);
 	int y0 = (int)(512 * position.y / 1024);
 
-	image* map = _terrain->_heightmap->_map;
+	image* map = _terrainRendering->_terrainModel->_map;
 
 	for (int x = -5; x <= 5; ++x)
 		for (int y = -5; y <= 5; ++y)
@@ -105,7 +105,7 @@ void EditorModel::EditWater(glm::vec2 position, bool value)
 			map->set_pixel(x0 + x, y0 - y, c);
 		}
 
-	_terrain->update_heights(bounds2_from_center(position, 25));
+	_terrainRendering->UpdateHeights(bounds2_from_center(position, 25));
 	_battleView->UpdateTerrainTrees(bounds2_from_center(position, 25));
 }
 
@@ -115,7 +115,7 @@ void EditorModel::EditTrees(glm::vec2 position, bool value)
 	int x0 = (int)(512 * position.x / 1024);
 	int y0 = (int)(512 * position.y / 1024);
 
-	image* map = _terrain->_heightmap->_map;
+	image* map = _terrainRendering->_terrainModel->_map;
 
 	for (int x = -5; x <= 5; ++x)
 		for (int y = -5; y <= 5; ++y)
@@ -125,6 +125,6 @@ void EditorModel::EditTrees(glm::vec2 position, bool value)
 			map->set_pixel(x0 + x, y0 - y, c);
 		}
 
-	_terrain->_forest->load(*map);
+	_terrainRendering->_map->load(*map);
 	_battleView->UpdateTerrainTrees(bounds2_from_center(position, 25));
 }

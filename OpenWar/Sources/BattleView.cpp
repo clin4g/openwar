@@ -6,7 +6,7 @@
 
 
 
-BattleView::BattleView(Surface* screen, BattleModel* boardModel, renderers* r, BattleRendering* battleRendering, terrain* t, Player bluePlayer) : TerrainView(screen, boardModel->_simulationState->height),
+BattleView::BattleView(Surface* screen, BattleModel* boardModel, renderers* r, BattleRendering* battleRendering, SmoothTerrainRendering* terrainRendering, Player bluePlayer) : TerrainView(screen, boardModel->_simulationState->terrainModel),
 _renderers(r),
 _battleRendering(battleRendering),
 _boardModel(boardModel),
@@ -21,19 +21,19 @@ _trackingMarker_missileHeadShape(),
 _unitMarker_targetLineShape(),
 _unitMarker_targetHeadShape(),
 _shape_fighter_weapons(),
-_terrain(t)
+_terrainRendering(terrainRendering)
 {
 	int max_level = 2;
 
 	for (int level = 0; level <= max_level; ++level)
 		for (int x = 0; x < (1 << level); ++x)
 			for (int y = 0; y < (1 << level); ++y)
-				_terrain->load_chunk(terrain_address(level, x, y), 0);
+				_terrainRendering->LoadChunk(terrain_address(level, x, y), 0);
 
 	for (int level = 0; level < max_level; ++level)
 		for (int x = 0; x < (1 << level); ++x)
 			for (int y = 0; y < (1 << level); ++y)
-				_terrain->set_split(terrain_address(level, x, y));
+				_terrainRendering->SetSplit(terrain_address(level, x, y));
 
 	SetContentBounds(bounds2f(0, 0, 1024, 1024));
 
@@ -156,10 +156,10 @@ void BattleView::UpdateTerrainTrees(bounds2f bounds)
 			glm::vec2 position = glm::vec2(x + dx, y + dy);
 			if (bounds.contains(position) && glm::length(position - 512.0f) < 512.0f)
 			{
-				float z = _heightmap->get_height(position);
+				float z = _terrainModel->GetHeight(position);
 				if (z > 0
 						&& map->get_pixel((int)(position.x / 2), (int)(position.y / 2)).g > 0.5
-						&& _heightmap->get_normal(position).z >= 0.84)
+						&& _terrainModel->GetNormal(position).z >= 0.84)
 				{
 					_static_billboards.push_back(MakeBillboardVertex(position, 5, 0, i, flip, GetFlip()));
 
@@ -217,7 +217,7 @@ void BattleView::InitializeTerrainWater(bool editor)
 		for (int y = 0; y < n; ++y)
 		{
 			glm::vec2 p = s * glm::vec2(x, y);
-			if (editor || _terrain->_heightmap->contains_water(bounds2f(p, p + s)))
+			if (editor || _terrainRendering->_terrainModel->ContainsWater(bounds2f(p, p + s)))
 			{
 				plain_vertex v11 = plain_vertex(p);
 				plain_vertex v12 = plain_vertex(p + glm::vec2(0, s.y));
@@ -411,10 +411,10 @@ void BattleView::RenderTerrainGround()
 	terrain_uniforms uniforms;
 	uniforms._transform = GetTransform();
 	uniforms._light_normal = _lightNormal;
-	uniforms._colors = _terrain->_colors;
-	uniforms._forest = _terrain->_forest;
+	uniforms._colors = _terrainRendering->_colors;
+	uniforms._map = _terrainRendering->_map;
 
-	_terrain->render(uniforms);
+	_terrainRendering->Render(uniforms);
 }
 
 

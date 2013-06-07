@@ -22,7 +22,7 @@ _battleRendering(nullptr),
 _buttonRendering(nullptr),
 _battleModel(nullptr),
 _editorModel(nullptr),
-_terrain(nullptr),
+_terrainRendering(nullptr),
 _battleView(nullptr),
 _buttonsTopLeft(nullptr),
 _buttonsTopRight(nullptr),
@@ -95,19 +95,19 @@ void OpenWarSurface::Reset(SimulationState* simulationState)
 	_simulationRules = new SimulationRules(_simulationState);
 	_simulationRules->currentPlayer = Player1;
 
-	_terrain = new terrain(_simulationState->height, _simulationState->map, false);
+	_terrainRendering = new SmoothTerrainRendering(_simulationState->terrainModel, _simulationState->map, false);
 
 	_battleModel = new BattleModel(_simulationState);
 	_battleModel->_player = Player1;
 	_battleModel->Initialize(_simulationState);
 
-	_battleView = new BattleView(this, _battleModel, _renderers, _battleRendering, _terrain, Player1);
+	_battleView = new BattleView(this, _battleModel, _renderers, _battleRendering, _terrainRendering, Player1);
 	_battleView->Initialize(_simulationState);
 
 	_battleGesture = new BattleGesture(_battleView);
 	_terrainGesture = new TerrainGesture(_battleView);
 
-	_editorModel = new EditorModel(_battleView, _terrain);
+	_editorModel = new EditorModel(_battleView, _terrainRendering);
 	_editorGesture = new EditorGesture(_battleView, _editorModel);
 
 	_simulationState->AddUnit(Player1, 80, SimulationState::GetDefaultUnitStats(UnitPlatformSam, UnitWeaponKata), glm::vec2(500, 300));
