@@ -70,6 +70,14 @@ _buttonItemTrees(nullptr)
 	_buttonItemWater->SetAction([this](){ SetEditorFeature(EditorFeature::Water); });
 	_buttonItemTrees->SetAction([this](){ SetEditorFeature(EditorFeature::Trees); });
 
+	_buttonItemHand->SetKeyboardShortcut('1');
+	_buttonItemSmear->SetKeyboardShortcut('2');
+	_buttonItemPaint->SetKeyboardShortcut('3');
+	_buttonItemErase->SetKeyboardShortcut('4');
+	_buttonItemHills->SetKeyboardShortcut('5');
+	_buttonItemWater->SetKeyboardShortcut('6');
+	_buttonItemTrees->SetKeyboardShortcut('7');
+
 	UpdateButtonsAndGestures();
 }
 

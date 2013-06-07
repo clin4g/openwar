@@ -397,7 +397,7 @@ static char TranslateKeyCode(unsigned short keyCode)
 		case 23: return '5';
 		case 22: return '6';
 		case 26: return '7';
-		default: return 0;
+		default: return '\0';
 	}
 }
 
@@ -405,6 +405,9 @@ static char TranslateKeyCode(unsigned short keyCode)
 - (void)keyDown:(NSEvent*)event
 {
 	char key = TranslateKeyCode(event.keyCode);
+	if (key == '\0')
+		return;
+
 	if (Gesture::_gestures != nullptr)
 		for (Gesture* gesture : *Gesture::_gestures)
 			if (gesture->IsEnabled())
@@ -415,6 +418,9 @@ static char TranslateKeyCode(unsigned short keyCode)
 - (void)keyUp:(NSEvent*)event
 {
 	char key = TranslateKeyCode(event.keyCode);
+	if (key == '\0')
+		return;
+
 	if (Gesture::_gestures != nullptr)
 		for (Gesture* gesture : *Gesture::_gestures)
 			if (gesture->IsEnabled())

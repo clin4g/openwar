@@ -23,8 +23,9 @@ ButtonItem::ButtonItem(ButtonArea* buttonArea, NSString* text) :
 _buttonArea(buttonArea),
 _buttonIcon(nullptr),
 _buttonText([text retain]),
-_action([](){}),
 _hasAction(false),
+_action([](){}),
+_keyboardShortcut('\0'),
 _highlight(false),
 _selected(false),
 _disabled(false)
@@ -37,8 +38,9 @@ ButtonItem::ButtonItem(ButtonArea* buttonArea, ButtonIcon* icon) :
 _buttonArea(buttonArea),
 _buttonIcon(icon),
 _buttonText(nil),
-_action([](){}),
 _hasAction(false),
+_action([](){}),
+_keyboardShortcut('\0'),
 _highlight(false),
 _selected(false),
 _disabled(false)

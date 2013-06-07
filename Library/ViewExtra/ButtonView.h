@@ -61,6 +61,7 @@ class ButtonItem
 	ButtonIcon* _buttonIcon;
 	bool _hasAction;
 	std::function<void()> _action;
+	char _keyboardShortcut;
 	bounds2f _bounds;
 	bool _highlight;
 	bool _selected;
@@ -81,6 +82,9 @@ public:
 	ButtonItem* SetAction(std::function<void()> action) { _action = action; _hasAction = true; return this; }
 	bool HasAction() const { return _hasAction; }
 	void CallAction() const { _action(); }
+
+	char GetKeyboardShortcut() const { return _keyboardShortcut; }
+	void SetKeyboardShortcut(char value) { _keyboardShortcut = value; }
 
 	bounds2f GetBounds() const { return _bounds; }
 	void SetBounds(bounds2f value) { _bounds = value; }

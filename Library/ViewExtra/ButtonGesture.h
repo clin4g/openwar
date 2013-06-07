@@ -21,6 +21,8 @@ public:
 
 	virtual void Update(double secondsSinceLastUpdate);
 
+	virtual void KeyDown(Surface* surface, char key);
+
 	virtual void TouchBegan(Touch* touch);
 	virtual void TouchMoved();
 	virtual void TouchEnded(Touch* touch);
