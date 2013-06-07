@@ -1,6 +1,7 @@
 /* This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt */
 
 #include "heightmap.h"
+#include "bspline.h"
 #include "image.h"
 
 
@@ -12,27 +13,6 @@ static bool almost_zero(float value)
 }
 
 
-static glm::mat4x4 _bspline_matrix;
-static glm::mat4x4 _bspline_matrix_transpose;
-
-
-static void init_bsplint_matrix()
-{
-	if (*glm::value_ptr(_bspline_matrix) == 1)
-	{
-		float k = (float)1 / (float)6;
-
-		_bspline_matrix = glm::mat4x4(
-				-1 * k, 3 * k, -3 * k, 1 * k,
-				3 * k, -6 * k, 3 * k, 0 * k,
-				-3 * k, 0 * k, 3 * k, 0 * k,
-				1 * k, 4 * k, 1 * k, 0 * k
-		);
-
-		_bspline_matrix_transpose = glm::transpose(_bspline_matrix);
-	}
-}
-
 
 heightmap::heightmap(bounds2f bounds, image* map) :
 _heights(128, 128),
@@ -40,7 +20,6 @@ _bounds(bounds),
 _height(124.5),
 _map(map)
 {
-	init_bsplint_matrix();
 	for (int x = 0; x < 128; ++x)
 	{
 		int xx = (int)(x * (double)map->_width / 128.0);
@@ -90,22 +69,17 @@ float heightmap::get_height(glm::vec2 position) const
 			pp[j + 4 * i] = get_height(x + j - 1, y + i - 1);
 
 	glm::vec2 t = c - glm::vec2(x, y);
-	glm::vec2 t2 = t * t;
-	glm::vec2 t3 = t * t2;
 
-	glm::vec4 u = glm::vec4(t3.x, t2.x, t.x, 1);
-	glm::vec4 v = glm::vec4(t3.y, t2.y, t.y, 1);
-
-	float height = glm::dot(u, _bspline_matrix_transpose * p * _bspline_matrix * v);
+	float height = bspline_patch(p, t);
 
 	if (_map != nullptr)
 	{
-		glm::vec4 c = _map->get_pixel((int)(position.x * 512.0 / 1024.0), (int)(position.y * 512.0 / 1024.0));
+		glm::vec4 color = _map->get_pixel((int)(position.x * 512.0 / 1024.0), (int)(position.y * 512.0 / 1024.0));
 
-		float water = c.b;
+		float water = color.b;
 		height = glm::mix(height, -2.5f, glm::step(0.5f, water));
 
-		float fords = c.r;
+		float fords = color.r;
 		height = glm::mix(height, -0.5f, glm::step(0.5f, fords));
 	}
 
