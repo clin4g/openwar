@@ -67,7 +67,7 @@ public:
 
 	BattleModel* GetBoardModel() const { return _boardModel; }
 
-	void Initialize(SimulationState* simulationState);
+	void Initialize(SimulationState* simulationState, bool editor = false);
 	void InitializeTerrainShadow();
 
 	void InitializeTerrainTrees();

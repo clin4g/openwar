@@ -94,16 +94,18 @@ struct sobel_uniforms
 
 
 
-struct SmoothTerrainRendering
+class SmoothTerrainRendering
 {
+	SmoothTerrainModel* _terrainModel;
+	image* _mapImage;
+
 	int _framebuffer_width;
 	int _framebuffer_height;
 	framebuffer* _framebuffer;
 	texture* _depth;
 	texture* _colors;
-	texture* _map;
+	texture* _mapTexture;
 
-	SmoothTerrainModel* _terrainModel;
 	std::map<terrain_address, terrain_chunk*> _chunks;
 	std::map<terrain_address, bool> _split;
 	std::map<terrain_address, float> _lod;
@@ -111,15 +113,19 @@ struct SmoothTerrainRendering
 	shape<terrain_edge_vertex> _shape_terrain_edge;
 	terrain_renderers* _renderers;
 
+public:
 	SmoothTerrainRendering(SmoothTerrainModel* terrainModel, image* map, bool render_edges);
 	~SmoothTerrainRendering();
 
+	SmoothTerrainModel* GetTerrainModel() const { return _terrainModel; }
+
 	void UpdateHeights(bounds2f bounds);
+	void UpdateMapTexture();
 
 	void UpdateDepthTextureSize();
 	void InitializeEdge();
 
-	void Render(const terrain_uniforms& uniforms);
+	void Render(const glm::mat4x4& transform, const glm::vec3 lightNormal);
 	void ForEachLeaf(terrain_address chunk, std::function<void(terrain_chunk&)> f);
 
 	bool IsLoaded(terrain_address chunk);

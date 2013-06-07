@@ -504,13 +504,14 @@ static texture* create_colors()
 
 
 SmoothTerrainRendering::SmoothTerrainRendering(SmoothTerrainModel* terrainModel, image* map, bool render_edges) :
+_terrainModel(terrainModel),
+_mapImage(map),
 _framebuffer_width(0),
 _framebuffer_height(0),
 _framebuffer(nullptr),
 _depth(nullptr),
 _colors(nullptr),
-_map(nullptr),
-_terrainModel(terrainModel)
+_mapTexture(nullptr)
 {
 	_renderers = new terrain_renderers();
 
@@ -530,7 +531,6 @@ _terrainModel(terrainModel)
 		_framebuffer->attach_depth(_depth);
 		{
 			bind_framebuffer binding(*_framebuffer);
-			//CHECK_GL_FRAMEBUFFER();
 		}
 	}
 
@@ -541,8 +541,7 @@ _terrainModel(terrainModel)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	_map = new texture(*map);
-
+	_mapTexture = new texture(*map);
 
 	LoadChunk(terrain_address(), 0);
 
@@ -557,7 +556,7 @@ SmoothTerrainRendering::~SmoothTerrainRendering()
 		delete i.second;
 
 	delete _colors;
-	delete _map;
+	delete _mapTexture;
 	delete _framebuffer;
 	delete _depth;
 }
@@ -607,6 +606,11 @@ void SmoothTerrainRendering::UpdateHeights(bounds2f bounds)
 }
 
 
+void SmoothTerrainRendering::UpdateMapTexture()
+{
+	_mapTexture->load(*_mapImage);
+}
+
 
 void SmoothTerrainRendering::UpdateDepthTextureSize()
 {
@@ -654,8 +658,15 @@ void SmoothTerrainRendering::InitializeEdge()
 
 
 
-void SmoothTerrainRendering::Render(const terrain_uniforms& uniforms)
+void SmoothTerrainRendering::Render(const glm::mat4x4& transform, const glm::vec3 lightNormal)
 {
+	terrain_uniforms uniforms;
+	uniforms._transform = transform;
+	uniforms._light_normal = lightNormal;
+	uniforms._colors = _colors;
+	uniforms._map = _mapTexture;
+
+
 	if (_framebuffer != nullptr)
 	{
 		UpdateDepthTextureSize();

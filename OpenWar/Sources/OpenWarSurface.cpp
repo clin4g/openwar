@@ -95,14 +95,14 @@ void OpenWarSurface::Reset(SimulationState* simulationState)
 	_simulationRules = new SimulationRules(_simulationState);
 	_simulationRules->currentPlayer = Player1;
 
-	_terrainRendering = new SmoothTerrainRendering(_simulationState->terrainModel, _simulationState->map, false);
+	_terrainRendering = new SmoothTerrainRendering(_simulationState->terrainModel, _simulationState->map, true);
 
 	_battleModel = new BattleModel(_simulationState);
 	_battleModel->_player = Player1;
 	_battleModel->Initialize(_simulationState);
 
 	_battleView = new BattleView(this, _battleModel, _renderers, _battleRendering, _terrainRendering, Player1);
-	_battleView->Initialize(_simulationState);
+	_battleView->Initialize(_simulationState, true);
 
 	_battleGesture = new BattleGesture(_battleView);
 	_terrainGesture = new TerrainGesture(_battleView);

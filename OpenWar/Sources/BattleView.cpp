@@ -51,11 +51,11 @@ static float random_float()
 }
 
 
-void BattleView::Initialize(SimulationState* simulationState)
+void BattleView::Initialize(SimulationState* simulationState, bool editor)
 {
 	InitializeTerrainShadow();
 	InitializeTerrainTrees();
-	InitializeTerrainWater(false);
+	InitializeTerrainWater(editor);
 
 	InitializeCameraPosition(simulationState->units);
 }
@@ -217,7 +217,7 @@ void BattleView::InitializeTerrainWater(bool editor)
 		for (int y = 0; y < n; ++y)
 		{
 			glm::vec2 p = s * glm::vec2(x, y);
-			if (editor || _terrainRendering->_terrainModel->ContainsWater(bounds2f(p, p + s)))
+			if (editor || _terrainRendering->GetTerrainModel()->ContainsWater(bounds2f(p, p + s)))
 			{
 				plain_vertex v11 = plain_vertex(p);
 				plain_vertex v12 = plain_vertex(p + glm::vec2(0, s.y));
@@ -408,13 +408,7 @@ void BattleView::RenderBackgroundSky()
 
 void BattleView::RenderTerrainGround()
 {
-	terrain_uniforms uniforms;
-	uniforms._transform = GetTransform();
-	uniforms._light_normal = _lightNormal;
-	uniforms._colors = _terrainRendering->_colors;
-	uniforms._map = _terrainRendering->_map;
-
-	_terrainRendering->Render(uniforms);
+	_terrainRendering->Render(GetTransform(), _lightNormal);
 }
 
 
