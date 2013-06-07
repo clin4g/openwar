@@ -93,6 +93,23 @@ void TerrainGesture::Update(double secondsSinceLastUpdate)
 }
 
 
+void TerrainGesture::ScrollWheel(Surface* surface, glm::vec2 position, glm::vec2 delta)
+{
+	Magnify(surface, position, -delta.y / 10);
+}
+
+
+void TerrainGesture::Magnify(Surface* surface, glm::vec2 position, float magnification)
+{
+	glm::vec2 p = _terrainView->GetViewportBounds().center();
+	glm::vec2 d1 = glm::vec2(0, 64);
+	glm::vec2 d2 = d1 * glm::exp(magnification);
+
+	_terrainView->Zoom(_terrainView->GetTerrainPosition3(p - d1), _terrainView->GetTerrainPosition3(p + d1), p - d2, p + d2, 0);
+
+}
+
+
 void TerrainGesture::TouchBegan(Touch* touch)
 {
 	if (touch->GetSurface() != _terrainView->GetScreen())

@@ -30,6 +30,9 @@ public:
 	virtual void RenderHints();
 	virtual void Update(double secondsSinceLastUpdate);
 
+	virtual void ScrollWheel(Surface* surface, glm::vec2 position, glm::vec2 delta);
+	virtual void Magnify(Surface* surface, glm::vec2 position, float magnification);
+
 	virtual void TouchBegan(Touch* touch);
 	virtual void TouchMoved();
 	virtual void TouchEnded(Touch* touch);
