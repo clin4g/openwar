@@ -24,6 +24,9 @@ public:
 	virtual void Update(double secondsSinceLastUpdate) = 0;
 	virtual void RenderHints();
 
+	virtual void KeyDown(Surface* surface, char key);
+	virtual void KeyUp(Surface* surface, char key);
+
 	virtual void ScrollWheel(Surface* surface, glm::vec2 position, glm::vec2 delta);
 	virtual void Magnify(Surface* surface, glm::vec2 position, float magnification);
 	virtual void Magnify(Surface* surface, glm::vec2 position);

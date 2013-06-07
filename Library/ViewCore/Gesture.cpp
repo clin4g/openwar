@@ -36,6 +36,16 @@ void Gesture::RenderHints()
 }
 
 
+void Gesture::KeyDown(Surface* surface, char key)
+{
+}
+
+
+void Gesture::KeyUp(Surface* surface, char key)
+{
+}
+
+
 void Gesture::ScrollWheel(Surface* surface, glm::vec2 position, glm::vec2 delta)
 {
 }

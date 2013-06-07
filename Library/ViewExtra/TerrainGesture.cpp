@@ -10,7 +10,15 @@ TerrainGesture::TerrainGesture(TerrainView* terrainView) :
 _terrainView(terrainView),
 _previousCameraDirection(0),
 _orbitAccumulator(0),
-_orbitVelocity(0)
+_orbitVelocity(0),
+_keyScrollLeft(false),
+_keyScrollRight(false),
+_keyScrollForward(false),
+_keyScrollBackward(false),
+_keyOrbitLeft(false),
+_keyOrbitRight(false),
+_keyOrbitMomentum(0),
+_keyScrollMomentum()
 {
 }
 
@@ -77,18 +85,53 @@ void TerrainGesture::Update(double secondsSinceLastUpdate)
 {
 	if (_touches.empty())
 	{
-		glm::vec2 screenPosition = _terrainView->ViewToScreen(glm::vec2(0, 0));
-		glm::vec3 contentPosition = _terrainView->GetTerrainPosition2(screenPosition);
+		UpdateMomentumOrbit(secondsSinceLastUpdate);
+		UpdateMomentumScroll(secondsSinceLastUpdate);
+		UpdateKeyOrbit(secondsSinceLastUpdate);
+		UpdateKeyScroll(secondsSinceLastUpdate);
+	}
+	else
+	{
+		_orbitVelocity = 0;
+		_scrollVelocity = glm::vec2();
+		_keyOrbitMomentum = 0;
+		_keyScrollMomentum = glm::vec2();
+	}
+}
 
-		_terrainView->Orbit(contentPosition.xy(), (float)secondsSinceLastUpdate * _orbitVelocity);
 
-		contentPosition += (float)secondsSinceLastUpdate * glm::vec3(_scrollVelocity, 0);
-		_terrainView->Move(contentPosition, screenPosition);
+void TerrainGesture::KeyDown(Surface* surface, char key)
+{
+	if (_terrainView->GetScreen() != surface)
+		return;
 
-		_scrollVelocity = _scrollVelocity * exp2f(-4 * (float)secondsSinceLastUpdate);
-		_orbitVelocity = _orbitVelocity * exp2f(-4 * (float)secondsSinceLastUpdate);
+	switch (key)
+	{
+		case 'W': _keyScrollForward = true; break;
+		case 'A': _keyScrollLeft = true; break;
+		case 'S': _keyScrollBackward = true; break;
+		case 'D': _keyScrollRight = true; break;
+		case 'Q': _keyOrbitLeft = true; break;
+		case 'E': _keyOrbitRight = true; break;
+		default: break;
+	}
+}
 
-		AdjustToKeepInView(0.35f, (float)secondsSinceLastUpdate);
+
+void TerrainGesture::KeyUp(Surface* surface, char key)
+{
+	if (_terrainView->GetScreen() != surface)
+		return;
+
+	switch (key)
+	{
+		case 'W': _keyScrollForward = false; break;
+		case 'A': _keyScrollLeft = false; break;
+		case 'S': _keyScrollBackward = false; break;
+		case 'D': _keyScrollRight = false; break;
+		case 'Q': _keyOrbitLeft = false; break;
+		case 'E': _keyOrbitRight = false; break;
+		default: break;
 	}
 }
 
@@ -106,7 +149,6 @@ void TerrainGesture::Magnify(Surface* surface, glm::vec2 position, float magnifi
 	glm::vec2 d2 = d1 * glm::exp(magnification);
 
 	_terrainView->Zoom(_terrainView->GetTerrainPosition3(p - d1), _terrainView->GetTerrainPosition3(p + d1), p - d2, p + d2, 0);
-
 }
 
 
@@ -196,6 +238,61 @@ void TerrainGesture::TouchEnded(Touch* touch)
 		_previousTouchPosition = other->GetPosition();
 		_contentPosition1 = _terrainView->GetTerrainPosition3(_previousTouchPosition);
 	}
+}
+
+
+void TerrainGesture::UpdateMomentumOrbit(double secondsSinceLastUpdate)
+{
+	glm::vec2 screenPosition = _terrainView->ViewToScreen(glm::vec2(0, 0));
+	glm::vec3 contentPosition = _terrainView->GetTerrainPosition2(screenPosition);
+
+	_terrainView->Orbit(contentPosition.xy(), (float)secondsSinceLastUpdate * _orbitVelocity);
+	_orbitVelocity = _orbitVelocity * exp2f(-4 * (float)secondsSinceLastUpdate);
+}
+
+
+void TerrainGesture::UpdateMomentumScroll(double secondsSinceLastUpdate)
+{
+	glm::vec2 screenPosition = _terrainView->ViewToScreen(glm::vec2(0, 0));
+	glm::vec3 contentPosition = _terrainView->GetTerrainPosition2(screenPosition);
+
+	contentPosition += (float)secondsSinceLastUpdate * glm::vec3(_scrollVelocity, 0);
+	_terrainView->Move(contentPosition, screenPosition);
+
+	_scrollVelocity = _scrollVelocity * exp2f(-4 * (float)secondsSinceLastUpdate);
+
+	AdjustToKeepInView(0.35f, (float)secondsSinceLastUpdate);
+}
+
+
+void TerrainGesture::UpdateKeyScroll(double secondsSinceLastUpdate)
+{
+	float limit = 40;
+	if (_keyScrollLeft) _keyScrollMomentum.y += limit;
+	if (_keyScrollRight) _keyScrollMomentum.y -= limit;
+	if (_keyScrollForward) _keyScrollMomentum.x += limit;
+	if (_keyScrollBackward) _keyScrollMomentum.x -= limit;
+
+	glm::vec3 pos = _terrainView->GetCameraPosition();
+	glm::vec3 dir = _terrainView->GetCameraDirection();
+	glm::vec2 delta = (float)secondsSinceLastUpdate * glm::log(2.0f + glm::max(0.0f, pos.z)) * rotate(_keyScrollMomentum, angle(dir.xy()));
+	_terrainView->MoveCamera(pos + glm::vec3(delta, 0));
+
+
+	_keyScrollMomentum *= exp2f(-25 * (float)secondsSinceLastUpdate);
+}
+
+
+void TerrainGesture::UpdateKeyOrbit(double secondsSinceLastUpdate)
+{
+	if (_keyOrbitLeft) _keyOrbitMomentum -= 32 * (float)secondsSinceLastUpdate;
+	if (_keyOrbitRight) _keyOrbitMomentum += 32 * (float)secondsSinceLastUpdate;
+
+	glm::vec2 centerScreen = _terrainView->ViewToScreen(glm::vec2(0, 0));
+	glm::vec2 centerContent = _terrainView->GetTerrainPosition3(centerScreen).xy();
+	_terrainView->Orbit(centerContent, (float)secondsSinceLastUpdate * _keyOrbitMomentum);
+
+	_keyOrbitMomentum *= exp2f(-25 * (float)secondsSinceLastUpdate);
 }
 
 

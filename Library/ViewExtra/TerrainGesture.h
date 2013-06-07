@@ -22,6 +22,14 @@ class TerrainGesture : public Gesture
 	float _previousCameraDirection;
 	float _orbitAccumulator;
 	float _orbitVelocity;
+	bool _keyScrollLeft;
+	bool _keyScrollRight;
+	bool _keyScrollForward;
+	bool _keyScrollBackward;
+	bool _keyOrbitLeft;
+	bool _keyOrbitRight;
+	float _keyOrbitMomentum;
+	glm::vec2 _keyScrollMomentum;
 
 public:
 	TerrainGesture(TerrainView* terrainView);
@@ -30,12 +38,21 @@ public:
 	virtual void RenderHints();
 	virtual void Update(double secondsSinceLastUpdate);
 
+	virtual void KeyDown(Surface* surface, char key);
+	virtual void KeyUp(Surface* surface, char key);
+
 	virtual void ScrollWheel(Surface* surface, glm::vec2 position, glm::vec2 delta);
 	virtual void Magnify(Surface* surface, glm::vec2 position, float magnification);
 
 	virtual void TouchBegan(Touch* touch);
 	virtual void TouchMoved();
 	virtual void TouchEnded(Touch* touch);
+
+private:
+	void UpdateMomentumOrbit(double secondsSinceLastUpdate);
+	void UpdateMomentumScroll(double secondsSinceLastUpdate);
+	void UpdateKeyScroll(double secondsSinceLastUpdate);
+	void UpdateKeyOrbit(double secondsSinceLastUpdate);
 
 	void MoveAndOrbit(Touch* touch);
 	void ZoomAndOrbit(Touch* touch1, Touch* touch2);

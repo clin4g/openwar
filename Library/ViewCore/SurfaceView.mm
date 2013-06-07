@@ -22,12 +22,12 @@
 
 - (id)initWithFrame:(NSRect)frameRect pixelFormat:(NSOpenGLPixelFormat*)format
 {
-    self = [super initWithFrame:frameRect pixelFormat:format];
-    if (self != nil)
-    {
-        [self setWantsBestResolutionOpenGLSurface:YES];
-    }
-    return self;
+	self = [super initWithFrame:frameRect pixelFormat:format];
+	if (self != nil)
+	{
+		[self setWantsBestResolutionOpenGLSurface:YES];
+	}
+	return self;
 }
 
 
@@ -37,12 +37,10 @@
 }
 
 
-
 - (BOOL)isTransparent
 {
 	return _transparent;
 }
-
 
 
 - (void)setTransparent:(BOOL)value
@@ -54,7 +52,6 @@
 }
 
 
-
 - (Surface*)createSurfaceWithSize:(glm::vec2)size
 {
 	[self.openGLContext makeCurrentContext];
@@ -64,7 +61,6 @@
 
 	return surface;
 }
-
 
 
 - (void)drawRect:(NSRect)dirtyRect
@@ -110,7 +106,6 @@
 }
 
 
-
 - (void)mouseEnterHoverLeave
 {
 	if (_surface != nullptr)
@@ -139,7 +134,6 @@
 }
 
 
-
 - (void)timerEvent:(NSTimer*)t
 {
 	if (_surface != nullptr)
@@ -152,9 +146,9 @@
 		double secondsSinceLastUpdate = timestamp - _timestamp;
 
 		_surface->Update(secondsSinceLastUpdate);
-        if (Gesture::_gestures != nullptr)
-            for (Gesture* gesture : *Gesture::_gestures)
-                gesture->Update(secondsSinceLastUpdate);
+		if (Gesture::_gestures != nullptr)
+			for (Gesture* gesture : *Gesture::_gestures)
+				gesture->Update(secondsSinceLastUpdate);
 
 		_timestamp = timestamp;
 
@@ -170,7 +164,6 @@
 		[self setNeedsDisplay:YES];
 	}
 }
-
 
 
 - (void)update
@@ -194,7 +187,6 @@
 
 	_update = false;
 }
-
 
 
 - (void)reshape
@@ -225,7 +217,6 @@ static MouseButtons CurrentMouseButtons()
 }
 
 
-
 - (void)dispatchMouseEvent:(NSEvent*)event
 {
 	[self.openGLContext makeCurrentContext];
@@ -233,12 +224,12 @@ static MouseButtons CurrentMouseButtons()
 	if (_touch == nullptr)
 	{
 		glm::vec2 position = [self toVector:[self convertPoint:event.locationInWindow fromView:nil]];
-		_touch = new Touch(_surface, (int) event.clickCount, position, event.timestamp, CurrentMouseButtons());
+		_touch = new Touch(_surface, (int)event.clickCount, position, event.timestamp, CurrentMouseButtons());
 
-        if (Gesture::_gestures != nullptr)
-            for (Gesture* gesture : *Gesture::_gestures)
-                if (gesture->IsEnabled())
-                    gesture->TouchBegan(_touch);
+		if (Gesture::_gestures != nullptr)
+			for (Gesture* gesture : *Gesture::_gestures)
+				if (gesture->IsEnabled())
+					gesture->TouchBegan(_touch);
 
 		[self acceptsFirstResponder];
 	}
@@ -264,13 +255,11 @@ static MouseButtons CurrentMouseButtons()
 }
 
 
-
 - (BOOL)mouseDownCanMoveWindow
 {
 	//return _transparent;
 	return NO;
 }
-
 
 
 - (BOOL)acceptsFirstMouse:(NSEvent*)event
@@ -280,12 +269,10 @@ static MouseButtons CurrentMouseButtons()
 }
 
 
-
 - (void)mouseDown:(NSEvent*)event
 {
 	[self dispatchMouseEvent:event];
 }
-
 
 
 - (void)rightMouseDown:(NSEvent*)event
@@ -297,12 +284,10 @@ static MouseButtons CurrentMouseButtons()
 }
 
 
-
 - (void)otherMouseDown:(NSEvent*)event
 {
 	[self dispatchMouseEvent:event];
 }
-
 
 
 - (void)mouseDragged:(NSEvent*)event
@@ -311,12 +296,10 @@ static MouseButtons CurrentMouseButtons()
 }
 
 
-
 - (void)rightMouseDragged:(NSEvent*)event
 {
 	[self dispatchMouseEvent:event];
 }
-
 
 
 - (void)otherMouseDragged:(NSEvent*)event
@@ -325,12 +308,10 @@ static MouseButtons CurrentMouseButtons()
 }
 
 
-
 - (void)mouseUp:(NSEvent*)event
 {
 	[self dispatchMouseEvent:event];
 }
-
 
 
 - (void)rightMouseUp:(NSEvent*)event
@@ -339,12 +320,10 @@ static MouseButtons CurrentMouseButtons()
 }
 
 
-
 - (void)otherMouseUp:(NSEvent*)event
 {
 	[self dispatchMouseEvent:event];
 }
-
 
 
 - (void)scrollWheel:(NSEvent*)event
@@ -353,38 +332,33 @@ static MouseButtons CurrentMouseButtons()
 
 	float k = [event hasPreciseScrollingDeltas] ? 1 : 3;
 
-    if (Gesture::_gestures != nullptr)
-        for (Gesture* gesture : *Gesture::_gestures)
-            if (gesture->IsEnabled())
-                gesture->ScrollWheel(_surface, position, k * glm::vec2(event.deltaX, event.deltaY));
-
+	if (Gesture::_gestures != nullptr)
+		for (Gesture* gesture : *Gesture::_gestures)
+			if (gesture->IsEnabled())
+				gesture->ScrollWheel(_surface, position, k * glm::vec2(event.deltaX, event.deltaY));
 }
-
 
 
 - (void)magnifyWithEvent:(NSEvent*)event
 {
 	glm::vec2 position = [self toVector:[self convertPoint:event.locationInWindow fromView:nil]];
 
-    if (Gesture::_gestures != nullptr)
-        for (Gesture* gesture : *Gesture::_gestures)
-            if (gesture->IsEnabled())
-                gesture->Magnify(_surface, position, (float)event.magnification);
-
+	if (Gesture::_gestures != nullptr)
+		for (Gesture* gesture : *Gesture::_gestures)
+			if (gesture->IsEnabled())
+				gesture->Magnify(_surface, position, (float)event.magnification);
 }
-
 
 
 - (void)smartMagnifyWithEvent:(NSEvent*)event
 {
 	glm::vec2 position = [self toVector:[self convertPoint:event.locationInWindow fromView:nil]];
 
-    if (Gesture::_gestures != nullptr)
-        for (Gesture* gesture : *Gesture::_gestures)
-            if (gesture->IsEnabled())
-                gesture->Magnify(_surface, position);
+	if (Gesture::_gestures != nullptr)
+		for (Gesture* gesture : *Gesture::_gestures)
+			if (gesture->IsEnabled())
+				gesture->Magnify(_surface, position);
 }
-
 
 
 - (NSMenu*)menuForEvent:(NSEvent*)event
@@ -399,6 +373,53 @@ static MouseButtons CurrentMouseButtons()
 	return [super menuForEvent:event];
 }
 
+
+- (BOOL)acceptsFirstResponder
+{
+	return YES;
+}
+
+
+static char TranslateKeyCode(unsigned short keyCode)
+{
+	switch (keyCode)
+	{
+		case 12: return 'Q';
+		case 13: return 'W';
+		case 14: return 'E';
+		case 0: return 'A';
+		case 1: return 'S';
+		case 2: return 'D';
+		case 18: return '1';
+		case 19: return '2';
+		case 20: return '3';
+		case 21: return '4';
+		case 23: return '5';
+		case 22: return '6';
+		case 26: return '7';
+		default: return 0;
+	}
+}
+
+
+- (void)keyDown:(NSEvent*)event
+{
+	char key = TranslateKeyCode(event.keyCode);
+	if (Gesture::_gestures != nullptr)
+		for (Gesture* gesture : *Gesture::_gestures)
+			if (gesture->IsEnabled())
+				gesture->KeyDown(_surface, key);
+}
+
+
+- (void)keyUp:(NSEvent*)event
+{
+	char key = TranslateKeyCode(event.keyCode);
+	if (Gesture::_gestures != nullptr)
+		for (Gesture* gesture : *Gesture::_gestures)
+			if (gesture->IsEnabled())
+				gesture->KeyUp(_surface, key);
+}
 
 
 #pragma mark -
