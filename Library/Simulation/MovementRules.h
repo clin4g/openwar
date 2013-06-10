@@ -1,4 +1,6 @@
-/* This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt */
+// Copyright (C) 2013 Felix Ungman
+//
+// This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #ifndef MovementRules_h
 #define MovementRules_h
