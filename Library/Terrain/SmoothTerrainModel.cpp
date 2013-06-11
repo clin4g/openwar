@@ -58,7 +58,7 @@ void SmoothTerrainModel::SaveHeightmapToImage()
 		{
 			float heightY = imageY * scale.y;
 			glm::vec4 c = _map->get_pixel(imageX, imageY);
-			c.a = (glm::round(_heightmap.get_height(heightX, heightY)) - 0.5f) / 124.5f;
+			c.a = (glm::round(_heightmap.interpolate(glm::vec2(heightX, heightY))) - 0.5f) / 124.5f;
 			_map->set_pixel(imageX, imageY, c);
 		}
 	}
