@@ -2,7 +2,6 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "matrix.h"
 #include "texture.h"
 #include "renderer.h"
 #include "image.h"
@@ -24,16 +23,6 @@ texture::texture(NSString *name)
 	CHECK_ERROR_GL();
 	init();
 	load(name);
-}
-
-
-
-texture::texture(const matrix& matrix)
-{
-	glGenTextures(1, &id);
-	CHECK_ERROR_GL();
-	init();
-	load(matrix);
 }
 
 
@@ -129,39 +118,6 @@ void texture::load(NSString *name)
 #endif
 }
 
-
-
-
-static GLubyte to_byte(float value)
-{
-	if (value < 0)
-		return 0;
-	if (value > 1)
-		return 255;
-	return (GLubyte)(255 * value);
-}
-
-
-
-void texture::load(const matrix& matrix)
-{
-	glBindTexture(GL_TEXTURE_2D, id);
-	CHECK_ERROR_GL();
-
-	int width = matrix._size.n;
-	int height = matrix._size.m;
-	GLubyte* data = (GLubyte*)calloc((size_t)(width * height * 4), sizeof(GLubyte));
-	for (int x = 0; x < width; ++x)
-		for (int y = 0; y < height; ++y)
-			data[y * width + x] = to_byte(matrix.operator()(y, x));
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, data);
-	CHECK_ERROR_GL();
-	glGenerateMipmap(GL_TEXTURE_2D);
-	CHECK_ERROR_GL();
-
-	free(data);
-}
 
 
 void texture::load(const image& image)

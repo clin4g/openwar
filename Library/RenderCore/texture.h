@@ -5,7 +5,6 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-class matrix;
 class image;
 
 
@@ -16,14 +15,12 @@ struct texture
 	texture();
 	texture(NSString *name);
 	texture(const image& image);
-	texture(const matrix& matrix);
 	~texture();
 
 	void init();
 
 	void load(NSString *name);
 	void load(const image& image);
-	void load(const matrix& matrix);
 
 private:
 	texture(const texture&) {}

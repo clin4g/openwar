@@ -56,7 +56,6 @@
 		413B6EAC175DD20C00AABF10 /* sampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EA0175DD20C00AABF10 /* sampler.cpp */; };
 		413B6EAD175DD20C00AABF10 /* geometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EA4175DD20C00AABF10 /* geometry.cpp */; };
 		413B6EAE175DD20C00AABF10 /* image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EA6175DD20C00AABF10 /* image.cpp */; };
-		413B6EAF175DD20C00AABF10 /* matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EA8175DD20C00AABF10 /* matrix.cpp */; };
 		413B6EC8175DE03400AABF10 /* framebuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EBA175DE03400AABF10 /* framebuffer.cpp */; };
 		413B6EC9175DE03400AABF10 /* renderbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EBC175DE03400AABF10 /* renderbuffer.cpp */; };
 		413B6ECA175DE03400AABF10 /* renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EBE175DE03400AABF10 /* renderer.cpp */; };
@@ -78,6 +77,7 @@
 		413B7021175DFE9200AABF10 /* SoundPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B701E175DFE9200AABF10 /* SoundPlayer.cpp */; };
 		413B7023175DFEA900AABF10 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B7022175DFEA900AABF10 /* OpenAL.framework */; };
 		413B7027175DFEC800AABF10 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B7026175DFEC800AABF10 /* AudioToolbox.framework */; };
+		63F55059A1B76F29DB55BB7F /* heightmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5540A8AF3B3D853FA7D3F /* heightmap.cpp */; };
 		63F550C3D49CD6976C433B81 /* SmoothTerrainModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5565AF0E456BCBE25046A /* SmoothTerrainModel.cpp */; };
 		63F550D5C65A5FC53CB67CA3 /* TerrainView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F552D3B11486AF01E94F4F /* TerrainView.cpp */; };
 		63F552AA442BC79DB972C309 /* bspline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55AF200D5648D23279089 /* bspline.cpp */; };
@@ -157,8 +157,6 @@
 		413B6EA5175DD20C00AABF10 /* geometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = geometry.h; sourceTree = "<group>"; };
 		413B6EA6175DD20C00AABF10 /* image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = image.cpp; sourceTree = "<group>"; };
 		413B6EA7175DD20C00AABF10 /* image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = image.h; sourceTree = "<group>"; };
-		413B6EA8175DD20C00AABF10 /* matrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = matrix.cpp; sourceTree = "<group>"; };
-		413B6EA9175DD20C00AABF10 /* matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
 		413B6EBA175DE03400AABF10 /* framebuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = framebuffer.cpp; sourceTree = "<group>"; };
 		413B6EBB175DE03400AABF10 /* framebuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = framebuffer.h; sourceTree = "<group>"; };
 		413B6EBC175DE03400AABF10 /* renderbuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderbuffer.cpp; sourceTree = "<group>"; };
@@ -203,11 +201,13 @@
 		63F551486360CFC73276A2D4 /* vertexbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vertexbuffer.h; sourceTree = "<group>"; };
 		63F5514A4E3E3A6AEF1BE166 /* TerrainGesture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainGesture.cpp; sourceTree = "<group>"; };
 		63F552D3B11486AF01E94F4F /* TerrainView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainView.cpp; sourceTree = "<group>"; };
+		63F5540A8AF3B3D853FA7D3F /* heightmap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = heightmap.cpp; sourceTree = "<group>"; };
 		63F555F475578E35D7EAB415 /* SmoothTerrainRendering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmoothTerrainRendering.h; sourceTree = "<group>"; };
 		63F5565AF0E456BCBE25046A /* SmoothTerrainModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SmoothTerrainModel.cpp; sourceTree = "<group>"; };
 		63F55697E72B4BCEDB18068F /* TerrainGesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TerrainGesture.h; sourceTree = "<group>"; };
 		63F55808044A3D9C13977269 /* bspline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bspline.h; sourceTree = "<group>"; };
 		63F55841973B995647E88800 /* vertexbuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vertexbuffer.cpp; sourceTree = "<group>"; };
+		63F559B4EEEF02BEBCDE71DC /* heightmap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = heightmap.h; sourceTree = "<group>"; };
 		63F55AF200D5648D23279089 /* bspline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bspline.cpp; sourceTree = "<group>"; };
 		63F55D7048685B05D4B280B1 /* SmoothTerrainRendering.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SmoothTerrainRendering.cpp; sourceTree = "<group>"; };
 		63F55DBA3A80CC08BA45A859 /* SmoothTerrainModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmoothTerrainModel.h; sourceTree = "<group>"; };
@@ -426,6 +426,8 @@
 				413B6EA1175DD20C00AABF10 /* sampler.h */,
 				63F55AF200D5648D23279089 /* bspline.cpp */,
 				63F55808044A3D9C13977269 /* bspline.h */,
+				63F5540A8AF3B3D853FA7D3F /* heightmap.cpp */,
+				63F559B4EEEF02BEBCDE71DC /* heightmap.h */,
 			);
 			path = Algorithms;
 			sourceTree = "<group>";
@@ -438,8 +440,6 @@
 				413B6EA5175DD20C00AABF10 /* geometry.h */,
 				413B6EA6175DD20C00AABF10 /* image.cpp */,
 				413B6EA7175DD20C00AABF10 /* image.h */,
-				413B6EA8175DD20C00AABF10 /* matrix.cpp */,
-				413B6EA9175DD20C00AABF10 /* matrix.h */,
 			);
 			path = Algebra;
 			sourceTree = "<group>";
@@ -644,7 +644,6 @@
 				413B6EAC175DD20C00AABF10 /* sampler.cpp in Sources */,
 				413B6EAD175DD20C00AABF10 /* geometry.cpp in Sources */,
 				413B6EAE175DD20C00AABF10 /* image.cpp in Sources */,
-				413B6EAF175DD20C00AABF10 /* matrix.cpp in Sources */,
 				413B6EC8175DE03400AABF10 /* framebuffer.cpp in Sources */,
 				413B6EC9175DE03400AABF10 /* renderbuffer.cpp in Sources */,
 				413B6ECA175DE03400AABF10 /* renderer.cpp in Sources */,
@@ -678,6 +677,7 @@
 				63F55A26F9E505B4208C96E9 /* SmoothTerrainRendering.cpp in Sources */,
 				63F550D5C65A5FC53CB67CA3 /* TerrainView.cpp in Sources */,
 				63F5589F66FF4736AA4FC53D /* TerrainGesture.cpp in Sources */,
+				63F55059A1B76F29DB55BB7F /* heightmap.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

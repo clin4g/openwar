@@ -7,7 +7,7 @@
 
 #include "bounds.h"
 #include "geometry.h"
-#include "matrix.h"
+#include "heightmap.h"
 
 class image;
 
@@ -17,7 +17,7 @@ class SmoothTerrainModel
 public:
 	bounds2f _bounds;
 	image* _map;
-	matrix _heights;
+	heightmap _heightmap;
 	float _height;
 	glm::vec2 _scaleWorldToImage;
 	glm::vec2 _scaleImageToWorld;
@@ -30,7 +30,6 @@ public:
 	float GetMaxHeight() const { return _height; }
 
 	float GetHeight(int x, int y) const;
-	void SetHeight(int x, int y, float h);
 
 	float GetHeight(glm::vec2 position) const;
 	glm::vec3 GetNormal(glm::vec2 position) const;

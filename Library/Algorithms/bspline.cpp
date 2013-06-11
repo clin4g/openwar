@@ -5,7 +5,7 @@
 #include "bspline.h"
 
 
-float bspline_patch(const glm::mat4x4& p, const glm::vec2& t)
+glm::mat4x4 bspline_matrix_product(const glm::mat4x4& p)
 {
 	static glm::mat4x4 _bspline_matrix(
 			-1 / 6.0f, 3 / 6.0f, -3 / 6.0f, 1 / 6.0f,
@@ -21,10 +21,5 @@ float bspline_patch(const glm::mat4x4& p, const glm::vec2& t)
 			1 / 6.0f, 0, 0, 0
 	);
 
-	glm::vec2 tt = t * t;
-	glm::vec2 ttt = t * tt;
-	glm::vec4 u = glm::vec4(ttt.x, tt.x, t.x, 1);
-	glm::vec4 v = glm::vec4(ttt.y, tt.y, t.y, 1);
-
-	return glm::dot(u, _bspline_matrix_transpose * p * _bspline_matrix * v);
+	return _bspline_matrix_transpose * p * _bspline_matrix;
 }

@@ -5,7 +5,6 @@
 #ifndef UNIFORMS_H
 #define UNIFORMS_H
 
-#include "matrix.h"
 #include "texture.h"
 
 

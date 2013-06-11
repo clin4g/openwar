@@ -6,7 +6,6 @@
 #define TERRAINVIEW_H
 
 #include "View.h"
-#include "matrix.h"
 #include "geometry.h"
 #include "SmoothTerrainModel.h"
 

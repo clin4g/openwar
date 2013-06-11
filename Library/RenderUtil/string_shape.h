@@ -6,7 +6,6 @@
 #define STRING_SHAPE_H
 
 #include "bounds.h"
-#include "matrix.h"
 
 #include "animation.h"
 #include "renderer.h"
