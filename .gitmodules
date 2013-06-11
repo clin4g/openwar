@@ -1,3 +1,6 @@
 [submodule "External/glm"]
 	path = External/glm
 	url = git://github.com/g-truc/glm.git
+[submodule "External/lua"]
+	path = External/lua
+	url = git://github.com/LuaDist/lua.git
