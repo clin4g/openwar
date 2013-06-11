@@ -26,6 +26,9 @@ public:
 	SmoothTerrainModel(bounds2f bounds, image* map);
 	~SmoothTerrainModel();
 
+	void LoadHeightmapFromImage();
+	void SaveHeightmapToImage();
+
 	const bounds2f& GetBounds() const { return _bounds; }
 	float GetMaxHeight() const { return _height; }
 

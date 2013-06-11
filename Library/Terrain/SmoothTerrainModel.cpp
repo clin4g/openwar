@@ -13,25 +13,55 @@ _heightmap(glm::ivec2(128, 128)),
 _height(124.5),
 _map(map)
 {
-	_scaleImageToWorld = bounds.size() / glm::vec2(map->_width, map->_height);
-	_scaleWorldToImage = glm::vec2(map->_width, map->_height) / bounds.size();
+	glm::vec2 mapsize = glm::vec2(map->size());
+	_scaleImageToWorld = bounds.size() / mapsize;
+	_scaleWorldToImage = mapsize / bounds.size();
 
-	for (int x = 0; x < 128; ++x)
-	{
-		int xx = (int)(x * (double)map->_width / 128.0);
-		for (int y = 0; y < 128; ++y)
-		{
-			int yy = (int)(y * (double)map->_height / 128.0);
-			glm::vec4 c = map->get_pixel(xx, yy);
-
-			_heightmap.set_height(x, y, 0.5f + 124.5f * c.a);
-		}
-	}
+	LoadHeightmapFromImage();
 }
 
 
 SmoothTerrainModel::~SmoothTerrainModel()
 {
+}
+
+
+void SmoothTerrainModel::LoadHeightmapFromImage()
+{
+	glm::ivec2 imageSize = _map->size();
+	glm::ivec2 heightSize = _heightmap.size();
+	glm::vec2 scale = glm::vec2(imageSize) / glm::vec2(heightSize);
+
+	for (int heightX = 0; heightX < heightSize.x; ++heightX)
+	{
+		int imageX = (int)(heightX * scale.x);
+		for (int heightY = 0; heightY < heightSize.y; ++heightY)
+		{
+			int imageY = (int)(heightY * scale.y);
+			glm::vec4 c = _map->get_pixel(imageX, imageY);
+			_heightmap.set_height(heightX, heightY, 0.5f + 124.5f * c.a);
+		}
+	}
+}
+
+
+void SmoothTerrainModel::SaveHeightmapToImage()
+{
+	glm::ivec2 imageSize = _map->size();
+	glm::ivec2 heightSize = _heightmap.size();
+	glm::vec2 scale = glm::vec2(heightSize) / glm::vec2(imageSize);
+
+	for (int imageX = 0; imageX < imageSize.x; ++imageX)
+	{
+		float heightX = imageX * scale.x;
+		for (int imageY = 0; imageY < imageSize.y; ++imageY)
+		{
+			float heightY = imageY * scale.y;
+			glm::vec4 c = _map->get_pixel(imageX, imageY);
+			c.a = (glm::round(_heightmap.get_height(heightX, heightY)) - 0.5f) / 124.5f;
+			_map->set_pixel(imageX, imageY, c);
+		}
+	}
 }
 
 

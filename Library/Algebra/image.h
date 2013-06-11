@@ -20,6 +20,8 @@ public:
 	image(CGImageRef image);
 	~image();
 
+	glm::ivec2 size() const { return glm::ivec2(_width, _height); }
+
 	glm::vec4 get_pixel(int x, int y) const;
 	void set_pixel(int x, int y, glm::vec4 c);
 

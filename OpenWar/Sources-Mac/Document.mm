@@ -110,7 +110,10 @@ static SimulationState* LoadSimulationState(image* map)
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError
 {
 	if (_surface != nullptr)
+	{
+		_surface->_terrainRendering->GetTerrainModel()->SaveHeightmapToImage();
 		return ConvertImageToTiff(_surface->_simulationState->map);
+	}
 
 	return nil;
 }
