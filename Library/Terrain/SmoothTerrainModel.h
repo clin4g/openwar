@@ -19,12 +19,13 @@ public:
 	image* _map;
 	matrix _heights;
 	float _height;
+	glm::vec2 _scaleWorldToImage;
+	glm::vec2 _scaleImageToWorld;
 
 public:
 	SmoothTerrainModel(bounds2f bounds, image* map);
 	~SmoothTerrainModel();
 
-	matrix_size GetSize() const { return _heights.size(); }
 	const bounds2f& GetBounds() const { return _bounds; }
 	float GetMaxHeight() const { return _height; }
 
@@ -37,6 +38,10 @@ public:
 	bool ContainsWater(bounds2f bounds) const;
 
 	const float* Intersect(ray r);
+
+	bounds2f EditHills(glm::vec2 position, float radius, float pressure);
+	bounds2f EditWater(glm::vec2 position, float radius, float pressure);
+	bounds2f EditTrees(glm::vec2 position, float radius, float pressure);
 };
 
 

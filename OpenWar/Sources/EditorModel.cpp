@@ -76,57 +76,23 @@ void EditorModel::ToolEnded(glm::vec2 position)
 
 void EditorModel::EditHills(glm::vec2 position, bool value)
 {
-	float delta = value ? 0.1f : -0.1f;
-	int x0 = (int)(_terrainRendering->GetTerrainModel()->GetSize().m * position.x / 1024);
-	int y0 = (int)(_terrainRendering->GetTerrainModel()->GetSize().n * position.y / 1024);
-
-	for (int x = -5; x <= 5; ++x)
-		for (int y = -5; y <= 5; ++y)
-		{
-			float h = _terrainRendering->GetTerrainModel()->GetHeight(x0 + x, y0 + y);
-			_terrainRendering->GetTerrainModel()->SetHeight(x0 + x, y0 + y, fmaxf(0.1f, h + delta));
-		}
-
-	_terrainRendering->UpdateHeights(bounds2_from_center(position, 25));
-	_battleView->UpdateTerrainTrees(bounds2_from_center(position, 25));
+	bounds2f bounds = _terrainRendering->GetTerrainModel()->EditHills(position, 25, value ? 0.5 : -0.5);
+	_terrainRendering->UpdateHeights(bounds);
+	_battleView->UpdateTerrainTrees(bounds);
 }
 
 
 void EditorModel::EditWater(glm::vec2 position, bool value)
 {
-	int x0 = (int)(512 * position.x / 1024);
-	int y0 = (int)(512 * position.y / 1024);
-
-	image* map = _terrainRendering->GetTerrainModel()->_map;
-
-	for (int x = -5; x <= 5; ++x)
-		for (int y = -5; y <= 5; ++y)
-		{
-			glm::vec4 c = map->get_pixel(x, y);
-			c.b = value ? 1 : 0;
-			map->set_pixel(x0 + x, y0 - y, c);
-		}
-
-	_terrainRendering->UpdateHeights(bounds2_from_center(position, 25));
-	_battleView->UpdateTerrainTrees(bounds2_from_center(position, 25));
+	bounds2f bounds = _terrainRendering->GetTerrainModel()->EditWater(position, 15, value ? 0.5 : -0.5);
+	_terrainRendering->UpdateHeights(bounds);
+	_battleView->UpdateTerrainTrees(bounds);
 }
 
 
 void EditorModel::EditTrees(glm::vec2 position, bool value)
 {
-	int x0 = (int)(512 * position.x / 1024);
-	int y0 = (int)(512 * position.y / 1024);
-
-	image* map = _terrainRendering->GetTerrainModel()->_map;
-
-	for (int x = -5; x <= 5; ++x)
-		for (int y = -5; y <= 5; ++y)
-		{
-			glm::vec4 c = map->get_pixel(x, y);
-			c.g = value ? 1 : 0;
-			map->set_pixel(x0 + x, y0 - y, c);
-		}
-
+	bounds2f bounds = _terrainRendering->GetTerrainModel()->EditTrees(position, 15, value ? 0.5 : -0.5);
 	_terrainRendering->UpdateMapTexture();
-	_battleView->UpdateTerrainTrees(bounds2_from_center(position, 25));
+	_battleView->UpdateTerrainTrees(bounds);
 }

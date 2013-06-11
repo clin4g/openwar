@@ -15,13 +15,15 @@ static bool almost_zero(float value)
 }
 
 
-
 SmoothTerrainModel::SmoothTerrainModel(bounds2f bounds, image* map) :
 _heights(128, 128),
 _bounds(bounds),
 _height(124.5),
 _map(map)
 {
+	_scaleImageToWorld = bounds.size() / glm::vec2(map->_width, map->_height);
+	_scaleWorldToImage = glm::vec2(map->_width, map->_height) / bounds.size();
+
 	for (int x = 0; x < 128; ++x)
 	{
 		int xx = (int)(x * (double)map->_width / 128.0);
@@ -211,4 +213,76 @@ const float* SmoothTerrainModel::Intersect(ray r)
 	static float result;
 	result = glm::length((r2.point(*d) - r2.origin) / scale);
 	return &result;
+}
+
+
+bounds2f SmoothTerrainModel::EditHills(glm::vec2 position, float radius, float pressure)
+{
+	float delta = pressure > 0 ? 0.5f : -0.5f;
+	float abs_pressure = glm::abs(pressure);
+
+	glm::ivec2 p0 = glm::ivec2(128.0f / 1024.0f * position);
+
+	for (int x = -5; x <= 5; ++x)
+		for (int y = -5; y <= 5; ++y)
+		{
+			glm::ivec2 pi = p0 + glm::ivec2(x, y);
+			float k = 1.0f - glm::distance(position, 1024.0f / 128.0f * glm::vec2(pi)) / radius;
+			if (k > 0)
+			{
+				float h = GetHeight(pi.x, pi.y);
+				h = glm::mix(h, h + delta, k * abs_pressure);
+				SetHeight(pi.x, pi.y, fmaxf(0.1f, h));
+			}
+		}
+
+	return bounds2_from_center(position, radius + 1);
+}
+
+
+bounds2f SmoothTerrainModel::EditWater(glm::vec2 position, float radius, float pressure)
+{
+	glm::ivec2 p0 = glm::ivec2(_scaleWorldToImage * position);
+
+	float value = pressure > 0 ? 1 : 0;
+	float abs_pressure = glm::abs(pressure);
+
+	for (int x = -5; x <= 5; ++x)
+		for (int y = -5; y <= 5; ++y)
+		{
+			glm::ivec2 pi = p0 + glm::ivec2(x, y);
+			float k = 1.0f - glm::distance(position, _scaleImageToWorld * glm::vec2(pi)) / radius;
+			if (k > 0)
+			{
+				glm::vec4 c = _map->get_pixel(pi.x, pi.y);
+				c.b = glm::mix(c.b, value, k * abs_pressure);
+				_map->set_pixel(pi.x, pi.y, c);
+			}
+		}
+
+	return bounds2_from_center(position, radius + 1);
+}
+
+
+bounds2f SmoothTerrainModel::EditTrees(glm::vec2 position, float radius, float pressure)
+{
+	glm::ivec2 p0 = glm::ivec2(_scaleWorldToImage * position);
+
+	float value = pressure > 0 ? 1 : 0;
+	float abs_pressure = glm::abs(pressure);
+
+	for (int x = -5; x <= 5; ++x)
+		for (int y = -5; y <= 5; ++y)
+		{
+			glm::ivec2 pi = p0 + glm::ivec2(x, y);
+			float k = 1.0f - glm::distance(position, _scaleImageToWorld * glm::vec2(pi)) / radius;
+			if (k > 0)
+			{
+				glm::vec4 c = _map->get_pixel(pi.x, pi.y);
+				c.g = glm::mix(c.g, value, k * abs_pressure);
+				_map->set_pixel(pi.x, pi.y, c);
+			}
+		}
+
+	return bounds2_from_center(position, radius + 1);
 }
