@@ -106,11 +106,11 @@ void OpenWarSurface::Reset(SimulationState* simulationState)
 	_battleView = new BattleView(this, _battleModel, _renderers, _battleRendering, _terrainRendering, Player1);
 	_battleView->Initialize(_simulationState, true);
 
-	_battleGesture = new BattleGesture(_battleView);
-	_terrainGesture = new TerrainGesture(_battleView);
-
 	_editorModel = new EditorModel(_battleView, _terrainRendering);
 	_editorGesture = new EditorGesture(_battleView, _editorModel);
+
+	_battleGesture = new BattleGesture(_battleView);
+	_terrainGesture = new TerrainGesture(_battleView);
 
 	_simulationState->AddUnit(Player1, 80, SimulationState::GetDefaultUnitStats(UnitPlatformSam, UnitWeaponKata), glm::vec2(500, 300));
 	_simulationState->AddUnit(Player2, 80, SimulationState::GetDefaultUnitStats(UnitPlatformSam, UnitWeaponKata), glm::vec2(500, 700));
@@ -265,7 +265,6 @@ void OpenWarSurface::UpdateButtonsAndGestures()
 	_buttonItemTrees->SetSelected(_editorModel->editorFeature == EditorFeature::Trees);
 
 	_battleGesture->SetEnabled(_mode == Mode::Playing);
-	_terrainGesture->SetEnabled(_mode == Mode::Playing || _editorModel->editorMode == EditorMode::Hand);
 	_editorGesture->SetEnabled(_mode == Mode::Editing && _editorModel->editorMode != EditorMode::Hand);
 
 	_buttonsTopRight->Reset();
