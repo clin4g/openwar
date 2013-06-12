@@ -11,6 +11,7 @@
 class BattleGesture;
 class BattleModel;
 class BattleRendering;
+class BattleScript;
 class BattleView;
 class ButtonGesture;
 class ButtonItem;
@@ -37,6 +38,7 @@ public: // TODO: just testing
 
 	BattleModel* _battleModel;
 	EditorModel* _editorModel;
+	BattleScript* _battleScript;
 
 	SmoothTerrainRendering* _terrainRendering;
 	BattleView* _battleView;

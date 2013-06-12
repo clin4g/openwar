@@ -3,15 +3,16 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "OpenWarSurface.h"
-#include "SoundPlayer.h"
-#include "SimulationState.h"
-#include "SimulationRules.h"
 #include "BattleModel.h"
 #include "BattleGesture.h"
-#include "TerrainGesture.h"
+#include "BattleScript.h"
 #include "ButtonView.h"
 #include "ButtonGesture.h"
 #include "EditorGesture.h"
+#include "SimulationState.h"
+#include "SimulationRules.h"
+#include "SoundPlayer.h"
+#include "TerrainGesture.h"
 
 
 
@@ -24,6 +25,7 @@ _battleRendering(nullptr),
 _buttonRendering(nullptr),
 _battleModel(nullptr),
 _editorModel(nullptr),
+_battleScript(nullptr),
 _terrainRendering(nullptr),
 _battleView(nullptr),
 _buttonsTopLeft(nullptr),
@@ -94,6 +96,7 @@ void OpenWarSurface::Reset(SimulationState* simulationState)
 {
 	_simulationState = simulationState;
 
+
 	_simulationRules = new SimulationRules(_simulationState);
 	_simulationRules->currentPlayer = Player1;
 
@@ -112,8 +115,7 @@ void OpenWarSurface::Reset(SimulationState* simulationState)
 	_battleGesture = new BattleGesture(_battleView);
 	_terrainGesture = new TerrainGesture(_battleView);
 
-	_simulationState->AddUnit(Player1, 80, SimulationState::GetDefaultUnitStats(UnitPlatformSam, UnitWeaponKata), glm::vec2(500, 300));
-	_simulationState->AddUnit(Player2, 80, SimulationState::GetDefaultUnitStats(UnitPlatformSam, UnitWeaponKata), glm::vec2(500, 700));
+	_battleScript = new BattleScript(_battleModel, _simulationState);
 
 	_mode = Mode::Editing;
 	UpdateButtonsAndGestures();
