@@ -42,25 +42,8 @@ static SimulationState* LoadSimulationState(image* map)
 
 	if (map == nullptr)
 	{
-		map = new image(512, 512);
-
-		NSString* prefix = @"/Users/nicke/Desktop/Map/Map1";
-
-		image fords([NSString stringWithFormat:@"%@-Fords.png", prefix]);
-		image forest([NSString stringWithFormat:@"%@-Forest.png", prefix]);
-		image water([NSString stringWithFormat:@"%@-Water.png", prefix]);
-		image height([NSString stringWithFormat:@"%@-Height.png", prefix]);
-
-		for (int x = 0; x < 512; ++x)
-			for (int y = 0; y < 512; ++y)
-			{
-				glm::vec4 c;
-				c.r = fords.get_pixel(x, y).r;
-				c.g = forest.get_pixel(x, y).r;
-				c.b = water.get_pixel(x, y).r;
-				c.a = height.get_pixel(x, y).r;
-				map->set_pixel(x, y, c);
-			}
+		NSString* path = [[NSBundle mainBundle] pathForResource:@"DefaultMap" ofType:@"tiff" inDirectory:@"Maps"];
+		map = ConvertTiffToImage([NSData dataWithContentsOfFile:path]);
 	}
 
 	result->map = map;
@@ -121,7 +104,10 @@ static SimulationState* LoadSimulationState(image* map)
 
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
 {
-	_map = ConvertTiffToImage(data);
+	if ([typeName isEqualToString:@"SmoothMap"])
+	{
+		_map = ConvertTiffToImage(data);
+	}
 
 	if (_surface != nullptr)
 		_surface->Reset(LoadSimulationState(_map));

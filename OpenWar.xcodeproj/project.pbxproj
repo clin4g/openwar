@@ -45,6 +45,7 @@
 		411583A0175E7B59004F58D1 /* ButtonRendering.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4115839B175E7B59004F58D1 /* ButtonRendering.cpp */; };
 		411583A1175E7B59004F58D1 /* ButtonView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4115839D175E7B59004F58D1 /* ButtonView.cpp */; };
 		411583B9175F2365004F58D1 /* ButtonIcons.png in Resources */ = {isa = PBXBuildFile; fileRef = 411583B8175F2365004F58D1 /* ButtonIcons.png */; };
+		4129759D176A6BE500B9AC12 /* Maps in Resources */ = {isa = PBXBuildFile; fileRef = 4129759C176A6BE500B9AC12 /* Maps */; };
 		413B6DFB175CE70B00AABF10 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B6DFA175CE70B00AABF10 /* Cocoa.framework */; };
 		413B6E05175CE70B00AABF10 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E03175CE70B00AABF10 /* InfoPlist.strings */; };
 		413B6E07175CE70B00AABF10 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 413B6E06175CE70B00AABF10 /* main.mm */; };
@@ -158,6 +159,7 @@
 		4115839D175E7B59004F58D1 /* ButtonView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ButtonView.cpp; sourceTree = "<group>"; };
 		4115839E175E7B59004F58D1 /* ButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonView.h; sourceTree = "<group>"; };
 		411583B8175F2365004F58D1 /* ButtonIcons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ButtonIcons.png; sourceTree = "<group>"; };
+		4129759C176A6BE500B9AC12 /* Maps */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Maps; sourceTree = "<group>"; };
 		413B6DF7175CE70B00AABF10 /* Open War.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open War.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		413B6DFA175CE70B00AABF10 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		413B6DFD175CE70B00AABF10 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -302,6 +304,7 @@
 		41158357175E15B4004F58D1 /* Media */ = {
 			isa = PBXGroup;
 			children = (
+				4129759C176A6BE500B9AC12 /* Maps */,
 				41158358175E15B4004F58D1 /* Sounds */,
 				4115835B175E15B4004F58D1 /* Textures */,
 			);
@@ -715,6 +718,7 @@
 				41158393175E15CC004F58D1 /* Texture256x256.png in Resources */,
 				411583B9175F2365004F58D1 /* ButtonIcons.png in Resources */,
 				63F553B36837A2B0B0F52AF3 /* BattleScripts in Resources */,
+				4129759D176A6BE500B9AC12 /* Maps in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
