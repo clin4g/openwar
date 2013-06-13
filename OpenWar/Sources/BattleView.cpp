@@ -8,7 +8,7 @@
 
 
 
-BattleView::BattleView(Surface* screen, BattleModel* boardModel, renderers* r, BattleRendering* battleRendering, SmoothTerrainRendering* terrainRendering, Player bluePlayer) : TerrainView(screen, boardModel->_simulationState->terrainModel),
+BattleView::BattleView(Surface* screen, BattleModel* boardModel, renderers* r, BattleRendering* battleRendering, SmoothTerrainRenderer* terrainRendering, Player bluePlayer) : TerrainView(screen, boardModel->_simulationState->terrainModel),
 _renderers(r),
 _battleRendering(battleRendering),
 _boardModel(boardModel),
@@ -23,19 +23,10 @@ _trackingMarker_missileHeadShape(),
 _unitMarker_targetLineShape(),
 _unitMarker_targetHeadShape(),
 _shape_fighter_weapons(),
-_terrainRendering(terrainRendering)
+_smoothTerrainRendering(terrainRendering),
+_tiledTerrainRenderer(nullptr)
 {
-	int max_level = 2;
-
-	for (int level = 0; level <= max_level; ++level)
-		for (int x = 0; x < (1 << level); ++x)
-			for (int y = 0; y < (1 << level); ++y)
-				_terrainRendering->LoadChunk(terrain_address(level, x, y), 0);
-
-	for (int level = 0; level < max_level; ++level)
-		for (int x = 0; x < (1 << level); ++x)
-			for (int y = 0; y < (1 << level); ++y)
-				_terrainRendering->SetSplit(terrain_address(level, x, y));
+	//_tiledTerrainRenderer = new TiledTerrainRenderer();
 
 	SetContentBounds(bounds2f(0, 0, 1024, 1024));
 
@@ -173,6 +164,14 @@ void BattleView::UpdateTerrainTrees(bounds2f bounds)
 }
 
 
+
+void BattleView::AddTree(glm::vec2 position)
+{
+	_static_billboards.push_back(MakeBillboardVertex(position, 15, 0, 1, false, GetFlip()));
+}
+
+
+
 static int inside_circle(glm::vec2 p)
 {
 	return glm::length(p - glm::vec2(512, 512)) <= 512 ? 1 : 0;
@@ -219,7 +218,7 @@ void BattleView::InitializeTerrainWater(bool editor)
 		for (int y = 0; y < n; ++y)
 		{
 			glm::vec2 p = s * glm::vec2(x, y);
-			if (editor || _terrainRendering->GetTerrainModel()->ContainsWater(bounds2f(p, p + s)))
+			if (editor || _smoothTerrainRendering->GetTerrainModel()->ContainsWater(bounds2f(p, p + s)))
 			{
 				plain_vertex v11 = plain_vertex(p);
 				plain_vertex v12 = plain_vertex(p + glm::vec2(0, s.y));
@@ -410,7 +409,8 @@ void BattleView::RenderBackgroundSky()
 
 void BattleView::RenderTerrainGround()
 {
-	_terrainRendering->Render(GetTransform(), _lightNormal);
+	_smoothTerrainRendering->Render(GetTransform(), _lightNormal);
+	//_tiledTerrainRenderer->Render(GetTransform(), _lightNormal);
 }
 
 

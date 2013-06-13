@@ -2,14 +2,15 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#ifndef SMOOTHTERRAINRENDERING_H
-#define SMOOTHTERRAINRENDERING_H
+#ifndef SMOOTHTERRAINRENDERER_H
+#define SMOOTHTERRAINRENDERER_H
 
 #include "SmoothTerrainModel.h"
 #include "framebuffer.h"
 #include "renderbuffer.h"
 #include "vertexbuffer.h"
 #include "renderer.h"
+#include "TerrainRenderer.h"
 
 
 struct terrain_renderers;
@@ -96,7 +97,7 @@ struct sobel_uniforms
 
 
 
-class SmoothTerrainRendering
+class SmoothTerrainRenderer : public TerrainRenderer
 {
 	SmoothTerrainModel* _terrainModel;
 	image* _mapImage;
@@ -117,18 +118,22 @@ class SmoothTerrainRendering
 	terrain_renderers* _renderers;
 
 public:
-	SmoothTerrainRendering(SmoothTerrainModel* terrainModel, image* map, bool render_edges);
-	~SmoothTerrainRendering();
+	SmoothTerrainRenderer(SmoothTerrainModel* terrainModel, image* map, bool render_edges);
+	virtual ~SmoothTerrainRenderer();
 
 	SmoothTerrainModel* GetTerrainModel() const { return _terrainModel; }
 
 	void UpdateHeights(bounds2f bounds);
 	void UpdateMapTexture();
 
+	virtual void Render(const glm::mat4x4& transform, const glm::vec3& lightNormal);
+
+private:
+	friend class terrain_viewpoint;
+
 	void UpdateDepthTextureSize();
 	void InitializeEdge();
 
-	void Render(const glm::mat4x4& transform, const glm::vec3 lightNormal);
 	void ForEachLeaf(terrain_address chunk, std::function<void(terrain_chunk&)> f);
 
 	bool IsLoaded(terrain_address chunk);
@@ -162,14 +167,14 @@ public:
 
 struct terrain_viewpoint
 {
-	SmoothTerrainRendering* _terrainRendering;
+	SmoothTerrainRenderer* _terrainRendering;
 	glm::vec3 _viewpoint;
 	float _near;
 	float _far;
 	int _near_lod;
 	float _distance_lod_max;
 
-	terrain_viewpoint(SmoothTerrainRendering* terrainRendering);
+	terrain_viewpoint(SmoothTerrainRenderer* terrainRendering);
 
 	void set_parameters(float errorLodMax, float maxPixelError, float screenWidth, float horizontalFOVDegrees);
 

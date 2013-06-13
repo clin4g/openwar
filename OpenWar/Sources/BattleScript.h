@@ -8,9 +8,10 @@
 #include "SimulationState.h"
 #include "lua.h"
 
-
 class BattleModel;
+class BattleView;
 class SimulationState;
+class TiledTerrainRenderer;
 
 
 class BattleScript
@@ -26,12 +27,14 @@ class BattleScript
 		UnitStatus(Unit* unit);
 	};
 
+	TiledTerrainRenderer* _tiledTerrainRenderer;
+	BattleView* _battleView;
 	BattleModel* _battleModel;
 	SimulationState* _simulationState;
 	lua_State* _L;
 
 public:
-	BattleScript(BattleModel* battleModel, SimulationState* simulationState);
+	BattleScript(TiledTerrainRenderer* tiledTerrainRenderer, BattleView* battleView, BattleModel* battleModel, SimulationState* simulationState);
 	~BattleScript();
 
 	void Tick();
@@ -45,6 +48,11 @@ private:
 	static int battle_new_unit(lua_State* L);
 	static int battle_set_unit_movement(lua_State* L);
 	static int battle_get_unit_status(lua_State* L);
+
+	static int battle_set_terrain_size(lua_State* L);
+	static int battle_set_terrain_tile(lua_State* L);
+	static int battle_set_terrain_height(lua_State* L);
+	static int battle_add_terrain_tree(lua_State* L);
 
 	static Player ToPlayer(lua_State* L, int index);
 	static UnitPlatform ToUnitPlatform(lua_State* L, int index);

@@ -8,7 +8,7 @@
 
 
 
-EditorModel::EditorModel(BattleView* battleView, SmoothTerrainRendering* terrainRendering) :
+EditorModel::EditorModel(BattleView* battleView, SmoothTerrainRenderer* terrainRendering) :
 _battleView(battleView),
 _terrainRendering(terrainRendering),
 editorMode(EditorMode::Hand),

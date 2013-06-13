@@ -10,7 +10,8 @@
 #include "SimulationState.h"
 
 #include "sprite.h"
-#include "SmoothTerrainRendering.h"
+#include "SmoothTerrainRenderer.h"
+#include "TiledTerrainRenderer.h"
 #include "vertexbuffer.h"
 
 
@@ -62,9 +63,10 @@ class BattleView : public TerrainView
 
 
 public:
-	SmoothTerrainRendering* _terrainRendering;
+	SmoothTerrainRenderer* _smoothTerrainRendering;
+	TiledTerrainRenderer* _tiledTerrainRenderer;
 
-	BattleView(Surface* screen, BattleModel* boardModel, renderers* r, BattleRendering* battleRendering, SmoothTerrainRendering* terrainRendering, Player bluePlayer);
+	BattleView(Surface* screen, BattleModel* boardModel, renderers* r, BattleRendering* battleRendering, SmoothTerrainRenderer* terrainRendering, Player bluePlayer);
 	~BattleView();
 
 	BattleModel* GetBoardModel() const { return _boardModel; }
@@ -74,6 +76,8 @@ public:
 
 	void InitializeTerrainTrees();
 	void UpdateTerrainTrees(bounds2f bounds);
+	void AddTree(glm::vec2 position);
+
 
 	void InitializeTerrainWater(bool editor);
 

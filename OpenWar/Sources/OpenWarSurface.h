@@ -20,7 +20,7 @@ class ButtonView;
 class EditorGesture;
 class SimulationRules;
 class SimulationState;
-class SmoothTerrainRendering;
+class SmoothTerrainRenderer;
 class TerrainGesture;
 
 
@@ -40,7 +40,7 @@ public: // TODO: just testing
 	EditorModel* _editorModel;
 	BattleScript* _battleScript;
 
-	SmoothTerrainRendering* _terrainRendering;
+	SmoothTerrainRenderer* _terrainRendering;
 	BattleView* _battleView;
 	ButtonView* _buttonsTopLeft;
 	ButtonView* _buttonsTopRight;

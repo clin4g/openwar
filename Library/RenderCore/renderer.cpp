@@ -665,6 +665,44 @@ renderers::renderers()
 
 
 
+	_texture_renderer3 = new renderer<texture_vertex3, texture_uniforms>((
+			VERTEX_ATTRIBUTE(texture_vertex3, _position),
+					VERTEX_ATTRIBUTE(texture_vertex3, _texcoord),
+					SHADER_UNIFORM(texture_uniforms, _transform),
+					SHADER_UNIFORM(texture_uniforms, _texture),
+					VERTEX_SHADER
+		({
+						uniform mat4 transform;
+						attribute vec3 position;
+						attribute vec2 texcoord;
+						varying vec2 _texcoord;
+
+						void main()
+						{
+							vec4 p = transform * vec4(position.x, position.y, position.z, 1);
+
+							_texcoord = texcoord;
+
+							gl_Position = p;
+							gl_PointSize = 1.0;
+						}
+					}),
+					FRAGMENT_SHADER
+		({
+						uniform sampler2D texture;
+						varying vec2 _texcoord;
+
+						void main()
+						{
+							gl_FragColor = texture2D(texture, _texcoord);
+						}
+					})
+	));
+	_texture_renderer3->_blend_sfactor = GL_ONE;
+	_texture_renderer3->_blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
+
+
+
 	_opaque_texture_renderer = new renderer<texture_vertex, texture_uniforms>((
 		VERTEX_ATTRIBUTE(texture_vertex, _position),
 		VERTEX_ATTRIBUTE(texture_vertex, _texcoord),

@@ -7,14 +7,17 @@
 
 #include "lauxlib.h"
 #include "lualib.h"
+#include "TiledTerrainModel.h"
+#include "TiledTerrainRenderer.h"
+#include "BattleView.h"
 
 
 static BattleScript* _battlescript = nullptr;
 
 
-
-
-BattleScript::BattleScript(BattleModel* battleModel, SimulationState* simulationState) :
+BattleScript::BattleScript(TiledTerrainRenderer* tiledTerrainRenderer, BattleView* battleView, BattleModel* battleModel, SimulationState* simulationState) :
+_tiledTerrainRenderer(tiledTerrainRenderer),
+_battleView(battleView),
 _battleModel(battleModel),
 _simulationState(simulationState),
 _L(nullptr)
@@ -39,10 +42,23 @@ _L(nullptr)
 	lua_pushcfunction(_L, battle_get_unit_status);
 	lua_setglobal(_L, "battle_get_unit_status");
 
+	lua_pushcfunction(_L, battle_set_terrain_size);
+	lua_setglobal(_L, "battle_set_terrain_size");
+
+	lua_pushcfunction(_L, battle_set_terrain_tile);
+	lua_setglobal(_L, "battle_set_terrain_tile");
+
+	lua_pushcfunction(_L, battle_set_terrain_height);
+	lua_setglobal(_L, "battle_set_terrain_height");
+
+	lua_pushcfunction(_L, battle_add_terrain_tree);
+	lua_setglobal(_L, "battle_add_terrain_tree");
+
+
 	NSString* path = [[NSBundle mainBundle] pathForResource:@"BattleScript" ofType:@"lua" inDirectory:@"BattleScripts"];
 	NSData* data = [NSData dataWithContentsOfFile:path];
 
-	int error = luaL_loadbuffer(_L, (const char*) data.bytes, data.length, "line");
+	int error = luaL_loadbuffer(_L, (const char*)data.bytes, data.length, "line");
 	if (!error) lua_pcall(_L, 0, 0, 0);
 
 	if (error)
@@ -53,19 +69,16 @@ _L(nullptr)
 }
 
 
-
 BattleScript::~BattleScript()
 {
 	lua_close(_L);
 }
 
 
-
 void BattleScript::Tick()
 {
 
 }
-
 
 
 int BattleScript::NewUnit(Player player, UnitPlatform platform, UnitWeapon weapon, int strength, glm::vec2 position, float heading)
@@ -81,7 +94,6 @@ int BattleScript::NewUnit(Player player, UnitPlatform platform, UnitWeapon weapo
 
 	return unit->unitId;
 }
-
 
 
 void BattleScript::SetUnitMovement(int unitId, bool running, std::vector<glm::vec2> path, int chargeId, float heading)
@@ -102,7 +114,6 @@ void BattleScript::SetUnitMovement(int unitId, bool running, std::vector<glm::ve
 }
 
 
-
 /***/
 
 
@@ -118,13 +129,11 @@ int BattleScript::battle_message(lua_State* L)
 }
 
 
-
 int BattleScript::battle_get_time(lua_State* L)
 {
 	lua_pushnumber(L, 47.62);
 	return 1;
 }
-
 
 
 int BattleScript::battle_new_unit(lua_State* L)
@@ -133,9 +142,9 @@ int BattleScript::battle_new_unit(lua_State* L)
 	Player player = n < 1 ? Player1 : ToPlayer(L, 1);
 	UnitPlatform platform = n < 2 ? UnitPlatformCav : ToUnitPlatform(L, 2);
 	UnitWeapon weapon = n < 3 ? UnitWeaponYari : ToUnitUnitWeapon(L, 3);
-	int strength = n < 4 ? 40 : (int) lua_tonumber(L, 4);
-	float x = n < 5 ? 512 : (float) lua_tonumber(L, 5);
-	float y = n < 6 ? 512 : (float) lua_tonumber(L, 6);
+	int strength = n < 4 ? 40 : (int)lua_tonumber(L, 4);
+	float x = n < 5 ? 512 : (float)lua_tonumber(L, 5);
+	float y = n < 6 ? 512 : (float)lua_tonumber(L, 6);
 
 	int unitId = _battlescript->NewUnit(player, platform, weapon, strength, glm::vec2(x, y), 0);
 
@@ -145,16 +154,15 @@ int BattleScript::battle_new_unit(lua_State* L)
 }
 
 
-
 int BattleScript::battle_set_unit_movement(lua_State* L)
 {
 	int n = lua_gettop(L);
-	int unitId = n < 1 ? 0 : (int) lua_tonumber(L, 1);
+	int unitId = n < 1 ? 0 : (int)lua_tonumber(L, 1);
 	bool running = n < 2 ? false : lua_toboolean(L, 2);
 	std::vector<glm::vec2> path;
 	if (n >= 3) ToPath(path, L, 3);
-	int chargeId = n < 4 ? 0 : (int) lua_tonumber(L, 4);
-	float heading = n < 5 ? 0 : (float) lua_tonumber(L, 5);
+	int chargeId = n < 4 ? 0 : (int)lua_tonumber(L, 4);
+	float heading = n < 5 ? 0 : (float)lua_tonumber(L, 5);
 
 	_battlescript->SetUnitMovement(unitId, running, path, chargeId, heading);
 
@@ -162,11 +170,10 @@ int BattleScript::battle_set_unit_movement(lua_State* L)
 }
 
 
-
 int BattleScript::battle_get_unit_status(lua_State* L)
 {
 	int n = lua_gettop(L);
-	int unitId = n < 1 ? 0 : (int) lua_tonumber(L, 1);
+	int unitId = n < 1 ? 0 : (int)lua_tonumber(L, 1);
 
 	Unit* unit = _battlescript->_simulationState->GetUnit(unitId);
 	if (unit != nullptr)
@@ -185,6 +192,58 @@ int BattleScript::battle_get_unit_status(lua_State* L)
 }
 
 
+int BattleScript::battle_set_terrain_size(lua_State* L)
+{
+	int n = lua_gettop(L);
+	int x = n < 1 ? 0 : (int)lua_tonumber(L, 1);
+	int y = n < 2 ? 0 : (int)lua_tonumber(L, 2);
+
+	if (x > 0 && y > 0)
+		_battlescript->_tiledTerrainRenderer->GetTerrainModel()->Resize(glm::ivec2(x, y));
+
+	return 0;
+}
+
+
+int BattleScript::battle_set_terrain_tile(lua_State* L)
+{
+	int n = lua_gettop(L);
+	int x = n < 1 ? 0 : (int)lua_tonumber(L, 1);
+	int y = n < 2 ? 0 : (int)lua_tonumber(L, 2);
+	const char* texture = n < 3 ? nullptr : lua_tostring(L, 3);
+	int rotate = n < 4 ? 0 : (int)lua_tonumber(L, 4);
+	bool mirror = n < 5 ? 0 : lua_toboolean(L, 5);
+
+	_battlescript->_tiledTerrainRenderer->SetTile(x, y, std::string(texture), rotate, mirror);
+
+	return 0;
+}
+
+
+int BattleScript::battle_set_terrain_height(lua_State* L)
+{
+	int n = lua_gettop(L);
+	int x = n < 1 ? 0 : (int)lua_tonumber(L, 1);
+	int y = n < 2 ? 0 : (int)lua_tonumber(L, 2);
+	float h = n < 3 ? 0 : (float)lua_tonumber(L, 3);
+
+	_battlescript->_tiledTerrainRenderer->GetTerrainModel()->SetHeight(x, y, h);
+
+	return 0;
+}
+
+
+int BattleScript::battle_add_terrain_tree(lua_State* L)
+{
+	int n = lua_gettop(L);
+	float x = n < 1 ? 0 : (float)lua_tonumber(L, 1);
+	float y = n < 2 ? 0 : (float)lua_tonumber(L, 2);
+
+	_battlescript->_battleView->AddTree(glm::vec2(x, y));
+
+	return 0;
+}
+
 
 /***/
 
@@ -195,7 +254,6 @@ Player BattleScript::ToPlayer(lua_State* L, int index)
 {
 	return lua_tonumber(L, index) == 2 ? Player2 : Player1;
 }
-
 
 
 UnitPlatform BattleScript::ToUnitPlatform(lua_State* L, int index)
@@ -210,7 +268,6 @@ UnitPlatform BattleScript::ToUnitPlatform(lua_State* L, int index)
 	}
 	return UnitPlatformCav;
 }
-
 
 
 UnitWeapon BattleScript::ToUnitUnitWeapon(lua_State* L, int index)
@@ -228,7 +285,6 @@ UnitWeapon BattleScript::ToUnitUnitWeapon(lua_State* L, int index)
 }
 
 
-
 void BattleScript::ToPath(std::vector<glm::vec2>& result, lua_State* L, int index)
 {
 	int key = 1;
@@ -240,12 +296,12 @@ void BattleScript::ToPath(std::vector<glm::vec2>& result, lua_State* L, int inde
 
 		lua_pushstring(L, "x");
 		lua_gettable(L, -2);
-		float x = (float) lua_tonumber(L, -1);
+		float x = (float)lua_tonumber(L, -1);
 		lua_pop(L, 1);
 
 		lua_pushstring(L, "y");
 		lua_gettable(L, -2);
-		float y = (float) lua_tonumber(L, -1);
+		float y = (float)lua_tonumber(L, -1);
 		lua_pop(L, 1);
 
 		result.push_back(glm::vec2(x, y));
@@ -255,7 +311,6 @@ void BattleScript::ToPath(std::vector<glm::vec2>& result, lua_State* L, int inde
 		++key;
 	}
 }
-
 
 
 /***/

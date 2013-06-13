@@ -210,6 +210,7 @@ struct renderers
 	renderer<texture_vertex, ground_uniforms>* _ground_renderer;
 	renderer<plain_vertex, color_uniforms>* _plain_renderer;
 	renderer<texture_vertex, texture_uniforms>* _texture_renderer;
+	renderer<texture_vertex3, texture_uniforms>* _texture_renderer3;
 	renderer<texture_vertex, texture_uniforms>* _opaque_texture_renderer;
 	renderer<texture_vertex, texture_alpha_uniforms>* _alpha_texture_renderer;
 
