@@ -3,12 +3,13 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #import "Document.h"
-#include "OpenWarSurface.h"
-#include "SimulationState.h"
 #include "BattleContext.h"
-#include "SimulationRules.h"
 #include "BattleModel.h"
 #include "BattleView.h"
+#include "OpenWarSurface.h"
+#include "SimulationRules.h"
+#include "TiledTerrainModel.h"
+#include "BattleScript.h"
 
 
 static NSData* ConvertImageToTiff(image* map)
@@ -40,39 +41,11 @@ static image* ConvertTiffToImage(NSData* data)
 }
 
 
-static BattleContext* LoadBattleContext(image* map)
-{
-	if (map == nullptr)
-	{
-		NSString* path = [[NSBundle mainBundle] pathForResource:@"DefaultMap" ofType:@"tiff" inDirectory:@"Maps"];
-		map = ConvertTiffToImage([NSData dataWithContentsOfFile:path]);
-	}
-
-	SmoothTerrainModel* smoothTerrainModel = new SmoothTerrainModel(bounds2f(0, 0, 1024, 1024), map);
-
-	BattleContext* result = new BattleContext();
-
-	result->simulationState = new SimulationState();
-	result->simulationState->terrainModel = smoothTerrainModel;
-
-	result->simulationRules = new SimulationRules(result->simulationState);
-	result->simulationRules->currentPlayer = Player1;
-
-	result->smoothTerrainModel = smoothTerrainModel;
-	result->smoothTerrainRendering = new SmoothTerrainRenderer(smoothTerrainModel, true);
-
-	result->battleModel = new BattleModel(result->simulationState);
-	result->battleModel->_player = Player1;
-	result->battleModel->Initialize(result->simulationState);
-
-	return result;
-}
-
-
 @implementation Document
 {
 	OpenWarSurface* _surface;
 	image* _map;
+	NSData* _script;
 }
 
 
@@ -110,8 +83,11 @@ static BattleContext* LoadBattleContext(image* map)
 {
 	if (_surface != nullptr)
 	{
-		_surface->_battleContext->smoothTerrainModel->SaveHeightmapToImage();
-		return ConvertImageToTiff(_surface->_battleContext->smoothTerrainModel->GetMap());
+		if ([typeName isEqualToString:@"SmoothMap"])
+		{
+			_surface->_battleContext->smoothTerrainModel->SaveHeightmapToImage();
+			return ConvertImageToTiff(_surface->_battleContext->smoothTerrainModel->GetMap());
+		}
 	}
 
 	return nil;
@@ -120,13 +96,17 @@ static BattleContext* LoadBattleContext(image* map)
 
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
 {
+	NSLog(@"readFromData");
 	if ([typeName isEqualToString:@"SmoothMap"])
 	{
 		_map = ConvertTiffToImage(data);
 	}
+	if ([typeName isEqualToString:@"Script"])
+	{
+		_script = [data retain];
+	}
 
-	if (_surface != nullptr)
-		_surface->Reset(LoadBattleContext(_map));
+	[self resetSurface];
 
     return YES;
 }
@@ -137,10 +117,65 @@ static BattleContext* LoadBattleContext(image* map)
 
 - (Surface*)createSurfaceWithSize:(glm::vec2)size forSurfaceView:(SurfaceView*)surfaceView pixelDensity:(float)pixelDensity;
 {
+	NSLog(@"createSurfaceWithSize");
+
 	_surface = new OpenWarSurface(size, pixelDensity);
-	_surface->Reset(LoadBattleContext(_map));
+	[self resetSurface];
+
 	return _surface;
 }
+
+
+#pragma mark -
+
+- (void)resetSurface
+{
+	if (_surface == nullptr)
+		return;
+
+	if (_script == nil)
+	{
+		NSString* path = [[NSBundle mainBundle] pathForResource:@"BattleScript" ofType:@"lua" inDirectory:@"BattleScripts"];
+		_script = [[NSData dataWithContentsOfFile:path] retain];
+	}
+
+	BattleContext* battleContext = new BattleContext();
+	if (battleContext->smoothTerrainModel == nullptr && battleContext->tiledTerrainModel == nullptr)
+	{
+		if (_map == nullptr)
+		{
+			NSString* path = [[NSBundle mainBundle] pathForResource:@"DefaultMap" ofType:@"tiff" inDirectory:@"Maps"];
+			_map = ConvertTiffToImage([NSData dataWithContentsOfFile:path]);
+		}
+		battleContext->smoothTerrainModel = new SmoothTerrainModel(bounds2f(0, 0, 1024, 1024), _map);
+	}
+
+	BattleScript* battleScript = new BattleScript(battleContext, (const char*)_script.bytes, _script.length);
+
+	if (battleContext->simulationState == nullptr)
+	{
+		battleContext->simulationState = new SimulationState();
+		battleContext->simulationState->terrainModel = static_cast<TerrainModel*>(battleContext->smoothTerrainModel)
+				?: static_cast<TerrainModel*>(battleContext->tiledTerrainModel);
+	}
+
+	if (battleContext->simulationRules == nullptr)
+	{
+		battleContext->simulationRules = new SimulationRules(battleContext->simulationState);
+		battleContext->simulationRules->currentPlayer = Player1;
+	}
+
+	if (battleContext->battleModel == nullptr)
+	{
+		battleContext->battleModel = new BattleModel(battleContext->simulationState);
+		battleContext->battleModel->_player = Player1;
+		battleContext->battleModel->Initialize(battleContext->simulationState);
+	}
+
+	_surface->Reset(battleContext, battleScript);
+}
+
+
 
 
 @end

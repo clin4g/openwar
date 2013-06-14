@@ -89,20 +89,29 @@ OpenWarSurface::~OpenWarSurface()
 }
 
 
-void OpenWarSurface::Reset(BattleContext* battleContext)
+void OpenWarSurface::Reset(BattleContext* battleContext, BattleScript* battleScript)
 {
 	_battleContext = battleContext;
+	_battleScript = battleScript;
 
-	_battleContext->battleView = new BattleView(this, _battleContext->battleModel, _renderers, _battleRendering, _battleContext->smoothTerrainRendering, Player1);
-	_battleContext->battleView->Initialize(_battleContext->simulationState, true);
 
-	_editorModel = new EditorModel(_battleContext->battleView, _battleContext->smoothTerrainRendering);
-	_editorGesture = new EditorGesture(_battleContext->battleView, _editorModel);
+	_battleView = new BattleView(this, _battleContext->battleModel, _renderers, _battleRendering, Player1);
 
-	_battleGesture = new BattleGesture(_battleContext->battleView);
-	_terrainGesture = new TerrainGesture(_battleContext->battleView);
+	if (_battleContext->smoothTerrainModel != nullptr)
+		_battleView->_smoothTerrainRendering = new SmoothTerrainRenderer(_battleContext->smoothTerrainModel, true);
 
-	_battleScript = new BattleScript(_battleContext);
+	if (_battleContext->tiledTerrainModel != nullptr)
+		_battleView->_tiledTerrainRenderer = new TiledTerrainRenderer(_battleContext->tiledTerrainModel);
+
+
+	_battleView->Initialize(_battleContext->simulationState, true);
+
+	_editorModel = new EditorModel(_battleView, _battleView->_smoothTerrainRendering);
+	_editorGesture = new EditorGesture(_battleView, _editorModel);
+
+	_battleGesture = new BattleGesture(_battleView);
+	_terrainGesture = new TerrainGesture(_battleView);
+
 
 	_mode = Mode::Editing;
 	UpdateButtonsAndGestures();
@@ -112,8 +121,8 @@ void OpenWarSurface::Reset(BattleContext* battleContext)
 void OpenWarSurface::ScreenSizeChanged()
 {
 	bounds2f viewport = bounds2f(0, 0, GetSize());
-	if (_battleContext->battleView != nullptr)
-		_battleContext->battleView->SetViewport(viewport);
+	if (_battleView != nullptr)
+		_battleView->SetViewport(viewport);
 	_buttonsTopLeft->SetViewport(viewport);
 	_buttonsTopRight->SetViewport(viewport);
 }
@@ -126,8 +135,8 @@ void OpenWarSurface::Update(double secondsSinceLastUpdate)
 		_battleContext->simulationRules->AdvanceTime((float)secondsSinceLastUpdate);
 		UpdateSoundPlayer();
 	}
-	if (_battleContext->battleView != nullptr)
-		_battleContext->battleView->Update(secondsSinceLastUpdate);
+	if (_battleView != nullptr)
+		_battleView->Update(secondsSinceLastUpdate);
 }
 
 
@@ -139,8 +148,8 @@ void OpenWarSurface::Render()
 
 	glEnable(GL_BLEND);
 
-	if (_battleContext->battleView != nullptr)
-		_battleContext->battleView->Render();
+	if (_battleView != nullptr)
+		_battleView->Render();
 
 	_buttonsTopLeft->Render();
 	_buttonsTopRight->Render();
@@ -155,7 +164,7 @@ void OpenWarSurface::UpdateSoundPlayer()
 	int infantryMarching = 0;
 	int infantryRunning = 0;
 
-	for (UnitMarker* unitMarker : _battleContext->battleView->GetBoardModel()->_unitMarkers)
+	for (UnitMarker* unitMarker : _battleView->GetBattleModel()->_unitMarkers)
 	{
 		Unit* unit = unitMarker->_unit;
 		if (_battleContext->simulationState->GetUnit(unit->unitId) != 0 && glm::length(unit->movement.GetFinalDestination() - unit->state.center) > 4.0f)

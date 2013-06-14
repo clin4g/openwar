@@ -34,6 +34,8 @@ public:
 	virtual bool IsForest(glm::vec2 position) const;
 	virtual bool IsImpassable(glm::vec2 position) const;
 
+	virtual bool ContainsWater(bounds2f bounds) const;
+
 
 
 	image* GetMap() const { return _map; }
@@ -45,9 +47,6 @@ public:
 	float GetMaxHeight() const { return _height; }
 
 	float GetHeight(int x, int y) const;
-
-	bool ContainsWater(bounds2f bounds) const;
-
 
 	bounds2f EditHills(glm::vec2 position, float radius, float pressure);
 	bounds2f EditWater(glm::vec2 position, float radius, float pressure);

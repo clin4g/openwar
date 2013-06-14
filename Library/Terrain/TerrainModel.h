@@ -22,6 +22,7 @@ public:
 	virtual bool IsForest(glm::vec2 position) const = 0;
 	virtual bool IsImpassable(glm::vec2 position) const = 0;
 
+	virtual bool ContainsWater(bounds2f bounds) const = 0;
 };
 
 

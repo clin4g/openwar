@@ -6,13 +6,10 @@
 #define BATTLECONTEXT_H
 
 class BattleModel;
-class BattleView;
 class SimulationRules;
 class SimulationState;
 class SmoothTerrainModel;
-class SmoothTerrainRenderer;
 class TiledTerrainModel;
-class TiledTerrainRenderer;
 
 
 class BattleContext
@@ -25,13 +22,8 @@ public:
 	SimulationRules* simulationRules;
 
 	SmoothTerrainModel* smoothTerrainModel;
-	SmoothTerrainRenderer* smoothTerrainRendering;
-
 	TiledTerrainModel* tiledTerrainModel;
-	TiledTerrainRenderer* tiledTerrainRenderer;
-
 	BattleModel* battleModel;
-	BattleView* battleView;
 };
 
 

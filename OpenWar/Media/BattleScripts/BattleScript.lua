@@ -34,6 +34,10 @@
 -- function set_unit_missile_target(unit_id, target_id)
 
 
+openwar_terrain_init("smooth")
+openwar_simulator_init()
+
+
 battle_message("Hello World")
 
 

@@ -9,11 +9,8 @@ BattleContext::BattleContext() :
 simulationState(nullptr),
 simulationRules(nullptr),
 smoothTerrainModel(nullptr),
-smoothTerrainRendering(nullptr),
 tiledTerrainModel(nullptr),
-tiledTerrainRenderer(nullptr),
-battleModel(nullptr),
-battleView(nullptr)
+battleModel(nullptr)
 {
 }
 

@@ -28,7 +28,7 @@ class BattleView : public TerrainView
 {
 	renderers* _renderers;
 	BattleRendering* _battleRendering;
-	BattleModel* _boardModel;
+	BattleModel* _battleModel;
 	Player _bluePlayer;
 
 	// static shapes
@@ -66,10 +66,10 @@ public:
 	SmoothTerrainRenderer* _smoothTerrainRendering;
 	TiledTerrainRenderer* _tiledTerrainRenderer;
 
-	BattleView(Surface* screen, BattleModel* boardModel, renderers* r, BattleRendering* battleRendering, SmoothTerrainRenderer* terrainRendering, Player bluePlayer);
+	BattleView(Surface* screen, BattleModel* boardModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer);
 	~BattleView();
 
-	BattleModel* GetBoardModel() const { return _boardModel; }
+	BattleModel* GetBattleModel() const { return _battleModel; }
 
 	void Initialize(SimulationState* simulationState, bool editor = false);
 	void InitializeTerrainShadow();

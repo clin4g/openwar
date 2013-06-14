@@ -8,10 +8,10 @@
 
 
 
-BattleView::BattleView(Surface* screen, BattleModel* boardModel, renderers* r, BattleRendering* battleRendering, SmoothTerrainRenderer* terrainRendering, Player bluePlayer) : TerrainView(screen, boardModel->_simulationState->terrainModel),
+BattleView::BattleView(Surface* screen, BattleModel* boardModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer) : TerrainView(screen, boardModel->_simulationState->terrainModel),
 _renderers(r),
 _battleRendering(battleRendering),
-_boardModel(boardModel),
+_battleModel(boardModel),
 _bluePlayer(bluePlayer),
 _movementMarker_pathShape(),
 _rangeMarker_shape(),
@@ -23,7 +23,7 @@ _trackingMarker_missileHeadShape(),
 _unitMarker_targetLineShape(),
 _unitMarker_targetHeadShape(),
 _shape_fighter_weapons(),
-_smoothTerrainRendering(terrainRendering),
+_smoothTerrainRendering(nullptr),
 _tiledTerrainRenderer(nullptr)
 {
 	//_tiledTerrainRenderer = new TiledTerrainRenderer();
@@ -123,6 +123,9 @@ struct random_iterator
 
 void BattleView::UpdateTerrainTrees(bounds2f bounds)
 {
+	if (_smoothTerrainRendering == nullptr)
+		return;
+
 	image* map = _smoothTerrainRendering->GetTerrainModel()->GetMap();
 
 	auto pos = std::remove_if(_static_billboards.begin(), _static_billboards.end(), [bounds](const BattleRendering::texture_billboard_vertex& v) {
@@ -218,7 +221,7 @@ void BattleView::InitializeTerrainWater(bool editor)
 		for (int y = 0; y < n; ++y)
 		{
 			glm::vec2 p = s * glm::vec2(x, y);
-			if (editor || _smoothTerrainRendering->GetTerrainModel()->ContainsWater(bounds2f(p, p + s)))
+			if (editor || _battleModel->_simulationState->terrainModel->ContainsWater(bounds2f(p, p + s)))
 			{
 				plain_vertex v11 = plain_vertex(p);
 				plain_vertex v12 = plain_vertex(p + glm::vec2(0, s.y));
@@ -260,7 +263,7 @@ void BattleView::InitializeCameraPosition(const std::map<int, Unit*>& units)
 		Unit* unit = item.second;
 		if (!unit->state.IsRouting())
 		{
-			if (unit->player == _boardModel->_player)
+			if (unit->player == _battleModel->_player)
 			{
 				friendlyCenter += unit->state.center;
 				++friendlyCount;
@@ -409,8 +412,11 @@ void BattleView::RenderBackgroundSky()
 
 void BattleView::RenderTerrainGround()
 {
-	_smoothTerrainRendering->Render(GetTransform(), _lightNormal);
-	//_tiledTerrainRenderer->Render(GetTransform(), _lightNormal);
+	if (_smoothTerrainRendering != nullptr)
+		_smoothTerrainRendering->Render(GetTransform(), _lightNormal);
+
+	if (_tiledTerrainRenderer != nullptr)
+		_tiledTerrainRenderer->Render(GetTransform(), _lightNormal);
 }
 
 
@@ -430,7 +436,7 @@ void BattleView::RenderFighterWeapons()
 	_shape_fighter_weapons._mode = GL_LINES;
 	_shape_fighter_weapons._vertices.clear();
 
-	for (UnitMarker* marker : _boardModel->_unitMarkers)
+	for (UnitMarker* marker : _battleModel->_unitMarkers)
 	{
 		AppendFighterWeapons(marker->_unit);
 	}
@@ -461,7 +467,7 @@ void BattleView::AppendFighterWeapons(Unit* unit)
 
 void BattleView::AppendCasualtyBillboards()
 {
-	if (_boardModel->_casualtyMarker->casualties.empty())
+	if (_battleModel->_casualtyMarker->casualties.empty())
 		return;
 
 	_color_billboards._mode = GL_POINTS;
@@ -470,7 +476,7 @@ void BattleView::AppendCasualtyBillboards()
 	glm::vec4 c1 = glm::vec4(1, 1, 1, 0.8);
 	glm::vec4 cr = glm::vec4(1, 0, 0, 0);
 	glm::vec4 cb = glm::vec4(0, 0, 1, 0);
-	for (const CasualtyMarker::Casualty& casualty : _boardModel->_casualtyMarker->casualties)
+	for (const CasualtyMarker::Casualty& casualty : _battleModel->_casualtyMarker->casualties)
 	{
 		if (casualty.time <= 1)
 		{
@@ -514,7 +520,7 @@ void BattleView::AppendCasualtyBillboards()
 
 void BattleView::AppendFighterBillboards()
 {
-	for (UnitMarker* marker : _boardModel->_unitMarkers)
+	for (UnitMarker* marker : _battleModel->_unitMarkers)
 	{
 		Unit* unit = marker->_unit;
 
@@ -561,7 +567,7 @@ void BattleView::AppendSmokeBillboards()
 {
 	glm::vec2 texsize = glm::vec2(0.125, 0.125);
 
-	for (SmokeMarker* marker : _boardModel->_smokeMarkers)
+	for (SmokeMarker* marker : _battleModel->_smokeMarkers)
 	{
 		for (SmokeMarker::Particle& projectile : marker->particles)
 		{
@@ -610,7 +616,7 @@ void BattleView::RenderTerrainBillboards()
 
 void BattleView::RenderRangeMarkers()
 {
-	for (RangeMarker* marker : _boardModel->_rangeMarkers)
+	for (RangeMarker* marker : _battleModel->_rangeMarkers)
 	{
 		Unit* unit = marker->_unit;
 		if (unit->stats.maximumRange > 0 && unit->state.unitMode != UnitModeMoving && !unit->state.IsRouting())
@@ -691,7 +697,7 @@ void BattleView::RenderUnitMarkers()
 	_texture_billboards2._mode = GL_POINTS;
 	_texture_billboards2._vertices.clear();
 
-	for (UnitMarker* marker : _boardModel->_unitMarkers)
+	for (UnitMarker* marker : _battleModel->_unitMarkers)
 	{
 		Unit* unit = marker->_unit;
 
@@ -800,7 +806,7 @@ void BattleView::RenderUnitMissileTarget(Unit* unit)
 
 void BattleView::RenderTrackingMarkers()
 {
-	for (TrackingMarker* marker : _boardModel->_trackingMarkers)
+	for (TrackingMarker* marker : _battleModel->_trackingMarkers)
 	{
 		glDisable(GL_DEPTH_TEST);
 		RenderTrackingMarker(marker);
@@ -975,7 +981,7 @@ void BattleView::RenderTrackingFighters(TrackingMarker* marker)
 
 void BattleView::RenderMovementMarkers()
 {
-	for (MovementMarker* marker : _boardModel->_movementMarkers)
+	for (MovementMarker* marker : _battleModel->_movementMarkers)
 	{
 		glDisable(GL_DEPTH_TEST);
 		RenderMovementMarker(marker->_unit);
@@ -1084,7 +1090,7 @@ void BattleView::RenderShootingMarkers()
 	_missileMarker_shape._mode = GL_LINES;
 	_missileMarker_shape._vertices.clear();
 
-	for (ShootingMarker* marker : _boardModel->_shootingMarkers)
+	for (ShootingMarker* marker : _battleModel->_shootingMarkers)
 	{
 		AppendShootingMarker(marker);
 	}

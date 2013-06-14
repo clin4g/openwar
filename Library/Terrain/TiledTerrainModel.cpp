@@ -9,7 +9,8 @@ TiledTerrainModel::TiledTerrainModel(bounds2f bounds, glm::ivec2 size) :
 _bounds(bounds),
 _size(size),
 _tiles(nullptr),
-_heightmap(nullptr)
+_heightmap(nullptr),
+_nextTextureNumber(1)
 {
 	_tiles = new Tile[size.x * size.y];
 	_heightmap = new heightmap(glm::ivec2(size.x + 1, size.y + 1));
@@ -23,15 +24,59 @@ TiledTerrainModel::~TiledTerrainModel()
 }
 
 
-void TiledTerrainModel::Resize(glm::ivec2 size)
+float TiledTerrainModel::GetHeight(glm::vec2 position) const
 {
-	_size = size;
+	glm::ivec2 size = _heightmap->size();
+	glm::vec2 c = glm::vec2(size.x - 1, size.y - 1) * (position - _bounds.p11()) / _bounds.size();
 
-	delete [] _tiles;
-	_tiles = new Tile[size.x * size.y];
+	return _heightmap->interpolate(c);
+}
 
-	delete _heightmap;
-	_heightmap = new heightmap(glm::ivec2(size.x + 1, size.y + 1));
+
+glm::vec3 TiledTerrainModel::GetNormal(glm::vec2 position) const
+{
+	return glm::vec3(0, 0, 1);
+}
+
+
+float const* TiledTerrainModel::Intersect(ray r)
+{
+	bounds2f bounds = GetBounds();
+	glm::vec3 offset = glm::vec3(bounds.min, 0);
+	glm::vec3 scale = glm::vec3(glm::vec2(_heightmap->size().x - 1, _heightmap->size().y - 1) / bounds.size(), 1);
+
+	ray r2 = ray(scale * (r.origin - offset), glm::normalize(scale * r.direction));
+	const float* d = _heightmap->intersect(r2);
+	if (d == nullptr)
+		return nullptr;
+
+	static float result;
+	result = glm::length((r2.point(*d) - r2.origin) / scale);
+	return &result;
+}
+
+
+bool TiledTerrainModel::IsWater(glm::vec2 position) const
+{
+	return false;
+}
+
+
+bool TiledTerrainModel::IsForest(glm::vec2 position) const
+{
+	return false;
+}
+
+
+bool TiledTerrainModel::IsImpassable(glm::vec2 position) const
+{
+	return false;
+}
+
+
+bool TiledTerrainModel::ContainsWater(bounds2f bounds) const
+{
+	return false;
 }
 
 
@@ -41,16 +86,29 @@ void TiledTerrainModel::SetHeight(int x, int y, float h)
 }
 
 
-float TiledTerrainModel::GetHeight(glm::vec2 position) const
-{
-	return _heightmap->interpolate(position);
-}
 
+void TiledTerrainModel::SetTile(int x, int y, const std::string& texture, int rotate, bool mirror)
+{
+	NSString* path = [NSString stringWithCString:texture.c_str() encoding:NSASCIIStringEncoding];
+
+	if (_textureNumber.find(texture) == _textureNumber.end())
+	{
+		_textures[_nextTextureNumber] = new ::texture(image(path));
+		_textureNumber[texture] = _nextTextureNumber;
+		++_nextTextureNumber;
+	}
+
+	TiledTerrainModel::Tile* tile = GetTile(x, y);
+	tile->texture = _textures[_textureNumber[texture]];
+	tile->rotate = rotate;
+	tile->mirror = mirror;
+}
 
 
 TiledTerrainModel::Tile* TiledTerrainModel::GetTile(int x, int y)
 {
 	if (0 <= x && x < _size.x && 0 <= y && y < _size.y)
 		return _tiles + x + _size.x * y;
+
 	return nullptr;
 }

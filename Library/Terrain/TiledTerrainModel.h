@@ -5,20 +5,23 @@
 #ifndef TiledTerrainModel_H
 #define TiledTerrainModel_H
 
+#include "TerrainModel.h"
 #include "bounds.h"
 #include "heightmap.h"
+#include "texture.h"
+#include "image.h"
 
 
-class TiledTerrainModel
+class TiledTerrainModel : public TerrainModel
 {
 public:
 	struct Tile
 	{
-		int texture;
+		texture* texture;
 		int rotate; // counterclockwise
 		bool mirror;
 
-		Tile() : texture(0), rotate(0), mirror(false) { }
+		Tile() : texture(nullptr), rotate(0), mirror(false) { }
 	};
 
 private:
@@ -27,20 +30,32 @@ private:
 	Tile* _tiles;
 	heightmap* _heightmap;
 
+	std::map<int, texture*> _textures;
+	std::map<std::string, int> _textureNumber;
+	int _nextTextureNumber;
+
 public:
 	TiledTerrainModel(bounds2f bounds, glm::ivec2 size);
 	~TiledTerrainModel();
 
-	void Resize(glm::ivec2 size);
+	virtual float GetHeight(glm::vec2 position) const;
+	virtual glm::vec3 GetNormal(glm::vec2 position) const;
+	virtual const float* Intersect(ray r);
+
+	virtual bool IsWater(glm::vec2 position) const;
+	virtual bool IsForest(glm::vec2 position) const;
+	virtual bool IsImpassable(glm::vec2 position) const;
+
+	virtual bool ContainsWater(bounds2f bounds) const;
 
 	void SetHeight(int x, int y, float h);
-
-	float GetHeight(glm::vec2 position) const;
+	void SetTile(int x, int y, const std::string& texture, int rotate, bool mirror);
 
 	bounds2f GetBounds() const { return _bounds; }
 	glm::ivec2 GetSize() const { return _size; }
 
 	Tile* GetTile(int x, int y);
+
 };
 
 

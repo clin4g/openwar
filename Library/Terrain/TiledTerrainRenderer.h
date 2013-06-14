@@ -14,17 +14,12 @@ class TiledTerrainModel;
 class TiledTerrainRenderer : public TerrainRenderer
 {
 	TiledTerrainModel* _terrainModel;
-	std::map<int, texture*> _textures;
-	std::map<std::string, int> _textureNumber;
-	int _nextTextureNumber;
 
 public:
-	TiledTerrainRenderer();
+	TiledTerrainRenderer(TiledTerrainModel* terrainModel);
 	virtual ~TiledTerrainRenderer();
 
 	TiledTerrainModel* GetTerrainModel() const { return _terrainModel; }
-
-	void SetTile(int x, int y, const std::string& texture, int rotate, bool mirror);
 
 	virtual void Render(const glm::mat4x4& transform, const glm::vec3& lightNormal);
 };

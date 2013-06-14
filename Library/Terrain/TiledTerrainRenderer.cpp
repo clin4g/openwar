@@ -8,34 +8,14 @@
 #include "TiledTerrainModel.h"
 
 
-TiledTerrainRenderer::TiledTerrainRenderer() :
-_terrainModel(nullptr),
-_nextTextureNumber(1)
+TiledTerrainRenderer::TiledTerrainRenderer(TiledTerrainModel* terrainModel) :
+_terrainModel(terrainModel)
 {
-	_terrainModel = new TiledTerrainModel(bounds2f(0, 0, 1024, 1024), glm::ivec2(1, 1));
 }
 
 
 TiledTerrainRenderer::~TiledTerrainRenderer()
 {
-}
-
-
-void TiledTerrainRenderer::SetTile(int x, int y, const std::string& texture, int rotate, bool mirror)
-{
-	NSString* path = [NSString stringWithCString:texture.c_str() encoding:NSASCIIStringEncoding];
-
-	if (_textureNumber.find(texture) == _textureNumber.end())
-	{
-		_textures[_nextTextureNumber] = new ::texture(image(path));
-		_textureNumber[texture] = _nextTextureNumber;
-		++_nextTextureNumber;
-	}
-
-	TiledTerrainModel::Tile* tile = _terrainModel->GetTile(x, y);
-	tile->texture = _textureNumber[texture];
-	tile->rotate = rotate;
-	tile->mirror = mirror;
 }
 
 
@@ -54,13 +34,14 @@ void TiledTerrainRenderer::Render(const glm::mat4x4& transform, const glm::vec3&
 		{
 			TiledTerrainModel::Tile* tile = _terrainModel->GetTile(x, y);
 
-			float h00 = _terrainModel->GetHeight(glm::vec2(x, y));
-			float h01 = _terrainModel->GetHeight(glm::vec2(x, y + 1));
-			float h10 = _terrainModel->GetHeight(glm::vec2(x + 1, y));
-			float h11 = _terrainModel->GetHeight(glm::vec2(x + 1, y + 1));
-
 			glm::vec2 p0 = bounds.min + delta * glm::vec2(x, y);
 			glm::vec2 p1 = p0 + delta;
+
+			float h00 = _terrainModel->GetHeight(glm::vec2(p0.x, p0.y));
+			float h01 = _terrainModel->GetHeight(glm::vec2(p0.x, p1.y));
+			float h10 = _terrainModel->GetHeight(glm::vec2(p1.x, p0.y));
+			float h11 = _terrainModel->GetHeight(glm::vec2(p1.x, p1.y));
+
 
 			glm::vec2 t00 = glm::vec2(0, 0);
 			glm::vec2 t01 = glm::vec2(0, 1);
@@ -105,7 +86,7 @@ void TiledTerrainRenderer::Render(const glm::mat4x4& transform, const glm::vec3&
 
 			texture_uniforms uniforms;
 			uniforms._transform = transform;
-			uniforms._texture = _textures[tile->texture];
+			uniforms._texture = tile->texture;
 
 			renderers::singleton->_texture_renderer3->render(shape, uniforms);
 		}

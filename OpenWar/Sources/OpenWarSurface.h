@@ -23,6 +23,7 @@ class SimulationRules;
 class SimulationState;
 class SmoothTerrainRenderer;
 class TerrainGesture;
+class TiledTerrainRenderer;
 
 
 class OpenWarSurface : public Surface
@@ -32,6 +33,7 @@ public: // TODO: just testing
 	Mode _mode;
 
 	BattleContext* _battleContext;
+	BattleView* _battleView;
 
 	renderers* _renderers;
 	BattleRendering* _battleRendering;
@@ -60,7 +62,7 @@ public:
 	OpenWarSurface(glm::vec2 size, float pixelDensity);
 	virtual ~OpenWarSurface();
 
-	void Reset(BattleContext* battleContext);
+	void Reset(BattleContext* battleContext, BattleScript* battleScript);
 
 	virtual void ScreenSizeChanged();
 	virtual void Update(double secondsSinceLastUpdate);

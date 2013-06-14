@@ -51,7 +51,7 @@ void BattleGesture::RenderHints()
 	sprite._color = glm::vec4(0, 0, 0, 1);
 	sprite._viewport = _boardView->GetViewportBounds();
 
-	for (UnitMarker* unitMarker : _boardView->GetBoardModel()->_unitMarkers)
+	for (UnitMarker* unitMarker : _boardView->GetBattleModel()->_unitMarkers)
 	{
 		bounds2f bounds = GetUnitCurrentScreenBounds(unitMarker->_unit);
 
@@ -100,10 +100,10 @@ void BattleGesture::TouchBegan(Touch* touch)
 		if (unit == nullptr)
 			return;
 
-		if (unit != nullptr && !_boardView->GetBoardModel()->GetTrackingMarker(unit))
+		if (unit != nullptr && !_boardView->GetBattleModel()->GetTrackingMarker(unit))
 		{
 			_allowTargetEnemyUnit = unit->stats.unitWeapon == UnitWeaponBow || unit->stats.unitWeapon == UnitWeaponArq;
-			_trackingMarker = _boardView->GetBoardModel()->AddTrackingMarker(unit);
+			_trackingMarker = _boardView->GetBattleModel()->AddTrackingMarker(unit);
 
 			_tappedUnitCenter = GetUnitCurrentScreenBounds(unit).contains(screenPosition);
 			_tappedDestination = GetUnitFutureScreenBounds(unit).contains(screenPosition);
@@ -283,13 +283,13 @@ void BattleGesture::TouchEnded(Touch* touch)
 
 			unit->timeUntilSwapFighters = 0.2f;
 
-			if (!_boardView->GetBoardModel()->GetMovementMarker(unit))
-				_boardView->GetBoardModel()->AddMovementMarker(unit);
+			if (!_boardView->GetBattleModel()->GetMovementMarker(unit))
+				_boardView->GetBattleModel()->AddMovementMarker(unit);
 
 			if (touch->GetTapCount() == 1)
 				SoundPlayer::singleton->Play(SoundBufferCommandAck);
 
-			_boardView->GetBoardModel()->RemoveTrackingMarker(_trackingMarker);
+			_boardView->GetBattleModel()->RemoveTrackingMarker(_trackingMarker);
 			_trackingMarker = nullptr;
 		}
 	}
@@ -340,7 +340,7 @@ void BattleGesture::TouchWasCancelled(Touch* touch)
 {
 	if (_trackingMarker)
 	{
-		_boardView->GetBoardModel()->RemoveTrackingMarker(_trackingMarker);
+		_boardView->GetBattleModel()->RemoveTrackingMarker(_trackingMarker);
 		_trackingMarker = nullptr;
 	}
 
@@ -404,7 +404,7 @@ bounds2f BattleGesture::GetUnitFutureScreenBounds(Unit* unit)
 Unit* BattleGesture::GetTouchedUnitMarker(glm::vec2 screenPosition, glm::vec2 terrainPosition)
 {
 	Unit* result = nullptr;
-	UnitMarker* unitMarker = _boardView->GetBoardModel()->GetNearestUnitMarker(terrainPosition, _boardView->GetBoardModel()->_player);
+	UnitMarker* unitMarker = _boardView->GetBattleModel()->GetNearestUnitMarker(terrainPosition, _boardView->GetBattleModel()->_player);
 	if (unitMarker != nullptr)
 	{
 		Unit* unit = unitMarker->_unit;
@@ -420,7 +420,7 @@ Unit* BattleGesture::GetTouchedUnitMarker(glm::vec2 screenPosition, glm::vec2 te
 Unit* BattleGesture::GetTouchedMovementMarker(glm::vec2 screenPosition, glm::vec2 terrainPosition)
 {
 	Unit* result = nullptr;
-	MovementMarker* movementMarker = _boardView->GetBoardModel()->GetNearestMovementMarker(terrainPosition, _boardView->GetBoardModel()->_player);
+	MovementMarker* movementMarker = _boardView->GetBattleModel()->GetNearestMovementMarker(terrainPosition, _boardView->GetBattleModel()->_player);
 	if (movementMarker != nullptr)
 	{
 		Unit* unit = movementMarker->_unit;
@@ -467,7 +467,7 @@ void BattleGesture::UpdateTrackingMarker()
 		float delta = 2 / fmaxf(1, glm::length(currentDestination - markerPosition));
 		for (float k = 0; k < 1; k += delta)
 		{
-			if (_boardView->GetBoardModel()->_simulationState->terrainModel->IsImpassable(glm::mix(currentDestination, markerPosition, k)))
+			if (_boardView->GetBattleModel()->_simulationState->terrainModel->IsImpassable(glm::mix(currentDestination, markerPosition, k)))
 			{
 				waterEdgeFactor = k;
 				break;
@@ -534,7 +534,7 @@ Unit* BattleGesture::FindUnit(glm::vec2 touchPosition, glm::vec2 markerPosition,
 	glm::vec2 d = (touchPosition - markerPosition) / 4.0f;
 	for (int i = 0; i < 4; ++i)
 	{
-		UnitMarker* unitMarker = _boardView->GetBoardModel()->GetNearestUnitMarker(p, player);
+		UnitMarker* unitMarker = _boardView->GetBattleModel()->GetNearestUnitMarker(p, player);
 		if (unitMarker && glm::length(unitMarker->_unit->state.center - p) <= SNAP_TO_UNIT_TRESHOLD)
 		{
 			enemyMarker = unitMarker;
