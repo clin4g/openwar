@@ -4,7 +4,8 @@
 
 #import "Document.h"
 #include "OpenWarSurface.h"
-#import "SimulationState.h"
+#include "SimulationState.h"
+#include "BattleContext.h"
 
 
 static NSData* ConvertImageToTiff(image* map)
@@ -46,8 +47,7 @@ static SimulationState* LoadSimulationState(image* map)
 		map = ConvertTiffToImage([NSData dataWithContentsOfFile:path]);
 	}
 
-	result->map = map;
-	result->terrainModel = new SmoothTerrainModel(bounds2f(0, 0, 1024, 1024), map);
+	result->smoothTerrainModel = new SmoothTerrainModel(bounds2f(0, 0, 1024, 1024), map);
 
 	return result;
 }
@@ -94,8 +94,8 @@ static SimulationState* LoadSimulationState(image* map)
 {
 	if (_surface != nullptr)
 	{
-		_surface->_terrainRendering->GetTerrainModel()->SaveHeightmapToImage();
-		return ConvertImageToTiff(_surface->_simulationState->map);
+		_surface->_battleContext->smoothTerrainModel->SaveHeightmapToImage();
+		return ConvertImageToTiff(_surface->_battleContext->smoothTerrainModel->GetMap());
 	}
 
 	return nil;

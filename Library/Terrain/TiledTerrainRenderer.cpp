@@ -5,7 +5,7 @@
 #include "TiledTerrainRenderer.h"
 #include "renderer.h"
 #include "image.h"
-#import "TiledTerrainModel.h"
+#include "TiledTerrainModel.h"
 
 
 TiledTerrainRenderer::TiledTerrainRenderer() :
@@ -23,11 +23,11 @@ TiledTerrainRenderer::~TiledTerrainRenderer()
 
 void TiledTerrainRenderer::SetTile(int x, int y, const std::string& texture, int rotate, bool mirror)
 {
-	NSString* s = [NSString stringWithCString:texture.c_str() encoding:NSASCIIStringEncoding];
+	NSString* path = [NSString stringWithCString:texture.c_str() encoding:NSASCIIStringEncoding];
 
 	if (_textureNumber.find(texture) == _textureNumber.end())
 	{
-		_textures[_nextTextureNumber] = new ::texture(image(s));
+		_textures[_nextTextureNumber] = new ::texture(image(path));
 		_textureNumber[texture] = _nextTextureNumber;
 		++_nextTextureNumber;
 	}

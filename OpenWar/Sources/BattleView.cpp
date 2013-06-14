@@ -8,7 +8,7 @@
 
 
 
-BattleView::BattleView(Surface* screen, BattleModel* boardModel, renderers* r, BattleRendering* battleRendering, SmoothTerrainRenderer* terrainRendering, Player bluePlayer) : TerrainView(screen, boardModel->_simulationState->terrainModel),
+BattleView::BattleView(Surface* screen, BattleModel* boardModel, renderers* r, BattleRendering* battleRendering, SmoothTerrainRenderer* terrainRendering, Player bluePlayer) : TerrainView(screen, boardModel->_simulationState->smoothTerrainModel),
 _renderers(r),
 _battleRendering(battleRendering),
 _boardModel(boardModel),
@@ -123,7 +123,7 @@ struct random_iterator
 
 void BattleView::UpdateTerrainTrees(bounds2f bounds)
 {
-	image* map = _boardModel->_simulationState->map;
+	image* map = _boardModel->_simulationState->smoothTerrainModel->GetMap();
 
 	auto pos = std::remove_if(_static_billboards.begin(), _static_billboards.end(), [bounds](const BattleRendering::texture_billboard_vertex& v) {
 		return bounds.contains(v._position.xy());

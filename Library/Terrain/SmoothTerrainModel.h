@@ -26,6 +26,8 @@ public:
 	SmoothTerrainModel(bounds2f bounds, image* map);
 	~SmoothTerrainModel();
 
+	image* GetMap() const { return _map; }
+
 	void LoadHeightmapFromImage();
 	void SaveHeightmapToImage();
 

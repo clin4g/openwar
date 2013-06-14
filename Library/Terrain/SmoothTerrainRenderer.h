@@ -100,7 +100,6 @@ struct sobel_uniforms
 class SmoothTerrainRenderer : public TerrainRenderer
 {
 	SmoothTerrainModel* _terrainModel;
-	image* _mapImage;
 
 	int _framebuffer_width;
 	int _framebuffer_height;
@@ -118,7 +117,7 @@ class SmoothTerrainRenderer : public TerrainRenderer
 	terrain_renderers* _renderers;
 
 public:
-	SmoothTerrainRenderer(SmoothTerrainModel* terrainModel, image* map, bool render_edges);
+	SmoothTerrainRenderer(SmoothTerrainModel* terrainModel, bool render_edges);
 	virtual ~SmoothTerrainRenderer();
 
 	SmoothTerrainModel* GetTerrainModel() const { return _terrainModel; }

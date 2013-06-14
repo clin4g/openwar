@@ -3,6 +3,7 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "OpenWarSurface.h"
+#include "BattleContext.h"
 #include "BattleModel.h"
 #include "BattleGesture.h"
 #include "BattleScript.h"
@@ -18,16 +19,12 @@
 
 OpenWarSurface::OpenWarSurface(glm::vec2 size, float pixelDensity) : Surface(size, pixelDensity),
 _mode(Mode::None),
-_simulationState(nullptr),
-_simulationRules(nullptr),
+_battleContext(nullptr),
 _renderers(nullptr),
 _battleRendering(nullptr),
 _buttonRendering(nullptr),
-_battleModel(nullptr),
 _editorModel(nullptr),
 _battleScript(nullptr),
-_terrainRendering(nullptr),
-_battleView(nullptr),
 _buttonsTopLeft(nullptr),
 _buttonsTopRight(nullptr),
 _terrainGesture(nullptr),
@@ -94,28 +91,30 @@ OpenWarSurface::~OpenWarSurface()
 
 void OpenWarSurface::Reset(SimulationState* simulationState)
 {
-	_simulationState = simulationState;
+	_battleContext = new BattleContext();
 
+	_battleContext->simulationState = simulationState;
 
-	_simulationRules = new SimulationRules(_simulationState);
-	_simulationRules->currentPlayer = Player1;
+	_battleContext->simulationRules = new SimulationRules(_battleContext->simulationState);
+	_battleContext->simulationRules->currentPlayer = Player1;
 
-	_terrainRendering = new SmoothTerrainRenderer(_simulationState->terrainModel, _simulationState->map, true);
+	_battleContext->smoothTerrainModel = _battleContext->simulationState->smoothTerrainModel;
+	_battleContext->smoothTerrainRendering = new SmoothTerrainRenderer(_battleContext->smoothTerrainModel, true);
 
-	_battleModel = new BattleModel(_simulationState);
-	_battleModel->_player = Player1;
-	_battleModel->Initialize(_simulationState);
+	_battleContext->battleModel = new BattleModel(_battleContext->simulationState);
+	_battleContext->battleModel->_player = Player1;
+	_battleContext->battleModel->Initialize(_battleContext->simulationState);
 
-	_battleView = new BattleView(this, _battleModel, _renderers, _battleRendering, _terrainRendering, Player1);
-	_battleView->Initialize(_simulationState, true);
+	_battleContext->battleView = new BattleView(this, _battleContext->battleModel, _renderers, _battleRendering, _battleContext->smoothTerrainRendering, Player1);
+	_battleContext->battleView->Initialize(_battleContext->simulationState, true);
 
-	_editorModel = new EditorModel(_battleView, _terrainRendering);
-	_editorGesture = new EditorGesture(_battleView, _editorModel);
+	_editorModel = new EditorModel(_battleContext->battleView, _battleContext->smoothTerrainRendering);
+	_editorGesture = new EditorGesture(_battleContext->battleView, _editorModel);
 
-	_battleGesture = new BattleGesture(_battleView);
-	_terrainGesture = new TerrainGesture(_battleView);
+	_battleGesture = new BattleGesture(_battleContext->battleView);
+	_terrainGesture = new TerrainGesture(_battleContext->battleView);
 
-	_battleScript = new BattleScript(_battleView->_tiledTerrainRenderer, _battleView, _battleModel, _simulationState);
+	_battleScript = new BattleScript(_battleContext);
 
 	_mode = Mode::Editing;
 	UpdateButtonsAndGestures();
@@ -125,8 +124,8 @@ void OpenWarSurface::Reset(SimulationState* simulationState)
 void OpenWarSurface::ScreenSizeChanged()
 {
 	bounds2f viewport = bounds2f(0, 0, GetSize());
-	if (_battleView != nullptr)
-		_battleView->SetViewport(viewport);
+	if (_battleContext->battleView != nullptr)
+		_battleContext->battleView->SetViewport(viewport);
 	_buttonsTopLeft->SetViewport(viewport);
 	_buttonsTopRight->SetViewport(viewport);
 }
@@ -136,11 +135,11 @@ void OpenWarSurface::Update(double secondsSinceLastUpdate)
 {
 	if (_mode == Mode::Playing)
 	{
-		_simulationRules->AdvanceTime((float)secondsSinceLastUpdate);
+		_battleContext->simulationRules->AdvanceTime((float)secondsSinceLastUpdate);
 		UpdateSoundPlayer();
 	}
-	if (_battleView != nullptr)
-		_battleView->Update(secondsSinceLastUpdate);
+	if (_battleContext->battleView != nullptr)
+		_battleContext->battleView->Update(secondsSinceLastUpdate);
 }
 
 
@@ -152,8 +151,8 @@ void OpenWarSurface::Render()
 
 	glEnable(GL_BLEND);
 
-	if (_battleView != nullptr)
-		_battleView->Render();
+	if (_battleContext->battleView != nullptr)
+		_battleContext->battleView->Render();
 
 	_buttonsTopLeft->Render();
 	_buttonsTopRight->Render();
@@ -168,10 +167,10 @@ void OpenWarSurface::UpdateSoundPlayer()
 	int infantryMarching = 0;
 	int infantryRunning = 0;
 
-	for (UnitMarker* unitMarker : _battleView->GetBoardModel()->_unitMarkers)
+	for (UnitMarker* unitMarker : _battleContext->battleView->GetBoardModel()->_unitMarkers)
 	{
 		Unit* unit = unitMarker->_unit;
-		if (_simulationState->GetUnit(unit->unitId) != 0 && glm::length(unit->movement.GetFinalDestination() - unit->state.center) > 4.0f)
+		if (_battleContext->simulationState->GetUnit(unit->unitId) != 0 && glm::length(unit->movement.GetFinalDestination() - unit->state.center) > 4.0f)
 		{
 			if (unit->stats.unitPlatform == UnitPlatformCav || unit->stats.unitPlatform == UnitPlatformGen)
 			{
@@ -199,7 +198,7 @@ void OpenWarSurface::UpdateSoundPlayer()
 	SoundPlayer::singleton->UpdateCavalryWalking(horseTrot != 0);
 	SoundPlayer::singleton->UpdateCavalryRunning(horseGallop != 0);
 
-	SoundPlayer::singleton->UpdateFighting(_simulationState->IsMelee());
+	SoundPlayer::singleton->UpdateFighting(_battleContext->simulationState->IsMelee());
 }
 
 
@@ -219,7 +218,7 @@ void OpenWarSurface::ClickedPause()
 
 void OpenWarSurface::ClickedRewind()
 {
-	_simulationState->time = 0; // TODO: reload & reset simlation state
+	_battleContext->simulationState->time = 0; // TODO: reload & reset simlation state
 	_mode = Mode::Editing;
 	UpdateButtonsAndGestures();
 }
@@ -276,7 +275,7 @@ void OpenWarSurface::UpdateButtonsAndGestures()
 			break;
 
 		case Mode::Editing:
-			if (_simulationState->time != 0)
+			if (_battleContext->simulationState->time != 0)
 				_buttonsTopRight->AddButtonArea()->AddButtonItem(_buttonRendering->buttonIconRewind)->SetAction([this](){ ClickedRewind(); });
 			_buttonsTopRight->AddButtonArea()->AddButtonItem(_buttonRendering->buttonIconPlay)->SetAction([this](){ ClickedPlay(); });
 			break;

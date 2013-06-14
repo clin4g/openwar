@@ -312,8 +312,7 @@ struct SimulationState
 	std::map<int, Unit*> units;
 	std::vector<Shooting> shootings;
 
-	SmoothTerrainModel* terrainModel;
-	image* map;
+	SmoothTerrainModel* smoothTerrainModel;
 
 	SimulationState();
 	~SimulationState();

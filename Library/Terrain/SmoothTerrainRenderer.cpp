@@ -521,9 +521,8 @@ static NSString* FramebufferStatusString(GLenum status)
 
 
 
-SmoothTerrainRenderer::SmoothTerrainRenderer(SmoothTerrainModel* terrainModel, image* map, bool render_edges) :
+SmoothTerrainRenderer::SmoothTerrainRenderer(SmoothTerrainModel* terrainModel, bool render_edges) :
 _terrainModel(terrainModel),
-_mapImage(map),
 _framebuffer_width(0),
 _framebuffer_height(0),
 _framebuffer(nullptr),
@@ -568,7 +567,7 @@ _mapTexture(nullptr)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	_mapTexture = new texture(*map);
+	_mapTexture = new texture(*terrainModel->GetMap());
 
 	LoadChunk(terrain_address(), 0);
 
@@ -649,7 +648,7 @@ void SmoothTerrainRenderer::UpdateHeights(bounds2f bounds)
 
 void SmoothTerrainRenderer::UpdateMapTexture()
 {
-	_mapTexture->load(*_mapImage);
+	_mapTexture->load(*_terrainModel->GetMap());
 }
 
 

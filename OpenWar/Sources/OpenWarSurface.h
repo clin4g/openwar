@@ -8,6 +8,7 @@
 #include "Surface.h"
 #include "EditorModel.h"
 
+class BattleContext;
 class BattleGesture;
 class BattleModel;
 class BattleRendering;
@@ -29,19 +30,16 @@ class OpenWarSurface : public Surface
 public: // TODO: just testing
 	enum class Mode { None, Editing, Playing };
 	Mode _mode;
-	SimulationState* _simulationState;
-	SimulationRules* _simulationRules;
+
+	BattleContext* _battleContext;
 
 	renderers* _renderers;
 	BattleRendering* _battleRendering;
 	ButtonRendering* _buttonRendering;
 
-	BattleModel* _battleModel;
 	EditorModel* _editorModel;
 	BattleScript* _battleScript;
 
-	SmoothTerrainRenderer* _terrainRendering;
-	BattleView* _battleView;
 	ButtonView* _buttonsTopLeft;
 	ButtonView* _buttonsTopRight;
 

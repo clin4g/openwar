@@ -8,6 +8,7 @@
 #include "SimulationState.h"
 #include "lua.h"
 
+class BattleContext;
 class BattleModel;
 class BattleView;
 class SimulationState;
@@ -27,14 +28,11 @@ class BattleScript
 		UnitStatus(Unit* unit);
 	};
 
-	TiledTerrainRenderer* _tiledTerrainRenderer;
-	BattleView* _battleView;
-	BattleModel* _battleModel;
-	SimulationState* _simulationState;
+	BattleContext* _battleContext;
 	lua_State* _L;
 
 public:
-	BattleScript(TiledTerrainRenderer* tiledTerrainRenderer, BattleView* battleView, BattleModel* battleModel, SimulationState* simulationState);
+	BattleScript(BattleContext* battleContext);
 	~BattleScript();
 
 	void Tick();

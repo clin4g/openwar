@@ -743,7 +743,7 @@ glm::vec2 SimulationRules::NextFighterVelocity(Fighter* fighter)
 	{
 		int x = (int)(512 * fighter->state.position.x / 1024);
 		int y = (int)(512 * fighter->state.position.y / 1024);
-		glm::vec4 c = _simulationState->map->get_pixel(x, y);
+		glm::vec4 c = _simulationState->smoothTerrainModel->GetMap()->get_pixel(x, y);
 
 		fighter->terrainPosition = fighter->state.position;
 		fighter->terrainForest = c.g > 0.5;
