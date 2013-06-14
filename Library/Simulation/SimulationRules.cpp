@@ -741,13 +741,9 @@ glm::vec2 SimulationRules::NextFighterVelocity(Fighter* fighter)
 
 	if (glm::length(fighter->state.position - fighter->terrainPosition) > 5)
 	{
-		int x = (int)(512 * fighter->state.position.x / 1024);
-		int y = (int)(512 * fighter->state.position.y / 1024);
-		glm::vec4 c = _simulationState->smoothTerrainModel->GetMap()->get_pixel(x, y);
-
 		fighter->terrainPosition = fighter->state.position;
-		fighter->terrainForest = c.g > 0.5;
-		fighter->terrainWater = c.b > 0.5;
+		fighter->terrainForest = _simulationState->terrainModel->IsForest(fighter->state.position);
+		fighter->terrainWater = _simulationState->terrainModel->IsWater(fighter->state.position);
 	}
 
 	if (fighter->terrainForest)

@@ -89,21 +89,9 @@ OpenWarSurface::~OpenWarSurface()
 }
 
 
-void OpenWarSurface::Reset(SimulationState* simulationState)
+void OpenWarSurface::Reset(BattleContext* battleContext)
 {
-	_battleContext = new BattleContext();
-
-	_battleContext->simulationState = simulationState;
-
-	_battleContext->simulationRules = new SimulationRules(_battleContext->simulationState);
-	_battleContext->simulationRules->currentPlayer = Player1;
-
-	_battleContext->smoothTerrainModel = _battleContext->simulationState->smoothTerrainModel;
-	_battleContext->smoothTerrainRendering = new SmoothTerrainRenderer(_battleContext->smoothTerrainModel, true);
-
-	_battleContext->battleModel = new BattleModel(_battleContext->simulationState);
-	_battleContext->battleModel->_player = Player1;
-	_battleContext->battleModel->Initialize(_battleContext->simulationState);
+	_battleContext = battleContext;
 
 	_battleContext->battleView = new BattleView(this, _battleContext->battleModel, _renderers, _battleRendering, _battleContext->smoothTerrainRendering, Player1);
 	_battleContext->battleView->Initialize(_battleContext->simulationState, true);

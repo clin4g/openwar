@@ -238,7 +238,7 @@ lastUnitId(0),
 winner(PlayerNone),
 time(0),
 timeStep(1.0f / 15.0f),
-smoothTerrainModel(nullptr)
+terrainModel(nullptr)
 {
 }
 
@@ -251,8 +251,6 @@ SimulationState::~SimulationState()
 		delete[] unit->fighters;
 		delete unit;
 	}
-
-	delete smoothTerrainModel;
 }
 
 
@@ -270,24 +268,6 @@ bool SimulationState::IsMelee() const
 		}
 	}
 	return false;
-}
-
-
-bool SimulationState::IsForest(glm::vec2 position) const
-{
-	int x = (int)(512 * position.x / 1024);
-	int y = (int)(512 * position.y / 1024);
-	glm::vec4 c = smoothTerrainModel->GetMap()->get_pixel(x, y);
-	return c.g >= 0.5;
-}
-
-
-bool SimulationState::IsImpassable(glm::vec2 position) const
-{
-	int x = (int)(512 * position.x / 1024);
-	int y = (int)(512 * position.y / 1024);
-	glm::vec4 c = smoothTerrainModel->GetMap()->get_pixel(x, y);
-	return c.b >= 0.5 && c.r < 0.5;
 }
 
 

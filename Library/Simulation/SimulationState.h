@@ -312,7 +312,7 @@ struct SimulationState
 	std::map<int, Unit*> units;
 	std::vector<Shooting> shootings;
 
-	SmoothTerrainModel* smoothTerrainModel;
+	TerrainModel* terrainModel;
 
 	SimulationState();
 	~SimulationState();
@@ -324,9 +324,6 @@ struct SimulationState
 	}
 
 	bool IsMelee() const;
-
-	bool IsForest(glm::vec2 position) const;
-	bool IsImpassable(glm::vec2 position) const;
 
 	Unit* AddUnit(Player player, int numberOfFighters, UnitStats stats, glm::vec2 position);
 

@@ -26,6 +26,81 @@ SmoothTerrainModel::~SmoothTerrainModel()
 }
 
 
+float SmoothTerrainModel::GetHeight(glm::vec2 position) const
+{
+	glm::ivec2 size = _heightmap.size();
+	glm::vec2 c = glm::vec2(size.x - 1, size.y - 1) * (position - _bounds.p11()) / _bounds.size();
+
+	float height = _heightmap.interpolate(c);
+
+	if (_map != nullptr)
+	{
+		glm::vec4 color = _map->get_pixel((int)(position.x * 512.0 / 1024.0), (int)(position.y * 512.0 / 1024.0));
+
+		float water = color.b;
+		height = glm::mix(height, -2.5f, glm::step(0.5f, water));
+
+		float fords = color.r;
+		height = glm::mix(height, -0.5f, glm::step(0.5f, fords));
+	}
+
+	return height;
+}
+
+
+glm::vec3 SmoothTerrainModel::GetNormal(glm::vec2 position) const
+{
+	float h = GetHeight(position);
+	glm::vec3 v1 = glm::vec3(1, 0, GetHeight(position + glm::vec2(1, 0)) - h);
+	glm::vec3 v2 = glm::vec3(0, 1, GetHeight(position + glm::vec2(0, 1)) - h);
+	return glm::normalize(glm::cross(v1, v2));
+}
+
+
+const float* SmoothTerrainModel::Intersect(ray r)
+{
+	bounds2f bounds = GetBounds();
+	glm::vec3 offset = glm::vec3(bounds.min, 0);
+	glm::vec3 scale = glm::vec3(glm::vec2(_heightmap.size().x - 1, _heightmap.size().y - 1) / bounds.size(), 1);
+
+	ray r2 = ray(scale * (r.origin - offset), glm::normalize(scale * r.direction));
+	const float* d = _heightmap.intersect(r2);
+	if (d == nullptr)
+		return nullptr;
+
+	static float result;
+	result = glm::length((r2.point(*d) - r2.origin) / scale);
+	return &result;
+}
+
+
+bool SmoothTerrainModel::IsWater(glm::vec2 position) const
+{
+	int x = (int)(512 * position.x / 1024);
+	int y = (int)(512 * position.y / 1024);
+	glm::vec4 c = _map->get_pixel(x, y);
+	return c.b >= 0.5;
+}
+
+
+bool SmoothTerrainModel::IsForest(glm::vec2 position) const
+{
+	int x = (int)(512 * position.x / 1024);
+	int y = (int)(512 * position.y / 1024);
+	glm::vec4 c = _map->get_pixel(x, y);
+	return c.g >= 0.5;
+}
+
+
+bool SmoothTerrainModel::IsImpassable(glm::vec2 position) const
+{
+	int x = (int)(512 * position.x / 1024);
+	int y = (int)(512 * position.y / 1024);
+	glm::vec4 c = _map->get_pixel(x, y);
+	return c.b >= 0.5 && c.r < 0.5;
+}
+
+
 void SmoothTerrainModel::LoadHeightmapFromImage()
 {
 	glm::ivec2 imageSize = _map->size();
@@ -71,37 +146,6 @@ float SmoothTerrainModel::GetHeight(int x, int y) const
 }
 
 
-float SmoothTerrainModel::GetHeight(glm::vec2 position) const
-{
-	glm::ivec2 size = _heightmap.size();
-	glm::vec2 c = glm::vec2(size.x - 1, size.y - 1) * (position - _bounds.p11()) / _bounds.size();
-
-	float height = _heightmap.interpolate(c);
-
-	if (_map != nullptr)
-	{
-		glm::vec4 color = _map->get_pixel((int)(position.x * 512.0 / 1024.0), (int)(position.y * 512.0 / 1024.0));
-
-		float water = color.b;
-		height = glm::mix(height, -2.5f, glm::step(0.5f, water));
-
-		float fords = color.r;
-		height = glm::mix(height, -0.5f, glm::step(0.5f, fords));
-	}
-
-	return height;
-}
-
-
-glm::vec3 SmoothTerrainModel::GetNormal(glm::vec2 position) const
-{
-	float h = GetHeight(position);
-	glm::vec3 v1 = glm::vec3(1, 0, GetHeight(position + glm::vec2(1, 0)) - h);
-	glm::vec3 v2 = glm::vec3(0, 1, GetHeight(position + glm::vec2(0, 1)) - h);
-	return glm::normalize(glm::cross(v1, v2));
-}
-
-
 bool SmoothTerrainModel::ContainsWater(bounds2f bounds) const
 {
 	glm::ivec2 size(512, 512);
@@ -124,23 +168,6 @@ bool SmoothTerrainModel::ContainsWater(bounds2f bounds) const
 	}
 
 	return false;
-}
-
-
-const float* SmoothTerrainModel::Intersect(ray r)
-{
-	bounds2f bounds = GetBounds();
-	glm::vec3 offset = glm::vec3(bounds.min, 0);
-	glm::vec3 scale = glm::vec3(glm::vec2(_heightmap.size().x - 1, _heightmap.size().y - 1) / bounds.size(), 1);
-
-	ray r2 = ray(scale * (r.origin - offset), glm::normalize(scale * r.direction));
-	const float* d = _heightmap.intersect(r2);
-	if (d == nullptr)
-		return nullptr;
-
-	static float result;
-	result = glm::length((r2.point(*d) - r2.origin) / scale);
-	return &result;
 }
 
 

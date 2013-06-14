@@ -3,11 +3,10 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "TerrainView.h"
-#include "geometry.h"
 
 
 
-TerrainView::TerrainView(Surface* screen, SmoothTerrainModel* terrainModel) : View(screen),
+TerrainView::TerrainView(Surface* screen, TerrainModel* terrainModel) : View(screen),
 _terrainModel(terrainModel),
 _cameraTilt((float)M_PI_4),
 _cameraFacing(0)

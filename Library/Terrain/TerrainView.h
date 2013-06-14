@@ -7,7 +7,7 @@
 
 #include "View.h"
 #include "geometry.h"
-#include "SmoothTerrainModel.h"
+#include "TerrainModel.h"
 
 
 class TerrainView : public View
@@ -19,10 +19,10 @@ class TerrainView : public View
 	float _contentWidth;
 
 protected:
-	SmoothTerrainModel* _terrainModel;
+	TerrainModel* _terrainModel;
 
 public:
-	TerrainView(Surface* screen, SmoothTerrainModel* terrainModel);
+	TerrainView(Surface* screen, TerrainModel* terrainModel);
 	virtual ~TerrainView();
 
 	bounds2f GetContentBounds() const { return _contentBounds; }

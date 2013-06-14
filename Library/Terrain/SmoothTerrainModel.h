@@ -6,13 +6,13 @@
 #define SMOOTHTERRAINMODEL_H
 
 #include "bounds.h"
-#include "geometry.h"
 #include "heightmap.h"
+#include "TerrainModel.h"
 
 class image;
 
 
-class SmoothTerrainModel
+class SmoothTerrainModel : public TerrainModel
 {
 public:
 	bounds2f _bounds;
@@ -24,7 +24,17 @@ public:
 
 public:
 	SmoothTerrainModel(bounds2f bounds, image* map);
-	~SmoothTerrainModel();
+	virtual ~SmoothTerrainModel();
+
+	virtual float GetHeight(glm::vec2 position) const;
+	virtual glm::vec3 GetNormal(glm::vec2 position) const;
+	virtual const float* Intersect(ray r);
+
+	virtual bool IsWater(glm::vec2 position) const;
+	virtual bool IsForest(glm::vec2 position) const;
+	virtual bool IsImpassable(glm::vec2 position) const;
+
+
 
 	image* GetMap() const { return _map; }
 
@@ -36,12 +46,8 @@ public:
 
 	float GetHeight(int x, int y) const;
 
-	float GetHeight(glm::vec2 position) const;
-	glm::vec3 GetNormal(glm::vec2 position) const;
-
 	bool ContainsWater(bounds2f bounds) const;
 
-	const float* Intersect(ray r);
 
 	bounds2f EditHills(glm::vec2 position, float radius, float pressure);
 	bounds2f EditWater(glm::vec2 position, float radius, float pressure);

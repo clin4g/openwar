@@ -6,6 +6,9 @@
 #include "OpenWarSurface.h"
 #include "SimulationState.h"
 #include "BattleContext.h"
+#include "SimulationRules.h"
+#include "BattleModel.h"
+#include "BattleView.h"
 
 
 static NSData* ConvertImageToTiff(image* map)
@@ -37,17 +40,30 @@ static image* ConvertTiffToImage(NSData* data)
 }
 
 
-static SimulationState* LoadSimulationState(image* map)
+static BattleContext* LoadBattleContext(image* map)
 {
-	SimulationState* result = new SimulationState();
-
 	if (map == nullptr)
 	{
 		NSString* path = [[NSBundle mainBundle] pathForResource:@"DefaultMap" ofType:@"tiff" inDirectory:@"Maps"];
 		map = ConvertTiffToImage([NSData dataWithContentsOfFile:path]);
 	}
 
-	result->smoothTerrainModel = new SmoothTerrainModel(bounds2f(0, 0, 1024, 1024), map);
+	SmoothTerrainModel* smoothTerrainModel = new SmoothTerrainModel(bounds2f(0, 0, 1024, 1024), map);
+
+	BattleContext* result = new BattleContext();
+
+	result->simulationState = new SimulationState();
+	result->simulationState->terrainModel = smoothTerrainModel;
+
+	result->simulationRules = new SimulationRules(result->simulationState);
+	result->simulationRules->currentPlayer = Player1;
+
+	result->smoothTerrainModel = smoothTerrainModel;
+	result->smoothTerrainRendering = new SmoothTerrainRenderer(smoothTerrainModel, true);
+
+	result->battleModel = new BattleModel(result->simulationState);
+	result->battleModel->_player = Player1;
+	result->battleModel->Initialize(result->simulationState);
 
 	return result;
 }
@@ -110,7 +126,7 @@ static SimulationState* LoadSimulationState(image* map)
 	}
 
 	if (_surface != nullptr)
-		_surface->Reset(LoadSimulationState(_map));
+		_surface->Reset(LoadBattleContext(_map));
 
     return YES;
 }
@@ -122,7 +138,7 @@ static SimulationState* LoadSimulationState(image* map)
 - (Surface*)createSurfaceWithSize:(glm::vec2)size forSurfaceView:(SurfaceView*)surfaceView pixelDensity:(float)pixelDensity;
 {
 	_surface = new OpenWarSurface(size, pixelDensity);
-	_surface->Reset(LoadSimulationState(_map));
+	_surface->Reset(LoadBattleContext(_map));
 	return _surface;
 }
 
