@@ -146,7 +146,7 @@ void ButtonRendering::RenderButtonText(bounds2f viewport, glm::vec2 position, NS
 	string_sprite sprite(_string_font->_renderer);
 	sprite._viewport = viewport;
 	sprite._texture = &_string_font->_texture;
-	sprite._shape = _string_shape;
+	sprite._shape = &_string_shape->_vbo;
 
 	glm::vec2 p = position - 0.5f * _string_font->measure(text) - glm::vec2(0, 1);
 

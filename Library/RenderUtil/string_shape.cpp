@@ -271,14 +271,14 @@ glm::vec2 string_font::get_size(const item& item) const
 
 string_shape::string_shape(string_font* font) : _font(font)
 {
-	_mode = GL_TRIANGLES;
+	_vbo._mode = GL_TRIANGLES;
 }
 
 
 
 void string_shape::clear()
 {
-	_vertices.clear();
+	_vbo._vertices.clear();
 }
 
 #if !defined(ENABLE_BIDIRECTIONAL_TEXT)
@@ -409,13 +409,13 @@ void string_shape::add(NSString* string, glm::mat4x4 transform, float alpha, flo
 
 		float next_alpha = alpha + delta * s.x;
 
-		_vertices.push_back(texture_alpha_vertex(bounds.p11(), glm::vec2(item._u0, item._v0), alpha));
-		_vertices.push_back(texture_alpha_vertex(bounds.p12(), glm::vec2(item._u0, item._v1), alpha));
-		_vertices.push_back(texture_alpha_vertex(bounds.p22(), glm::vec2(item._u1, item._v1), next_alpha));
+		_vbo._vertices.push_back(texture_alpha_vertex(bounds.p11(), glm::vec2(item._u0, item._v0), alpha));
+		_vbo._vertices.push_back(texture_alpha_vertex(bounds.p12(), glm::vec2(item._u0, item._v1), alpha));
+		_vbo._vertices.push_back(texture_alpha_vertex(bounds.p22(), glm::vec2(item._u1, item._v1), next_alpha));
 
-		_vertices.push_back(texture_alpha_vertex(bounds.p22(), glm::vec2(item._u1, item._v1), next_alpha));
-		_vertices.push_back(texture_alpha_vertex(bounds.p21(), glm::vec2(item._u1, item._v0), next_alpha));
-		_vertices.push_back(texture_alpha_vertex(bounds.p11(), glm::vec2(item._u0, item._v0), alpha));
+		_vbo._vertices.push_back(texture_alpha_vertex(bounds.p22(), glm::vec2(item._u1, item._v1), next_alpha));
+		_vbo._vertices.push_back(texture_alpha_vertex(bounds.p21(), glm::vec2(item._u1, item._v0), next_alpha));
+		_vbo._vertices.push_back(texture_alpha_vertex(bounds.p11(), glm::vec2(item._u0, item._v0), alpha));
 
 		if (next_alpha < 0)
 			break;
@@ -429,5 +429,5 @@ void string_shape::add(NSString* string, glm::mat4x4 transform, float alpha, flo
 void string_shape::update(GLenum usage)
 {
 	_font->update_texture();
-	vertexbuffer<texture_alpha_vertex>::update(usage);
+	_vbo.update(usage);
 }

@@ -62,9 +62,10 @@ public:
 };
 
 
-class string_shape : public vertexbuffer<texture_alpha_vertex>
+class string_shape
 {
 public:
+	vertexbuffer<texture_alpha_vertex> _vbo;
 	string_font* _font;
 
 	string_shape(string_font* font);
@@ -72,7 +73,7 @@ public:
 	void clear();
 	void add(NSString* string, glm::mat4x4 transform, float alpha = 1, float delta = 0);
 
-	virtual void update(GLenum usage);
+	void update(GLenum usage);
 };
 
 
