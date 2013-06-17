@@ -38,7 +38,7 @@ _renderers(r)
 }
 
 
-static void AddRect(shape<texture_vertex>& shape, bounds2f bounds, bounds2f texture)
+static void AddRect(vertexbuffer<texture_vertex>& shape, bounds2f bounds, bounds2f texture)
 {
 	shape._vertices.push_back(texture_vertex(bounds.p11(), glm::vec2(0, 1) - texture.p11()));
 	shape._vertices.push_back(texture_vertex(bounds.p12(), glm::vec2(0, 1) - texture.p12()));
@@ -52,7 +52,7 @@ static void AddRect(shape<texture_vertex>& shape, bounds2f bounds, bounds2f text
 
 void ButtonRendering::RenderCornerButton(bounds2f viewport, texture* texture, bounds2f bounds, float radius)
 {
-	shape<texture_vertex> shape;
+	vertexbuffer<texture_vertex> shape;
 	shape._mode = GL_TRIANGLES;
 
 	bounds2f outer = bounds;
@@ -90,7 +90,7 @@ void ButtonRendering::RenderButtonIcon(bounds2f viewport, glm::vec2 position, Bu
 
 void ButtonRendering::RenderTextureRect(bounds2f viewport, texture* texture, bounds2f b, bounds2f t, float alpha)
 {
-	shape<texture_vertex> shape;
+	vertexbuffer<texture_vertex> shape;
 	shape._mode = GL_TRIANGLE_STRIP;
 	shape._vertices.push_back(texture_vertex(b.p11(), t.p12()));
 	shape._vertices.push_back(texture_vertex(b.p12(), t.p11()));

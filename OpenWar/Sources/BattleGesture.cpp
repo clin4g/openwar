@@ -43,7 +43,7 @@ void BattleGesture::RenderHints()
 
 	_boardView->UseViewport();
 
-	shape<plain_vertex> shape;
+	vertexbuffer<plain_vertex> shape;
 	shape._mode = GL_LINES;
 
 	plain_sprite sprite(renderers::singleton->_plain_renderer);

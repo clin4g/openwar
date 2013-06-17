@@ -43,7 +43,7 @@ struct sprite : public sprite_base
 {
 	typedef _Vertex vertex_type;
 	typedef _Uniforms uniforms_type;
-	typedef shape<vertex_type> shape_type;
+	typedef vertexbuffer<vertex_type> shape_type;
 	typedef renderer<vertex_type, uniforms_type> renderer_type;
 
 	renderer_type* _renderer;

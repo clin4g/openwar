@@ -62,7 +62,7 @@ public:
 };
 
 
-class string_shape : public shape<texture_alpha_vertex>
+class string_shape : public vertexbuffer<texture_alpha_vertex>
 {
 public:
 	string_font* _font;

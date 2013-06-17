@@ -39,14 +39,14 @@ private:
 
 
 template <class _Vertex>
-class shape : public vertexbuffer_base
+class vertexbuffer : public vertexbuffer_base
 {
 public:
 	typedef _Vertex vertex_type;
 
 	std::vector<vertex_type> _vertices;
 
-	shape()
+	vertexbuffer()
 	{
 	}
 
@@ -85,8 +85,8 @@ public:
 
 
 private:
-	shape(const shape& other) { }
-	shape& operator=(const shape&) { return *this; }
+	vertexbuffer(const vertexbuffer& other) { }
+	vertexbuffer& operator=(const vertexbuffer&) { return *this; }
 };
 
 

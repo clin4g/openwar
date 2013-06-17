@@ -155,7 +155,7 @@ public:
 	{
 	}
 
-	void render(shape<vertex_type>& shape, const uniforms_type& uniforms)
+	void render(vertexbuffer<vertex_type>& shape, const uniforms_type& uniforms)
 	{
 		if (shape._vertices.empty())
 			return;

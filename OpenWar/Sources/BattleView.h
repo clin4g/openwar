@@ -32,32 +32,32 @@ class BattleView : public TerrainView
 	Player _bluePlayer;
 
 	// static shapes
-	shape<plain_vertex> _shape_water_inside;
-	shape<plain_vertex> _shape_water_border;
-	shape<plain_vertex> _shape_terrain_shadow;
+	vertexbuffer<plain_vertex> _shape_water_inside;
+	vertexbuffer<plain_vertex> _shape_water_border;
+	vertexbuffer<plain_vertex> _shape_terrain_shadow;
 
 	// dynamic shapes
-	shape<BattleRendering::texture_billboard_vertex> _texture_billboards1;
-	shape<BattleRendering::texture_billboard_vertex> _texture_billboards2;
-	shape<BattleRendering::color_billboard_vertex> _color_billboards;
+	vertexbuffer<BattleRendering::texture_billboard_vertex> _texture_billboards1;
+	vertexbuffer<BattleRendering::texture_billboard_vertex> _texture_billboards2;
+	vertexbuffer<BattleRendering::color_billboard_vertex> _color_billboards;
 
 	std::vector<BattleRendering::texture_billboard_vertex> _static_billboards;
 	std::vector<BattleRendering::texture_billboard_vertex> _dynamic_billboards;
 
 
-	shape<plain_vertex3> _shape_fighter_weapons;
-	shape<color_vertex3> _rangeMarker_shape;
-	shape<texture_vertex3> _movementMarker_pathShape;
+	vertexbuffer<plain_vertex3> _shape_fighter_weapons;
+	vertexbuffer<color_vertex3> _rangeMarker_shape;
+	vertexbuffer<texture_vertex3> _movementMarker_pathShape;
 
-	shape<color_vertex3> _missileMarker_shape;
+	vertexbuffer<color_vertex3> _missileMarker_shape;
 
-	shape<texture_vertex3> _trackingMarker_pathShape;
-	shape<texture_vertex3> _trackingMarker_orientationShape;
-	shape<texture_vertex3> _trackingMarker_missileHeadShape;
-	shape<texture_vertex3> _unitMarker_targetLineShape;
-	shape<texture_vertex3> _unitMarker_targetHeadShape;
+	vertexbuffer<texture_vertex3> _trackingMarker_pathShape;
+	vertexbuffer<texture_vertex3> _trackingMarker_orientationShape;
+	vertexbuffer<texture_vertex3> _trackingMarker_missileHeadShape;
+	vertexbuffer<texture_vertex3> _unitMarker_targetLineShape;
+	vertexbuffer<texture_vertex3> _unitMarker_targetHeadShape;
 
-	shape<texture_vertex> _trackingMarker_shadowShape;
+	vertexbuffer<texture_vertex> _trackingMarker_shadowShape;
 
 	glm::vec3 _lightNormal;
 
@@ -100,7 +100,7 @@ public:
 	void RenderTerrainBillboards();
 
 	void RenderRangeMarkers();
-	void MakeRangeMarker(shape<color_vertex3>& shape, glm::vec2 position, float direction, float minimumRange, float maximumRange);
+	void MakeRangeMarker(vertexbuffer<color_vertex3>& shape, glm::vec2 position, float direction, float minimumRange, float maximumRange);
 
 	void RenderUnitMarkers();
 	void AppendUnitMarker(UnitMarker* marker);
@@ -126,18 +126,18 @@ public:
 
 	BattleRendering::texture_billboard_vertex MakeBillboardVertex(glm::vec2 position, float height, int i, int j, bool flipx = false, bool flipy = false);
 
-	static void TexRectN(shape<texture_vertex>& shape, int size, int x, int y, int w, int h);
-	static void TexRect256(shape<texture_vertex>& shape, int x, int y, int w, int h);
+	static void TexRectN(vertexbuffer<texture_vertex>& shape, int size, int x, int y, int w, int h);
+	static void TexRect256(vertexbuffer<texture_vertex>& shape, int x, int y, int w, int h);
 
-	void TexRectN(shape<texture_vertex3>& shape, int size, int x, int y, int w, int h);
-	void TexRect256(shape<texture_vertex3>& shape, int x, int y, int w, int h);
+	void TexRectN(vertexbuffer<texture_vertex3>& shape, int size, int x, int y, int w, int h);
+	void TexRect256(vertexbuffer<texture_vertex3>& shape, int x, int y, int w, int h);
 
-	void MissileLine(shape<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, float scale);
-	void MissileHead(shape<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, float scale);
-	void TexLine16(shape<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, int t1, int t2, float scale);
+	void MissileLine(vertexbuffer<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, float scale);
+	void MissileHead(vertexbuffer<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, float scale);
+	void TexLine16(vertexbuffer<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, int t1, int t2, float scale);
 
-	void _Path(shape<texture_vertex3>& shape, int mode, float scale, const std::vector<glm::vec2>& path, float t0);
-	void Path(shape<texture_vertex3>& shape, int mode, glm::vec2 position, const std::vector<glm::vec2>& path, float t0);
+	void _Path(vertexbuffer<texture_vertex3>& shape, int mode, float scale, const std::vector<glm::vec2>& path, float t0);
+	void Path(vertexbuffer<texture_vertex3>& shape, int mode, glm::vec2 position, const std::vector<glm::vec2>& path, float t0);
 };
 
 

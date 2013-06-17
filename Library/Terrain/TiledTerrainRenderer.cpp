@@ -24,7 +24,7 @@ void TiledTerrainRenderer::Render(const glm::mat4x4& transform, const glm::vec3&
 	bounds2f bounds = _terrainModel->GetBounds();
 	glm::ivec2 size = _terrainModel->GetSize();
 
-	shape<texture_vertex3> shape;
+	vertexbuffer<texture_vertex3> shape;
 	shape._mode = GL_TRIANGLES;
 
 	glm::vec2 delta = bounds.size() / glm::vec2(size);

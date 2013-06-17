@@ -77,15 +77,15 @@ public:
 	terrain_chunk* _children[4];
 	bool _is_split;
 	int _lod;
-	shape<color_vertex3> _lines;
-	shape<terrain_vertex> _inside;
-	shape<terrain_vertex> _border;
+	vertexbuffer<color_vertex3> _lines;
+	vertexbuffer<terrain_vertex> _inside;
+	vertexbuffer<terrain_vertex> _border;
 	bounds3f _bounds;
 
 	terrain_chunk(terrain_address address);
 	bool has_children() const;
 
-	shape<terrain_vertex>* triangle_shape(int inside);
+	vertexbuffer<terrain_vertex>* triangle_shape(int inside);
 };
 
 
@@ -113,7 +113,7 @@ class SmoothTerrainRenderer : public TerrainRenderer
 	std::map<terrain_address, bool> _split;
 	std::map<terrain_address, float> _lod;
 
-	shape<terrain_edge_vertex> _shape_terrain_edge;
+	vertexbuffer<terrain_edge_vertex> _shape_terrain_edge;
 	terrain_renderers* _renderers;
 
 public:
@@ -156,7 +156,7 @@ private:
 
 	bounds3f GetBounds(terrain_address chunk) const;
 
-	void BuildLines(shape<color_vertex3>& shape, terrain_address chunk);
+	void BuildLines(vertexbuffer<color_vertex3>& shape, terrain_address chunk);
 	void BuildTriangles(terrain_chunk* chunk);
 
 	terrain_vertex MakeTerrainVertex(float x, float y);

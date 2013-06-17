@@ -429,5 +429,5 @@ void string_shape::add(NSString* string, glm::mat4x4 transform, float alpha, flo
 void string_shape::update(GLenum usage)
 {
 	_font->update_texture();
-	shape<texture_alpha_vertex>::update(usage);
+	vertexbuffer<texture_alpha_vertex>::update(usage);
 }

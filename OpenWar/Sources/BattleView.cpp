@@ -191,7 +191,7 @@ static int inside_circle(plain_vertex v1, plain_vertex v2, plain_vertex v3)
 }
 
 
-static shape<plain_vertex>* choose_shape(int count, shape<plain_vertex>* inside, shape<plain_vertex>* border)
+static vertexbuffer<plain_vertex>* choose_shape(int count, vertexbuffer<plain_vertex>* inside, vertexbuffer<plain_vertex>* border)
 {
 	switch (count)
 	{
@@ -229,7 +229,7 @@ void BattleView::InitializeTerrainWater(bool editor)
 				plain_vertex v21 = plain_vertex(p + glm::vec2(s.x, 0));
 				plain_vertex v22 = plain_vertex(p + s);
 
-				shape<plain_vertex>* s = choose_shape(inside_circle(v11, v22, v12), &_shape_water_inside, &_shape_water_border);
+				vertexbuffer<plain_vertex>* s = choose_shape(inside_circle(v11, v22, v12), &_shape_water_inside, &_shape_water_border);
 				if (s != nullptr)
 				{
 					s->_vertices.push_back(v11);
@@ -349,7 +349,7 @@ void BattleView::RenderBackgroundLinen()
 {
 	bounds2f viewport = GetViewportBounds();
 
-	shape<texture_vertex> shape;
+	vertexbuffer<texture_vertex> shape;
 
 	shape._mode = GL_TRIANGLES;
 	shape._vertices.clear();
@@ -383,7 +383,7 @@ void BattleView::RenderTerrainShadow()
 
 void BattleView::RenderBackgroundSky()
 {
-	shape<color_vertex> shape;
+	vertexbuffer<color_vertex> shape;
 
 	float y = GetCameraDirection().z;
 	float x = sqrtf(1 - y * y);
@@ -633,7 +633,7 @@ void BattleView::RenderRangeMarkers()
 }
 
 
-void BattleView::MakeRangeMarker(shape<color_vertex3>& shape, glm::vec2 position, float direction, float minimumRange, float maximumRange)
+void BattleView::MakeRangeMarker(vertexbuffer<color_vertex3>& shape, glm::vec2 position, float direction, float minimumRange, float maximumRange)
 {
 	const float thickness = 8;
 	const float two_pi = 2 * (float)M_PI;
@@ -1179,7 +1179,7 @@ BattleRendering::texture_billboard_vertex BattleView::MakeBillboardVertex(glm::v
 }
 
 
-void BattleView::TexRectN(shape<texture_vertex>& shape, int size, int x, int y, int w, int h)
+void BattleView::TexRectN(vertexbuffer<texture_vertex>& shape, int size, int x, int y, int w, int h)
 {
 	float width = w / 2.0f;
 	float height = h / 2.0f;
@@ -1203,13 +1203,13 @@ void BattleView::TexRectN(shape<texture_vertex>& shape, int size, int x, int y, 
 }
 
 
-void BattleView::TexRect256(shape<texture_vertex>& shape, int x, int y, int w, int h)
+void BattleView::TexRect256(vertexbuffer<texture_vertex>& shape, int x, int y, int w, int h)
 {
 	TexRectN(shape, 256, x, y, w, h);
 }
 
 
-void BattleView::TexRectN(shape<texture_vertex3>& shape, int size, int x, int y, int w, int h)
+void BattleView::TexRectN(vertexbuffer<texture_vertex3>& shape, int size, int x, int y, int w, int h)
 {
 	float width = w / 2.0f;
 	float height = h / 2.0f;
@@ -1233,13 +1233,13 @@ void BattleView::TexRectN(shape<texture_vertex3>& shape, int size, int x, int y,
 }
 
 
-void BattleView::TexRect256(shape<texture_vertex3>& shape, int x, int y, int w, int h)
+void BattleView::TexRect256(vertexbuffer<texture_vertex3>& shape, int x, int y, int w, int h)
 {
 	TexRectN(shape, 256, x, y, w, h);
 }
 
 
-void BattleView::MissileLine(shape<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, float scale)
+void BattleView::MissileLine(vertexbuffer<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, float scale)
 {
 	glm::vec2 dir = glm::normalize(p2 - p1);
 
@@ -1250,7 +1250,7 @@ void BattleView::MissileLine(shape<texture_vertex3>& shape, glm::vec2 p1, glm::v
 }
 
 
-void BattleView::MissileHead(shape<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, float scale)
+void BattleView::MissileHead(vertexbuffer<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, float scale)
 {
 	glm::vec2 dir = glm::normalize(p2 - p1);
 
@@ -1261,7 +1261,7 @@ void BattleView::MissileHead(shape<texture_vertex3>& shape, glm::vec2 p1, glm::v
 }
 
 
-void BattleView::TexLine16(shape<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, int t1, int t2, float scale)
+void BattleView::TexLine16(vertexbuffer<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, int t1, int t2, float scale)
 {
 	glm::vec2 diff = p2 - p1;
 	glm::vec2 dir = glm::normalize(diff);
@@ -1284,7 +1284,7 @@ void BattleView::TexLine16(shape<texture_vertex3>& shape, glm::vec2 p1, glm::vec
 }
 
 
-void BattleView::_Path(shape<texture_vertex3>& shape, int mode, float scale, const std::vector<glm::vec2>& path, float t0)
+void BattleView::_Path(vertexbuffer<texture_vertex3>& shape, int mode, float scale, const std::vector<glm::vec2>& path, float t0)
 {
 	int t1 = 0;
 	int t2 = 4;
@@ -1386,7 +1386,7 @@ void BattleView::_Path(shape<texture_vertex3>& shape, int mode, float scale, con
 
 
 
-void BattleView::Path(shape<texture_vertex3>& shape, int mode, glm::vec2 position, const std::vector<glm::vec2>& path, float t0)
+void BattleView::Path(vertexbuffer<texture_vertex3>& shape, int mode, glm::vec2 position, const std::vector<glm::vec2>& path, float t0)
 {
 	if (path.size() == 0)
 		return;

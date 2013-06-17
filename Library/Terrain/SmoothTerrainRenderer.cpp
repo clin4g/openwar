@@ -28,17 +28,17 @@ struct terrain_renderers
 	{
 	}
 
-	void render_terrain_inside(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms);
-	void render_terrain_border(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms);
-	void render_terrain_edge(shape<terrain_edge_vertex>& shape, const texture_uniforms& uniforms);
-	void render_depth_inside(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms);
-	void render_depth_border(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms);
-	void render_depth_edge(shape<terrain_edge_vertex>& shape, const plain_uniforms& uniforms);
-	void render_sobel(shape<texture_vertex>& shape, const sobel_uniforms& uniforms);
+	void render_terrain_inside(vertexbuffer<terrain_vertex>& shape, const terrain_uniforms& uniforms);
+	void render_terrain_border(vertexbuffer<terrain_vertex>& shape, const terrain_uniforms& uniforms);
+	void render_terrain_edge(vertexbuffer<terrain_edge_vertex>& shape, const texture_uniforms& uniforms);
+	void render_depth_inside(vertexbuffer<terrain_vertex>& shape, const terrain_uniforms& uniforms);
+	void render_depth_border(vertexbuffer<terrain_vertex>& shape, const terrain_uniforms& uniforms);
+	void render_depth_edge(vertexbuffer<terrain_edge_vertex>& shape, const plain_uniforms& uniforms);
+	void render_sobel(vertexbuffer<texture_vertex>& shape, const sobel_uniforms& uniforms);
 };
 
 
-void terrain_renderers::render_terrain_inside(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms)
+void terrain_renderers::render_terrain_inside(vertexbuffer<terrain_vertex>& shape, const terrain_uniforms& uniforms)
 {
 	if (_renderer1 == nullptr)
 	{
@@ -108,7 +108,7 @@ void terrain_renderers::render_terrain_inside(shape<terrain_vertex>& shape, cons
 
 
 
-void terrain_renderers::render_terrain_border(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms)
+void terrain_renderers::render_terrain_border(vertexbuffer<terrain_vertex>& shape, const terrain_uniforms& uniforms)
 {
 	if (_renderer2 == nullptr)
 	{
@@ -181,7 +181,7 @@ void terrain_renderers::render_terrain_border(shape<terrain_vertex>& shape, cons
 
 
 
-void terrain_renderers::render_terrain_edge(shape<terrain_edge_vertex>& shape, const texture_uniforms& uniforms)
+void terrain_renderers::render_terrain_edge(vertexbuffer<terrain_edge_vertex>& shape, const texture_uniforms& uniforms)
 {
 	if (_renderer3 == nullptr)
 	{
@@ -231,7 +231,7 @@ void terrain_renderers::render_terrain_edge(shape<terrain_edge_vertex>& shape, c
 
 
 
-void terrain_renderers::render_depth_inside(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms)
+void terrain_renderers::render_depth_inside(vertexbuffer<terrain_vertex>& shape, const terrain_uniforms& uniforms)
 {
 	if (_renderer4 == nullptr)
 	{
@@ -267,7 +267,7 @@ void terrain_renderers::render_depth_inside(shape<terrain_vertex>& shape, const 
 
 
 
-void terrain_renderers::render_depth_border(shape<terrain_vertex>& shape, const terrain_uniforms& uniforms)
+void terrain_renderers::render_depth_border(vertexbuffer<terrain_vertex>& shape, const terrain_uniforms& uniforms)
 {
 	if (_renderer5 == nullptr)
 	{
@@ -310,7 +310,7 @@ void terrain_renderers::render_depth_border(shape<terrain_vertex>& shape, const 
 
 
 
-void terrain_renderers::render_depth_edge(shape<terrain_edge_vertex>& shape, const plain_uniforms& uniforms)
+void terrain_renderers::render_depth_edge(vertexbuffer<terrain_edge_vertex>& shape, const plain_uniforms& uniforms)
 {
 	if (_renderer6 == nullptr)
 	{
@@ -347,7 +347,7 @@ void terrain_renderers::render_depth_edge(shape<terrain_edge_vertex>& shape, con
 
 
 
-void terrain_renderers::render_sobel(shape<texture_vertex>& shape, const sobel_uniforms& uniforms)
+void terrain_renderers::render_sobel(vertexbuffer<texture_vertex>& shape, const sobel_uniforms& uniforms)
 {
 	if (_renderer7 == nullptr)
 	{
@@ -752,7 +752,7 @@ void SmoothTerrainRenderer::Render(const glm::mat4x4& transform, const glm::vec3
 		glDisable(GL_DEPTH_TEST);
 		glDepthMask(false);
 
-		shape<texture_vertex> shape;
+		vertexbuffer<texture_vertex> shape;
 		shape._mode = GL_TRIANGLE_STRIP;
 		shape._vertices.push_back(texture_vertex(glm::vec2(-1,  1), glm::vec2(0, 1)));
 		shape._vertices.push_back(texture_vertex(glm::vec2(-1, -1), glm::vec2(0, 0)));
@@ -962,7 +962,7 @@ bounds3f SmoothTerrainRenderer::GetBounds(terrain_address chunk) const
 
 
 
-void SmoothTerrainRenderer::BuildLines(shape<color_vertex3>& shape, terrain_address chunk)
+void SmoothTerrainRenderer::BuildLines(vertexbuffer<color_vertex3>& shape, terrain_address chunk)
 {
 	bounds2f bounds = GetBounds(chunk).xy();
 	glm::vec2 corner = bounds.p11();
@@ -1044,7 +1044,7 @@ void SmoothTerrainRenderer::BuildTriangles(terrain_chunk* chunk)
 			terrain_vertex v21 = MakeTerrainVertex(x2, y1);
 			terrain_vertex v22 = MakeTerrainVertex(x2, y2);
 
-			shape<terrain_vertex>* s = chunk->triangle_shape(inside_circle(v11, v22, v12));
+			vertexbuffer<terrain_vertex>* s = chunk->triangle_shape(inside_circle(v11, v22, v12));
 			if (s != nullptr)
 			{
 				s->_vertices.push_back(v11);
@@ -1348,7 +1348,7 @@ bool terrain_chunk::has_children() const
 
 
 
-shape<terrain_vertex>* terrain_chunk::triangle_shape(int inside)
+vertexbuffer<terrain_vertex>* terrain_chunk::triangle_shape(int inside)
 {
 	switch (inside)
 	{
