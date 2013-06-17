@@ -4,14 +4,16 @@
 
 #include "BattleView.h"
 #include "BattleModel.h"
-#include "image.h"
+#include "TiledTerrainModel.h"
+#include "BattleContext.h"
+#include "TerrainFeatureModel.h"
 
 
 
-BattleView::BattleView(Surface* screen, BattleModel* boardModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer) : TerrainView(screen, boardModel->_simulationState->terrainModel),
+BattleView::BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer) : TerrainView(screen, battleModel->GetBattleContext()->simulationState->terrainModel),
 _renderers(r),
 _battleRendering(battleRendering),
-_battleModel(boardModel),
+_battleModel(battleModel),
 _bluePlayer(bluePlayer),
 _movementMarker_pathShape(),
 _rangeMarker_shape(),
@@ -123,54 +125,53 @@ struct random_iterator
 
 void BattleView::UpdateTerrainTrees(bounds2f bounds)
 {
-	if (_smoothTerrainRendering == nullptr)
-		return;
+	if (_tiledTerrainRenderer != nullptr)
+	{
+		for (glm::vec2 position : _battleModel->GetBattleContext()->terrainFeatureModel->_trees)
+			_static_billboards.push_back(MakeBillboardVertex(position, 15, 0, 1, false, GetFlip()));
+	}
 
-	image* map = _smoothTerrainRendering->GetTerrainModel()->GetMap();
+	if (_smoothTerrainRendering != nullptr)
+	{
+		image* map = _smoothTerrainRendering->GetTerrainModel()->GetMap();
 
-	auto pos = std::remove_if(_static_billboards.begin(), _static_billboards.end(), [bounds](const BattleRendering::texture_billboard_vertex& v) {
-		return bounds.contains(v._position.xy());
-	});
-	_static_billboards.erase(pos, _static_billboards.end());
+		auto pos = std::remove_if(_static_billboards.begin(), _static_billboards.end(), [bounds](const BattleRendering::texture_billboard_vertex& v) {
+			return bounds.contains(v._position.xy());
+		});
+		_static_billboards.erase(pos, _static_billboards.end());
 
-	static random_generator* _randoms = nullptr;
-	if (_randoms == nullptr)
-		_randoms = new random_generator(997);
+		static random_generator* _randoms = nullptr;
+		if (_randoms == nullptr)
+			_randoms = new random_generator(997);
 
-	int treeType = 0;
-	random_iterator random(*_randoms);
+		int treeType = 0;
+		random_iterator random(*_randoms);
 
-	float d = 5;
-	for (float x = 0; x < 1024; x += d)
-		for (float y = 0; y < 1024; y += d)
-		{
-			float dx = d * (random.next() - 0.5f);
-			float dy = d * (random.next() - 0.5f);
-			int i = (int)(7 * random.next()) & 7;
-			bool flip = random.next() > 0.5;
-
-			glm::vec2 position = glm::vec2(x + dx, y + dy);
-			if (bounds.contains(position) && glm::length(position - 512.0f) < 512.0f)
+		float d = 5;
+		for (float x = 0; x < 1024; x += d)
+			for (float y = 0; y < 1024; y += d)
 			{
-				float z = _terrainModel->GetHeight(position);
-				if (z > 0
-						&& map->get_pixel((int)(position.x / 2), (int)(position.y / 2)).g > 0.5
-						&& _terrainModel->GetNormal(position).z >= 0.84)
+				float dx = d * (random.next() - 0.5f);
+				float dy = d * (random.next() - 0.5f);
+				int i = (int)(7 * random.next()) & 7;
+				bool flip = random.next() > 0.5;
+
+				glm::vec2 position = glm::vec2(x + dx, y + dy);
+				if (bounds.contains(position) && glm::length(position - 512.0f) < 512.0f)
 				{
-					_static_billboards.push_back(MakeBillboardVertex(position, 5, 0, i, flip, GetFlip()));
+					float z = _terrainModel->GetHeight(position);
+					if (z > 0
+							&& map->get_pixel((int)(position.x / 2), (int)(position.y / 2)).g > 0.5
+							&& _terrainModel->GetNormal(position).z >= 0.84)
+					{
+						_static_billboards.push_back(MakeBillboardVertex(position, 5, 0, i, flip, GetFlip()));
 
+					}
 				}
+
+				++treeType;
 			}
-
-			++treeType;
-		}
-}
-
-
-
-void BattleView::AddTree(glm::vec2 position)
-{
-	_static_billboards.push_back(MakeBillboardVertex(position, 15, 0, 1, false, GetFlip()));
+	}
 }
 
 
@@ -221,7 +222,7 @@ void BattleView::InitializeTerrainWater(bool editor)
 		for (int y = 0; y < n; ++y)
 		{
 			glm::vec2 p = s * glm::vec2(x, y);
-			if (editor || _battleModel->_simulationState->terrainModel->ContainsWater(bounds2f(p, p + s)))
+			if (editor || _battleModel->GetBattleContext()->GetTerrainModel()->ContainsWater(bounds2f(p, p + s)))
 			{
 				plain_vertex v11 = plain_vertex(p);
 				plain_vertex v12 = plain_vertex(p + glm::vec2(0, s.y));
@@ -305,7 +306,7 @@ void BattleView::Render()
 	RenderBackgroundLinen();
 	RenderBackgroundSky();
 
-	RenderTerrainShadow();
+	//RenderTerrainShadow();
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -313,7 +314,7 @@ void BattleView::Render()
 	RenderTerrainGround();
 	glDisable(GL_CULL_FACE);
 
-	RenderTerrainWater();
+	//RenderTerrainWater();
 
 	glDepthMask(false);
 

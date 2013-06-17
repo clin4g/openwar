@@ -10,7 +10,8 @@ simulationState(nullptr),
 simulationRules(nullptr),
 smoothTerrainModel(nullptr),
 tiledTerrainModel(nullptr),
-battleModel(nullptr)
+battleModel(nullptr),
+terrainFeatureModel(nullptr)
 {
 }
 

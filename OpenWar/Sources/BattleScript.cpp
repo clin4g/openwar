@@ -5,6 +5,7 @@
 #include "BattleScript.h"
 #include "BattleModel.h"
 #include "BattleContext.h"
+#include "TerrainFeatureModel.h"
 #include "SimulationRules.h"
 #include "TiledTerrainModel.h"
 
@@ -151,7 +152,7 @@ int BattleScript::openwar_simulator_init(lua_State* L)
 	battleContext->simulationRules = new SimulationRules(battleContext->simulationState);
 	battleContext->simulationRules->currentPlayer = Player1;
 
-	battleContext->battleModel = new BattleModel(battleContext->simulationState);
+	battleContext->battleModel = new BattleModel(battleContext);
 	battleContext->battleModel->_player = Player1;
 	battleContext->battleModel->Initialize(battleContext->simulationState);
 
@@ -268,7 +269,7 @@ int BattleScript::battle_add_terrain_tree(lua_State* L)
 	float x = n < 1 ? 0 : (float)lua_tonumber(L, 1);
 	float y = n < 2 ? 0 : (float)lua_tonumber(L, 2);
 
-	//_battlescript->_battleContext->battleView->AddTree(glm::vec2(x, y));
+	_battlescript->_battleContext->terrainFeatureModel->AddTree(glm::vec2(x, y));
 
 	return 0;
 }

@@ -10,6 +10,7 @@
 #include "SimulationRules.h"
 #include "TiledTerrainModel.h"
 #include "BattleScript.h"
+#include "TerrainFeatureModel.h"
 
 
 static NSData* ConvertImageToTiff(image* map)
@@ -150,6 +151,8 @@ static image* ConvertTiffToImage(NSData* data)
 		battleContext->smoothTerrainModel = new SmoothTerrainModel(bounds2f(0, 0, 1024, 1024), _map);
 	}
 
+	battleContext->terrainFeatureModel = new TerrainFeatureModel();
+
 	BattleScript* battleScript = new BattleScript(battleContext, (const char*)_script.bytes, _script.length);
 
 	if (battleContext->simulationState == nullptr)
@@ -167,7 +170,7 @@ static image* ConvertTiffToImage(NSData* data)
 
 	if (battleContext->battleModel == nullptr)
 	{
-		battleContext->battleModel = new BattleModel(battleContext->simulationState);
+		battleContext->battleModel = new BattleModel(battleContext);
 		battleContext->battleModel->_player = Player1;
 		battleContext->battleModel->Initialize(battleContext->simulationState);
 	}

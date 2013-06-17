@@ -5,7 +5,7 @@
 #include "BattleGesture.h"
 #include "BattleModel.h"
 #include "BattleView.h"
-
+#include "BattleContext.h"
 #include "SoundPlayer.h"
 
 
@@ -467,7 +467,7 @@ void BattleGesture::UpdateTrackingMarker()
 		float delta = 2 / fmaxf(1, glm::length(currentDestination - markerPosition));
 		for (float k = 0; k < 1; k += delta)
 		{
-			if (_boardView->GetBattleModel()->_simulationState->terrainModel->IsImpassable(glm::mix(currentDestination, markerPosition, k)))
+			if (_boardView->GetBattleModel()->GetBattleContext()->simulationState->terrainModel->IsImpassable(glm::mix(currentDestination, markerPosition, k)))
 			{
 				waterEdgeFactor = k;
 				break;

@@ -76,8 +76,6 @@ public:
 
 	void InitializeTerrainTrees();
 	void UpdateTerrainTrees(bounds2f bounds);
-	void AddTree(glm::vec2 position);
-
 
 	void InitializeTerrainWater(bool editor);
 

@@ -9,8 +9,9 @@ class BattleModel;
 class SimulationRules;
 class SimulationState;
 class SmoothTerrainModel;
+class TerrainFeatureModel;
+class TerrainModel;
 class TiledTerrainModel;
-
 
 class BattleContext
 {
@@ -23,7 +24,11 @@ public:
 
 	SmoothTerrainModel* smoothTerrainModel;
 	TiledTerrainModel* tiledTerrainModel;
+
+	TerrainFeatureModel* terrainFeatureModel;
 	BattleModel* battleModel;
+
+	TerrainModel* GetTerrainModel() const { return (TerrainModel*)smoothTerrainModel ?: (TerrainModel*)tiledTerrainModel; }
 };
 
 

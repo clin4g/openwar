@@ -55,7 +55,6 @@ public:
 	glm::ivec2 GetSize() const { return _size; }
 
 	Tile* GetTile(int x, int y);
-
 };
 
 

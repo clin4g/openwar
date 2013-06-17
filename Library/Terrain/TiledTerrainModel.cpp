@@ -93,7 +93,13 @@ void TiledTerrainModel::SetTile(int x, int y, const std::string& texture, int ro
 
 	if (_textureNumber.find(texture) == _textureNumber.end())
 	{
-		_textures[_nextTextureNumber] = new ::texture(image(path));
+		::texture* t = new ::texture(image(path));
+
+		glBindTexture(GL_TEXTURE_2D, t->id);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+		_textures[_nextTextureNumber] = t;
 		_textureNumber[texture] = _nextTextureNumber;
 		++_nextTextureNumber;
 	}

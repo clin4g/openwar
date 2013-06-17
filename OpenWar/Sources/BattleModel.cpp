@@ -4,7 +4,7 @@
 
 #include "BattleModel.h"
 #include "BattleView.h"
-
+#include "BattleContext.h"
 #include "SoundPlayer.h"
 
 
@@ -56,7 +56,7 @@ MovementMarker::~MovementMarker()
 
 bool MovementMarker::Animate(float seconds)
 {
-	if (_battleModel->_simulationState->GetUnit(_unit->unitId) == 0 || _unit->state.IsRouting())
+	if (_battleModel->GetBattleContext()->simulationState->GetUnit(_unit->unitId) == 0 || _unit->state.IsRouting())
 		return false;
 
 	glm::vec2 position = _unit->state.center;
@@ -85,7 +85,7 @@ RangeMarker::~RangeMarker()
 
 bool RangeMarker::Animate(float seconds)
 {
-	if (_battleModel->_simulationState->GetUnit(_unit->unitId) == 0)
+	if (_battleModel->GetBattleContext()->simulationState->GetUnit(_unit->unitId) == 0)
 		return false;
 
 	return true;
@@ -277,7 +277,7 @@ UnitMarker::~UnitMarker()
 
 bool UnitMarker::Animate(float seconds)
 {
-	if (_battleModel->_simulationState->GetUnit(_unit->unitId) == 0)
+	if (_battleModel->GetBattleContext()->simulationState->GetUnit(_unit->unitId) == 0)
 		return false;
 
 	float routingBlinkTime = _unit->state.GetRoutingBlinkTime();
@@ -296,8 +296,8 @@ bool UnitMarker::Animate(float seconds)
 /***/
 
 
-BattleModel::BattleModel(SimulationState* simulationState) :
-_simulationState(simulationState),
+BattleModel::BattleModel(BattleContext* battleContext) :
+_battleContext(battleContext),
 _player(PlayerNone),
 _mapSize(1024, 1024),
 _unitMarkers(),
@@ -394,7 +394,7 @@ void BattleModel::AddRangeMarker(Unit* unit)
 
 void BattleModel::AddCasualty(const Casualty& casualty)
 {
-	glm::vec3 position = glm::vec3(casualty.position, _simulationState->terrainModel->GetHeight(casualty.position));
+	glm::vec3 position = glm::vec3(casualty.position, _battleContext->simulationState->terrainModel->GetHeight(casualty.position));
 	_casualtyMarker->AddCasualty(position, casualty.player, casualty.platform);
 }
 
@@ -460,8 +460,8 @@ void BattleModel::AddShootingMarker(const Shooting& shooting)
 
 	for (const Projectile& projectile : shooting.projectiles)
 	{
-		glm::vec3 p1 = glm::vec3(projectile.position1, _simulationState->terrainModel->GetHeight(projectile.position1));
-		glm::vec3 p2 = glm::vec3(projectile.position2, _simulationState->terrainModel->GetHeight(projectile.position2));
+		glm::vec3 p1 = glm::vec3(projectile.position1, _battleContext->simulationState->terrainModel->GetHeight(projectile.position1));
+		glm::vec3 p2 = glm::vec3(projectile.position2, _battleContext->simulationState->terrainModel->GetHeight(projectile.position2));
 		shootingMarker->AddProjectile(p1, p2, projectile.delay, shooting.timeToImpact);
 	}
 }
@@ -490,8 +490,8 @@ void BattleModel::AddSmokeMarker(const Shooting& shooting)
 
 	for (const Projectile& projectile : shooting.projectiles)
 	{
-		glm::vec3 p1 = glm::vec3(projectile.position1, _simulationState->terrainModel->GetHeight(projectile.position1));
-		glm::vec3 p2 = glm::vec3(projectile.position2, _simulationState->terrainModel->GetHeight(projectile.position2));
+		glm::vec3 p1 = glm::vec3(projectile.position1, _battleContext->simulationState->terrainModel->GetHeight(projectile.position1));
+		glm::vec3 p2 = glm::vec3(projectile.position2, _battleContext->simulationState->terrainModel->GetHeight(projectile.position2));
 		marker->AddParticle(p1, p2, projectile.delay);
 	}
 }

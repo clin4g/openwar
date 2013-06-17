@@ -93,6 +93,7 @@
 		63F559A2F75E59DF8969CD4A /* TiledTerrainModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F553DF0AD6B490FD6D7662 /* TiledTerrainModel.cpp */; };
 		63F55A26F9E505B4208C96E9 /* SmoothTerrainRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55D7048685B05D4B280B1 /* SmoothTerrainRenderer.cpp */; };
 		63F55A71C5DAF4C587A51434 /* TerrainRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55FBA55000E7BF754D8A6 /* TerrainRenderer.cpp */; };
+		63F55A92085198158EA4E57E /* TerrainFeatureModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5521A631C1E0DFA12C70F /* TerrainFeatureModel.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -230,6 +231,7 @@
 		63F55026F1B1D4FA3ED86125 /* BattleScript.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BattleScript.cpp; sourceTree = "<group>"; };
 		63F551486360CFC73276A2D4 /* vertexbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vertexbuffer.h; sourceTree = "<group>"; };
 		63F5514A4E3E3A6AEF1BE166 /* TerrainGesture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainGesture.cpp; sourceTree = "<group>"; };
+		63F5521A631C1E0DFA12C70F /* TerrainFeatureModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainFeatureModel.cpp; sourceTree = "<group>"; };
 		63F5523C1D1016CDAE48FEC2 /* TiledTerrainRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TiledTerrainRenderer.cpp; sourceTree = "<group>"; };
 		63F552D3B11486AF01E94F4F /* TerrainView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainView.cpp; sourceTree = "<group>"; };
 		63F553DF0AD6B490FD6D7662 /* TiledTerrainModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TiledTerrainModel.cpp; sourceTree = "<group>"; };
@@ -240,6 +242,7 @@
 		63F5566973A09F9C7FD1C2B0 /* BattleContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BattleContext.h; sourceTree = "<group>"; };
 		63F55697E72B4BCEDB18068F /* TerrainGesture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TerrainGesture.h; sourceTree = "<group>"; };
 		63F556F38FC09A1D8D62FE44 /* TerrainModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainModel.cpp; sourceTree = "<group>"; };
+		63F556F406B6693AD8C77909 /* TerrainFeatureModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TerrainFeatureModel.h; sourceTree = "<group>"; };
 		63F557B9DA7F955031802EAB /* TerrainRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TerrainRenderer.h; sourceTree = "<group>"; };
 		63F55808044A3D9C13977269 /* bspline.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bspline.h; sourceTree = "<group>"; };
 		63F55841973B995647E88800 /* vertexbuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vertexbuffer.cpp; sourceTree = "<group>"; };
@@ -617,6 +620,8 @@
 				63F557B9DA7F955031802EAB /* TerrainRenderer.h */,
 				63F556F38FC09A1D8D62FE44 /* TerrainModel.cpp */,
 				63F55B7F7B84CE73C32A76D8 /* TerrainModel.h */,
+				63F5521A631C1E0DFA12C70F /* TerrainFeatureModel.cpp */,
+				63F556F406B6693AD8C77909 /* TerrainFeatureModel.h */,
 			);
 			path = Terrain;
 			sourceTree = "<group>";
@@ -785,6 +790,7 @@
 				63F55A71C5DAF4C587A51434 /* TerrainRenderer.cpp in Sources */,
 				63F55316E5AEA5528734655A /* BattleContext.cpp in Sources */,
 				63F556312D4193D6109775AB /* TerrainModel.cpp in Sources */,
+				63F55A92085198158EA4E57E /* TerrainFeatureModel.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

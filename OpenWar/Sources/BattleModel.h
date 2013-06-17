@@ -10,7 +10,7 @@
 #include "vertexbuffer.h"
 #include "SimulationState.h"
 
-
+class BattleContext;
 class BattleModel;
 
 
@@ -195,6 +195,7 @@ public:
 class BattleModel
 {
 public:
+	BattleContext* _battleContext;
 	glm::vec2 _mapSize;
 	Player _player;
 	CasualtyMarker* _casualtyMarker;
@@ -206,10 +207,10 @@ public:
 	std::vector<SmokeMarker*> _smokeMarkers;
 
 public:
-	SimulationState* _simulationState;
-
-	BattleModel(SimulationState* simulationState);
+	BattleModel(BattleContext* battleContext);
 	~BattleModel();
+
+	BattleContext* GetBattleContext() const { return _battleContext; }
 
 	void AnimateMarkers(float seconds);
 
