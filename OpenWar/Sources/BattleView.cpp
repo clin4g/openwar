@@ -349,7 +349,7 @@ void BattleView::RenderBackgroundLinen()
 {
 	bounds2f viewport = GetViewportBounds();
 
-	texture_shape shape;
+	shape<texture_vertex> shape;
 
 	shape._mode = GL_TRIANGLES;
 	shape._vertices.clear();
@@ -383,7 +383,7 @@ void BattleView::RenderTerrainShadow()
 
 void BattleView::RenderBackgroundSky()
 {
-	color_shape shape;
+	shape<color_vertex> shape;
 
 	float y = GetCameraDirection().z;
 	float x = sqrtf(1 - y * y);

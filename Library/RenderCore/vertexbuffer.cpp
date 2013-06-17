@@ -7,7 +7,7 @@
 
 
 
-shape_base::shape_base() :
+vertexbuffer_base::vertexbuffer_base() :
 _mode(0),
 _vbo(0),
 _vao(0),
@@ -17,24 +17,9 @@ _count(0)
 
 
 
-shape_base::shape_base(shape_base const & other) :
-_mode(other._mode),
-_vbo(0),
-_vao(0),
-_count(0)
-{
-}
 
 
-
-/*shape_base& shape_base::operator=(const shape_base& other)
-{
-	return *this;
-}*/
-
-
-
-shape_base::~shape_base()
+vertexbuffer_base::~vertexbuffer_base()
 {
 	if (_vao != 0)
 	{
@@ -50,7 +35,7 @@ shape_base::~shape_base()
 
 
 
-void shape_base::_bind(const std::vector<renderer_vertex_attribute>& vertex_attributes, const void* data)
+void vertexbuffer_base::_bind(const std::vector<renderer_vertex_attribute>& vertex_attributes, const void* data)
 {
 	bool setup = _vao == 0;
 
@@ -91,7 +76,7 @@ void shape_base::_bind(const std::vector<renderer_vertex_attribute>& vertex_attr
 
 
 
-void shape_base::unbind(const std::vector<renderer_vertex_attribute>& vertex_attributes)
+void vertexbuffer_base::unbind(const std::vector<renderer_vertex_attribute>& vertex_attributes)
 {
 	if (_vao != 0)
 	{
@@ -112,113 +97,4 @@ void shape_base::unbind(const std::vector<renderer_vertex_attribute>& vertex_att
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		CHECK_ERROR_GL();
 	}
-}
-
-
-
-void color_shape::rectangle(bounds2f bounds)
-{
-	_mode = GL_TRIANGLES;
-
-	_vertices.clear();
-	_vertices.push_back(color_vertex(bounds.p11(), glm::vec4(1, 0, 0, 1)));
-	_vertices.push_back(color_vertex(bounds.p12(), glm::vec4(1, 1, 0, 1)));
-	_vertices.push_back(color_vertex(bounds.p22(), glm::vec4(0, 1, 1, 1)));
-	_vertices.push_back(color_vertex(bounds.p22(), glm::vec4(1, 1, 0, 1)));
-	_vertices.push_back(color_vertex(bounds.p21(), glm::vec4(1, 0, 1, 1)));
-	_vertices.push_back(color_vertex(bounds.p11(), glm::vec4(1, 0, 0, 1)));
-}
-
-
-
-void plain_shape::rectangle(bounds2f bounds)
-{
-	_mode = GL_TRIANGLES;
-
-	_vertices.clear();
-	_vertices.push_back(plain_vertex(bounds.p11()));
-	_vertices.push_back(plain_vertex(bounds.p12()));
-	_vertices.push_back(plain_vertex(bounds.p22()));
-	_vertices.push_back(plain_vertex(bounds.p22()));
-	_vertices.push_back(plain_vertex(bounds.p21()));
-	_vertices.push_back(plain_vertex(bounds.p11()));
-}
-
-
-
-void color_shape::add_line(glm::vec2 p1, glm::vec2 p2, glm::vec4 color)
-{
-	_vertices.push_back(color_vertex(p1, color));
-	_vertices.push_back(color_vertex(p2, color));
-}
-
-
-
-void color_shape::add_lines(bounds2f bounds, glm::vec4 color)
-{
-	add_line(bounds.p11(), bounds.p12(), color);
-	add_line(bounds.p12(), bounds.p22(), color);
-	add_line(bounds.p22(), bounds.p21(), color);
-	add_line(bounds.p21(), bounds.p11(), color);
-}
-
-
-static texture_vertex make_texture_vertex(float x, float y, float tx, float ty)
-{
-	texture_vertex result;
-	result._position = glm::vec2(x, y);
-	result._texcoord = glm::vec2(tx, ty);
-	return result;
-}
-
-
-
-texture_shape::texture_shape()
-{
-}
-
-
-
-texture_shape::~texture_shape()
-{
-}
-
-
-
-void texture_shape::add_triangles(bounds2f vertex_bounds, bounds2f texture_bounds)
-{
-	_vertices.push_back(make_texture_vertex(vertex_bounds.min.x, vertex_bounds.min.y, texture_bounds.min.x, texture_bounds.max.y));
-	_vertices.push_back(make_texture_vertex(vertex_bounds.min.x, vertex_bounds.max.y, texture_bounds.min.x, texture_bounds.min.y));
-	_vertices.push_back(make_texture_vertex(vertex_bounds.max.x, vertex_bounds.max.y, texture_bounds.max.x, texture_bounds.min.y));
-	_vertices.push_back(make_texture_vertex(vertex_bounds.max.x, vertex_bounds.max.y, texture_bounds.max.x, texture_bounds.min.y));
-	_vertices.push_back(make_texture_vertex(vertex_bounds.max.x, vertex_bounds.min.y, texture_bounds.max.x, texture_bounds.max.y));
-	_vertices.push_back(make_texture_vertex(vertex_bounds.min.x, vertex_bounds.min.y, texture_bounds.min.x, texture_bounds.max.y));
-}
-
-
-void texture_shape::reshape(bounds2f vertex_bounds, bounds2f texture_bounds)
-{
-	_mode = GL_TRIANGLES;
-
-	_vertices.clear();
-	_vertices.push_back(make_texture_vertex(vertex_bounds.min.x, vertex_bounds.min.y, texture_bounds.min.x, texture_bounds.max.y));
-	_vertices.push_back(make_texture_vertex(vertex_bounds.min.x, vertex_bounds.max.y, texture_bounds.min.x, texture_bounds.min.y));
-	_vertices.push_back(make_texture_vertex(vertex_bounds.max.x, vertex_bounds.max.y, texture_bounds.max.x, texture_bounds.min.y));
-	_vertices.push_back(make_texture_vertex(vertex_bounds.max.x, vertex_bounds.max.y, texture_bounds.max.x, texture_bounds.min.y));
-	_vertices.push_back(make_texture_vertex(vertex_bounds.max.x, vertex_bounds.min.y, texture_bounds.max.x, texture_bounds.max.y));
-	_vertices.push_back(make_texture_vertex(vertex_bounds.min.x, vertex_bounds.min.y, texture_bounds.min.x, texture_bounds.max.y));
-}
-
-
-void texture_shape::rectangle(bounds2f bounds)
-{
-	_mode = GL_TRIANGLES;
-
-	_vertices.clear();
-	_vertices.push_back(texture_vertex(bounds.p11(), glm::vec2(0, 1)));
-	_vertices.push_back(texture_vertex(bounds.p12(), glm::vec2(0, 0)));
-	_vertices.push_back(texture_vertex(bounds.p22(), glm::vec2(1, 0)));
-	_vertices.push_back(texture_vertex(bounds.p22(), glm::vec2(1, 0)));
-	_vertices.push_back(texture_vertex(bounds.p21(), glm::vec2(1, 1)));
-	_vertices.push_back(texture_vertex(bounds.p11(), glm::vec2(0, 1)));
 }

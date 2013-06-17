@@ -39,7 +39,6 @@ struct color_vertex
 
 	color_vertex() {}
 	color_vertex(glm::vec2 p, glm::vec4 c) : _position(p), _color(c) {}
-	color_vertex(float x, float y, float r, float g, float b, float a) : _position(x, y), _color(r, g, b, a) {}
 };
 
 
@@ -60,7 +59,6 @@ struct texture_vertex
 
 	texture_vertex() {}
 	texture_vertex(glm::vec2 p, glm::vec2 t) : _position(p), _texcoord(t) {}
-	texture_vertex(float px, float py, float tx, float ty) : _position(px, py), _texcoord(tx, ty) {}
 };
 
 

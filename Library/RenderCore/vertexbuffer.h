@@ -16,7 +16,7 @@ extern void CHECK_ERROR_GL();
 struct renderer_vertex_attribute;
 
 
-class shape_base
+class vertexbuffer_base
 {
 public:
 	GLenum _mode;
@@ -24,22 +24,22 @@ public:
 	GLuint _vao;
 	GLsizei _count;
 
-	shape_base();
-	shape_base(const shape_base& other);
-	virtual ~shape_base();
+	vertexbuffer_base();
+	virtual ~vertexbuffer_base();
 
 
 	void _bind(const std::vector<renderer_vertex_attribute>& vertex_attributes, const void* data);
 	void unbind(const std::vector<renderer_vertex_attribute>& vertex_attributes);
 
 private:
-	shape_base& operator=(const shape_base& other) { return *this; }
+	vertexbuffer_base(const vertexbuffer_base&) {}
+	vertexbuffer_base& operator=(const vertexbuffer_base&) { return *this; }
 };
 
 
 
 template <class _Vertex>
-class shape : public shape_base
+class shape : public vertexbuffer_base
 {
 public:
 	typedef _Vertex vertex_type;
@@ -47,10 +47,6 @@ public:
 	std::vector<vertex_type> _vertices;
 
 	shape()
-	{
-	}
-
-	shape(const shape& other) : shape_base(other), _vertices(other._vertices)
 	{
 	}
 
@@ -89,43 +85,9 @@ public:
 
 
 private:
+	shape(const shape& other) { }
 	shape& operator=(const shape&) { return *this; }
 };
-
-
-
-class plain_shape : public shape<plain_vertex>
-{
-public:
-	void rectangle(bounds2f bounds);
-};
-
-
-
-class color_shape : public shape<color_vertex>
-{
-public:
-	void add_line(glm::vec2 p1, glm::vec2 p2, glm::vec4 color);
-	void add_lines(bounds2f bounds, glm::vec4 color);
-
-	void rectangle(bounds2f bounds);
-};
-
-
-
-class texture_shape : public shape<texture_vertex>
-{
-public:
-	texture_shape();
-	virtual ~texture_shape();
-
-	void add_triangles(bounds2f vertex_bounds, bounds2f texture_bounds);
-	void reshape(bounds2f vertex_bounds, bounds2f texture_bounds);
-	void rectangle(bounds2f bounds);
-};
-
-
-
 
 
 #endif

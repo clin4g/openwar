@@ -38,7 +38,7 @@ void TerrainGesture::RenderHints()
 
 	_terrainView->UseViewport();
 
-	plain_shape shape;
+	shape<plain_vertex> shape;
 	shape._mode = GL_LINES;
 
 	plain_sprite sprite(renderers::singleton->_plain_renderer);
