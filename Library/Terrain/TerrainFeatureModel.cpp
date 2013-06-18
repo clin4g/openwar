@@ -13,9 +13,3 @@ TerrainFeatureModel::TerrainFeatureModel()
 TerrainFeatureModel::~TerrainFeatureModel()
 {
 }
-
-
-void TerrainFeatureModel::AddTree(glm::vec2 position)
-{
-	_trees.push_back(position);
-}

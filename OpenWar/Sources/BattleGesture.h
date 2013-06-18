@@ -22,7 +22,7 @@ class UnitMarker;
 
 class BattleGesture : public Gesture
 {
-	BattleView* _boardView;
+	BattleView* _battleView;
 
 	bool _tappedUnitCenter;
 	bool _tappedDestination;
@@ -38,7 +38,7 @@ class BattleGesture : public Gesture
 public:
 	static bool disableUnitTracking;
 
-	BattleGesture(BattleView* boardView);
+	BattleGesture(BattleView* battleView);
 
 	virtual void Update(double secondsSinceLastUpdate);
 	virtual void RenderHints();
@@ -52,7 +52,7 @@ public:
 	//void UpdateTouchMarkers();
 
 private:
-	int GetFlipSign() const { return _boardView->GetFlip() ? -1 : 1; }
+	int GetFlipSign() const { return _battleView->GetFlip() ? -1 : 1; }
 
 	Unit* FindNearestTouchUnit(glm::vec2 screenPosition, glm::vec2 terrainPosition);
 

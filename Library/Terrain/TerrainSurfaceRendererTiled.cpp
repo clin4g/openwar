@@ -2,27 +2,27 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "TiledTerrainRenderer.h"
+#include "TerrainSurfaceRendererTiled.h"
 #include "renderer.h"
 #include "image.h"
-#include "TiledTerrainModel.h"
+#include "TerrainSurfaceModelTiled.h"
 
 
-TiledTerrainRenderer::TiledTerrainRenderer(TiledTerrainModel* terrainModel) :
-_terrainModel(terrainModel)
+TerrainSurfaceRendererTiled::TerrainSurfaceRendererTiled(TerrainSurfaceModelTiled* terrainSurfaceModel) :
+_terrainSurfaceModel(terrainSurfaceModel)
 {
 }
 
 
-TiledTerrainRenderer::~TiledTerrainRenderer()
+TerrainSurfaceRendererTiled::~TerrainSurfaceRendererTiled()
 {
 }
 
 
-void TiledTerrainRenderer::Render(const glm::mat4x4& transform, const glm::vec3& lightNormal)
+void TerrainSurfaceRendererTiled::Render(const glm::mat4x4& transform, const glm::vec3& lightNormal)
 {
-	bounds2f bounds = _terrainModel->GetBounds();
-	glm::ivec2 size = _terrainModel->GetSize();
+	bounds2f bounds = _terrainSurfaceModel->GetBounds();
+	glm::ivec2 size = _terrainSurfaceModel->GetSize();
 
 	vertexbuffer<texture_vertex3> shape;
 	shape._mode = GL_TRIANGLES;
@@ -32,15 +32,15 @@ void TiledTerrainRenderer::Render(const glm::mat4x4& transform, const glm::vec3&
 	for (int x = 0; x < size.x; ++x)
 		for (int y = 0; y < size.y; ++y)
 		{
-			TiledTerrainModel::Tile* tile = _terrainModel->GetTile(x, y);
+			TerrainSurfaceModelTiled::Tile* tile = _terrainSurfaceModel->GetTile(x, y);
 
 			glm::vec2 p0 = bounds.min + delta * glm::vec2(x, y);
 			glm::vec2 p1 = p0 + delta;
 
-			float h00 = _terrainModel->GetHeight(glm::vec2(p0.x, p0.y));
-			float h01 = _terrainModel->GetHeight(glm::vec2(p0.x, p1.y));
-			float h10 = _terrainModel->GetHeight(glm::vec2(p1.x, p0.y));
-			float h11 = _terrainModel->GetHeight(glm::vec2(p1.x, p1.y));
+			float h00 = _terrainSurfaceModel->GetHeight(glm::vec2(p0.x, p0.y));
+			float h01 = _terrainSurfaceModel->GetHeight(glm::vec2(p0.x, p1.y));
+			float h10 = _terrainSurfaceModel->GetHeight(glm::vec2(p1.x, p0.y));
+			float h11 = _terrainSurfaceModel->GetHeight(glm::vec2(p1.x, p1.y));
 
 
 			glm::vec2 t00 = glm::vec2(0, 0);

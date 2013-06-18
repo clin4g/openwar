@@ -2,12 +2,12 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "SmoothTerrainModel.h"
+#include "TerrainSurfaceModelSmooth.h"
 #include "image.h"
 
 
 
-SmoothTerrainModel::SmoothTerrainModel(bounds2f bounds, image* map) :
+TerrainSurfaceModelSmooth::TerrainSurfaceModelSmooth(bounds2f bounds, image* map) :
 _bounds(bounds),
 _heightmap(glm::ivec2(128, 128)),
 _height(124.5),
@@ -21,12 +21,12 @@ _map(map)
 }
 
 
-SmoothTerrainModel::~SmoothTerrainModel()
+TerrainSurfaceModelSmooth::~TerrainSurfaceModelSmooth()
 {
 }
 
 
-float SmoothTerrainModel::GetHeight(glm::vec2 position) const
+float TerrainSurfaceModelSmooth::GetHeight(glm::vec2 position) const
 {
 	glm::ivec2 size = _heightmap.size();
 	glm::vec2 c = glm::vec2(size.x - 1, size.y - 1) * (position - _bounds.p11()) / _bounds.size();
@@ -48,7 +48,7 @@ float SmoothTerrainModel::GetHeight(glm::vec2 position) const
 }
 
 
-glm::vec3 SmoothTerrainModel::GetNormal(glm::vec2 position) const
+glm::vec3 TerrainSurfaceModelSmooth::GetNormal(glm::vec2 position) const
 {
 	float h = GetHeight(position);
 	glm::vec3 v1 = glm::vec3(1, 0, GetHeight(position + glm::vec2(1, 0)) - h);
@@ -57,7 +57,7 @@ glm::vec3 SmoothTerrainModel::GetNormal(glm::vec2 position) const
 }
 
 
-const float* SmoothTerrainModel::Intersect(ray r)
+const float* TerrainSurfaceModelSmooth::Intersect(ray r)
 {
 	bounds2f bounds = GetBounds();
 	glm::vec3 offset = glm::vec3(bounds.min, 0);
@@ -74,7 +74,7 @@ const float* SmoothTerrainModel::Intersect(ray r)
 }
 
 
-bool SmoothTerrainModel::IsWater(glm::vec2 position) const
+bool TerrainSurfaceModelSmooth::IsWater(glm::vec2 position) const
 {
 	int x = (int)(512 * position.x / 1024);
 	int y = (int)(512 * position.y / 1024);
@@ -83,7 +83,7 @@ bool SmoothTerrainModel::IsWater(glm::vec2 position) const
 }
 
 
-bool SmoothTerrainModel::IsForest(glm::vec2 position) const
+bool TerrainSurfaceModelSmooth::IsForest(glm::vec2 position) const
 {
 	int x = (int)(512 * position.x / 1024);
 	int y = (int)(512 * position.y / 1024);
@@ -92,7 +92,7 @@ bool SmoothTerrainModel::IsForest(glm::vec2 position) const
 }
 
 
-bool SmoothTerrainModel::IsImpassable(glm::vec2 position) const
+bool TerrainSurfaceModelSmooth::IsImpassable(glm::vec2 position) const
 {
 	int x = (int)(512 * position.x / 1024);
 	int y = (int)(512 * position.y / 1024);
@@ -101,7 +101,7 @@ bool SmoothTerrainModel::IsImpassable(glm::vec2 position) const
 }
 
 
-bool SmoothTerrainModel::ContainsWater(bounds2f bounds) const
+bool TerrainSurfaceModelSmooth::ContainsWater(bounds2f bounds) const
 {
 	glm::ivec2 size(512, 512);
 	glm::vec2 min = glm::vec2(size.x - 1, size.y - 1) * (bounds.min - _bounds.min) / _bounds.size();
@@ -126,7 +126,7 @@ bool SmoothTerrainModel::ContainsWater(bounds2f bounds) const
 }
 
 
-void SmoothTerrainModel::LoadHeightmapFromImage()
+void TerrainSurfaceModelSmooth::LoadHeightmapFromImage()
 {
 	glm::ivec2 imageSize = _map->size();
 	glm::ivec2 heightSize = _heightmap.size();
@@ -145,7 +145,7 @@ void SmoothTerrainModel::LoadHeightmapFromImage()
 }
 
 
-void SmoothTerrainModel::SaveHeightmapToImage()
+void TerrainSurfaceModelSmooth::SaveHeightmapToImage()
 {
 	glm::ivec2 imageSize = _map->size();
 	glm::ivec2 heightSize = _heightmap.size();
@@ -165,13 +165,13 @@ void SmoothTerrainModel::SaveHeightmapToImage()
 }
 
 
-float SmoothTerrainModel::GetHeight(int x, int y) const
+float TerrainSurfaceModelSmooth::GetHeight(int x, int y) const
 {
 	return _heightmap.get_height(x, y);
 }
 
 
-bounds2f SmoothTerrainModel::EditHills(glm::vec2 position, float radius, float pressure)
+bounds2f TerrainSurfaceModelSmooth::EditHills(glm::vec2 position, float radius, float pressure)
 {
 	float delta = pressure > 0 ? 0.5f : -0.5f;
 	float abs_pressure = glm::abs(pressure);
@@ -195,7 +195,7 @@ bounds2f SmoothTerrainModel::EditHills(glm::vec2 position, float radius, float p
 }
 
 
-bounds2f SmoothTerrainModel::EditWater(glm::vec2 position, float radius, float pressure)
+bounds2f TerrainSurfaceModelSmooth::EditWater(glm::vec2 position, float radius, float pressure)
 {
 	glm::ivec2 p0 = glm::ivec2(_scaleWorldToImage * position);
 
@@ -219,7 +219,7 @@ bounds2f SmoothTerrainModel::EditWater(glm::vec2 position, float radius, float p
 }
 
 
-bounds2f SmoothTerrainModel::EditTrees(glm::vec2 position, float radius, float pressure)
+bounds2f TerrainSurfaceModelSmooth::EditTrees(glm::vec2 position, float radius, float pressure)
 {
 	glm::ivec2 p0 = glm::ivec2(_scaleWorldToImage * position);
 

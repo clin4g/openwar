@@ -2,14 +2,14 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "TerrainRenderer.h"
+#include "BillboardTextureAtlas.h"
 
 
-TerrainRenderer::TerrainRenderer()
+BillboardTextureAtlas::BillboardTextureAtlas()
 {
 }
 
 
-TerrainRenderer::~TerrainRenderer()
+BillboardTextureAtlas::~BillboardTextureAtlas()
 {
 }

@@ -8,9 +8,9 @@
 
 
 
-EditorModel::EditorModel(BattleView* battleView, SmoothTerrainRenderer* terrainRendering) :
+EditorModel::EditorModel(BattleView* battleView, TerrainSurfaceRendererSmooth* terrainSurfaceRenderer) :
 _battleView(battleView),
-_terrainRendering(terrainRendering),
+_terrainSurfaceRenderer(terrainSurfaceRenderer),
 editorMode(EditorMode::Hand),
 editorFeature(EditorFeature::Hills)
 {
@@ -76,23 +76,23 @@ void EditorModel::ToolEnded(glm::vec2 position)
 
 void EditorModel::EditHills(glm::vec2 position, bool value)
 {
-	bounds2f bounds = _terrainRendering->GetTerrainModel()->EditHills(position, 25, value ? 0.5 : -0.5);
-	_terrainRendering->UpdateHeights(bounds);
+	bounds2f bounds = _terrainSurfaceRenderer->GetTerrainSurfaceModel()->EditHills(position, 25, value ? 0.5 : -0.5);
+	_terrainSurfaceRenderer->UpdateHeights(bounds);
 	_battleView->UpdateTerrainTrees(bounds);
 }
 
 
 void EditorModel::EditWater(glm::vec2 position, bool value)
 {
-	bounds2f bounds = _terrainRendering->GetTerrainModel()->EditWater(position, 15, value ? 0.5 : -0.5);
-	_terrainRendering->UpdateHeights(bounds);
+	bounds2f bounds = _terrainSurfaceRenderer->GetTerrainSurfaceModel()->EditWater(position, 15, value ? 0.5 : -0.5);
+	_terrainSurfaceRenderer->UpdateHeights(bounds);
 	_battleView->UpdateTerrainTrees(bounds);
 }
 
 
 void EditorModel::EditTrees(glm::vec2 position, bool value)
 {
-	bounds2f bounds = _terrainRendering->GetTerrainModel()->EditTrees(position, 15, value ? 0.5 : -0.5);
-	_terrainRendering->UpdateMapTexture();
+	bounds2f bounds = _terrainSurfaceRenderer->GetTerrainSurfaceModel()->EditTrees(position, 15, value ? 0.5 : -0.5);
+	_terrainSurfaceRenderer->UpdateMapTexture();
 	_battleView->UpdateTerrainTrees(bounds);
 }

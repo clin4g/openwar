@@ -8,9 +8,11 @@
 #include "BattleView.h"
 #include "OpenWarSurface.h"
 #include "SimulationRules.h"
-#include "TiledTerrainModel.h"
 #include "BattleScript.h"
-#include "TerrainFeatureModel.h"
+#include "BillboardTextureAtlas.h"
+#include "TerrainSurfaceModelTiled.h"
+#include "TerrainFeatureModelBillboard.h"
+#include "TerrainFeatureModelMesh.h"
 
 
 static NSData* ConvertImageToTiff(image* map)
@@ -86,8 +88,8 @@ static image* ConvertTiffToImage(NSData* data)
 	{
 		if ([typeName isEqualToString:@"SmoothMap"])
 		{
-			_surface->_battleContext->smoothTerrainModel->SaveHeightmapToImage();
-			return ConvertImageToTiff(_surface->_battleContext->smoothTerrainModel->GetMap());
+			_surface->_battleContext->terrainSurfaceModelSmooth->SaveHeightmapToImage();
+			return ConvertImageToTiff(_surface->_battleContext->terrainSurfaceModelSmooth->GetMap());
 		}
 	}
 
@@ -141,25 +143,33 @@ static image* ConvertTiffToImage(NSData* data)
 	}
 
 	BattleContext* battleContext = new BattleContext();
-	if (battleContext->smoothTerrainModel == nullptr && battleContext->tiledTerrainModel == nullptr)
+
+
+
+	if (battleContext->terrainSurfaceModelSmooth == nullptr && battleContext->terrainSurfaceModelTiled == nullptr)
 	{
 		if (_map == nullptr)
 		{
 			NSString* path = [[NSBundle mainBundle] pathForResource:@"DefaultMap" ofType:@"tiff" inDirectory:@"Maps"];
 			_map = ConvertTiffToImage([NSData dataWithContentsOfFile:path]);
 		}
-		battleContext->smoothTerrainModel = new SmoothTerrainModel(bounds2f(0, 0, 1024, 1024), _map);
+		battleContext->terrainSurfaceModelSmooth = new TerrainSurfaceModelSmooth(bounds2f(0, 0, 1024, 1024), _map);
 	}
 
-	battleContext->terrainFeatureModel = new TerrainFeatureModel();
+
+
+	battleContext->terrainFeatureModelBillboard = new TerrainFeatureModelBillboard();
+	battleContext->terrainFeatureModelMesh = new TerrainFeatureModelMesh();
+	battleContext->billboardTextureAtlas = new BillboardTextureAtlas();
 
 	BattleScript* battleScript = new BattleScript(battleContext, (const char*)_script.bytes, _script.length);
+
 
 	if (battleContext->simulationState == nullptr)
 	{
 		battleContext->simulationState = new SimulationState();
-		battleContext->simulationState->terrainModel = static_cast<TerrainModel*>(battleContext->smoothTerrainModel)
-				?: static_cast<TerrainModel*>(battleContext->tiledTerrainModel);
+		battleContext->simulationState->terrainModel = static_cast<TerrainSurfaceModel*>(battleContext->terrainSurfaceModelSmooth)
+				?: static_cast<TerrainSurfaceModel*>(battleContext->terrainSurfaceModelTiled);
 	}
 
 	if (battleContext->simulationRules == nullptr)

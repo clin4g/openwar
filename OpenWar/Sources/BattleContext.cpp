@@ -8,12 +8,15 @@
 BattleContext::BattleContext() :
 simulationState(nullptr),
 simulationRules(nullptr),
-smoothTerrainModel(nullptr),
-tiledTerrainModel(nullptr),
-battleModel(nullptr),
-terrainFeatureModel(nullptr)
+terrainSurfaceModelSmooth(nullptr),
+terrainSurfaceModelTiled(nullptr),
+terrainFeatureModelBillboard(nullptr),
+terrainFeatureModelMesh(nullptr),
+billboardTextureAtlas(nullptr),
+battleModel(nullptr)
 {
 }
+
 
 
 BattleContext::~BattleContext()

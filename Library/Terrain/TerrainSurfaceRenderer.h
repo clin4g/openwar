@@ -2,16 +2,16 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#ifndef TerrainRenderer_H
-#define TerrainRenderer_H
+#ifndef TERRAINSURFACERENDERER_H
+#define TERRAINSURFACERENDERER_H
 
 
 
-class TerrainRenderer
+class TerrainSurfaceRenderer
 {
 public:
-	TerrainRenderer();
-	virtual ~TerrainRenderer();
+	TerrainSurfaceRenderer();
+	virtual ~TerrainSurfaceRenderer();
 
 	virtual void Render(const glm::mat4x4& transform, const glm::vec3& lightNormal) = 0;
 };

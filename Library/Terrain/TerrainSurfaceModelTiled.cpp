@@ -2,10 +2,10 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "TiledTerrainModel.h"
+#include "TerrainSurfaceModelTiled.h"
 
 
-TiledTerrainModel::TiledTerrainModel(bounds2f bounds, glm::ivec2 size) :
+TerrainSurfaceModelTiled::TerrainSurfaceModelTiled(bounds2f bounds, glm::ivec2 size) :
 _bounds(bounds),
 _size(size),
 _tiles(nullptr),
@@ -17,14 +17,14 @@ _nextTextureNumber(1)
 }
 
 
-TiledTerrainModel::~TiledTerrainModel()
+TerrainSurfaceModelTiled::~TerrainSurfaceModelTiled()
 {
 	delete [] _tiles;
 	delete _heightmap;
 }
 
 
-float TiledTerrainModel::GetHeight(glm::vec2 position) const
+float TerrainSurfaceModelTiled::GetHeight(glm::vec2 position) const
 {
 	glm::ivec2 size = _heightmap->size();
 	glm::vec2 c = glm::vec2(size.x - 1, size.y - 1) * (position - _bounds.p11()) / _bounds.size();
@@ -33,13 +33,13 @@ float TiledTerrainModel::GetHeight(glm::vec2 position) const
 }
 
 
-glm::vec3 TiledTerrainModel::GetNormal(glm::vec2 position) const
+glm::vec3 TerrainSurfaceModelTiled::GetNormal(glm::vec2 position) const
 {
 	return glm::vec3(0, 0, 1);
 }
 
 
-float const* TiledTerrainModel::Intersect(ray r)
+float const* TerrainSurfaceModelTiled::Intersect(ray r)
 {
 	bounds2f bounds = GetBounds();
 	glm::vec3 offset = glm::vec3(bounds.min, 0);
@@ -56,38 +56,38 @@ float const* TiledTerrainModel::Intersect(ray r)
 }
 
 
-bool TiledTerrainModel::IsWater(glm::vec2 position) const
+bool TerrainSurfaceModelTiled::IsWater(glm::vec2 position) const
 {
 	return false;
 }
 
 
-bool TiledTerrainModel::IsForest(glm::vec2 position) const
+bool TerrainSurfaceModelTiled::IsForest(glm::vec2 position) const
 {
 	return false;
 }
 
 
-bool TiledTerrainModel::IsImpassable(glm::vec2 position) const
+bool TerrainSurfaceModelTiled::IsImpassable(glm::vec2 position) const
 {
 	return false;
 }
 
 
-bool TiledTerrainModel::ContainsWater(bounds2f bounds) const
+bool TerrainSurfaceModelTiled::ContainsWater(bounds2f bounds) const
 {
 	return false;
 }
 
 
-void TiledTerrainModel::SetHeight(int x, int y, float h)
+void TerrainSurfaceModelTiled::SetHeight(int x, int y, float h)
 {
 	_heightmap->set_height(x, y, h);
 }
 
 
 
-void TiledTerrainModel::SetTile(int x, int y, const std::string& texture, int rotate, bool mirror)
+void TerrainSurfaceModelTiled::SetTile(int x, int y, const std::string& texture, int rotate, bool mirror)
 {
 	NSString* path = [NSString stringWithCString:texture.c_str() encoding:NSASCIIStringEncoding];
 
@@ -104,14 +104,14 @@ void TiledTerrainModel::SetTile(int x, int y, const std::string& texture, int ro
 		++_nextTextureNumber;
 	}
 
-	TiledTerrainModel::Tile* tile = GetTile(x, y);
+	TerrainSurfaceModelTiled::Tile* tile = GetTile(x, y);
 	tile->texture = _textures[_textureNumber[texture]];
 	tile->rotate = rotate;
 	tile->mirror = mirror;
 }
 
 
-TiledTerrainModel::Tile* TiledTerrainModel::GetTile(int x, int y)
+TerrainSurfaceModelTiled::Tile* TerrainSurfaceModelTiled::GetTile(int x, int y)
 {
 	if (0 <= x && x < _size.x && 0 <= y && y < _size.y)
 		return _tiles + x + _size.x * y;

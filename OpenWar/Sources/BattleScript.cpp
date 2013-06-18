@@ -5,9 +5,9 @@
 #include "BattleScript.h"
 #include "BattleModel.h"
 #include "BattleContext.h"
-#include "TerrainFeatureModel.h"
 #include "SimulationRules.h"
-#include "TiledTerrainModel.h"
+#include "TerrainFeatureModelBillboard.h"
+#include "TerrainSurfaceModelTiled.h"
 
 #include "lauxlib.h"
 #include "lualib.h"
@@ -128,13 +128,13 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 
 	if (s != nullptr && std::strcmp(s, "tiled") == 0)
 	{
-		delete battleContext->smoothTerrainModel;
-		battleContext->smoothTerrainModel = nullptr;
+		delete battleContext->terrainSurfaceModelSmooth;
+		battleContext->terrainSurfaceModelSmooth = nullptr;
 
 		int x = n < 2 ? 0 : (int)lua_tonumber(L, 2);
 		int y = n < 3 ? 0 : (int)lua_tonumber(L, 3);
 
-		battleContext->tiledTerrainModel = new TiledTerrainModel(bounds2f(0, 0, 1024, 1024), glm::ivec2(x, y));
+		battleContext->terrainSurfaceModelTiled = new TerrainSurfaceModelTiled(bounds2f(0, 0, 1024, 1024), glm::ivec2(x, y));
 	}
 
 	return 0;
@@ -146,8 +146,8 @@ int BattleScript::openwar_simulator_init(lua_State* L)
 	BattleContext* battleContext = _battlescript->_battleContext;
 
 	battleContext->simulationState = new SimulationState();
-	battleContext->simulationState->terrainModel = static_cast<TerrainModel*>(battleContext->smoothTerrainModel)
-			?: static_cast<TerrainModel*>(battleContext->tiledTerrainModel);
+	battleContext->simulationState->terrainModel = static_cast<TerrainSurfaceModel*>(battleContext->terrainSurfaceModelSmooth)
+			?: static_cast<TerrainSurfaceModel*>(battleContext->terrainSurfaceModelTiled);
 
 	battleContext->simulationRules = new SimulationRules(battleContext->simulationState);
 	battleContext->simulationRules->currentPlayer = Player1;
@@ -244,7 +244,7 @@ int BattleScript::battle_set_terrain_tile(lua_State* L)
 	int rotate = n < 4 ? 0 : (int)lua_tonumber(L, 4);
 	bool mirror = n < 5 ? 0 : lua_toboolean(L, 5);
 
-	_battlescript->_battleContext->tiledTerrainModel->SetTile(x, y, std::string(texture), rotate, mirror);
+	_battlescript->_battleContext->terrainSurfaceModelTiled->SetTile(x, y, std::string(texture), rotate, mirror);
 
 	return 0;
 }
@@ -257,7 +257,7 @@ int BattleScript::battle_set_terrain_height(lua_State* L)
 	int y = n < 2 ? 0 : (int)lua_tonumber(L, 2);
 	float h = n < 3 ? 0 : (float)lua_tonumber(L, 3);
 
-	_battlescript->_battleContext->tiledTerrainModel->SetHeight(x, y, h);
+	_battlescript->_battleContext->terrainSurfaceModelTiled->SetHeight(x, y, h);
 
 	return 0;
 }
@@ -269,7 +269,7 @@ int BattleScript::battle_add_terrain_tree(lua_State* L)
 	float x = n < 1 ? 0 : (float)lua_tonumber(L, 1);
 	float y = n < 2 ? 0 : (float)lua_tonumber(L, 2);
 
-	_battlescript->_battleContext->terrainFeatureModel->AddTree(glm::vec2(x, y));
+	_battlescript->_battleContext->terrainFeatureModelBillboard->AddTree(glm::vec2(x, y));
 
 	return 0;
 }

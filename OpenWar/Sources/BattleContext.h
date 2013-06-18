@@ -6,12 +6,16 @@
 #define BATTLECONTEXT_H
 
 class BattleModel;
+class BillboardTextureAtlas;
 class SimulationRules;
 class SimulationState;
-class SmoothTerrainModel;
+class TerrainSurfaceModel;
+class TerrainSurfaceModelSmooth;
+class TerrainSurfaceModelTiled;
 class TerrainFeatureModel;
-class TerrainModel;
-class TiledTerrainModel;
+class TerrainFeatureModelBillboard;
+class TerrainFeatureModelMesh;
+
 
 class BattleContext
 {
@@ -22,15 +26,20 @@ public:
 	SimulationState* simulationState;
 	SimulationRules* simulationRules;
 
-	SmoothTerrainModel* smoothTerrainModel;
-	TiledTerrainModel* tiledTerrainModel;
+	TerrainSurfaceModelSmooth* terrainSurfaceModelSmooth;
+	TerrainSurfaceModelTiled* terrainSurfaceModelTiled;
 
-	TerrainFeatureModel* terrainFeatureModel;
+	TerrainFeatureModelBillboard* terrainFeatureModelBillboard;
+	TerrainFeatureModelMesh* terrainFeatureModelMesh;
+
+	BillboardTextureAtlas* billboardTextureAtlas;
 	BattleModel* battleModel;
 
-	TerrainModel* GetTerrainModel() const { return (TerrainModel*)smoothTerrainModel ?: (TerrainModel*)tiledTerrainModel; }
+	TerrainSurfaceModel* GetTerrainSurfaceModel() const
+	{
+		return (TerrainSurfaceModel*)terrainSurfaceModelSmooth ?: (TerrainSurfaceModel*)terrainSurfaceModelTiled;
+	}
 };
-
 
 
 #endif

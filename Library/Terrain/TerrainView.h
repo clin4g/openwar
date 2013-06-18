@@ -7,7 +7,7 @@
 
 #include "View.h"
 #include "geometry.h"
-#include "TerrainModel.h"
+#include "TerrainSurfaceModel.h"
 
 
 class TerrainView : public View
@@ -16,13 +16,12 @@ class TerrainView : public View
 	glm::vec3 _cameraPosition;
 	float _cameraTilt;
 	float _cameraFacing;
-	float _contentWidth;
 
 protected:
-	TerrainModel* _terrainModel;
+	TerrainSurfaceModel* _terrainSurfaceModel;
 
 public:
-	TerrainView(Surface* screen, TerrainModel* terrainModel);
+	TerrainView(Surface* screen, TerrainSurfaceModel* terrainSurfaceModel);
 	virtual ~TerrainView();
 
 	bounds2f GetContentBounds() const { return _contentBounds; }
@@ -35,7 +34,6 @@ public:
 	glm::vec2 GetScreenRight() const;
 
 	glm::vec3 GetCameraPosition() const { return _cameraPosition; }
-	void SetCameraPosition(glm::vec3 value) { _cameraPosition = value; }
 
 	glm::vec3 GetCameraDirection() const;
 	glm::vec3 GetCameraUpVector() const;
@@ -62,7 +60,7 @@ public:
 
 	glm::vec3 to_vector3(glm::vec2 p, float h = 1)
 	{
-		return glm::vec3(p, _terrainModel->GetHeight(p) + h);
+		return glm::vec3(p, _terrainSurfaceModel->GetHeight(p) + h);
 	}
 
 };

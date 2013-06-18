@@ -12,7 +12,7 @@ class BattleContext;
 class BattleModel;
 class BattleView;
 class SimulationState;
-class TiledTerrainRenderer;
+class TerrainSurfaceRendererTiled;
 
 
 class BattleScript

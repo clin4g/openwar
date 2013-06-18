@@ -97,16 +97,16 @@ void OpenWarSurface::Reset(BattleContext* battleContext, BattleScript* battleScr
 
 	_battleView = new BattleView(this, _battleContext->battleModel, _renderers, _battleRendering, Player1);
 
-	if (_battleContext->smoothTerrainModel != nullptr)
-		_battleView->_smoothTerrainRendering = new SmoothTerrainRenderer(_battleContext->smoothTerrainModel, true);
+	if (_battleContext->terrainSurfaceModelSmooth != nullptr)
+		_battleView->_terrainSurfaceRendererSmooth = new TerrainSurfaceRendererSmooth(_battleContext->terrainSurfaceModelSmooth, true);
 
-	if (_battleContext->tiledTerrainModel != nullptr)
-		_battleView->_tiledTerrainRenderer = new TiledTerrainRenderer(_battleContext->tiledTerrainModel);
+	if (_battleContext->terrainSurfaceModelTiled != nullptr)
+		_battleView->_terrainSurfaceRendererTiled = new TerrainSurfaceRendererTiled(_battleContext->terrainSurfaceModelTiled);
 
 
 	_battleView->Initialize(_battleContext->simulationState, true);
 
-	_editorModel = new EditorModel(_battleView, _battleView->_smoothTerrainRendering);
+	_editorModel = new EditorModel(_battleView, _battleView->_terrainSurfaceRendererSmooth);
 	_editorGesture = new EditorGesture(_battleView, _editorModel);
 
 	_battleGesture = new BattleGesture(_battleView);

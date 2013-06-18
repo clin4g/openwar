@@ -17,8 +17,8 @@
 bool BattleGesture::disableUnitTracking = false;
 
 
-BattleGesture::BattleGesture(BattleView* boardView) :
-_boardView(boardView),
+BattleGesture::BattleGesture(BattleView* battleView) :
+_battleView(battleView),
 _trackingMarker(0),
 _trackingTouch(0),
 _modifierTouch(0),
@@ -41,7 +41,7 @@ void BattleGesture::RenderHints()
 	if (this != nullptr)
 		return;
 
-	_boardView->UseViewport();
+	_battleView->UseViewport();
 
 	vertexbuffer<plain_vertex> shape;
 	shape._mode = GL_LINES;
@@ -49,9 +49,9 @@ void BattleGesture::RenderHints()
 	plain_sprite sprite(renderers::singleton->_plain_renderer);
 	sprite._shape = &shape;
 	sprite._color = glm::vec4(0, 0, 0, 1);
-	sprite._viewport = _boardView->GetViewportBounds();
+	sprite._viewport = _battleView->GetViewportBounds();
 
-	for (UnitMarker* unitMarker : _boardView->GetBattleModel()->_unitMarkers)
+	for (UnitMarker* unitMarker : _battleView->GetBattleModel()->_unitMarkers)
 	{
 		bounds2f bounds = GetUnitCurrentScreenBounds(unitMarker->_unit);
 
@@ -84,15 +84,15 @@ void BattleGesture::RenderHints()
 
 void BattleGesture::TouchBegan(Touch* touch)
 {
-	if (touch->GetSurface() != _boardView->GetScreen())
+	if (touch->GetSurface() != _battleView->GetScreen())
 		return;
 	if (touch->GetGesture() != nullptr)
 		return;
-	if (!_boardView->GetViewportBounds().contains(touch->GetPosition()))
+	if (!_battleView->GetViewportBounds().contains(touch->GetPosition()))
 		return;
 
 	glm::vec2 screenPosition = touch->GetPosition();
-	glm::vec2 terrainPosition = _boardView->GetTerrainPosition3(screenPosition).xy();
+	glm::vec2 terrainPosition = _battleView->GetTerrainPosition3(screenPosition).xy();
 	Unit* unit = FindNearestTouchUnit(screenPosition, terrainPosition);
 
 	if (_trackingTouch == nullptr)
@@ -100,10 +100,10 @@ void BattleGesture::TouchBegan(Touch* touch)
 		if (unit == nullptr)
 			return;
 
-		if (unit != nullptr && !_boardView->GetBattleModel()->GetTrackingMarker(unit))
+		if (unit != nullptr && !_battleView->GetBattleModel()->GetTrackingMarker(unit))
 		{
 			_allowTargetEnemyUnit = unit->stats.unitWeapon == UnitWeaponBow || unit->stats.unitWeapon == UnitWeaponArq;
-			_trackingMarker = _boardView->GetBattleModel()->AddTrackingMarker(unit);
+			_trackingMarker = _battleView->GetBattleModel()->AddTrackingMarker(unit);
 
 			_tappedUnitCenter = GetUnitCurrentScreenBounds(unit).contains(screenPosition);
 			_tappedDestination = GetUnitFutureScreenBounds(unit).contains(screenPosition);
@@ -283,13 +283,13 @@ void BattleGesture::TouchEnded(Touch* touch)
 
 			unit->timeUntilSwapFighters = 0.2f;
 
-			if (!_boardView->GetBattleModel()->GetMovementMarker(unit))
-				_boardView->GetBattleModel()->AddMovementMarker(unit);
+			if (!_battleView->GetBattleModel()->GetMovementMarker(unit))
+				_battleView->GetBattleModel()->AddMovementMarker(unit);
 
 			if (touch->GetTapCount() == 1)
 				SoundPlayer::singleton->Play(SoundBufferCommandAck);
 
-			_boardView->GetBattleModel()->RemoveTrackingMarker(_trackingMarker);
+			_battleView->GetBattleModel()->RemoveTrackingMarker(_trackingMarker);
 			_trackingMarker = nullptr;
 		}
 	}
@@ -340,7 +340,7 @@ void BattleGesture::TouchWasCancelled(Touch* touch)
 {
 	if (_trackingMarker)
 	{
-		_boardView->GetBattleModel()->RemoveTrackingMarker(_trackingMarker);
+		_battleView->GetBattleModel()->RemoveTrackingMarker(_trackingMarker);
 		_trackingMarker = nullptr;
 	}
 
@@ -384,9 +384,9 @@ Unit* BattleGesture::FindNearestTouchUnit(glm::vec2 screenPosition, glm::vec2 te
 
 bounds2f BattleGesture::GetUnitCurrentScreenBounds(Unit* unit)
 {
-	glm::mat4x4 transform = _boardView->GetTransform();
-	glm::vec4 position = transform * glm::vec4(_boardView->to_vector3(unit->state.center, 0), 1.0f);
-	return bounds2_from_center(_boardView->ViewToScreen((glm::vec2)position.xy() / position.w), 32);
+	glm::mat4x4 transform = _battleView->GetTransform();
+	glm::vec4 position = transform * glm::vec4(_battleView->to_vector3(unit->state.center, 0), 1.0f);
+	return bounds2_from_center(_battleView->ViewToScreen((glm::vec2)position.xy() / position.w), 32);
 }
 
 
@@ -395,16 +395,16 @@ bounds2f BattleGesture::GetUnitFutureScreenBounds(Unit* unit)
 	if (unit->movement.path.empty())
 		return bounds2f();
 
-	glm::mat4x4 transform = _boardView->GetTransform();
-	glm::vec4 position = transform * glm::vec4(_boardView->to_vector3(unit->movement.path.back(), 0), 1.0f);
-	return bounds2_from_center(_boardView->ViewToScreen((glm::vec2)position.xy() / position.w), 32);
+	glm::mat4x4 transform = _battleView->GetTransform();
+	glm::vec4 position = transform * glm::vec4(_battleView->to_vector3(unit->movement.path.back(), 0), 1.0f);
+	return bounds2_from_center(_battleView->ViewToScreen((glm::vec2)position.xy() / position.w), 32);
 }
 
 
 Unit* BattleGesture::GetTouchedUnitMarker(glm::vec2 screenPosition, glm::vec2 terrainPosition)
 {
 	Unit* result = nullptr;
-	UnitMarker* unitMarker = _boardView->GetBattleModel()->GetNearestUnitMarker(terrainPosition, _boardView->GetBattleModel()->_player);
+	UnitMarker* unitMarker = _battleView->GetBattleModel()->GetNearestUnitMarker(terrainPosition, _battleView->GetBattleModel()->_player);
 	if (unitMarker != nullptr)
 	{
 		Unit* unit = unitMarker->_unit;
@@ -420,7 +420,7 @@ Unit* BattleGesture::GetTouchedUnitMarker(glm::vec2 screenPosition, glm::vec2 te
 Unit* BattleGesture::GetTouchedMovementMarker(glm::vec2 screenPosition, glm::vec2 terrainPosition)
 {
 	Unit* result = nullptr;
-	MovementMarker* movementMarker = _boardView->GetBattleModel()->GetNearestMovementMarker(terrainPosition, _boardView->GetBattleModel()->_player);
+	MovementMarker* movementMarker = _battleView->GetBattleModel()->GetNearestMovementMarker(terrainPosition, _battleView->GetBattleModel()->_player);
 	if (movementMarker != nullptr)
 	{
 		Unit* unit = movementMarker->_unit;
@@ -439,8 +439,8 @@ void BattleGesture::UpdateTrackingMarker()
 
 	glm::vec2 screenTouchPosition = _trackingTouch->GetPosition();
 	glm::vec2 screenMarkerPosition = screenTouchPosition + glm::vec2(0, 1) * (_offsetToMarker * GetFlipSign());
-	glm::vec2 touchPosition = _boardView->GetTerrainPosition3(screenTouchPosition).xy();
-	glm::vec2 markerPosition = _boardView->GetTerrainPosition3(screenMarkerPosition).xy();
+	glm::vec2 touchPosition = _battleView->GetTerrainPosition3(screenTouchPosition).xy();
+	glm::vec2 markerPosition = _battleView->GetTerrainPosition3(screenMarkerPosition).xy();
 
 	Player enemyPlayer = _trackingMarker->_unit->player == Player1 ? Player2 : Player1;
 	Unit* enemyUnit = FindUnit(touchPosition, markerPosition, enemyPlayer);
@@ -467,7 +467,7 @@ void BattleGesture::UpdateTrackingMarker()
 		float delta = 2 / fmaxf(1, glm::length(currentDestination - markerPosition));
 		for (float k = 0; k < 1; k += delta)
 		{
-			if (_boardView->GetBattleModel()->GetBattleContext()->simulationState->terrainModel->IsImpassable(glm::mix(currentDestination, markerPosition, k)))
+			if (_battleView->GetBattleModel()->GetBattleContext()->simulationState->terrainModel->IsImpassable(glm::mix(currentDestination, markerPosition, k)))
 			{
 				waterEdgeFactor = k;
 				break;
@@ -534,7 +534,7 @@ Unit* BattleGesture::FindUnit(glm::vec2 touchPosition, glm::vec2 markerPosition,
 	glm::vec2 d = (touchPosition - markerPosition) / 4.0f;
 	for (int i = 0; i < 4; ++i)
 	{
-		UnitMarker* unitMarker = _boardView->GetBattleModel()->GetNearestUnitMarker(p, player);
+		UnitMarker* unitMarker = _battleView->GetBattleModel()->GetNearestUnitMarker(p, player);
 		if (unitMarker && glm::length(unitMarker->_unit->state.center - p) <= SNAP_TO_UNIT_TRESHOLD)
 		{
 			enemyMarker = unitMarker;

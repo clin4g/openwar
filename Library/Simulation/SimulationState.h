@@ -6,7 +6,7 @@
 #define SIMULATIONSTATE_H
 
 #include "MovementRules.h"
-#include "SmoothTerrainModel.h"
+#include "TerrainSurfaceModelSmooth.h"
 #include "image.h"
 
 
@@ -312,7 +312,7 @@ struct SimulationState
 	std::map<int, Unit*> units;
 	std::vector<Shooting> shootings;
 
-	TerrainModel* terrainModel;
+	TerrainSurfaceModel* terrainModel;
 
 	SimulationState();
 	~SimulationState();

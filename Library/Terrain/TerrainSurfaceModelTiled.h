@@ -2,17 +2,17 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#ifndef TiledTerrainModel_H
-#define TiledTerrainModel_H
+#ifndef TERRAINSURFACEMODELTILED_H
+#define TERRAINSURFACEMODELTILED_H
 
-#include "TerrainModel.h"
+#include "TerrainSurfaceModel.h"
 #include "bounds.h"
 #include "heightmap.h"
 #include "texture.h"
 #include "image.h"
 
 
-class TiledTerrainModel : public TerrainModel
+class TerrainSurfaceModelTiled : public TerrainSurfaceModel
 {
 public:
 	struct Tile
@@ -35,8 +35,8 @@ private:
 	int _nextTextureNumber;
 
 public:
-	TiledTerrainModel(bounds2f bounds, glm::ivec2 size);
-	~TiledTerrainModel();
+	TerrainSurfaceModelTiled(bounds2f bounds, glm::ivec2 size);
+	~TerrainSurfaceModelTiled();
 
 	virtual float GetHeight(glm::vec2 position) const;
 	virtual glm::vec3 GetNormal(glm::vec2 position) const;

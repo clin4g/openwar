@@ -2,17 +2,17 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#ifndef SMOOTHTERRAINMODEL_H
-#define SMOOTHTERRAINMODEL_H
+#ifndef TERRAINSURFACEMODELSMOOTH_H
+#define TERRAINSURFACEMODELSMOOTH_H
 
 #include "bounds.h"
 #include "heightmap.h"
-#include "TerrainModel.h"
+#include "TerrainSurfaceModel.h"
 
 class image;
 
 
-class SmoothTerrainModel : public TerrainModel
+class TerrainSurfaceModelSmooth : public TerrainSurfaceModel
 {
 public:
 	bounds2f _bounds;
@@ -23,8 +23,8 @@ public:
 	glm::vec2 _scaleImageToWorld;
 
 public:
-	SmoothTerrainModel(bounds2f bounds, image* map);
-	virtual ~SmoothTerrainModel();
+	TerrainSurfaceModelSmooth(bounds2f bounds, image* map);
+	virtual ~TerrainSurfaceModelSmooth();
 
 	virtual float GetHeight(glm::vec2 position) const;
 	virtual glm::vec3 GetNormal(glm::vec2 position) const;

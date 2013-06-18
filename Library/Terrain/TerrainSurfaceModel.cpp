@@ -2,14 +2,14 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "TerrainModel.h"
+#include "TerrainSurfaceModel.h"
 
 
-TerrainModel::TerrainModel()
+TerrainSurfaceModel::TerrainSurfaceModel()
 {
 }
 
 
-TerrainModel::~TerrainModel()
+TerrainSurfaceModel::~TerrainSurfaceModel()
 {
 }

@@ -10,10 +10,7 @@ class TerrainFeatureModel
 {
 public:
 	TerrainFeatureModel();
-	~TerrainFeatureModel();
-
-	std::vector<glm::vec2> _trees;
-	void AddTree(glm::vec2 position);
+	virtual ~TerrainFeatureModel();
 };
 
 

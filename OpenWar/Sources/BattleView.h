@@ -6,13 +6,12 @@
 #define BATTLEVIEW_H
 
 #include "BattleRendering.h"
-#include "TerrainView.h"
 #include "SimulationState.h"
-
-#include "sprite.h"
-#include "SmoothTerrainRenderer.h"
-#include "TiledTerrainRenderer.h"
+#include "TerrainSurfaceRendererSmooth.h"
+#include "TerrainSurfaceRendererTiled.h"
+#include "TerrainView.h"
 #include "vertexbuffer.h"
+
 
 
 class BattleModel;
@@ -63,10 +62,10 @@ class BattleView : public TerrainView
 
 
 public:
-	SmoothTerrainRenderer* _smoothTerrainRendering;
-	TiledTerrainRenderer* _tiledTerrainRenderer;
+	TerrainSurfaceRendererSmooth* _terrainSurfaceRendererSmooth;
+	TerrainSurfaceRendererTiled* _terrainSurfaceRendererTiled;
 
-	BattleView(Surface* screen, BattleModel* boardModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer);
+	BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer);
 	~BattleView();
 
 	BattleModel* GetBattleModel() const { return _battleModel; }

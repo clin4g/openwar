@@ -4,13 +4,13 @@
 
 #include "BattleView.h"
 #include "BattleModel.h"
-#include "TiledTerrainModel.h"
+#include "TerrainSurfaceModelTiled.h"
 #include "BattleContext.h"
-#include "TerrainFeatureModel.h"
+#include "TerrainFeatureModelBillboard.h"
 
 
 
-BattleView::BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer) : TerrainView(screen, battleModel->GetBattleContext()->simulationState->terrainModel),
+BattleView::BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer) : TerrainView(screen, battleModel->GetBattleContext()->GetTerrainSurfaceModel()),
 _renderers(r),
 _battleRendering(battleRendering),
 _battleModel(battleModel),
@@ -25,10 +25,10 @@ _trackingMarker_missileHeadShape(),
 _unitMarker_targetLineShape(),
 _unitMarker_targetHeadShape(),
 _shape_fighter_weapons(),
-_smoothTerrainRendering(nullptr),
-_tiledTerrainRenderer(nullptr)
+_terrainSurfaceRendererSmooth(nullptr),
+_terrainSurfaceRendererTiled(nullptr)
 {
-	//_tiledTerrainRenderer = new TiledTerrainRenderer();
+	//_tiledTerrainRenderer = new TiledTerrainSurfaceRenderer();
 
 	SetContentBounds(bounds2f(0, 0, 1024, 1024));
 
@@ -125,15 +125,15 @@ struct random_iterator
 
 void BattleView::UpdateTerrainTrees(bounds2f bounds)
 {
-	if (_tiledTerrainRenderer != nullptr)
+	if (_terrainSurfaceRendererTiled != nullptr)
 	{
-		for (glm::vec2 position : _battleModel->GetBattleContext()->terrainFeatureModel->_trees)
+		for (glm::vec2 position : _battleModel->GetBattleContext()->terrainFeatureModelBillboard->_trees)
 			_static_billboards.push_back(MakeBillboardVertex(position, 15, 0, 1, false, GetFlip()));
 	}
 
-	if (_smoothTerrainRendering != nullptr)
+	if (_terrainSurfaceRendererSmooth != nullptr)
 	{
-		image* map = _smoothTerrainRendering->GetTerrainModel()->GetMap();
+		image* map = _terrainSurfaceRendererSmooth->GetTerrainSurfaceModel()->GetMap();
 
 		auto pos = std::remove_if(_static_billboards.begin(), _static_billboards.end(), [bounds](const BattleRendering::texture_billboard_vertex& v) {
 			return bounds.contains(v._position.xy());
@@ -159,10 +159,10 @@ void BattleView::UpdateTerrainTrees(bounds2f bounds)
 				glm::vec2 position = glm::vec2(x + dx, y + dy);
 				if (bounds.contains(position) && glm::length(position - 512.0f) < 512.0f)
 				{
-					float z = _terrainModel->GetHeight(position);
+					float z = _terrainSurfaceModel->GetHeight(position);
 					if (z > 0
 							&& map->get_pixel((int)(position.x / 2), (int)(position.y / 2)).g > 0.5
-							&& _terrainModel->GetNormal(position).z >= 0.84)
+							&& _terrainSurfaceModel->GetNormal(position).z >= 0.84)
 					{
 						_static_billboards.push_back(MakeBillboardVertex(position, 5, 0, i, flip, GetFlip()));
 
@@ -222,7 +222,7 @@ void BattleView::InitializeTerrainWater(bool editor)
 		for (int y = 0; y < n; ++y)
 		{
 			glm::vec2 p = s * glm::vec2(x, y);
-			if (editor || _battleModel->GetBattleContext()->GetTerrainModel()->ContainsWater(bounds2f(p, p + s)))
+			if (editor || _battleModel->GetBattleContext()->GetTerrainSurfaceModel()->ContainsWater(bounds2f(p, p + s)))
 			{
 				plain_vertex v11 = plain_vertex(p);
 				plain_vertex v12 = plain_vertex(p + glm::vec2(0, s.y));
@@ -413,11 +413,11 @@ void BattleView::RenderBackgroundSky()
 
 void BattleView::RenderTerrainGround()
 {
-	if (_smoothTerrainRendering != nullptr)
-		_smoothTerrainRendering->Render(GetTransform(), _lightNormal);
+	if (_terrainSurfaceRendererSmooth != nullptr)
+		_terrainSurfaceRendererSmooth->Render(GetTransform(), _lightNormal);
 
-	if (_tiledTerrainRenderer != nullptr)
-		_tiledTerrainRenderer->Render(GetTransform(), _lightNormal);
+	if (_terrainSurfaceRendererTiled != nullptr)
+		_terrainSurfaceRendererTiled->Render(GetTransform(), _lightNormal);
 }
 
 
