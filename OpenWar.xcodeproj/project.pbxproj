@@ -94,6 +94,7 @@
 		63F55A26F9E505B4208C96E9 /* SmoothTerrainRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55D7048685B05D4B280B1 /* SmoothTerrainRenderer.cpp */; };
 		63F55A71C5DAF4C587A51434 /* TerrainRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55FBA55000E7BF754D8A6 /* TerrainRenderer.cpp */; };
 		63F55A92085198158EA4E57E /* TerrainFeatureModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5521A631C1E0DFA12C70F /* TerrainFeatureModel.cpp */; };
+		63F55CC86046CE9AEFFBE71D /* affine2.h in Resources */ = {isa = PBXBuildFile; fileRef = 63F5596F135A23A4AAAA5FB5 /* affine2.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -248,6 +249,7 @@
 		63F55841973B995647E88800 /* vertexbuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vertexbuffer.cpp; sourceTree = "<group>"; };
 		63F558AAB4A084E6DBFB5045 /* TiledTerrainRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TiledTerrainRenderer.h; sourceTree = "<group>"; };
 		63F5592D11936BDF084C46BC /* TiledTerrainModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TiledTerrainModel.h; sourceTree = "<group>"; };
+		63F5596F135A23A4AAAA5FB5 /* affine2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = affine2.h; sourceTree = "<group>"; };
 		63F559B4EEEF02BEBCDE71DC /* heightmap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = heightmap.h; sourceTree = "<group>"; };
 		63F559D75F0CCC44D0C8ECF3 /* BattleScripts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; path = BattleScripts; sourceTree = "<group>"; };
 		63F55AF200D5648D23279089 /* bspline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bspline.cpp; sourceTree = "<group>"; };
@@ -493,6 +495,7 @@
 				413B6EA5175DD20C00AABF10 /* geometry.h */,
 				413B6EA6175DD20C00AABF10 /* image.cpp */,
 				413B6EA7175DD20C00AABF10 /* image.h */,
+				63F5596F135A23A4AAAA5FB5 /* affine2.h */,
 			);
 			path = Algebra;
 			sourceTree = "<group>";
@@ -734,6 +737,7 @@
 				411583B9175F2365004F58D1 /* ButtonIcons.png in Resources */,
 				4129759D176A6BE500B9AC12 /* Maps in Resources */,
 				63F556BAF90A406C37B6FE6F /* BattleScripts in Resources */,
+				63F55CC86046CE9AEFFBE71D /* affine2.h in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
