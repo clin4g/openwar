@@ -26,12 +26,32 @@ _unitMarker_targetLineShape(),
 _unitMarker_targetHeadShape(),
 _shape_fighter_weapons(),
 _terrainSurfaceRendererSmooth(nullptr),
-_terrainSurfaceRendererTiled(nullptr)
+_terrainSurfaceRendererTiled(nullptr),
+_billboardTexture(nullptr),
+_billboardModel(nullptr),
+_billboardRenderer(nullptr)
 {
-	//_tiledTerrainRenderer = new TiledTerrainSurfaceRenderer();
-
 	SetContentBounds(bounds2f(0, 0, 1024, 1024));
 
+	_billboardTexture = new BillboardTexture();
+	_billboardTexture->AddSheet(image(@"Billboards.png"));
+
+	for (int i = 0; i < 8; ++i)
+	{
+		float x0 = 0.125f * i;
+		float x1 = x0 + 0.125f;
+
+		_billboardTreeShapes[i] = _billboardTexture->AddShape(1);
+		_billboardTexture->SetTexCoords(_billboardTreeShapes[i], 0, affine2(glm::vec2(x0, 0), glm::vec2(x1, 0.125f)));
+
+		_billboardTreeShapes[i + 8] = _billboardTexture->AddShape(1);
+		_billboardTexture->SetTexCoords(_billboardTreeShapes[i + 8], 0, affine2(glm::vec2(x1, 0), glm::vec2(x0, 0.125f)));
+	}
+
+	_billboardModel = new BillboardModel();
+	_billboardModel->texture = _billboardTexture;
+
+	_billboardRenderer = new BillboardRenderer();
 }
 
 
@@ -91,7 +111,6 @@ void BattleView::InitializeTerrainShadow()
 
 void BattleView::InitializeTerrainTrees()
 {
-	_static_billboards.clear();
 	UpdateTerrainTrees(bounds2f(0, 0, 1024, 1024));
 }
 
@@ -125,20 +144,16 @@ struct random_iterator
 
 void BattleView::UpdateTerrainTrees(bounds2f bounds)
 {
-	if (_terrainSurfaceRendererTiled != nullptr)
-	{
-		for (glm::vec2 position : _battleModel->GetBattleContext()->terrainFeatureModelBillboard->_trees)
-			_static_billboards.push_back(MakeBillboardVertex(position, 15, 0, 1, false, GetFlip()));
-	}
-
 	if (_terrainSurfaceRendererSmooth != nullptr)
 	{
 		image* map = _terrainSurfaceRendererSmooth->GetTerrainSurfaceModel()->GetMap();
 
-		auto pos = std::remove_if(_static_billboards.begin(), _static_billboards.end(), [bounds](const BattleRendering::texture_billboard_vertex& v) {
-			return bounds.contains(v._position.xy());
+
+		auto pos2 = std::remove_if(_billboardModel->billboards.begin(), _billboardModel->billboards.end(), [bounds](const Billboard& billboard) {
+			return bounds.contains(billboard.position.xy());
 		});
-		_static_billboards.erase(pos, _static_billboards.end());
+		_billboardModel->billboards.erase(pos2, _billboardModel->billboards.end());
+
 
 		static random_generator* _randoms = nullptr;
 		if (_randoms == nullptr)
@@ -153,8 +168,7 @@ void BattleView::UpdateTerrainTrees(bounds2f bounds)
 			{
 				float dx = d * (random.next() - 0.5f);
 				float dy = d * (random.next() - 0.5f);
-				int i = (int)(7 * random.next()) & 7;
-				bool flip = random.next() > 0.5;
+				int shape = (int)(15 * random.next()) & 15;
 
 				glm::vec2 position = glm::vec2(x + dx, y + dy);
 				if (bounds.contains(position) && glm::length(position - 512.0f) < 512.0f)
@@ -164,7 +178,9 @@ void BattleView::UpdateTerrainTrees(bounds2f bounds)
 							&& map->get_pixel((int)(position.x / 2), (int)(position.y / 2)).g > 0.5
 							&& _terrainSurfaceModel->GetNormal(position).z >= 0.84)
 					{
-						_static_billboards.push_back(MakeBillboardVertex(position, 5, 0, i, flip, GetFlip()));
+						const float adjust = 0.5 - 2.0 / 64.0; // place texture 2 texels below ground
+
+						_billboardModel->billboards.push_back(Billboard(to_vector3(position, adjust * 5), 5, _billboardTreeShapes[shape]));
 
 					}
 				}
@@ -306,7 +322,7 @@ void BattleView::Render()
 	RenderBackgroundLinen();
 	RenderBackgroundSky();
 
-	//RenderTerrainShadow();
+	RenderTerrainShadow();
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -314,7 +330,7 @@ void BattleView::Render()
 	RenderTerrainGround();
 	glDisable(GL_CULL_FACE);
 
-	//RenderTerrainWater();
+	RenderTerrainWater();
 
 	glDepthMask(false);
 
@@ -578,7 +594,7 @@ void BattleView::AppendSmokeBillboards()
 				if (i > 7)
 					i = 7;
 				glm::vec2 texcoord = texsize * glm::vec2(i, 7);
-				_dynamic_billboards.push_back(BattleRendering::texture_billboard_vertex(projectile.position, 1 + 3 * projectile.time, texcoord, texsize));
+				_dynamic_billboards.push_back(texture_billboard_vertex(projectile.position, 1 + 3 * projectile.time, texcoord, texsize));
 			}
 		}
 	}
@@ -587,31 +603,35 @@ void BattleView::AppendSmokeBillboards()
 
 void BattleView::RenderTerrainBillboards()
 {
+	_billboardRenderer->Render(_billboardModel, GetTransform(), GetCameraUpVector(), GetCameraFacing());
+
 	_texture_billboards1._mode = GL_POINTS;
 	_texture_billboards1._vertices.clear();
-	_texture_billboards1._vertices.insert(_texture_billboards1._vertices.end(), _static_billboards.begin(), _static_billboards.end());
+
+	//_texture_billboards1._vertices.insert(_texture_billboards1._vertices.end(), _static_billboards.begin(), _static_billboards.end());
+
 	_texture_billboards1._vertices.insert(_texture_billboards1._vertices.end(), _dynamic_billboards.begin(), _dynamic_billboards.end());
 
 
 	float a = -GetCameraFacing();
 	float cos_a = cosf(a);
 	float sin_a = sinf(a);
-	for (BattleRendering::texture_billboard_vertex& v : _texture_billboards1._vertices)
+	for (texture_billboard_vertex& v : _texture_billboards1._vertices)
 		v._order = cos_a * v._position.x - sin_a * v._position.y;
 
-	std::sort(_texture_billboards1._vertices.begin(), _texture_billboards1._vertices.end(), [](const BattleRendering::texture_billboard_vertex& a, const BattleRendering::texture_billboard_vertex& b) {
+	std::sort(_texture_billboards1._vertices.begin(), _texture_billboards1._vertices.end(), [](const texture_billboard_vertex& a, const texture_billboard_vertex& b) {
 		return a._order > b._order;
 	});
 	_texture_billboards1.update(GL_STATIC_DRAW);
 
-	BattleRendering::texture_billboard_uniforms uniforms;
+	texture_billboard_uniforms uniforms;
 	uniforms._transform = GetTransform();
 	uniforms._texture = _battleRendering->_textureBillboards;
 	uniforms._upvector = GetCameraUpVector();
 	uniforms._viewport_height = /*0.25 **/ renderer_base::pixels_per_point() * GetViewportBounds().height();
 	uniforms._min_point_size = 0;
 	uniforms._max_point_size = 1024;
-	_battleRendering->_texture_billboard_renderer->render(_texture_billboards1, uniforms);
+	_billboardRenderer->_texture_billboard_renderer->render(_texture_billboards1, uniforms);
 }
 
 
@@ -725,7 +745,7 @@ void BattleView::RenderUnitMarkers()
 #endif
 	}
 
-	BattleRendering::texture_billboard_uniforms uniforms2;
+	texture_billboard_uniforms uniforms2;
 	uniforms2._transform = GetTransform();
 	uniforms2._texture = _battleRendering->_textureUnitMarkers;
 	uniforms2._upvector = GetCameraUpVector();
@@ -741,8 +761,8 @@ void BattleView::RenderUnitMarkers()
 	_texture_billboards1.update(GL_STATIC_DRAW);
 
 	glDisable(GL_DEPTH_TEST);
-	_battleRendering->_texture_billboard_renderer->render(_texture_billboards1, uniforms2);
-	_battleRendering->_texture_billboard_renderer->render(_texture_billboards2, uniforms2);
+	_billboardRenderer->_texture_billboard_renderer->render(_texture_billboards1, uniforms2);
+	_billboardRenderer->_texture_billboard_renderer->render(_texture_billboards2, uniforms2);
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -781,8 +801,8 @@ void BattleView::AppendUnitMarker(UnitMarker* marker)
 		texsize = -texsize;
 	}
 
-	_texture_billboards1._vertices.push_back(BattleRendering::texture_billboard_vertex(position, 32, texcoord1, texsize));
-	_texture_billboards2._vertices.push_back(BattleRendering::texture_billboard_vertex(position, 32, texcoord2, texsize));
+	_texture_billboards1._vertices.push_back(texture_billboard_vertex(position, 32, texcoord1, texsize));
+	_texture_billboards2._vertices.push_back(texture_billboard_vertex(position, 32, texcoord2, texsize));
 }
 
 
@@ -856,17 +876,17 @@ void BattleView::RenderTrackingMarker(TrackingMarker* marker)
 			glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
 			glm::vec2 texcoord = texsize * glm::vec2(marker->_unit->player != _bluePlayer ? 4 : 3, 0);
 
-			_texture_billboards1._vertices.push_back(BattleRendering::texture_billboard_vertex(position, 32, texcoord, texsize));
+			_texture_billboards1._vertices.push_back(texture_billboard_vertex(position, 32, texcoord, texsize));
 			_texture_billboards1.update(GL_STATIC_DRAW);
 
-			BattleRendering::texture_billboard_uniforms uniforms;
+			texture_billboard_uniforms uniforms;
 			uniforms._transform = GetTransform();
 			uniforms._texture = _battleRendering->_textureUnitMarkers;
 			uniforms._upvector = GetCameraUpVector();
 			uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
 			uniforms._min_point_size = 24 * renderer_base::pixels_per_point();
 			uniforms._max_point_size = 48 * renderer_base::pixels_per_point();
-			_battleRendering->_texture_billboard_renderer->render(_texture_billboards1, uniforms);
+			_billboardRenderer->_texture_billboard_renderer->render(_texture_billboards1, uniforms);
 		}
 	}
 }
@@ -1009,17 +1029,17 @@ void BattleView::RenderMovementMarker(Unit* unit)
 			glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
 			glm::vec2 texcoord = texsize * glm::vec2(unit->player != _bluePlayer ? 4 : 3, 0);
 
-			_texture_billboards1._vertices.push_back(BattleRendering::texture_billboard_vertex(position, 32, texcoord, texsize));
+			_texture_billboards1._vertices.push_back(texture_billboard_vertex(position, 32, texcoord, texsize));
 			_texture_billboards1.update(GL_STATIC_DRAW);
 
-			BattleRendering::texture_billboard_uniforms uniforms;
+			texture_billboard_uniforms uniforms;
 			uniforms._transform = GetTransform();
 			uniforms._texture = _battleRendering->_textureUnitMarkers;
 			uniforms._upvector = GetCameraUpVector();
 			uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
 			uniforms._min_point_size = 24 * renderer_base::pixels_per_point();
 			uniforms._max_point_size = 48 * renderer_base::pixels_per_point();
-			_battleRendering->_texture_billboard_renderer->render(_texture_billboards1, uniforms);
+			_billboardRenderer->_texture_billboard_renderer->render(_texture_billboards1, uniforms);
 		}
 	}
 }
@@ -1157,7 +1177,7 @@ void BattleView::AppendShootingMarkerBullet(glm::vec3 p1, glm::vec3 p2, float t)
 }
 
 
-BattleRendering::texture_billboard_vertex BattleView::MakeBillboardVertex(glm::vec2 position, float height, int i, int j, bool flipx, bool flipy)
+texture_billboard_vertex BattleView::MakeBillboardVertex(glm::vec2 position, float height, int i, int j, bool flipx, bool flipy)
 {
 	glm::vec2 texsize = glm::vec2(0.125, 0.125);
 	glm::vec2 texcoord = texsize * glm::vec2(j, i);
@@ -1175,7 +1195,7 @@ BattleRendering::texture_billboard_vertex BattleView::MakeBillboardVertex(glm::v
 
 	const float adjust = 0.5 - 2.0 / 64.0; // place texture 2 texels below ground
 	glm::vec3 p = to_vector3(position, adjust * height);
-	return BattleRendering::texture_billboard_vertex(p, height, texcoord, texsize, 0.5);
+	return texture_billboard_vertex(p, height, texcoord, texsize);
 }
 
 

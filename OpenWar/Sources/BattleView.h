@@ -12,6 +12,8 @@
 #include "TerrainView.h"
 #include "vertexbuffer.h"
 
+#include "BillboardRenderer.h"
+
 
 
 class BattleModel;
@@ -36,13 +38,7 @@ class BattleView : public TerrainView
 	vertexbuffer<plain_vertex> _shape_terrain_shadow;
 
 	// dynamic shapes
-	vertexbuffer<BattleRendering::texture_billboard_vertex> _texture_billboards1;
-	vertexbuffer<BattleRendering::texture_billboard_vertex> _texture_billboards2;
 	vertexbuffer<BattleRendering::color_billboard_vertex> _color_billboards;
-
-	std::vector<BattleRendering::texture_billboard_vertex> _static_billboards;
-	std::vector<BattleRendering::texture_billboard_vertex> _dynamic_billboards;
-
 
 	vertexbuffer<plain_vertex3> _shape_fighter_weapons;
 	vertexbuffer<color_vertex3> _rangeMarker_shape;
@@ -60,6 +56,16 @@ class BattleView : public TerrainView
 
 	glm::vec3 _lightNormal;
 
+
+	vertexbuffer<texture_billboard_vertex> _texture_billboards1;
+	vertexbuffer<texture_billboard_vertex> _texture_billboards2;
+	std::vector<texture_billboard_vertex> _static_billboards;
+	std::vector<texture_billboard_vertex> _dynamic_billboards;
+
+	BillboardTexture* _billboardTexture;
+	BillboardModel* _billboardModel;
+	BillboardRenderer* _billboardRenderer;
+	int _billboardTreeShapes[16];
 
 public:
 	TerrainSurfaceRendererSmooth* _terrainSurfaceRendererSmooth;
@@ -123,7 +129,7 @@ public:
 	void AppendShootingMarkerArrow(glm::vec3 p1, glm::vec3 p2, float t);
 	void AppendShootingMarkerBullet(glm::vec3 p1, glm::vec3 p2, float t);
 
-	BattleRendering::texture_billboard_vertex MakeBillboardVertex(glm::vec2 position, float height, int i, int j, bool flipx = false, bool flipy = false);
+	texture_billboard_vertex MakeBillboardVertex(glm::vec2 position, float height, int i, int j, bool flipx = false, bool flipy = false);
 
 	static void TexRectN(vertexbuffer<texture_vertex>& shape, int size, int x, int y, int w, int h);
 	static void TexRect256(vertexbuffer<texture_vertex>& shape, int x, int y, int w, int h);

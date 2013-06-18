@@ -6,7 +6,7 @@
 #define BATTLECONTEXT_H
 
 class BattleModel;
-class BillboardTextureAtlas;
+class BillboardModel;
 class SimulationRules;
 class SimulationState;
 class TerrainSurfaceModel;
@@ -32,7 +32,7 @@ public:
 	TerrainFeatureModelBillboard* terrainFeatureModelBillboard;
 	TerrainFeatureModelMesh* terrainFeatureModelMesh;
 
-	BillboardTextureAtlas* billboardTextureAtlas;
+	BillboardModel* billboardTextureAtlas;
 	BattleModel* battleModel;
 
 	TerrainSurfaceModel* GetTerrainSurfaceModel() const

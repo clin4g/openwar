@@ -6,33 +6,11 @@
 #define BATTLERENDERING_H
 
 #include "renderer.h"
+#include "BillboardRenderer.h"
 
 
 struct BattleRendering
 {
-	struct texture_billboard_vertex
-	{
-		glm::vec3 _position;
-		float _height;
-		float _order;
-		glm::vec2 _texcoord;
-		glm::vec2 _texsize;
-
-		texture_billboard_vertex(glm::vec3 p, float h, glm::vec2 tc, glm::vec2 ts, float b = 0.5) : _position(p), _height(h), _texcoord(tc), _texsize(ts)
-		{
-		}
-	};
-
-	struct texture_billboard_uniforms
-	{
-		glm::mat4x4 _transform;
-		const texture* _texture;
-		glm::vec3 _upvector;
-		float _viewport_height;
-		float _min_point_size;
-		float _max_point_size;
-	};
-
 	struct color_billboard_vertex
 	{
 		glm::vec3 _position;
@@ -75,7 +53,6 @@ struct BattleRendering
 	};
 
 
-	renderer<texture_billboard_vertex, texture_billboard_uniforms>* _texture_billboard_renderer;
 	renderer<color_billboard_vertex, color_billboard_uniforms>* _color_billboard_renderer;
 
 	renderer<color_vertex3, ground_gradient_uniforms>* _ground_gradient_renderer;

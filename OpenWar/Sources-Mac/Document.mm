@@ -9,7 +9,7 @@
 #include "OpenWarSurface.h"
 #include "SimulationRules.h"
 #include "BattleScript.h"
-#include "BillboardTextureAtlas.h"
+#include "BillboardTexture.h"
 #include "TerrainSurfaceModelTiled.h"
 #include "TerrainFeatureModelBillboard.h"
 #include "TerrainFeatureModelMesh.h"
@@ -138,6 +138,7 @@ static image* ConvertTiffToImage(NSData* data)
 
 	if (_script == nil)
 	{
+		//NSString* path = @"/Users/nicke/Spikes/jajamensan/BattleScript.lua";
 		NSString* path = [[NSBundle mainBundle] pathForResource:@"BattleScript" ofType:@"lua" inDirectory:@"BattleScripts"];
 		_script = [[NSData dataWithContentsOfFile:path] retain];
 	}
@@ -160,7 +161,7 @@ static image* ConvertTiffToImage(NSData* data)
 
 	battleContext->terrainFeatureModelBillboard = new TerrainFeatureModelBillboard();
 	battleContext->terrainFeatureModelMesh = new TerrainFeatureModelMesh();
-	battleContext->billboardTextureAtlas = new BillboardTextureAtlas();
+	battleContext->billboardTextureAtlas = new BillboardModel();
 
 	BattleScript* battleScript = new BattleScript(battleContext, (const char*)_script.bytes, _script.length);
 
