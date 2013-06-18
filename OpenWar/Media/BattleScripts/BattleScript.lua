@@ -43,9 +43,10 @@ battle_message("Hello World")
 
 battle_get_time()
 
-battle_new_unit(1, "SAM", "KATA", 80, 400, 400, 0)
-battle_new_unit(1, "ASH", "YARI", 80, 400, 450, 0)
+battle_new_unit(1, "ASH", "ARQ", 80, 500, 400, 0)
+battle_new_unit(1, "CAV", "BOW", 60, 500, 450, 0)
 battle_new_unit(1, "ASH", "YARI", 80, 400, 500, 0)
+battle_new_unit(1, "SAM", "KATA", 80, 400, 550, 0)
 
 unit1 = battle_new_unit(2, "SAM", "KATA", 80, 600, 400, 0)
 unit2 = battle_new_unit(2, "ASH", "YARI", 80, 600, 450, 0)

@@ -19,7 +19,7 @@ public:
 	virtual ~SimulationListener();
 	virtual void OnShooting(const Shooting& shooting) = 0;
 	virtual void OnCasualty(const Casualty& casualty) = 0;
-	virtual BattleModel* GetBoardModel() const = 0;
+	virtual BattleModel* GetBattleModel() const = 0;
 };
 
 

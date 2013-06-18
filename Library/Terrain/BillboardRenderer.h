@@ -36,18 +36,20 @@ struct texture_billboard_uniforms
 struct Billboard
 {
 	glm::vec3 position;
+	float facing;
 	float height;
 	int shape;
 
 	Billboard() {}
-	Billboard(glm::vec3 p, float h, int s) : position(p), height(h), shape(s) {}
+	Billboard(glm::vec3 p, float f, float h, int s) : position(p), facing(f), height(h), shape(s) {}
 };
 
 
 struct BillboardModel
 {
 	BillboardTexture* texture;
-	std::vector<Billboard> billboards;
+	std::vector<Billboard> staticBillboards;
+	std::vector<Billboard> dynamicBillboards;
 };
 
 
@@ -60,7 +62,7 @@ public:
 	BillboardRenderer();
 	~BillboardRenderer();
 
-	void Render(BillboardModel* billboardModel, const glm::mat4x4& transform, const glm::vec3& cameraUp, float cameraFacing);
+	void Render(BillboardModel* billboardModel, const glm::mat4x4& transform, const glm::vec3& cameraUp, float cameraFacingDegrees);
 };
 
 

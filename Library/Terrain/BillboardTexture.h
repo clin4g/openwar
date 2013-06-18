@@ -15,9 +15,9 @@ class BillboardTexture
 	struct item
 	{
 		int shape;
-		float angle; // degrees
+		float facing; // degrees
 		affine2 texcoords;
-		item(int s, float a, affine2 t) : shape(s), angle(a), texcoords(t) { }
+		item(int s, float f, affine2 t) : shape(s), facing(f), texcoords(t) { }
 	};
 
 	texture* _texture;
@@ -33,9 +33,9 @@ public:
 	int AddSheet(const image& img);
 	int AddShape(int sheet);
 
-	void SetTexCoords(int shape, float angle, const affine2& texcoords);
+	void SetTexCoords(int shape, float facing, const affine2& texcoords);
 
-	affine2 GetTexCoords(int shape, float angle);
+	affine2 GetTexCoords(int shape, float facing);
 };
 
 

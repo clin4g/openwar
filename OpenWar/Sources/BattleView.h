@@ -7,6 +7,7 @@
 
 #include "BattleRendering.h"
 #include "SimulationState.h"
+#include "SimulationRules.h"
 #include "TerrainSurfaceRendererSmooth.h"
 #include "TerrainSurfaceRendererTiled.h"
 #include "TerrainView.h"
@@ -25,7 +26,7 @@ class TrackingMarker;
 class UnitMarker;
 
 
-class BattleView : public TerrainView
+class BattleView : public TerrainView, public SimulationListener
 {
 	renderers* _renderers;
 	BattleRendering* _battleRendering;
@@ -59,13 +60,21 @@ class BattleView : public TerrainView
 
 	vertexbuffer<texture_billboard_vertex> _texture_billboards1;
 	vertexbuffer<texture_billboard_vertex> _texture_billboards2;
-	std::vector<texture_billboard_vertex> _static_billboards;
-	std::vector<texture_billboard_vertex> _dynamic_billboards;
 
 	BillboardTexture* _billboardTexture;
 	BillboardModel* _billboardModel;
 	BillboardRenderer* _billboardRenderer;
 	int _billboardTreeShapes[16];
+	int _billboardShapeCasualtyAsh[8];
+	int _billboardShapeCasualtySam[8];
+	int _billboardShapeCasualtyCav[16];
+	int _billboardShapeFighterSamBlue;
+	int _billboardShapeFighterSamRed;
+	int _billboardShapeFighterAshBlue;
+	int _billboardShapeFighterAshRed;
+	int _billboardShapeFighterCavBlue;
+	int _billboardShapeFighterCavRed;
+	int _billboardShapeSmoke[8];
 
 public:
 	TerrainSurfaceRendererSmooth* _terrainSurfaceRendererSmooth;
@@ -74,7 +83,10 @@ public:
 	BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer);
 	~BattleView();
 
-	BattleModel* GetBattleModel() const { return _battleModel; }
+	virtual BattleModel* GetBattleModel() const { return _battleModel; }
+	virtual void OnShooting(const Shooting& shooting);
+	virtual void OnCasualty(const Casualty& casualty);
+
 
 	void Initialize(SimulationState* simulationState, bool editor = false);
 	void InitializeTerrainShadow();

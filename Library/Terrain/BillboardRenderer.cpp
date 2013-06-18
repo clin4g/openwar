@@ -70,18 +70,25 @@ BillboardRenderer::~BillboardRenderer()
 }
 
 
-void BillboardRenderer::Render(BillboardModel* billboardModel, glm::mat4x4 const & transform, const glm::vec3& cameraUp, float cameraFacing)
+static texture_billboard_vertex MakeBillboardVertex(BillboardModel* billboardModel, const Billboard& billboard, float cameraFacingDegrees)
+{
+	affine2 texcoords = billboardModel->texture->GetTexCoords(billboard.shape, billboard.facing - cameraFacingDegrees);
+	glm::vec2 texpos = texcoords.transform(glm::vec2(0, 0));
+	glm::vec2 texsize = texcoords.transform(glm::vec2(1, 1)) - texpos;
+
+	return texture_billboard_vertex(billboard.position, billboard.height, texpos, texsize);
+}
+
+
+void BillboardRenderer::Render(BillboardModel* billboardModel, glm::mat4x4 const & transform, const glm::vec3& cameraUp, float cameraFacingDegrees)
 {
 	std::vector<texture_billboard_vertex> vertices;
 
-	for (const Billboard& billboard : billboardModel->billboards)
-	{
-		affine2 texcoords = billboardModel->texture->GetTexCoords(billboard.shape, 0);
-		glm::vec2 texpos = texcoords.transform(glm::vec2(0, 0));
-		glm::vec2 texsize = texcoords.transform(glm::vec2(1, 1)) - texpos;
+	for (const Billboard& billboard : billboardModel->staticBillboards)
+		vertices.push_back(MakeBillboardVertex(billboardModel, billboard, cameraFacingDegrees));
 
-		vertices.push_back(texture_billboard_vertex(billboard.position, billboard.height, texpos, texsize));
-	}
+	for (const Billboard& billboard : billboardModel->dynamicBillboards)
+		vertices.push_back(MakeBillboardVertex(billboardModel, billboard, cameraFacingDegrees));
 
 	_vbo._mode = GL_POINTS;
 	_vbo._vertices.clear();
@@ -89,7 +96,7 @@ void BillboardRenderer::Render(BillboardModel* billboardModel, glm::mat4x4 const
 
 	_vbo._vertices.insert(_vbo._vertices.end(), vertices.begin(), vertices.end());
 
-	float a = -cameraFacing;
+	float a = -glm::radians(cameraFacingDegrees);
 	float cos_a = cosf(a);
 	float sin_a = sinf(a);
 	for (texture_billboard_vertex& v : _vbo._vertices)

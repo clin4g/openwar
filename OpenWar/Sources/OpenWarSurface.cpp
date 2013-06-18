@@ -97,6 +97,8 @@ void OpenWarSurface::Reset(BattleContext* battleContext, BattleScript* battleScr
 
 	_battleView = new BattleView(this, _battleContext->battleModel, _renderers, _battleRendering, Player1);
 
+	battleContext->simulationRules->listener = _battleView;
+
 	if (_battleContext->terrainSurfaceModelSmooth != nullptr)
 		_battleView->_terrainSurfaceRendererSmooth = new TerrainSurfaceRendererSmooth(_battleContext->terrainSurfaceModelSmooth, true);
 
@@ -136,7 +138,10 @@ void OpenWarSurface::Update(double secondsSinceLastUpdate)
 		UpdateSoundPlayer();
 	}
 	if (_battleView != nullptr)
+	{
 		_battleView->Update(secondsSinceLastUpdate);
+		_battleView->GetBattleModel()->AnimateMarkers((float)secondsSinceLastUpdate);
+	}
 }
 
 

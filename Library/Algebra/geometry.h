@@ -22,13 +22,23 @@ inline glm::vec2 vector2_from_angle(float a) {return glm::vec2(cosf(a), sinf(a))
 
 inline glm::vec2 rotate(glm::vec2 v, float a) {return glm::length(v) * vector2_from_angle(angle(v) + a);}
 
-inline float angle_difference(float a1, float a2)
+inline float diff_radians(float a1, float a2)
 {
 	float result = a1 - a2;
-	while (result >= M_PI)
+	while (result > M_PI)
 		result -= 2 * M_PI;
 	while (result <= -M_PI)
 		result += 2 * M_PI;
+	return result;
+}
+
+inline float diff_degrees(float a1, float a2)
+{
+	float result = a1 - a2;
+	while (result > 180)
+		result -= 2 * 180;
+	while (result <= -180)
+		result += 2 * 180;
 	return result;
 }
 

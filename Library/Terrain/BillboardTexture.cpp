@@ -33,13 +33,13 @@ int BillboardTexture::AddShape(int sheet)
 }
 
 
-void BillboardTexture::SetTexCoords(int shape, float angle, affine2 const & texcoords)
+void BillboardTexture::SetTexCoords(int shape, float facing, affine2 const & texcoords)
 {
-	_items.push_back(item(shape, angle, texcoords));
+	_items.push_back(item(shape, facing, texcoords));
 }
 
 
-affine2 BillboardTexture::GetTexCoords(int shape, float angle)
+affine2 BillboardTexture::GetTexCoords(int shape, float facing)
 {
 	affine2 result;
 	float diff = 360;
@@ -48,7 +48,7 @@ affine2 BillboardTexture::GetTexCoords(int shape, float angle)
 	{
 		if (i.shape == shape)
 		{
-			float d = glm::degrees(angle_difference(glm::radians(i.angle), glm::radians(angle)));
+			float d = diff_degrees(i.facing, facing);
 			if (d < diff)
 			{
 				diff = d;

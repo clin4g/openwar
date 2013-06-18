@@ -482,7 +482,7 @@ bool SimulationRules::IsWithinLineOfFire(Unit* unit, glm::vec2 position)
 	if (distance < 15 || distance > unit->stats.maximumRange)
 		return false;
 
-	float a = angle_difference(unit->state.direction, angle(position - unit->state.center));
+	float a = diff_radians(unit->state.direction, angle(position - unit->state.center));
 	if (fabsf(a) > M_PI_4)
 		return false;
 

@@ -364,7 +364,7 @@ void TerrainGesture::ResetSamples(double timestamp)
 void TerrainGesture::UpdateSamples(double timestamp)
 {
 	float currentCameraDirection = angle(_terrainView->GetCameraDirection().xy());
-	float orbitDelta = angle_difference(currentCameraDirection, _previousCameraDirection);
+	float orbitDelta = diff_radians(currentCameraDirection, _previousCameraDirection);
 
 	_previousCameraDirection = currentCameraDirection;
 

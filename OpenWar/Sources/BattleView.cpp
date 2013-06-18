@@ -10,6 +10,17 @@
 
 
 
+static affine2 billboard_texcoords(int x, int y, bool flip)
+{
+	float x0 = 0.125f * x;
+	float x1 = x0 + 0.125f;
+	float y0 = 0.125f * y;
+	float y1 = y0 + 0.125f;
+	return flip ? affine2(glm::vec2(x1, y0), glm::vec2(x0, y1)) : affine2(glm::vec2(x0, y0), glm::vec2(x1, y1));
+}
+
+
+
 BattleView::BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer) : TerrainView(screen, battleModel->GetBattleContext()->GetTerrainSurfaceModel()),
 _renderers(r),
 _battleRendering(battleRendering),
@@ -38,14 +49,71 @@ _billboardRenderer(nullptr)
 
 	for (int i = 0; i < 8; ++i)
 	{
-		float x0 = 0.125f * i;
-		float x1 = x0 + 0.125f;
-
 		_billboardTreeShapes[i] = _billboardTexture->AddShape(1);
-		_billboardTexture->SetTexCoords(_billboardTreeShapes[i], 0, affine2(glm::vec2(x0, 0), glm::vec2(x1, 0.125f)));
+		_billboardTexture->SetTexCoords(_billboardTreeShapes[i], 0, billboard_texcoords(i, 0, false));
 
 		_billboardTreeShapes[i + 8] = _billboardTexture->AddShape(1);
-		_billboardTexture->SetTexCoords(_billboardTreeShapes[i + 8], 0, affine2(glm::vec2(x1, 0), glm::vec2(x0, 0.125f)));
+		_billboardTexture->SetTexCoords(_billboardTreeShapes[i + 8], 0, billboard_texcoords(i, 0, true));
+
+		_billboardShapeCasualtyCav[i] = _billboardTexture->AddShape(1);
+		_billboardTexture->SetTexCoords(_billboardShapeCasualtyCav[i], 0, billboard_texcoords(i, 4, false));
+
+		_billboardShapeCasualtyCav[i + 8] = _billboardTexture->AddShape(1);
+		_billboardTexture->SetTexCoords(_billboardShapeCasualtyCav[i + 8], 0, billboard_texcoords(i, 4, true));
+	}
+
+	for (int i = 0; i < 4; ++i)
+	{
+		_billboardShapeCasualtyAsh[i] = _billboardTexture->AddShape(1);
+		_billboardTexture->SetTexCoords(_billboardShapeCasualtyAsh[i], 0, billboard_texcoords(i, 3, false));
+
+		_billboardShapeCasualtyAsh[i + 4] = _billboardTexture->AddShape(1);
+		_billboardTexture->SetTexCoords(_billboardShapeCasualtyAsh[i + 4], 0, billboard_texcoords(i, 3, false));
+
+		_billboardShapeCasualtySam[i] = _billboardTexture->AddShape(1);
+		_billboardTexture->SetTexCoords(_billboardShapeCasualtySam[i], 0, billboard_texcoords(i + 4, 3, false));
+
+		_billboardShapeCasualtySam[i + 4] = _billboardTexture->AddShape(1);
+		_billboardTexture->SetTexCoords(_billboardShapeCasualtySam[i + 4], 0, billboard_texcoords(i + 4, 3, false));
+	}
+
+	_billboardShapeFighterSamBlue = _billboardTexture->AddShape(1);
+	_billboardTexture->SetTexCoords(_billboardShapeFighterSamBlue, 0, billboard_texcoords(1, 1, false));
+	_billboardTexture->SetTexCoords(_billboardShapeFighterSamBlue, 180, billboard_texcoords(2, 1, false));
+
+	_billboardShapeFighterSamRed = _billboardTexture->AddShape(1);
+	_billboardTexture->SetTexCoords(_billboardShapeFighterSamRed, 0, billboard_texcoords(1, 2, false));
+	_billboardTexture->SetTexCoords(_billboardShapeFighterSamRed, 180, billboard_texcoords(2, 2, false));
+
+	_billboardShapeFighterAshBlue = _billboardTexture->AddShape(1);
+	_billboardTexture->SetTexCoords(_billboardShapeFighterAshBlue, 0, billboard_texcoords(3, 1, false));
+	_billboardTexture->SetTexCoords(_billboardShapeFighterAshBlue, 180, billboard_texcoords(4, 1, false));
+
+	_billboardShapeFighterAshRed = _billboardTexture->AddShape(1);
+	_billboardTexture->SetTexCoords(_billboardShapeFighterAshRed, 0, billboard_texcoords(3, 2, false));
+	_billboardTexture->SetTexCoords(_billboardShapeFighterAshRed, 180, billboard_texcoords(4, 2, false));
+
+	_billboardShapeFighterCavBlue = _billboardTexture->AddShape(1);
+	_billboardTexture->SetTexCoords(_billboardShapeFighterCavBlue,  45, billboard_texcoords(7, 1, false));
+	_billboardTexture->SetTexCoords(_billboardShapeFighterCavBlue,  90, billboard_texcoords(6, 1, false));
+	_billboardTexture->SetTexCoords(_billboardShapeFighterCavBlue, 135, billboard_texcoords(5, 1, false));
+	_billboardTexture->SetTexCoords(_billboardShapeFighterCavBlue, 225, billboard_texcoords(5, 1, true));
+	_billboardTexture->SetTexCoords(_billboardShapeFighterCavBlue, 270, billboard_texcoords(6, 1, true));
+	_billboardTexture->SetTexCoords(_billboardShapeFighterCavBlue, 315, billboard_texcoords(7, 1, true));
+
+	_billboardShapeFighterCavRed = _billboardTexture->AddShape(1);
+	_billboardTexture->SetTexCoords(_billboardShapeFighterCavRed,  45, billboard_texcoords(7, 2, false));
+	_billboardTexture->SetTexCoords(_billboardShapeFighterCavRed,  90, billboard_texcoords(6, 2, false));
+	_billboardTexture->SetTexCoords(_billboardShapeFighterCavRed, 135, billboard_texcoords(5, 2, false));
+	_billboardTexture->SetTexCoords(_billboardShapeFighterCavRed, 225, billboard_texcoords(5, 2, true));
+	_billboardTexture->SetTexCoords(_billboardShapeFighterCavRed, 270, billboard_texcoords(6, 2, true));
+	_billboardTexture->SetTexCoords(_billboardShapeFighterCavRed, 315, billboard_texcoords(7, 2, true));
+
+
+	for (int i = 0; i < 8; ++i)
+	{
+		_billboardShapeSmoke[i] = _billboardTexture->AddShape(1);
+		_billboardTexture->SetTexCoords(_billboardShapeSmoke[i], 0, billboard_texcoords(i, 7, false));
 	}
 
 	_billboardModel = new BillboardModel();
@@ -57,6 +125,19 @@ _billboardRenderer(nullptr)
 
 BattleView::~BattleView()
 {
+}
+
+
+void BattleView::OnShooting(Shooting const & shooting)
+{
+	_battleModel->AddShootingAndSmokeMarkers(shooting);
+}
+
+
+void BattleView::OnCasualty(Casualty const & casualty)
+{
+	_battleModel->AddCasualty(casualty);
+
 }
 
 
@@ -149,10 +230,10 @@ void BattleView::UpdateTerrainTrees(bounds2f bounds)
 		image* map = _terrainSurfaceRendererSmooth->GetTerrainSurfaceModel()->GetMap();
 
 
-		auto pos2 = std::remove_if(_billboardModel->billboards.begin(), _billboardModel->billboards.end(), [bounds](const Billboard& billboard) {
+		auto pos2 = std::remove_if(_billboardModel->staticBillboards.begin(), _billboardModel->staticBillboards.end(), [bounds](const Billboard& billboard) {
 			return bounds.contains(billboard.position.xy());
 		});
-		_billboardModel->billboards.erase(pos2, _billboardModel->billboards.end());
+		_billboardModel->staticBillboards.erase(pos2, _billboardModel->staticBillboards.end());
 
 
 		static random_generator* _randoms = nullptr;
@@ -179,9 +260,7 @@ void BattleView::UpdateTerrainTrees(bounds2f bounds)
 							&& _terrainSurfaceModel->GetNormal(position).z >= 0.84)
 					{
 						const float adjust = 0.5 - 2.0 / 64.0; // place texture 2 texels below ground
-
-						_billboardModel->billboards.push_back(Billboard(to_vector3(position, adjust * 5), 5, _billboardTreeShapes[shape]));
-
+						_billboardModel->staticBillboards.push_back(Billboard(to_vector3(position, adjust * 5), 0, 5, _billboardTreeShapes[shape]));
 					}
 				}
 
@@ -315,7 +394,7 @@ void BattleView::Render()
 	glm::vec2 facing = vector2_from_angle(GetCameraFacing() - 2.5f * (float)M_PI_4);
 	_lightNormal = glm::normalize(glm::vec3(facing, -1));
 
-	_dynamic_billboards.clear();
+	_billboardModel->dynamicBillboards.clear();
 
 	glDisable(GL_DEPTH_TEST);
 
@@ -357,7 +436,6 @@ void BattleView::Render()
 
 void BattleView::Update(double secondsSinceLastUpdate)
 {
-
 }
 
 
@@ -501,29 +579,36 @@ void BattleView::AppendCasualtyBillboards()
 			_color_billboards._vertices.push_back(BattleRendering::color_billboard_vertex(casualty.position, c, 6.0));
 		}
 
+		int shape = 0;
 		float height = 0;
-		int j = 0, i = 0;
+		//int j = 0, i = 0;
 		switch (casualty.platform)
 		{
 			case UnitPlatformAsh:
-				height = 2.5;
-				i = 3;
-				j = casualty.seed & 3;
+				shape = _billboardShapeCasualtyAsh[casualty.seed & 7];
+				height = 2.5f;
+			    //i = 3;
+				//j = casualty.seed & 3;
 				break;
 			case UnitPlatformSam:
-				height = 2.5;
-				i = 3;
-				j = 4 + (casualty.seed & 3);
+				shape = _billboardShapeCasualtySam[casualty.seed & 7];
+				height = 2.5f;
+				//i = 3;
+				//j = 4 + (casualty.seed & 3);
 				break;
 			case UnitPlatformCav:
 			case UnitPlatformGen:
-				height = 3;
-				i = 4;
-				j = casualty.seed & 7;
+				shape = _billboardShapeCasualtySam[casualty.seed & 15];
+				height = 3.0f;
+				//i = 4;
+				//j = casualty.seed & 7;
 				break;
 		}
-		bool flipX = (casualty.seed & 8) != 0;
-		_dynamic_billboards.push_back(MakeBillboardVertex(casualty.position.xy(), height, i, j, flipX));
+
+		const float adjust = 0.5 - 2.0 / 64.0; // place texture 2 texels below ground
+		glm::vec3 p = to_vector3(casualty.position.xy(), adjust * height);
+		_billboardModel->dynamicBillboards.push_back(Billboard(p, 0, height, shape));
+
 	}
 
 	BattleRendering::color_billboard_uniforms uniforms;
@@ -544,37 +629,44 @@ void BattleView::AppendFighterBillboards()
 		for (Fighter* fighter = unit->fighters, * end = fighter + unit->fightersCount; fighter != end; ++fighter)
 		{
 			float size = 2.0;
-			float diff = angle_difference(GetCameraFacing(), fighter->state.direction);
-			float absdiff = fabsf(diff);
+			//float diff = angle_difference(GetCameraFacing(), fighter->state.direction);
+			//float absdiff = fabsf(diff);
 
-			int i = unit->player == Player2 ? 2 : 1;
-			int j = 0;
+			int shape = 0;
+			//int i = unit->player == Player2 ? 2 : 1;
+			//int j = 0;
 			switch (unit->stats.unitPlatform)
 			{
 				case UnitPlatformCav:
 				case UnitPlatformGen:
+					shape = unit->player == Player2 ? _billboardShapeFighterCavRed : _billboardShapeFighterCavBlue;
 					size = 3.0;
-					if (absdiff < 0.33 * M_PI)
+					/*if (absdiff < 0.33 * M_PI)
 						j = 5;
 					else if (absdiff < 0.66 * M_PI)
 						j = 6;
 					else
-						j = 7;
+						j = 7;*/
 					break;
 
 				case UnitPlatformSam:
-					j = absdiff < M_PI_2 ? 2 : 1;
+					shape = unit->player == Player2 ? _billboardShapeFighterSamRed : _billboardShapeFighterSamBlue;
 					size = 2.0;
+					//j = absdiff < M_PI_2 ? 2 : 1;
 					break;
 
 				case UnitPlatformAsh:
-					j = absdiff < M_PI_2 ? 4 : 3;
+					shape = unit->player == Player2 ? _billboardShapeFighterAshRed : _billboardShapeFighterAshBlue;
 					size = 2.0;
+					//j = absdiff < M_PI_2 ? 4 : 3;
 					break;
 			}
 
 
-			_dynamic_billboards.push_back(MakeBillboardVertex(fighter->state.position, size, i, j, diff < 0));
+			const float adjust = 0.5 - 2.0 / 64.0; // place texture 2 texels below ground
+			glm::vec3 p = to_vector3(fighter->state.position, adjust * size);
+			float facing = glm::degrees(fighter->state.direction);
+			_billboardModel->dynamicBillboards.push_back(Billboard(p, facing, size, shape));
 		}
 	}
 }
@@ -582,8 +674,6 @@ void BattleView::AppendFighterBillboards()
 
 void BattleView::AppendSmokeBillboards()
 {
-	glm::vec2 texsize = glm::vec2(0.125, 0.125);
-
 	for (SmokeMarker* marker : _battleModel->_smokeMarkers)
 	{
 		for (SmokeMarker::Particle& projectile : marker->particles)
@@ -593,8 +683,8 @@ void BattleView::AppendSmokeBillboards()
 				int i = (int)(8 * projectile.time);
 				if (i > 7)
 					i = 7;
-				glm::vec2 texcoord = texsize * glm::vec2(i, 7);
-				_dynamic_billboards.push_back(texture_billboard_vertex(projectile.position, 1 + 3 * projectile.time, texcoord, texsize));
+
+				_billboardModel->dynamicBillboards.push_back(Billboard(projectile.position, 0, 1 + 3 * projectile.time, _billboardShapeSmoke[i]));
 			}
 		}
 	}
@@ -603,35 +693,7 @@ void BattleView::AppendSmokeBillboards()
 
 void BattleView::RenderTerrainBillboards()
 {
-	_billboardRenderer->Render(_billboardModel, GetTransform(), GetCameraUpVector(), GetCameraFacing());
-
-	_texture_billboards1._mode = GL_POINTS;
-	_texture_billboards1._vertices.clear();
-
-	//_texture_billboards1._vertices.insert(_texture_billboards1._vertices.end(), _static_billboards.begin(), _static_billboards.end());
-
-	_texture_billboards1._vertices.insert(_texture_billboards1._vertices.end(), _dynamic_billboards.begin(), _dynamic_billboards.end());
-
-
-	float a = -GetCameraFacing();
-	float cos_a = cosf(a);
-	float sin_a = sinf(a);
-	for (texture_billboard_vertex& v : _texture_billboards1._vertices)
-		v._order = cos_a * v._position.x - sin_a * v._position.y;
-
-	std::sort(_texture_billboards1._vertices.begin(), _texture_billboards1._vertices.end(), [](const texture_billboard_vertex& a, const texture_billboard_vertex& b) {
-		return a._order > b._order;
-	});
-	_texture_billboards1.update(GL_STATIC_DRAW);
-
-	texture_billboard_uniforms uniforms;
-	uniforms._transform = GetTransform();
-	uniforms._texture = _battleRendering->_textureBillboards;
-	uniforms._upvector = GetCameraUpVector();
-	uniforms._viewport_height = /*0.25 **/ renderer_base::pixels_per_point() * GetViewportBounds().height();
-	uniforms._min_point_size = 0;
-	uniforms._max_point_size = 1024;
-	_billboardRenderer->_texture_billboard_renderer->render(_texture_billboards1, uniforms);
+	_billboardRenderer->Render(_billboardModel, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()));
 }
 
 
