@@ -38,7 +38,7 @@ public:
 	void Tick();
 
 private:
-	int NewUnit(Player player, UnitPlatform platform, UnitWeapon weapon, int strength, glm::vec2 position, float heading);
+	int NewUnit(Player player, UnitPlatform platform, UnitWeapon weapon, int strength, glm::vec2 position, float bearing);
 	void SetUnitMovement(int unitId, bool running, std::vector<glm::vec2> path, int chargeId, float heading);
 
 	static int openwar_terrain_init(lua_State* L);

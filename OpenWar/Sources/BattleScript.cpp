@@ -84,12 +84,12 @@ void BattleScript::Tick()
 }
 
 
-int BattleScript::NewUnit(Player player, UnitPlatform platform, UnitWeapon weapon, int strength, glm::vec2 position, float heading)
+int BattleScript::NewUnit(Player player, UnitPlatform platform, UnitWeapon weapon, int strength, glm::vec2 position, float bearing)
 {
 	UnitStats unitStats = SimulationState::GetDefaultUnitStats(platform, weapon);
 
 	Unit* unit = _battleContext->simulationState->AddUnit(player, strength, unitStats, position);
-	unit->movement.direction = heading;
+	unit->movement.direction = glm::radians(90 - bearing);
 
 	_battleContext->battleModel->AddUnitMarker(unit);
 	if (unit->stats.maximumRange > 0)
@@ -130,12 +130,12 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 
 	if (s != nullptr && std::strcmp(s, "smooth") == 0)
 	{
-		//const char* p = n < 2 ? nullptr : lua_tostring(L, 2);
+		const char* p = n < 2 ? nullptr : lua_tostring(L, 2);
 
-		/*NSString* path = [[NSBundle mainBundle] pathForResource:@"DefaultMap" ofType:@"tiff" inDirectory:@"Maps"];
-		NSData* data = [NSData dataWithContentsOfFile:path];*/
+		NSString* path = [NSString stringWithCString:p encoding:NSASCIIStringEncoding];
+		NSData* data = [NSData dataWithContentsOfFile:path];
 
-		//battleContext->terrainSurfaceModel = new TerrainSurfaceModelSmooth(bounds2f(0, 0, 1024, 1024), glm::ivec2(x, y));
+		battleContext->terrainSurfaceModel = new TerrainSurfaceModelSmooth(bounds2f(0, 0, 1024, 1024), ConvertTiffToImage(data));
 	}
 	else if (s != nullptr && std::strcmp(s, "tiled") == 0)
 	{
@@ -198,8 +198,9 @@ int BattleScript::battle_new_unit(lua_State* L)
 	int strength = n < 4 ? 40 : (int)lua_tonumber(L, 4);
 	float x = n < 5 ? 512 : (float)lua_tonumber(L, 5);
 	float y = n < 6 ? 512 : (float)lua_tonumber(L, 6);
+	float b = n < 7 ? 0 :  (float)lua_tonumber(L, 7);
 
-	int unitId = _battlescript->NewUnit(player, platform, weapon, strength, glm::vec2(x, y), 0);
+	int unitId = _battlescript->NewUnit(player, platform, weapon, strength, glm::vec2(x, y), b);
 
 	lua_pushnumber(L, unitId);
 

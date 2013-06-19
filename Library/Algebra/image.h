@@ -30,5 +30,8 @@ private:
 };
 
 
+NSData* ConvertImageToTiff(image* map);
+image* ConvertTiffToImage(NSData* data);
+
 
 #endif
