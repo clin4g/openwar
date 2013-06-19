@@ -22,7 +22,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>NSDocumentClass</key>
-			<string>Document</string>
+			<string>OpenWarDocument</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
@@ -32,9 +32,9 @@
 			<key>CFBundleTypeName</key>
 			<string>Script</string>
 			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
+			<string>Viewer</string>
 			<key>NSDocumentClass</key>
-			<string>Document</string>
+			<string>OpenWarDocument</string>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>

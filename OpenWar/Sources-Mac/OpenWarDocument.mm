@@ -2,7 +2,7 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#import "Document.h"
+#import "OpenWarDocument.h"
 #include "BattleContext.h"
 #include "BattleModel.h"
 #include "BattleView.h"
@@ -44,7 +44,7 @@ static image* ConvertTiffToImage(NSData* data)
 }
 
 
-@implementation Document
+@implementation OpenWarDocument
 {
 	OpenWarSurface* _surface;
 	image* _map;
@@ -64,7 +64,7 @@ static image* ConvertTiffToImage(NSData* data)
 
 - (NSString *)windowNibName
 {
-    return @"Document";
+    return @"OpenWarDocument";
 }
 
 

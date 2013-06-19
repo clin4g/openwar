@@ -50,8 +50,8 @@
 		413B6E05175CE70B00AABF10 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E03175CE70B00AABF10 /* InfoPlist.strings */; };
 		413B6E07175CE70B00AABF10 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 413B6E06175CE70B00AABF10 /* main.mm */; };
 		413B6E0B175CE70B00AABF10 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E09175CE70B00AABF10 /* Credits.rtf */; };
-		413B6E0E175CE70B00AABF10 /* Document.mm in Sources */ = {isa = PBXBuildFile; fileRef = 413B6E0D175CE70B00AABF10 /* Document.mm */; };
-		413B6E11175CE70B00AABF10 /* Document.xib in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E0F175CE70B00AABF10 /* Document.xib */; };
+		413B6E0E175CE70B00AABF10 /* OpenWarDocument.mm in Sources */ = {isa = PBXBuildFile; fileRef = 413B6E0D175CE70B00AABF10 /* OpenWarDocument.mm */; };
+		413B6E11175CE70B00AABF10 /* OpenWarDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E0F175CE70B00AABF10 /* OpenWarDocument.xib */; };
 		413B6E14175CE70B00AABF10 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E12175CE70B00AABF10 /* MainMenu.xib */; };
 		413B6EAB175DD20C00AABF10 /* quadtree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6E9E175DD20C00AABF10 /* quadtree.cpp */; };
 		413B6EAC175DD20C00AABF10 /* sampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EA0175DD20C00AABF10 /* sampler.cpp */; };
@@ -177,9 +177,9 @@
 		413B6E06175CE70B00AABF10 /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		413B6E08175CE70B00AABF10 /* OpenWar-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OpenWar-Prefix.pch"; sourceTree = "<group>"; };
 		413B6E0A175CE70B00AABF10 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		413B6E0C175CE70B00AABF10 /* Document.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Document.h; sourceTree = "<group>"; };
-		413B6E0D175CE70B00AABF10 /* Document.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Document.mm; sourceTree = "<group>"; };
-		413B6E10175CE70B00AABF10 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/Document.xib; sourceTree = "<group>"; };
+		413B6E0C175CE70B00AABF10 /* OpenWarDocument.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenWarDocument.h; sourceTree = "<group>"; };
+		413B6E0D175CE70B00AABF10 /* OpenWarDocument.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenWarDocument.mm; sourceTree = "<group>"; };
+		413B6E10175CE70B00AABF10 /* OpenWarDocument.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = OpenWarDocument.xib; path = en.lproj/OpenWarDocument.xib; sourceTree = "<group>"; };
 		413B6E13175CE70B00AABF10 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		413B6E9E175DD20C00AABF10 /* quadtree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = quadtree.cpp; sourceTree = "<group>"; };
 		413B6E9F175DD20C00AABF10 /* quadtree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = quadtree.h; sourceTree = "<group>"; };
@@ -447,9 +447,9 @@
 		413B6E00175CE70B00AABF10 /* Sources-Mac */ = {
 			isa = PBXGroup;
 			children = (
-				413B6E0C175CE70B00AABF10 /* Document.h */,
-				413B6E0D175CE70B00AABF10 /* Document.mm */,
-				413B6E0F175CE70B00AABF10 /* Document.xib */,
+				413B6E0C175CE70B00AABF10 /* OpenWarDocument.h */,
+				413B6E0D175CE70B00AABF10 /* OpenWarDocument.mm */,
+				413B6E0F175CE70B00AABF10 /* OpenWarDocument.xib */,
 				413B6E06175CE70B00AABF10 /* main.mm */,
 				413B6E12175CE70B00AABF10 /* MainMenu.xib */,
 				413B6E02175CE70B00AABF10 /* OpenWar-Info.plist */,
@@ -725,7 +725,7 @@
 			files = (
 				413B6E05175CE70B00AABF10 /* InfoPlist.strings in Resources */,
 				413B6E0B175CE70B00AABF10 /* Credits.rtf in Resources */,
-				413B6E11175CE70B00AABF10 /* Document.xib in Resources */,
+				413B6E11175CE70B00AABF10 /* OpenWarDocument.xib in Resources */,
 				413B6E14175CE70B00AABF10 /* MainMenu.xib in Resources */,
 				41158368175E15B4004F58D1 /* CommandAck.wav in Resources */,
 				41158369175E15B4004F58D1 /* CommandMod.wav in Resources */,
@@ -769,7 +769,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				413B6E07175CE70B00AABF10 /* main.mm in Sources */,
-				413B6E0E175CE70B00AABF10 /* Document.mm in Sources */,
+				413B6E0E175CE70B00AABF10 /* OpenWarDocument.mm in Sources */,
 				413B6EAB175DD20C00AABF10 /* quadtree.cpp in Sources */,
 				413B6EAC175DD20C00AABF10 /* sampler.cpp in Sources */,
 				413B6EAD175DD20C00AABF10 /* geometry.cpp in Sources */,
@@ -841,12 +841,12 @@
 			name = Credits.rtf;
 			sourceTree = "<group>";
 		};
-		413B6E0F175CE70B00AABF10 /* Document.xib */ = {
+		413B6E0F175CE70B00AABF10 /* OpenWarDocument.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				413B6E10175CE70B00AABF10 /* en */,
+				413B6E10175CE70B00AABF10 /* OpenWarDocument.xib */,
 			);
-			name = Document.xib;
+			name = OpenWarDocument.xib;
 			sourceTree = "<group>";
 		};
 		413B6E12175CE70B00AABF10 /* MainMenu.xib */ = {

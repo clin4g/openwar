@@ -5,6 +5,6 @@
 #import "SurfaceView.h"
 
 
-@interface Document : NSDocument <SurfaceFactory>
+@interface OpenWarDocument : NSDocument <SurfaceFactory>
 
 @end
