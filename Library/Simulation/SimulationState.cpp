@@ -238,7 +238,7 @@ lastUnitId(0),
 winner(PlayerNone),
 time(0),
 timeStep(1.0f / 15.0f),
-terrainModel(nullptr)
+terrainSurfaceModel(nullptr)
 {
 }
 

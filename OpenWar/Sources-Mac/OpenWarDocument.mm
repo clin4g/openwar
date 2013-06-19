@@ -7,12 +7,10 @@
 #include "BattleModel.h"
 #include "BattleView.h"
 #include "OpenWarSurface.h"
-#include "SimulationRules.h"
 #include "BattleScript.h"
-#include "BillboardTexture.h"
-#include "TerrainSurfaceModelTiled.h"
 #include "TerrainFeatureModelBillboard.h"
 #include "TerrainFeatureModelMesh.h"
+#include "TerrainSurfaceModelTiled.h"
 
 
 static NSData* ConvertImageToTiff(image* map)
@@ -47,19 +45,60 @@ static image* ConvertTiffToImage(NSData* data)
 @implementation OpenWarDocument
 {
 	OpenWarSurface* _surface;
-	image* _map;
-	NSData* _script;
+	NSString* _sourceTypeName;
+	NSData* _sourceData;
+	NSURL* _sourceDirectory;
 }
 
 
 - (id)init
 {
+	NSLog(@"OpenWarDocument init");
     self = [super init];
     if (self)
 	{
 	}
     return self;
 }
+
+
+- (id)initWithType:(NSString *)typeName error:(NSError **)outError
+{
+	NSLog(@"OpenWarDocument initWithType:\"%@\" error:<outError>", typeName);
+
+	return [super initWithType:typeName error:outError];
+}
+
+
+- (id)initWithContentsOfURL:(NSURL *)url ofType:(NSString *)typeName error:(NSError **)outError
+{
+	NSLog(@"OpenWarDocument initWithContentsOfURL:\"%@\" ofType:\"%@\" error:<outError>", url, typeName);
+
+	_sourceDirectory = [[url URLByDeletingLastPathComponent] retain];
+
+	return [super initWithContentsOfURL:url ofType:typeName error:outError];
+}
+
+
+
+- (id)initForURL:(NSURL *)urlOrNil withContentsOfURL:(NSURL *)contentsURL ofType:(NSString *)typeName error:(NSError **)outError
+{
+	NSLog(@"OpenWarDocument initForURL:\"%@\" withContentsOfURL:\"%@\" ofType:\"%@\" error:<outError>", urlOrNil, contentsURL, typeName);
+
+	_sourceDirectory = [[contentsURL URLByDeletingLastPathComponent] retain];
+
+	return [super initForURL:urlOrNil withContentsOfURL:contentsURL ofType:typeName error:outError];
+}
+
+
+
+- (void)setFileURL:(NSURL *)url
+{
+	NSLog(@"OpenWarDocument setFileURL:%@", url);
+
+	[super setFileURL:url];
+}
+
 
 
 - (NSString *)windowNibName
@@ -70,8 +109,9 @@ static image* ConvertTiffToImage(NSData* data)
 
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController
 {
-    [super windowControllerDidLoadNib:aController];
+	NSLog(@"OpenWarDocument windowControllerDidLoadNib:%@", aController);
 
+    [super windowControllerDidLoadNib:aController];
 }
 
 
@@ -84,12 +124,15 @@ static image* ConvertTiffToImage(NSData* data)
 
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError
 {
+	NSLog(@"OpenWarDocument dataOfType:\"%@\" error:<outError>", typeName);
+
 	if (_surface != nullptr)
 	{
-		if ([typeName isEqualToString:@"SmoothMap"])
+		TerrainSurfaceModelSmooth* terrainSurfaceModelSmooth = dynamic_cast<TerrainSurfaceModelSmooth*>(_surface->_battleContext->terrainSurfaceModel);
+		if ([typeName isEqualToString:@"SmoothMap"] && terrainSurfaceModelSmooth != nullptr)
 		{
-			_surface->_battleContext->terrainSurfaceModelSmooth->SaveHeightmapToImage();
-			return ConvertImageToTiff(_surface->_battleContext->terrainSurfaceModelSmooth->GetMap());
+			terrainSurfaceModelSmooth->SaveHeightmapToImage();
+			return ConvertImageToTiff(terrainSurfaceModelSmooth->GetMap());
 		}
 	}
 
@@ -99,17 +142,10 @@ static image* ConvertTiffToImage(NSData* data)
 
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
 {
-	NSLog(@"readFromData");
-	if ([typeName isEqualToString:@"SmoothMap"])
-	{
-		_map = ConvertTiffToImage(data);
-	}
-	if ([typeName isEqualToString:@"Script"])
-	{
-		_script = [data retain];
-	}
+	NSLog(@"readFromData:[%d] ofType:\"%@\" error:<outError>", (int)data.length, typeName);
 
-	[self resetSurface];
+	_sourceTypeName = [typeName retain];
+	_sourceData = [data retain];
 
     return YES;
 }
@@ -120,57 +156,71 @@ static image* ConvertTiffToImage(NSData* data)
 
 - (Surface*)createSurfaceWithSize:(glm::vec2)size forSurfaceView:(SurfaceView*)surfaceView pixelDensity:(float)pixelDensity;
 {
-	NSLog(@"createSurfaceWithSize");
+	NSLog(@"createSurfaceWithSize:vec2(%f, %f) forSurfaceView:%@ pixelDensity:%f", size.x, size.y, surfaceView, pixelDensity);
 
 	_surface = new OpenWarSurface(size, pixelDensity);
-	[self resetSurface];
+
+	BattleContext* battleContext = nullptr;
+
+	if (_sourceData == nil)
+	{
+		NSString* path = [[NSBundle mainBundle] pathForResource:@"DefaultMap" ofType:@"tiff" inDirectory:@"Maps"];
+		NSData* data = [NSData dataWithContentsOfFile:path];
+		battleContext = [self createBattleContextFromSmoothMap:data];
+	}
+	else if ([_sourceTypeName isEqualToString:@"SmoothMap"])
+	{
+		battleContext = [self createBattleContextFromSmoothMap:_sourceData];
+	}
+	else if ([_sourceTypeName isEqualToString:@"Script"])
+	{
+		battleContext = [self createBattleContextFromScript:_sourceData];
+	}
+
+	_surface->Reset(battleContext);
 
 	return _surface;
 }
 
 
-#pragma mark -
-
-- (void)resetSurface
+- (BattleContext*)createBattleContextFromSmoothMap:(NSData*)smoothMap
 {
-	if (_surface == nullptr)
-		return;
-
-	if (_script == nil)
-	{
-		//NSString* path = @"/Users/nicke/Spikes/jajamensan/BattleScript.lua";
-		NSString* path = [[NSBundle mainBundle] pathForResource:@"BattleScript" ofType:@"lua" inDirectory:@"BattleScripts"];
-		_script = [[NSData dataWithContentsOfFile:path] retain];
-	}
-
 	BattleContext* battleContext = new BattleContext();
 
-
-
-	if (battleContext->terrainSurfaceModelSmooth == nullptr && battleContext->terrainSurfaceModelTiled == nullptr)
-	{
-		if (_map == nullptr)
-		{
-			NSString* path = [[NSBundle mainBundle] pathForResource:@"DefaultMap" ofType:@"tiff" inDirectory:@"Maps"];
-			_map = ConvertTiffToImage([NSData dataWithContentsOfFile:path]);
-		}
-		battleContext->terrainSurfaceModelSmooth = new TerrainSurfaceModelSmooth(bounds2f(0, 0, 1024, 1024), _map);
-	}
-
-
-
+	battleContext->billboardTextureAtlas = new BillboardModel();
 	battleContext->terrainFeatureModelBillboard = new TerrainFeatureModelBillboard();
 	battleContext->terrainFeatureModelMesh = new TerrainFeatureModelMesh();
+
+	battleContext->terrainSurfaceModel = new TerrainSurfaceModelSmooth(bounds2f(0, 0, 1024, 1024), ConvertTiffToImage(smoothMap));
+
+	battleContext->simulationState = new SimulationState();
+	battleContext->simulationState->terrainSurfaceModel = battleContext->terrainSurfaceModel;
+
+	battleContext->simulationRules = new SimulationRules(battleContext->simulationState);
+	battleContext->simulationRules->currentPlayer = Player1;
+
+	battleContext->battleModel = new BattleModel(battleContext);
+	battleContext->battleModel->_player = Player1;
+	battleContext->battleModel->Initialize(battleContext->simulationState);
+
+	return battleContext;
+}
+
+
+- (BattleContext*)createBattleContextFromScript:(NSData*)script
+{
+	BattleContext* battleContext = new BattleContext();
+
 	battleContext->billboardTextureAtlas = new BillboardModel();
+	battleContext->terrainFeatureModelBillboard = new TerrainFeatureModelBillboard();
+	battleContext->terrainFeatureModelMesh = new TerrainFeatureModelMesh();
 
-	BattleScript* battleScript = new BattleScript(battleContext, (const char*)_script.bytes, _script.length);
-
+	battleContext->battleScript = new BattleScript(battleContext, _sourceDirectory.filePathURL.path.UTF8String, (const char*)script.bytes, script.length);
 
 	if (battleContext->simulationState == nullptr)
 	{
 		battleContext->simulationState = new SimulationState();
-		battleContext->simulationState->terrainModel = static_cast<TerrainSurfaceModel*>(battleContext->terrainSurfaceModelSmooth)
-				?: static_cast<TerrainSurfaceModel*>(battleContext->terrainSurfaceModelTiled);
+		battleContext->simulationState->terrainSurfaceModel = battleContext->terrainSurfaceModel;
 	}
 
 	if (battleContext->simulationRules == nullptr)
@@ -186,10 +236,8 @@ static image* ConvertTiffToImage(NSData* data)
 		battleContext->battleModel->Initialize(battleContext->simulationState);
 	}
 
-	_surface->Reset(battleContext, battleScript);
+	return battleContext;
 }
-
-
 
 
 @end

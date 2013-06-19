@@ -6,10 +6,10 @@
 
 
 BattleContext::BattleContext() :
+battleScript(nullptr),
 simulationState(nullptr),
 simulationRules(nullptr),
-terrainSurfaceModelSmooth(nullptr),
-terrainSurfaceModelTiled(nullptr),
+terrainSurfaceModel(nullptr),
 terrainFeatureModelBillboard(nullptr),
 terrainFeatureModelMesh(nullptr),
 billboardTextureAtlas(nullptr),

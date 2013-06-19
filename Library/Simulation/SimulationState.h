@@ -312,7 +312,7 @@ struct SimulationState
 	std::map<int, Unit*> units;
 	std::vector<Shooting> shootings;
 
-	TerrainSurfaceModel* terrainModel;
+	TerrainSurfaceModel* terrainSurfaceModel;
 
 	SimulationState();
 	~SimulationState();

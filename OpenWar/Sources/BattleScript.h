@@ -32,7 +32,7 @@ class BattleScript
 	lua_State* _L;
 
 public:
-	BattleScript(BattleContext* battleContext, const char* script, size_t length);
+	BattleScript(BattleContext* battleContext, const char* directory, const char* script, size_t length);
 	~BattleScript();
 
 	void Tick();

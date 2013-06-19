@@ -6,12 +6,11 @@
 #define BATTLECONTEXT_H
 
 class BattleModel;
+class BattleScript;
 class BillboardModel;
 class SimulationRules;
 class SimulationState;
 class TerrainSurfaceModel;
-class TerrainSurfaceModelSmooth;
-class TerrainSurfaceModelTiled;
 class TerrainFeatureModel;
 class TerrainFeatureModelBillboard;
 class TerrainFeatureModelMesh;
@@ -23,22 +22,18 @@ public:
 	BattleContext();
 	~BattleContext();
 
+	BattleScript* battleScript;
+
 	SimulationState* simulationState;
 	SimulationRules* simulationRules;
 
-	TerrainSurfaceModelSmooth* terrainSurfaceModelSmooth;
-	TerrainSurfaceModelTiled* terrainSurfaceModelTiled;
+	TerrainSurfaceModel* terrainSurfaceModel;
 
 	TerrainFeatureModelBillboard* terrainFeatureModelBillboard;
 	TerrainFeatureModelMesh* terrainFeatureModelMesh;
 
 	BillboardModel* billboardTextureAtlas;
 	BattleModel* battleModel;
-
-	TerrainSurfaceModel* GetTerrainSurfaceModel() const
-	{
-		return (TerrainSurfaceModel*)terrainSurfaceModelSmooth ?: (TerrainSurfaceModel*)terrainSurfaceModelTiled;
-	}
 };
 
 

@@ -16,7 +16,7 @@
 static BattleScript* _battlescript = nullptr;
 
 
-BattleScript::BattleScript(BattleContext* battleContext, const char* script, size_t length) :
+BattleScript::BattleScript(BattleContext* battleContext, const char* directory, const char* script, size_t length) :
 _battleContext(battleContext),
 _L(nullptr)
 {
@@ -25,6 +25,8 @@ _L(nullptr)
 	_L = luaL_newstate();
 	luaL_openlibs(_L);
 
+	lua_pushstring(_L, directory);
+	lua_setglobal(_L, "openwar_script_directory");
 
 	lua_pushcfunction(_L, openwar_terrain_init);
 	lua_setglobal(_L, "openwar_terrain_init");
@@ -126,15 +128,24 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 	int n = lua_gettop(L);
 	const char* s = n < 1 ? nullptr : lua_tostring(L, 1);
 
-	if (s != nullptr && std::strcmp(s, "tiled") == 0)
+	if (s != nullptr && std::strcmp(s, "smooth") == 0)
 	{
-		delete battleContext->terrainSurfaceModelSmooth;
-		battleContext->terrainSurfaceModelSmooth = nullptr;
+		//const char* p = n < 2 ? nullptr : lua_tostring(L, 2);
+
+		/*NSString* path = [[NSBundle mainBundle] pathForResource:@"DefaultMap" ofType:@"tiff" inDirectory:@"Maps"];
+		NSData* data = [NSData dataWithContentsOfFile:path];*/
+
+		//battleContext->terrainSurfaceModel = new TerrainSurfaceModelSmooth(bounds2f(0, 0, 1024, 1024), glm::ivec2(x, y));
+	}
+	else if (s != nullptr && std::strcmp(s, "tiled") == 0)
+	{
+		delete battleContext->terrainSurfaceModel;
+		battleContext->terrainSurfaceModel = nullptr;
 
 		int x = n < 2 ? 0 : (int)lua_tonumber(L, 2);
 		int y = n < 3 ? 0 : (int)lua_tonumber(L, 3);
 
-		battleContext->terrainSurfaceModelTiled = new TerrainSurfaceModelTiled(bounds2f(0, 0, 1024, 1024), glm::ivec2(x, y));
+		battleContext->terrainSurfaceModel = new TerrainSurfaceModelTiled(bounds2f(0, 0, 1024, 1024), glm::ivec2(x, y));
 	}
 
 	return 0;
@@ -146,8 +157,7 @@ int BattleScript::openwar_simulator_init(lua_State* L)
 	BattleContext* battleContext = _battlescript->_battleContext;
 
 	battleContext->simulationState = new SimulationState();
-	battleContext->simulationState->terrainModel = static_cast<TerrainSurfaceModel*>(battleContext->terrainSurfaceModelSmooth)
-			?: static_cast<TerrainSurfaceModel*>(battleContext->terrainSurfaceModelTiled);
+	battleContext->simulationState->terrainSurfaceModel = battleContext->terrainSurfaceModel;
 
 	battleContext->simulationRules = new SimulationRules(battleContext->simulationState);
 	battleContext->simulationRules->currentPlayer = Player1;
@@ -237,6 +247,8 @@ int BattleScript::battle_get_unit_status(lua_State* L)
 
 int BattleScript::battle_set_terrain_tile(lua_State* L)
 {
+	TerrainSurfaceModelTiled* terrainSurfaceModel = dynamic_cast<TerrainSurfaceModelTiled*>(_battlescript->_battleContext->terrainSurfaceModel);
+
 	int n = lua_gettop(L);
 	int x = n < 1 ? 0 : (int)lua_tonumber(L, 1);
 	int y = n < 2 ? 0 : (int)lua_tonumber(L, 2);
@@ -244,7 +256,7 @@ int BattleScript::battle_set_terrain_tile(lua_State* L)
 	int rotate = n < 4 ? 0 : (int)lua_tonumber(L, 4);
 	bool mirror = n < 5 ? 0 : lua_toboolean(L, 5);
 
-	_battlescript->_battleContext->terrainSurfaceModelTiled->SetTile(x, y, std::string(texture), rotate, mirror);
+	terrainSurfaceModel->SetTile(x, y, std::string(texture), rotate, mirror);
 
 	return 0;
 }
@@ -252,12 +264,14 @@ int BattleScript::battle_set_terrain_tile(lua_State* L)
 
 int BattleScript::battle_set_terrain_height(lua_State* L)
 {
+	TerrainSurfaceModelTiled* terrainSurfaceModel = dynamic_cast<TerrainSurfaceModelTiled*>(_battlescript->_battleContext->terrainSurfaceModel);
+
 	int n = lua_gettop(L);
 	int x = n < 1 ? 0 : (int)lua_tonumber(L, 1);
 	int y = n < 2 ? 0 : (int)lua_tonumber(L, 2);
 	float h = n < 3 ? 0 : (float)lua_tonumber(L, 3);
 
-	_battlescript->_battleContext->terrainSurfaceModelTiled->SetHeight(x, y, h);
+	terrainSurfaceModel->SetHeight(x, y, h);
 
 	return 0;
 }

@@ -40,7 +40,6 @@ public: // TODO: just testing
 	ButtonRendering* _buttonRendering;
 
 	EditorModel* _editorModel;
-	BattleScript* _battleScript;
 
 	ButtonView* _buttonsTopLeft;
 	ButtonView* _buttonsTopRight;
@@ -62,7 +61,7 @@ public:
 	OpenWarSurface(glm::vec2 size, float pixelDensity);
 	virtual ~OpenWarSurface();
 
-	void Reset(BattleContext* battleContext, BattleScript* battleScript);
+	void Reset(BattleContext* battleContext);
 
 	virtual void ScreenSizeChanged();
 	virtual void Update(double secondsSinceLastUpdate);

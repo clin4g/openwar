@@ -21,7 +21,7 @@ static affine2 billboard_texcoords(int x, int y, bool flip)
 
 
 
-BattleView::BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer) : TerrainView(screen, battleModel->GetBattleContext()->GetTerrainSurfaceModel()),
+BattleView::BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer) : TerrainView(screen, battleModel->GetBattleContext()->terrainSurfaceModel),
 _renderers(r),
 _battleRendering(battleRendering),
 _battleModel(battleModel),
@@ -317,7 +317,7 @@ void BattleView::InitializeTerrainWater(bool editor)
 		for (int y = 0; y < n; ++y)
 		{
 			glm::vec2 p = s * glm::vec2(x, y);
-			if (editor || _battleModel->GetBattleContext()->GetTerrainSurfaceModel()->ContainsWater(bounds2f(p, p + s)))
+			if (editor || _battleModel->GetBattleContext()->terrainSurfaceModel->ContainsWater(bounds2f(p, p + s)))
 			{
 				plain_vertex v11 = plain_vertex(p);
 				plain_vertex v12 = plain_vertex(p + glm::vec2(0, s.y));

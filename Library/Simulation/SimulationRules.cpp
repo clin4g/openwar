@@ -742,8 +742,8 @@ glm::vec2 SimulationRules::NextFighterVelocity(Fighter* fighter)
 	if (glm::length(fighter->state.position - fighter->terrainPosition) > 5)
 	{
 		fighter->terrainPosition = fighter->state.position;
-		fighter->terrainForest = _simulationState->terrainModel->IsForest(fighter->state.position);
-		fighter->terrainWater = _simulationState->terrainModel->IsWater(fighter->state.position);
+		fighter->terrainForest = _simulationState->terrainSurfaceModel->IsForest(fighter->state.position);
+		fighter->terrainWater = _simulationState->terrainSurfaceModel->IsWater(fighter->state.position);
 	}
 
 	if (fighter->terrainForest)

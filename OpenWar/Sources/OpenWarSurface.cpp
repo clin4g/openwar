@@ -14,6 +14,7 @@
 #include "SimulationRules.h"
 #include "SoundPlayer.h"
 #include "TerrainGesture.h"
+#include "TerrainSurfaceModelTiled.h"
 
 
 
@@ -24,7 +25,6 @@ _renderers(nullptr),
 _battleRendering(nullptr),
 _buttonRendering(nullptr),
 _editorModel(nullptr),
-_battleScript(nullptr),
 _buttonsTopLeft(nullptr),
 _buttonsTopRight(nullptr),
 _terrainGesture(nullptr),
@@ -89,21 +89,21 @@ OpenWarSurface::~OpenWarSurface()
 }
 
 
-void OpenWarSurface::Reset(BattleContext* battleContext, BattleScript* battleScript)
+void OpenWarSurface::Reset(BattleContext* battleContext)
 {
 	_battleContext = battleContext;
-	_battleScript = battleScript;
-
 
 	_battleView = new BattleView(this, _battleContext->battleModel, _renderers, _battleRendering, Player1);
 
 	battleContext->simulationRules->listener = _battleView;
 
-	if (_battleContext->terrainSurfaceModelSmooth != nullptr)
-		_battleView->_terrainSurfaceRendererSmooth = new TerrainSurfaceRendererSmooth(_battleContext->terrainSurfaceModelSmooth, true);
+	TerrainSurfaceModelSmooth* terrainSurfaceModelSmooth = dynamic_cast<TerrainSurfaceModelSmooth*>(_battleContext->terrainSurfaceModel);
+	if (terrainSurfaceModelSmooth != nullptr)
+		_battleView->_terrainSurfaceRendererSmooth = new TerrainSurfaceRendererSmooth(terrainSurfaceModelSmooth, true);
 
-	if (_battleContext->terrainSurfaceModelTiled != nullptr)
-		_battleView->_terrainSurfaceRendererTiled = new TerrainSurfaceRendererTiled(_battleContext->terrainSurfaceModelTiled);
+	TerrainSurfaceModelTiled* terrainSurfaceModelTiled = dynamic_cast<TerrainSurfaceModelTiled*>(_battleContext->terrainSurfaceModel);
+	if (terrainSurfaceModelTiled != nullptr)
+		_battleView->_terrainSurfaceRendererTiled = new TerrainSurfaceRendererTiled(terrainSurfaceModelTiled);
 
 
 	_battleView->Initialize(_battleContext->simulationState, true);
