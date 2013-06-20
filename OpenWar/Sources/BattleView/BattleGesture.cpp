@@ -103,10 +103,10 @@ void BattleGesture::TouchBegan(Touch* touch)
 		if (unit == nullptr)
 			return;
 
-		if (unit != nullptr && !_battleView->GetBattleModel()->GetTrackingMarker(unit))
+		if (unit != nullptr && !_battleView->GetTrackingMarker(unit))
 		{
 			_allowTargetEnemyUnit = unit->stats.unitWeapon == UnitWeaponBow || unit->stats.unitWeapon == UnitWeaponArq;
-			_trackingMarker = _battleView->GetBattleModel()->AddTrackingMarker(unit);
+			_trackingMarker = _battleView->AddTrackingMarker(unit);
 
 			_tappedUnitCenter = GetUnitCurrentScreenBounds(unit).contains(screenPosition);
 			_tappedDestination = GetUnitFutureScreenBounds(unit).contains(screenPosition);
@@ -286,13 +286,13 @@ void BattleGesture::TouchEnded(Touch* touch)
 
 			unit->timeUntilSwapFighters = 0.2f;
 
-			if (!_battleView->GetBattleModel()->GetMovementMarker(unit))
-				_battleView->GetBattleModel()->AddMovementMarker(unit);
+			if (!_battleView->GetMovementMarker(unit))
+				_battleView->AddMovementMarker(unit);
 
 			if (touch->GetTapCount() == 1)
 				SoundPlayer::singleton->Play(SoundBufferCommandAck);
 
-			_battleView->GetBattleModel()->RemoveTrackingMarker(_trackingMarker);
+			_battleView->RemoveTrackingMarker(_trackingMarker);
 			_trackingMarker = nullptr;
 		}
 	}
@@ -343,7 +343,7 @@ void BattleGesture::TouchWasCancelled(Touch* touch)
 {
 	if (_trackingMarker)
 	{
-		_battleView->GetBattleModel()->RemoveTrackingMarker(_trackingMarker);
+		_battleView->RemoveTrackingMarker(_trackingMarker);
 		_trackingMarker = nullptr;
 	}
 
@@ -423,7 +423,7 @@ Unit* BattleGesture::GetTouchedUnitMarker(glm::vec2 screenPosition, glm::vec2 te
 Unit* BattleGesture::GetTouchedMovementMarker(glm::vec2 screenPosition, glm::vec2 terrainPosition)
 {
 	Unit* result = nullptr;
-	MovementMarker* movementMarker = _battleView->GetBattleModel()->GetNearestMovementMarker(terrainPosition, _battleView->GetBattleModel()->_player);
+	MovementMarker* movementMarker = _battleView->GetNearestMovementMarker(terrainPosition, _battleView->GetBattleModel()->_player);
 	if (movementMarker != nullptr)
 	{
 		Unit* unit = movementMarker->_unit;

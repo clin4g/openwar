@@ -47,7 +47,10 @@ _terrainSurfaceRendererSmooth(nullptr),
 _terrainSurfaceRendererTiled(nullptr),
 _billboardTexture(nullptr),
 _billboardModel(nullptr),
-_billboardRenderer(nullptr)
+_billboardRenderer(nullptr),
+_casualtyMarker(0),
+_movementMarkers(),
+_trackingMarkers()
 {
 	SetContentBounds(bounds2f(0, 0, 1024, 1024));
 
@@ -127,11 +130,23 @@ _billboardRenderer(nullptr)
 	_billboardModel->texture = _billboardTexture;
 
 	_billboardRenderer = new BillboardRenderer();
+
+	_casualtyMarker = new CasualtyMarker();
 }
 
 
 BattleView::~BattleView()
 {
+	delete _casualtyMarker;
+
+	for (MovementMarker* marker : _movementMarkers)
+		delete marker;
+
+	for (TrackingMarker* marker : _trackingMarkers)
+		delete marker;
+
+	for (RangeMarker* marker : _rangeMarkers)
+		delete marker;
 }
 
 
@@ -143,8 +158,14 @@ void BattleView::OnShooting(Shooting const & shooting)
 
 void BattleView::OnCasualty(Casualty const & casualty)
 {
-	_battleModel->AddCasualty(casualty);
+	AddCasualty(casualty);
+}
 
+
+void BattleView::AddCasualty(const Casualty& casualty)
+{
+	glm::vec3 position = glm::vec3(casualty.position, _battleModel->_battleContext->terrainSurfaceModel->GetHeight(casualty.position));
+	_casualtyMarker->AddCasualty(position, casualty.player, casualty.platform);
 }
 
 
@@ -441,9 +462,106 @@ void BattleView::Render()
 }
 
 
+template <class T> void AnimateMarkers(std::vector<T*>& markers, float seconds)
+{
+	size_t index = 0;
+	while (index < markers.size())
+	{
+		T* marker = markers[index];
+		if (marker->Animate(seconds))
+		{
+			++index;
+		}
+		else
+		{
+			markers.erase(markers.begin() + index);
+			delete marker;
+		}
+	}
+}
+
+
 void BattleView::Update(double secondsSinceLastUpdate)
 {
+	_casualtyMarker->Animate((float)secondsSinceLastUpdate);
+
+	::AnimateMarkers(_movementMarkers, (float)secondsSinceLastUpdate);
+	::AnimateMarkers(_rangeMarkers, (float)secondsSinceLastUpdate);
 }
+
+
+MovementMarker* BattleView::AddMovementMarker(Unit* unit)
+{
+	MovementMarker* marker = new MovementMarker(_battleModel, unit);
+	_movementMarkers.push_back(marker);
+	return marker;
+}
+
+
+MovementMarker* BattleView::GetMovementMarker(Unit* unit)
+{
+	for (MovementMarker* marker : _movementMarkers)
+		if (marker->_unit == unit)
+			return marker;
+
+	return 0;
+}
+
+
+MovementMarker* BattleView::GetNearestMovementMarker(glm::vec2 position, Player player)
+{
+	MovementMarker* result = 0;
+	float nearest = INFINITY;
+
+	for (MovementMarker* marker : _movementMarkers)
+	{
+		Unit* unit = marker->_unit;
+		if (player != PlayerNone && unit->player != player)
+			continue;
+
+		glm::vec2 p = unit->movement.GetFinalDestination();
+		float dx = p.x - position.x;
+		float dy = p.y - position.y;
+		float d = dx * dx + dy * dy;
+		if (d < nearest)
+		{
+			result = marker;
+			nearest = d;
+		}
+	}
+
+	return result;
+}
+
+
+TrackingMarker* BattleView::AddTrackingMarker(Unit* unit)
+{
+	TrackingMarker* trackingMarker = new TrackingMarker(unit);
+	_trackingMarkers.push_back(trackingMarker);
+	return trackingMarker;
+}
+
+
+TrackingMarker* BattleView::GetTrackingMarker(Unit* unit)
+{
+	for (TrackingMarker* marker : _trackingMarkers)
+		if (marker->_unit == unit)
+			return marker;
+
+	return 0;
+}
+
+
+void BattleView::RemoveTrackingMarker(TrackingMarker* trackingMarker)
+{
+	auto i = std::find(_trackingMarkers.begin(), _trackingMarkers.end(), trackingMarker);
+	if (i != _trackingMarkers.end())
+	{
+		_trackingMarkers.erase(i);
+		delete trackingMarker;
+	}
+}
+
 
 
 void BattleView::RenderBackgroundLinen()
@@ -569,7 +687,7 @@ void BattleView::AppendFighterWeapons(Unit* unit)
 
 void BattleView::AppendCasualtyBillboards()
 {
-	if (_battleModel->_casualtyMarker->casualties.empty())
+	if (_casualtyMarker->casualties.empty())
 		return;
 
 	_color_billboards._mode = GL_POINTS;
@@ -578,7 +696,7 @@ void BattleView::AppendCasualtyBillboards()
 	glm::vec4 c1 = glm::vec4(1, 1, 1, 0.8);
 	glm::vec4 cr = glm::vec4(1, 0, 0, 0);
 	glm::vec4 cb = glm::vec4(0, 0, 1, 0);
-	for (const CasualtyMarker::Casualty& casualty : _battleModel->_casualtyMarker->casualties)
+	for (const CasualtyMarker::Casualty& casualty : _casualtyMarker->casualties)
 	{
 		if (casualty.time <= 1)
 		{
@@ -706,9 +824,9 @@ void BattleView::RenderTerrainBillboards()
 
 void BattleView::RenderRangeMarkers()
 {
-	for (RangeMarker* marker : _battleModel->_rangeMarkers)
+	for (std::pair<int, Unit*> item : _battleModel->GetBattleContext()->simulationState->units)
 	{
-		Unit* unit = marker->_unit;
+		Unit* unit = item.second;
 		if (unit->stats.maximumRange > 0 && unit->state.unitMode != UnitModeMoving && !unit->state.IsRouting())
 		{
 			BattleView::MakeRangeMarker(_rangeMarker_shape, unit->state.center, unit->state.direction, 20, unit->stats.maximumRange);
@@ -896,7 +1014,7 @@ void BattleView::RenderUnitMissileTarget(Unit* unit)
 
 void BattleView::RenderTrackingMarkers()
 {
-	for (TrackingMarker* marker : _battleModel->_trackingMarkers)
+	for (TrackingMarker* marker : _trackingMarkers)
 	{
 		glDisable(GL_DEPTH_TEST);
 		RenderTrackingMarker(marker);
@@ -1071,7 +1189,7 @@ void BattleView::RenderTrackingFighters(TrackingMarker* marker)
 
 void BattleView::RenderMovementMarkers()
 {
-	for (MovementMarker* marker : _battleModel->_movementMarkers)
+	for (MovementMarker* marker : _movementMarkers)
 	{
 		glDisable(GL_DEPTH_TEST);
 		RenderMovementMarker(marker->_unit);

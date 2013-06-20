@@ -20,21 +20,13 @@ BattleModel::BattleModel(BattleContext* battleContext) :
 _battleContext(battleContext),
 _player(PlayerNone),
 _mapSize(1024, 1024),
-_unitMarkers(),
-_movementMarkers(),
-_trackingMarkers(),
-_casualtyMarker(0)
+_unitMarkers()
 {
 }
 
 
 BattleModel::~BattleModel()
 {
-	delete _casualtyMarker;
-
-	for (RangeMarker* marker : _rangeMarkers)
-		delete marker;
-
 	for (ShootingCounter* marker : _shootingMarkers)
 		delete marker;
 
@@ -43,27 +35,10 @@ BattleModel::~BattleModel()
 
 	for (UnitCounter* marker : _unitMarkers)
 		delete marker;
-
-	for (MovementMarker* marker : _movementMarkers)
-		delete marker;
-
-	for (TrackingMarker* marker : _trackingMarkers)
-		delete marker;
 }
 
 
-void BattleModel::AnimateMarkers(float seconds)
-{
-	_casualtyMarker->Animate(seconds);
-	AnimateMarkers(_unitMarkers, seconds);
-	AnimateMarkers(_movementMarkers, seconds);
-	AnimateMarkers(_rangeMarkers, seconds);
-	AnimateMarkers(_shootingMarkers, seconds);
-	AnimateMarkers(_smokeMarkers, seconds);
-}
-
-
-template <class T> void BattleModel::AnimateMarkers(std::vector<T*>& markers, float seconds)
+template <class T> void AnimateMarkers(std::vector<T*>& markers, float seconds)
 {
 	size_t index = 0;
 	while (index < markers.size())
@@ -82,16 +57,20 @@ template <class T> void BattleModel::AnimateMarkers(std::vector<T*>& markers, fl
 }
 
 
+void BattleModel::AnimateMarkers(float seconds)
+{
+	::AnimateMarkers(_unitMarkers, seconds);
+	::AnimateMarkers(_shootingMarkers, seconds);
+	::AnimateMarkers(_smokeMarkers, seconds);
+}
+
+
 void BattleModel::Initialize(SimulationState* simulationState)
 {
-	_casualtyMarker = new CasualtyMarker();
-
 	for (std::pair<int, Unit*> item : simulationState->units)
 	{
 		Unit* unit = item.second;
 		AddUnitMarker(unit);
-		if (unit->stats.maximumRange > 0)
-			AddRangeMarker(unit);
 	}
 }
 
@@ -101,68 +80,6 @@ void BattleModel::AddUnitMarker(Unit* unit)
 	UnitCounter* marker = new UnitCounter(this, unit);
 	marker->Animate(0);
 	_unitMarkers.push_back(marker);
-}
-
-
-void BattleModel::AddRangeMarker(Unit* unit)
-{
-	RangeMarker* marker = new RangeMarker(this, unit);
-	marker->Animate(0);
-	_rangeMarkers.push_back(marker);
-}
-
-
-void BattleModel::AddCasualty(const Casualty& casualty)
-{
-	glm::vec3 position = glm::vec3(casualty.position, _battleContext->terrainSurfaceModel->GetHeight(casualty.position));
-	_casualtyMarker->AddCasualty(position, casualty.player, casualty.platform);
-}
-
-
-MovementMarker* BattleModel::AddMovementMarker(Unit* unit)
-{
-	MovementMarker* marker = new MovementMarker(this, unit);
-	_movementMarkers.push_back(marker);
-	return marker;
-}
-
-
-MovementMarker* BattleModel::GetMovementMarker(Unit* unit)
-{
-	for (MovementMarker* marker : _movementMarkers)
-		if (marker->_unit == unit)
-			return marker;
-
-	return 0;
-}
-
-
-TrackingMarker* BattleModel::AddTrackingMarker(Unit* unit)
-{
-	TrackingMarker* trackingMarker = new TrackingMarker(unit);
-	_trackingMarkers.push_back(trackingMarker);
-	return trackingMarker;
-}
-
-
-TrackingMarker* BattleModel::GetTrackingMarker(Unit* unit)
-{
-	for (TrackingMarker* marker : _trackingMarkers)
-		if (marker->_unit == unit)
-			return marker;
-
-	return 0;
-}
-
-
-void BattleModel::RemoveTrackingMarker(TrackingMarker* trackingMarker)
-{
-	auto i = std::find(_trackingMarkers.begin(), _trackingMarkers.end(), trackingMarker);
-	if (i != _trackingMarkers.end())
-	{
-		_trackingMarkers.erase(i);
-		delete trackingMarker;
-	}
 }
 
 
@@ -246,32 +163,6 @@ UnitCounter* BattleModel::GetNearestUnitMarker(glm::vec2 position, Player player
 			continue;
 
 		glm::vec2 p = unit->state.center;
-		float dx = p.x - position.x;
-		float dy = p.y - position.y;
-		float d = dx * dx + dy * dy;
-		if (d < nearest)
-		{
-			result = marker;
-			nearest = d;
-		}
-	}
-
-	return result;
-}
-
-
-MovementMarker* BattleModel::GetNearestMovementMarker(glm::vec2 position, Player player)
-{
-	MovementMarker* result = 0;
-	float nearest = INFINITY;
-
-	for (MovementMarker* marker : _movementMarkers)
-	{
-		Unit* unit = marker->_unit;
-		if (player != PlayerNone && unit->player != player)
-			continue;
-
-		glm::vec2 p = unit->movement.GetFinalDestination();
 		float dx = p.x - position.x;
 		float dy = p.y - position.y;
 		float d = dx * dx + dy * dy;

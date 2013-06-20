@@ -76,6 +76,11 @@ class BattleView : public TerrainView, public SimulationListener
 	int _billboardShapeFighterCavRed;
 	int _billboardShapeSmoke[8];
 
+	CasualtyMarker* _casualtyMarker;
+	std::vector<MovementMarker*> _movementMarkers;
+	std::vector<TrackingMarker*> _trackingMarkers;
+	std::vector<RangeMarker*> _rangeMarkers;
+
 public:
 	TerrainSurfaceRendererSmooth* _terrainSurfaceRendererSmooth;
 	TerrainSurfaceRendererTiled* _terrainSurfaceRendererTiled;
@@ -87,6 +92,17 @@ public:
 	virtual void OnShooting(const Shooting& shooting);
 	virtual void OnCasualty(const Casualty& casualty);
 
+	void AddCasualty(const Casualty& casualty);
+
+	MovementMarker* AddMovementMarker(Unit* unit);
+	MovementMarker* GetMovementMarker(Unit* unit);
+	MovementMarker* GetNearestMovementMarker(glm::vec2 position, Player player);
+
+	TrackingMarker* AddTrackingMarker(Unit* unit);
+	TrackingMarker* GetTrackingMarker(Unit* unit);
+	void RemoveTrackingMarker(TrackingMarker* trackingMarker);
+
+	void AddRangeMarker(Unit* unit);
 
 	void Initialize(SimulationState* simulationState, bool editor = false);
 	void InitializeTerrainShadow();

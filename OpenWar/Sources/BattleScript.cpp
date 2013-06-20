@@ -92,8 +92,6 @@ int BattleScript::NewUnit(Player player, UnitPlatform platform, UnitWeapon weapo
 	unit->movement.direction = glm::radians(90 - bearing);
 
 	_battleContext->battleModel->AddUnitMarker(unit);
-	if (unit->stats.maximumRange > 0)
-		_battleContext->battleModel->AddRangeMarker(unit);
 
 	return unit->unitId;
 }
@@ -111,8 +109,8 @@ void BattleScript::SetUnitMovement(int unitId, bool running, std::vector<glm::ve
 		unit->movement.target = _battleContext->simulationState->GetUnit(chargeId);
 		unit->movement.running = running;
 
-		if (_battleContext->battleModel->GetMovementMarker(unit) == nullptr)
-			_battleContext->battleModel->AddMovementMarker(unit);
+		//if (_battleContext->battleModel->GetMovementMarker(unit) == nullptr)
+		//	_battleContext->battleModel->AddMovementMarker(unit);
 	}
 }
 

@@ -27,11 +27,8 @@ public:
 	BattleContext* _battleContext;
 	glm::vec2 _mapSize;
 	Player _player;
-	CasualtyMarker* _casualtyMarker;
+
 	std::vector<UnitCounter*> _unitMarkers;
-	std::vector<MovementMarker*> _movementMarkers;
-	std::vector<TrackingMarker*> _trackingMarkers;
-	std::vector<RangeMarker*> _rangeMarkers;
 	std::vector<ShootingCounter*> _shootingMarkers;
 	std::vector<SmokeCounter*> _smokeMarkers;
 
@@ -43,20 +40,9 @@ public:
 
 	void AnimateMarkers(float seconds);
 
-	template <class T> void AnimateMarkers(std::vector<T*>& markers, float seconds);
-
 	void Initialize(SimulationState* simulationState);
 
 	void AddUnitMarker(Unit* unit);
-	void AddRangeMarker(Unit* unit);
-	void AddCasualty(const Casualty& casualty);
-
-	MovementMarker* AddMovementMarker(Unit* unit);
-	MovementMarker* GetMovementMarker(Unit* unit);
-
-	TrackingMarker* AddTrackingMarker(Unit* unit);
-	TrackingMarker* GetTrackingMarker(Unit* unit);
-	void RemoveTrackingMarker(TrackingMarker* trackingMarker);
 
 	void AddShootingAndSmokeMarkers(const Shooting& shooting);
 
@@ -69,7 +55,6 @@ public:
 	void RemoveAllSmokeMarkers();
 
 	UnitCounter* GetNearestUnitMarker(glm::vec2 position, Player player);
-	MovementMarker* GetNearestMovementMarker(glm::vec2 position, Player player);
 };
 
 
