@@ -24,9 +24,8 @@ public:
 };
 
 
-class SimulationRules
+class BattleSimulator
 {
-public:
 	BattleModel* _battleModel;
 	quadtree<Fighter*> _weaponQuadTree;
 	quadtree<Fighter*> _fighterQuadTree;
@@ -39,7 +38,9 @@ public:
 	std::vector<Shooting> recentShootings;
 	std::vector<Casualty> recentCasualties;
 
-	SimulationRules(BattleModel* battleModel);
+	BattleSimulator(BattleModel* battleModel);
+
+	BattleModel* GetBattleModel() const { return _battleModel; }
 
 	void AdvanceTime(float secondsSinceLastTime);
 

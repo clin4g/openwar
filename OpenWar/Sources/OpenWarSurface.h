@@ -8,7 +8,6 @@
 #include "Surface.h"
 #include "EditorModel.h"
 
-class BattleContext;
 class BattleGesture;
 class BattleModel;
 class BattleRendering;
@@ -19,7 +18,7 @@ class ButtonItem;
 class ButtonRendering;
 class ButtonView;
 class EditorGesture;
-class SimulationRules;
+class BattleSimulator;
 class SmoothTerrainSurfaceRenderer;
 class TerrainGesture;
 class TiledTerrainSurfaceRenderer;
@@ -31,8 +30,8 @@ public: // TODO: just testing
 	enum class Mode { None, Editing, Playing };
 	Mode _mode;
 
-	BattleContext* _battleContext;
 	BattleView* _battleView;
+	BattleSimulator* _battleSimulator;
 
 	renderers* _renderers;
 	BattleRendering* _battleRendering;
@@ -60,7 +59,7 @@ public:
 	OpenWarSurface(glm::vec2 size, float pixelDensity);
 	virtual ~OpenWarSurface();
 
-	void Reset(BattleContext* battleContext);
+	void Reset(BattleModel* battleModel);
 
 	virtual void ScreenSizeChanged();
 	virtual void Update(double secondsSinceLastUpdate);

@@ -4,7 +4,6 @@
 
 #include "BattleModel.h"
 #include "BattleView.h"
-#include "BattleContext.h"
 
 #include "ShootingCounter.h"
 #include "SmokeCounter.h"
@@ -240,12 +239,11 @@ Fighter* Unit::GetFighter(Unit* unit, int rank, int file)
 
 
 
-BattleModel::BattleModel(BattleContext* battleContext) :
+BattleModel::BattleModel() :
 lastUnitId(0),
 winner(PlayerNone),
 time(0),
 timeStep(1.0f / 15.0f),
-_battleContext(battleContext),
 _mapSize(1024, 1024),
 _unitMarkers()
 {

@@ -2,7 +2,7 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "SimulationRules.h"
+#include "BattleSimulator.h"
 
 
 
@@ -11,7 +11,7 @@ SimulationListener::~SimulationListener()
 }
 
 
-SimulationRules::SimulationRules(BattleModel* battleModel) :
+BattleSimulator::BattleSimulator(BattleModel* battleModel) :
 _battleModel(battleModel),
 _fighterQuadTree(0, 0, 1024, 1024),
 _weaponQuadTree(0, 0, 1024, 1024),
@@ -23,7 +23,7 @@ practice(false)
 }
 
 
-void SimulationRules::AdvanceTime(float secondsSinceLastTime)
+void BattleSimulator::AdvanceTime(float secondsSinceLastTime)
 {
 	//if (this != nullptr)
 	//	return;
@@ -79,7 +79,7 @@ void SimulationRules::AdvanceTime(float secondsSinceLastTime)
 }
 
 
-void SimulationRules::SimulateOneTimeStep()
+void BattleSimulator::SimulateOneTimeStep()
 {
 	RebuildQuadTree();
 
@@ -101,7 +101,7 @@ void SimulationRules::SimulateOneTimeStep()
 }
 
 
-void SimulationRules::RebuildQuadTree()
+void BattleSimulator::RebuildQuadTree()
 {
 	_fighterQuadTree.clear();
 	_weaponQuadTree.clear();
@@ -127,7 +127,7 @@ void SimulationRules::RebuildQuadTree()
 }
 
 
-void SimulationRules::ComputeNextState()
+void BattleSimulator::ComputeNextState()
 {
 	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 	{
@@ -140,7 +140,7 @@ void SimulationRules::ComputeNextState()
 }
 
 
-void SimulationRules::AssignNextState()
+void BattleSimulator::AssignNextState()
 {
 	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 	{
@@ -162,7 +162,7 @@ void SimulationRules::AssignNextState()
 }
 
 
-void SimulationRules::ResolveMeleeCombat()
+void BattleSimulator::ResolveMeleeCombat()
 {
 	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 	{
@@ -204,7 +204,7 @@ void SimulationRules::ResolveMeleeCombat()
 }
 
 
-void SimulationRules::ResolveMissileCombat()
+void BattleSimulator::ResolveMissileCombat()
 {
 	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 	{
@@ -221,7 +221,7 @@ void SimulationRules::ResolveMissileCombat()
 }
 
 
-void SimulationRules::TriggerShooting(Unit* unit)
+void BattleSimulator::TriggerShooting(Unit* unit)
 {
 	if (unit->state.IsRouting())
 		return;
@@ -253,7 +253,7 @@ void SimulationRules::TriggerShooting(Unit* unit)
 }
 
 
-void SimulationRules::ResolveProjectileCasualties()
+void BattleSimulator::ResolveProjectileCasualties()
 {
 	for (std::vector<Shooting>::iterator s = _battleModel->shootings.begin(); s != _battleModel->shootings.end(); ++s)
 	{
@@ -284,7 +284,7 @@ void SimulationRules::ResolveProjectileCasualties()
 }
 
 
-void SimulationRules::RemoveCasualties()
+void BattleSimulator::RemoveCasualties()
 {
 	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 	{
@@ -329,7 +329,7 @@ void SimulationRules::RemoveCasualties()
 }
 
 
-void SimulationRules::RemoveDeadUnits()
+void BattleSimulator::RemoveDeadUnits()
 {
 	std::vector<int> remove;
 	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
@@ -360,7 +360,7 @@ void SimulationRules::RemoveDeadUnits()
 }
 
 
-UnitState SimulationRules::NextUnitState(Unit* unit)
+UnitState BattleSimulator::NextUnitState(Unit* unit)
 {
 	UnitState result;
 
@@ -455,7 +455,7 @@ UnitState SimulationRules::NextUnitState(Unit* unit)
 }
 
 
-Unit* SimulationRules::ClosestEnemyWithinLineOfFire(Unit* unit)
+Unit* BattleSimulator::ClosestEnemyWithinLineOfFire(Unit* unit)
 {
 	Unit* closestEnemy = 0;
 	float closestDistance = 10000;
@@ -476,7 +476,7 @@ Unit* SimulationRules::ClosestEnemyWithinLineOfFire(Unit* unit)
 }
 
 
-bool SimulationRules::IsWithinLineOfFire(Unit* unit, glm::vec2 position)
+bool BattleSimulator::IsWithinLineOfFire(Unit* unit, glm::vec2 position)
 {
 	float distance = glm::length(unit->state.center - position);
 	if (distance < 15 || distance > unit->stats.maximumRange)
@@ -490,7 +490,7 @@ bool SimulationRules::IsWithinLineOfFire(Unit* unit, glm::vec2 position)
 }
 
 
-UnitMode SimulationRules::NextUnitMode(Unit* unit)
+UnitMode BattleSimulator::NextUnitMode(Unit* unit)
 {
 	switch (unit->state.unitMode)
 	{
@@ -514,7 +514,7 @@ UnitMode SimulationRules::NextUnitMode(Unit* unit)
 }
 
 
-float SimulationRules::NextUnitDirection(Unit* unit)
+float BattleSimulator::NextUnitDirection(Unit* unit)
 {
 	if (true) // unit->movement
 		return unit->movement.direction;
@@ -523,7 +523,7 @@ float SimulationRules::NextUnitDirection(Unit* unit)
 }
 
 
-FighterState SimulationRules::NextFighterState(Fighter* fighter)
+FighterState BattleSimulator::NextFighterState(Fighter* fighter)
 {
 	const FighterState& original = fighter->state;
 	FighterState result;
@@ -656,7 +656,7 @@ FighterState SimulationRules::NextFighterState(Fighter* fighter)
 }
 
 
-glm::vec2 SimulationRules::NextFighterPosition(Fighter* fighter)
+glm::vec2 BattleSimulator::NextFighterPosition(Fighter* fighter)
 {
 	Unit* unit = fighter->unit;
 
@@ -720,7 +720,7 @@ glm::vec2 SimulationRules::NextFighterPosition(Fighter* fighter)
 }
 
 
-glm::vec2 SimulationRules::NextFighterVelocity(Fighter* fighter)
+glm::vec2 BattleSimulator::NextFighterVelocity(Fighter* fighter)
 {
 	Unit* unit = fighter->unit;
 	float speed = unit->GetSpeed();
@@ -766,7 +766,7 @@ glm::vec2 SimulationRules::NextFighterVelocity(Fighter* fighter)
 }
 
 
-Fighter* SimulationRules::FindFighterStrikingTarget(Fighter* fighter)
+Fighter* BattleSimulator::FindFighterStrikingTarget(Fighter* fighter)
 {
 	Unit* unit = fighter->unit;
 
@@ -786,7 +786,7 @@ Fighter* SimulationRules::FindFighterStrikingTarget(Fighter* fighter)
 }
 
 
-glm::vec2 SimulationRules::CalculateFighterMissileTarget(Fighter* fighter)
+glm::vec2 BattleSimulator::CalculateFighterMissileTarget(Fighter* fighter)
 {
 	Unit* unit = fighter->unit;
 

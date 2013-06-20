@@ -7,12 +7,14 @@
 
 
 #include "TerrainSurface.h"
+class BillboardTerrainForest;
 
 
 class TerrainModel
 {
 public:
 	TerrainSurface* terrainSurfaceModel;
+	BillboardTerrainForest* terrainForest;
 
 public:
 	TerrainModel();

@@ -5,7 +5,6 @@
 #include "BattleView.h"
 #include "BattleModel.h"
 #include "TiledTerrainSurface.h"
-#include "BattleContext.h"
 #include "BillboardTerrainForest.h"
 #include "UnitCounter.h"
 #include "CasualtyMarker.h"

@@ -3,7 +3,6 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #import "OpenWarDocument.h"
-#include "BattleContext.h"
 #include "BattleModel.h"
 #include "BattleView.h"
 #include "OpenWarSurface.h"
@@ -22,7 +21,7 @@
 
 - (id)init
 {
-	NSLog(@"OpenWarDocument init");
+	//NSLog(@"OpenWarDocument init");
     self = [super init];
     if (self)
 	{
@@ -33,7 +32,7 @@
 
 - (id)initWithType:(NSString *)typeName error:(NSError **)outError
 {
-	NSLog(@"OpenWarDocument initWithType:\"%@\" error:<outError>", typeName);
+	//NSLog(@"OpenWarDocument initWithType:\"%@\" error:<outError>", typeName);
 
 	return [super initWithType:typeName error:outError];
 }
@@ -41,7 +40,7 @@
 
 - (id)initWithContentsOfURL:(NSURL *)url ofType:(NSString *)typeName error:(NSError **)outError
 {
-	NSLog(@"OpenWarDocument initWithContentsOfURL:\"%@\" ofType:\"%@\" error:<outError>", url, typeName);
+	//NSLog(@"OpenWarDocument initWithContentsOfURL:\"%@\" ofType:\"%@\" error:<outError>", url, typeName);
 
 	_sourceDirectory = [[url URLByDeletingLastPathComponent] retain];
 
@@ -52,7 +51,7 @@
 
 - (id)initForURL:(NSURL *)urlOrNil withContentsOfURL:(NSURL *)contentsURL ofType:(NSString *)typeName error:(NSError **)outError
 {
-	NSLog(@"OpenWarDocument initForURL:\"%@\" withContentsOfURL:\"%@\" ofType:\"%@\" error:<outError>", urlOrNil, contentsURL, typeName);
+	//NSLog(@"OpenWarDocument initForURL:\"%@\" withContentsOfURL:\"%@\" ofType:\"%@\" error:<outError>", urlOrNil, contentsURL, typeName);
 
 	_sourceDirectory = [[contentsURL URLByDeletingLastPathComponent] retain];
 
@@ -63,7 +62,7 @@
 
 - (void)setFileURL:(NSURL *)url
 {
-	NSLog(@"OpenWarDocument setFileURL:%@", url);
+	//NSLog(@"OpenWarDocument setFileURL:%@", url);
 
 	[super setFileURL:url];
 }
@@ -78,7 +77,7 @@
 
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController
 {
-	NSLog(@"OpenWarDocument windowControllerDidLoadNib:%@", aController);
+	//NSLog(@"OpenWarDocument windowControllerDidLoadNib:%@", aController);
 
     [super windowControllerDidLoadNib:aController];
 }
@@ -93,11 +92,11 @@
 
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError
 {
-	NSLog(@"OpenWarDocument dataOfType:\"%@\" error:<outError>", typeName);
+	//NSLog(@"OpenWarDocument dataOfType:\"%@\" error:<outError>", typeName);
 
 	if (_surface != nullptr)
 	{
-		SmoothTerrainSurface* terrainSurfaceModelSmooth = dynamic_cast<SmoothTerrainSurface*>(_surface->_battleContext->battleModel->terrainSurfaceModel);
+		SmoothTerrainSurface* terrainSurfaceModelSmooth = dynamic_cast<SmoothTerrainSurface*>(_surface->_battleSimulator->GetBattleModel()->terrainSurfaceModel);
 		if ([typeName isEqualToString:@"SmoothMap"] && terrainSurfaceModelSmooth != nullptr)
 		{
 			terrainSurfaceModelSmooth->SaveHeightmapToImage();
@@ -111,7 +110,7 @@
 
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
 {
-	NSLog(@"readFromData:[%d] ofType:\"%@\" error:<outError>", (int)data.length, typeName);
+	//NSLog(@"readFromData:[%d] ofType:\"%@\" error:<outError>", (int)data.length, typeName);
 
 	_sourceTypeName = [typeName retain];
 	_sourceData = [data retain];
@@ -125,71 +124,58 @@
 
 - (Surface*)createSurfaceWithSize:(glm::vec2)size forSurfaceView:(SurfaceView*)surfaceView pixelDensity:(float)pixelDensity;
 {
-	NSLog(@"createSurfaceWithSize:vec2(%f, %f) forSurfaceView:%@ pixelDensity:%f", size.x, size.y, surfaceView, pixelDensity);
+	//NSLog(@"createSurfaceWithSize:vec2(%f, %f) forSurfaceView:%@ pixelDensity:%f", size.x, size.y, surfaceView, pixelDensity);
 
 	_surface = new OpenWarSurface(size, pixelDensity);
 
-	BattleContext* battleContext = nullptr;
+	BattleModel* battleModel = nullptr;
 
 	if (_sourceData == nil)
 	{
 		NSString* path = [[NSBundle mainBundle] pathForResource:@"DefaultMap" ofType:@"tiff" inDirectory:@"Maps"];
 		NSData* data = [NSData dataWithContentsOfFile:path];
-		battleContext = [self createBattleContextFromSmoothMap:data];
+		battleModel = [self createBattleModelFromSmoothMap:data];
 	}
 	else if ([_sourceTypeName isEqualToString:@"SmoothMap"])
 	{
-		battleContext = [self createBattleContextFromSmoothMap:_sourceData];
+		battleModel = [self createBattleModelFromSmoothMap:_sourceData];
 	}
 	else if ([_sourceTypeName isEqualToString:@"Script"])
 	{
-		battleContext = [self createBattleContextFromScript:_sourceData];
+		battleModel = [self createBattleModelFromScript:_sourceData];
 	}
 
-	_surface->Reset(battleContext);
+	_surface->Reset(battleModel);
 
 	return _surface;
 }
 
 
-- (BattleContext*)createBattleContextFromSmoothMap:(NSData*)smoothMap
+- (BattleModel*)createBattleModelFromSmoothMap:(NSData*)smoothMap
 {
-	BattleContext* battleContext = new BattleContext();
+	BattleModel* battleModel = new BattleModel();
 
-	battleContext->billboardTextureAtlas = new BillboardModel();
-	battleContext->terrainForest = new BillboardTerrainForest();
+	battleModel->terrainSurfaceModel = new SmoothTerrainSurface(bounds2f(0, 0, 1024, 1024), ConvertTiffToImage(smoothMap));
+	battleModel->terrainForest = new BillboardTerrainForest();
 
-	battleContext->battleModel = new BattleModel(battleContext);
-	battleContext->battleModel->terrainSurfaceModel = new SmoothTerrainSurface(bounds2f(0, 0, 1024, 1024), ConvertTiffToImage(smoothMap));
-
-	battleContext->simulationRules = new SimulationRules(battleContext->battleModel);
-	battleContext->simulationRules->currentPlayer = Player1;
-
-	return battleContext;
+	return battleModel;
 }
 
 
-- (BattleContext*)createBattleContextFromScript:(NSData*)script
+- (BattleModel*)createBattleModelFromScript:(NSData*)script
 {
-	BattleContext* battleContext = new BattleContext();
+	BattleModel* battleModel = new BattleModel();
 
-	battleContext->billboardTextureAtlas = new BillboardModel();
-	battleContext->terrainForest = new BillboardTerrainForest();
+	BattleScript* battleScript = new BattleScript(battleModel, _sourceDirectory.filePathURL.path.UTF8String, (const char*)script.bytes, script.length);
 
-	battleContext->battleScript = new BattleScript(battleContext, _sourceDirectory.filePathURL.path.UTF8String, (const char*)script.bytes, script.length);
-
-	if (battleContext->battleModel == nullptr)
+	if (battleModel->terrainForest == nullptr)
 	{
-		battleContext->battleModel = new BattleModel(battleContext);
+		battleModel->terrainForest = new BillboardTerrainForest();
 	}
 
-	if (battleContext->simulationRules == nullptr)
-	{
-		battleContext->simulationRules = new SimulationRules(battleContext->battleModel);
-		battleContext->simulationRules->currentPlayer = Player1;
-	}
+	delete battleScript;
 
-	return battleContext;
+	return battleModel;
 }
 
 

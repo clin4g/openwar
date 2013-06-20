@@ -4,9 +4,6 @@
 
 #include "RangeMarker.h"
 
-#include "BattleModel.h"
-#include "BattleContext.h"
-
 
 
 RangeMarker::RangeMarker(BattleModel* battleModel, Unit* unit) :

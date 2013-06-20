@@ -80,7 +80,6 @@
 		63F55249577B14BB2E1BDFE0 /* TerrainGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55CC494AF7D66DEF9BF5F /* TerrainGesture.cpp */; };
 		63F552AA442BC79DB972C309 /* bspline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55AF200D5648D23279089 /* bspline.cpp */; };
 		63F552B3C9091157BBBD80AA /* BillboardRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5529F68A07CC6162BCF44 /* BillboardRenderer.cpp */; };
-		63F55316E5AEA5528734655A /* BattleContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F554815AC70C9D2E018975 /* BattleContext.cpp */; };
 		63F55359864803517F75C527 /* RangeMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F552B223BCDEE835F81D43 /* RangeMarker.cpp */; };
 		63F554C7D39D8DBC2C9B4D8B /* TerrainSurfaceRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55A1C944D09E02843500A /* TerrainSurfaceRenderer.cpp */; };
 		63F554E5EADD1A7A006BFFF8 /* BattleScript.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55026F1B1D4FA3ED86125 /* BattleScript.cpp */; };
@@ -92,7 +91,7 @@
 		63F5565BE284639317279C7B /* SmoothTerrainSurfaceRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55E3481851C824DAA0233 /* SmoothTerrainSurfaceRenderer.cpp */; };
 		63F556BAF90A406C37B6FE6F /* BattleScripts in Resources */ = {isa = PBXBuildFile; fileRef = 63F559D75F0CCC44D0C8ECF3 /* BattleScripts */; };
 		63F55760F3B39A3E42EDAA5E /* SmoothTerrainSurface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55D5C0BFD572DC508C164 /* SmoothTerrainSurface.cpp */; };
-		63F557CF71F1C893EE51497A /* SimulationRules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5556B5E4B95C6046E29CB /* SimulationRules.cpp */; };
+		63F557CF71F1C893EE51497A /* BattleSimulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5556B5E4B95C6046E29CB /* BattleSimulator.cpp */; };
 		63F558AA3FA5AB42B92EB1C7 /* EditorGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55D5665CB9D3AF5C73979 /* EditorGesture.cpp */; };
 		63F55A672EE972CC4D26DE6E /* CasualtyMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55E589EB43FE093106219 /* CasualtyMarker.cpp */; };
 		63F55AB19D127077CF6387D6 /* TerrainSurface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F556837468A47CB80377EC /* TerrainSurface.cpp */; };
@@ -241,13 +240,11 @@
 		63F5540A8AF3B3D853FA7D3F /* heightmap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = heightmap.cpp; sourceTree = "<group>"; };
 		63F5543DBC49F5BCD744028E /* ShootingCounter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShootingCounter.h; sourceTree = "<group>"; };
 		63F55477A28CF8DCA4CE3E24 /* BillboardTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BillboardTexture.h; sourceTree = "<group>"; };
-		63F554815AC70C9D2E018975 /* BattleContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BattleContext.cpp; sourceTree = "<group>"; };
 		63F55483D640A6B6785EED8B /* CasualtyMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CasualtyMarker.h; sourceTree = "<group>"; };
 		63F5556B5319C80728CAB1FB /* MovementRules.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MovementRules.cpp; sourceTree = "<group>"; };
-		63F5556B5E4B95C6046E29CB /* SimulationRules.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimulationRules.cpp; sourceTree = "<group>"; };
+		63F5556B5E4B95C6046E29CB /* BattleSimulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BattleSimulator.cpp; sourceTree = "<group>"; };
 		63F5557470DF86929CA211FA /* UnitCounter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UnitCounter.cpp; sourceTree = "<group>"; };
 		63F555C99101D19BEB2B9CFB /* TerrainSurface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TerrainSurface.h; sourceTree = "<group>"; };
-		63F5566973A09F9C7FD1C2B0 /* BattleContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BattleContext.h; sourceTree = "<group>"; };
 		63F556837468A47CB80377EC /* TerrainSurface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainSurface.cpp; sourceTree = "<group>"; };
 		63F5578D6504908517597C91 /* TerrainForest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TerrainForest.h; sourceTree = "<group>"; };
 		63F557A61B0BF1ECEB7CE204 /* MovementMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovementMarker.h; sourceTree = "<group>"; };
@@ -264,7 +261,7 @@
 		63F559A402ACECE728E3AB82 /* BattleModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BattleModel.h; sourceTree = "<group>"; };
 		63F559B4EEEF02BEBCDE71DC /* heightmap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = heightmap.h; sourceTree = "<group>"; };
 		63F559D75F0CCC44D0C8ECF3 /* BattleScripts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; path = BattleScripts; sourceTree = "<group>"; };
-		63F559F78E1543FDC888634E /* SimulationRules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimulationRules.h; sourceTree = "<group>"; };
+		63F559F78E1543FDC888634E /* BattleSimulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BattleSimulator.h; sourceTree = "<group>"; };
 		63F55A1C944D09E02843500A /* TerrainSurfaceRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainSurfaceRenderer.cpp; sourceTree = "<group>"; };
 		63F55A21CB78891343349B4F /* EditorModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EditorModel.cpp; sourceTree = "<group>"; };
 		63F55A77C807E38F54D128BF /* TerrainModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainModel.cpp; sourceTree = "<group>"; };
@@ -315,8 +312,6 @@
 				41158397175E1E9D004F58D1 /* OpenWarSurface.h */,
 				63F55026F1B1D4FA3ED86125 /* BattleScript.cpp */,
 				63F55E8D324F5578086C0E63 /* BattleScript.h */,
-				63F554815AC70C9D2E018975 /* BattleContext.cpp */,
-				63F5566973A09F9C7FD1C2B0 /* BattleContext.h */,
 				63F55822A1BED20B953896BA /* BattleModel */,
 				63F558F239D3DE2A88057DF1 /* BattleView */,
 				63F55031BCF5523947A588A0 /* Renderers */,
@@ -633,8 +628,8 @@
 			children = (
 				63F5502514299A67F121A4B1 /* MovementRules.h */,
 				63F5556B5319C80728CAB1FB /* MovementRules.cpp */,
-				63F559F78E1543FDC888634E /* SimulationRules.h */,
-				63F5556B5E4B95C6046E29CB /* SimulationRules.cpp */,
+				63F559F78E1543FDC888634E /* BattleSimulator.h */,
+				63F5556B5E4B95C6046E29CB /* BattleSimulator.cpp */,
 			);
 			path = Simulator;
 			sourceTree = "<group>";
@@ -874,7 +869,6 @@
 				63F552AA442BC79DB972C309 /* bspline.cpp in Sources */,
 				63F55059A1B76F29DB55BB7F /* heightmap.cpp in Sources */,
 				63F554E5EADD1A7A006BFFF8 /* BattleScript.cpp in Sources */,
-				63F55316E5AEA5528734655A /* BattleContext.cpp in Sources */,
 				63F55585486C3A7671131512 /* TerrainView.cpp in Sources */,
 				63F55249577B14BB2E1BDFE0 /* TerrainGesture.cpp in Sources */,
 				63F552B3C9091157BBBD80AA /* BillboardRenderer.cpp in Sources */,
@@ -886,7 +880,7 @@
 				63F55C99EAB3B7172666EAFB /* BattleGesture.cpp in Sources */,
 				63F55248F49132EFA7134DD4 /* BattleRendering.cpp in Sources */,
 				63F55F16A26D21892615988C /* MovementRules.cpp in Sources */,
-				63F557CF71F1C893EE51497A /* SimulationRules.cpp in Sources */,
+				63F557CF71F1C893EE51497A /* BattleSimulator.cpp in Sources */,
 				63F55A672EE972CC4D26DE6E /* CasualtyMarker.cpp in Sources */,
 				63F5508772C1D63A283143FB /* MovementMarker.cpp in Sources */,
 				63F55359864803517F75C527 /* RangeMarker.cpp in Sources */,

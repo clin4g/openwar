@@ -6,7 +6,8 @@
 
 
 TerrainModel::TerrainModel() :
-terrainSurfaceModel(nullptr)
+terrainSurfaceModel(nullptr),
+terrainForest(nullptr)
 {
 }
 

@@ -9,7 +9,6 @@
 #include "TerrainModel.h"
 
 
-class BattleContext;
 class BattleModel;
 class CasualtyMarker;
 class MovementMarker;
@@ -321,7 +320,6 @@ public:
 	std::map<int, Unit*> units;
 	std::vector<Shooting> shootings;
 
-	BattleContext* _battleContext;
 	glm::vec2 _mapSize;
 
 	std::vector<UnitCounter*> _unitMarkers;
@@ -329,10 +327,8 @@ public:
 	std::vector<SmokeCounter*> _smokeMarkers;
 
 public:
-	BattleModel(BattleContext* battleContext);
+	BattleModel();
 	virtual ~BattleModel();
-
-	BattleContext* GetBattleContext() const { return _battleContext; }
 
 	Unit* GetUnit(int unitId) const
 	{

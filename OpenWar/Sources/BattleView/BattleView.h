@@ -7,7 +7,7 @@
 
 #include "BattleRendering.h"
 #include "BattleModel.h"
-#include "SimulationRules.h"
+#include "BattleSimulator.h"
 #include "SmoothTerrainSurfaceRenderer.h"
 #include "TiledTerrainSurfaceRenderer.h"
 #include "TerrainView.h"

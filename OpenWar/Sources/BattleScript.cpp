@@ -4,8 +4,7 @@
 
 #include "BattleScript.h"
 #include "BattleModel.h"
-#include "BattleContext.h"
-#include "SimulationRules.h"
+#include "BattleSimulator.h"
 #include "BillboardTerrainForest.h"
 #include "SmoothTerrainSurface.h"
 #include "TiledTerrainSurface.h"
@@ -17,8 +16,8 @@
 static BattleScript* _battlescript = nullptr;
 
 
-BattleScript::BattleScript(BattleContext* battleContext, const char* directory, const char* script, size_t length) :
-_battleContext(battleContext),
+BattleScript::BattleScript(BattleModel* battleModel, const char* directory, const char* script, size_t length) :
+_battleModel(battleModel),
 _L(nullptr)
 {
 	_battlescript = this;
@@ -89,10 +88,10 @@ int BattleScript::NewUnit(Player player, UnitPlatform platform, UnitWeapon weapo
 {
 	UnitStats unitStats = BattleModel::GetDefaultUnitStats(platform, weapon);
 
-	Unit* unit = _battleContext->battleModel->AddUnit(player, strength, unitStats, position);
+	Unit* unit = _battleModel->AddUnit(player, strength, unitStats, position);
 	unit->movement.direction = glm::radians(90 - bearing);
 
-	_battleContext->battleModel->AddUnitMarker(unit);
+	_battleModel->AddUnitMarker(unit);
 
 	return unit->unitId;
 }
@@ -100,18 +99,18 @@ int BattleScript::NewUnit(Player player, UnitPlatform platform, UnitWeapon weapo
 
 void BattleScript::SetUnitMovement(int unitId, bool running, std::vector<glm::vec2> path, int chargeId, float heading)
 {
-	Unit* unit = _battleContext->battleModel->GetUnit(unitId);
+	Unit* unit = _battleModel->GetUnit(unitId);
 	if (unit != nullptr)
 	{
 		unit->movement.path = path;
 		//unit->movement.path_t0 = 0;
 		unit->movement.destination = path.empty() ? unit->state.center : path.front();
 		unit->movement.direction = heading;
-		unit->movement.target = _battleContext->battleModel->GetUnit(chargeId);
+		unit->movement.target = _battleModel->GetUnit(chargeId);
 		unit->movement.running = running;
 
-		//if (_battleContext->battleModel->GetMovementMarker(unit) == nullptr)
-		//	_battleContext->battleModel->AddMovementMarker(unit);
+		//if (_battleModel->GetMovementMarker(unit) == nullptr)
+		//	_battleModel->AddMovementMarker(unit);
 	}
 }
 
@@ -122,12 +121,14 @@ void BattleScript::SetUnitMovement(int unitId, bool running, std::vector<glm::ve
 
 int BattleScript::openwar_terrain_init(lua_State* L)
 {
-	BattleContext* battleContext = _battlescript->_battleContext;
-	if (battleContext->battleModel == nullptr)
-		battleContext->battleModel = new BattleModel(battleContext);
+	if (_battlescript->_battleModel == nullptr)
+	{
+		_battlescript->_battleModel = new BattleModel();
+		_battlescript->_battleModel->terrainForest = new BillboardTerrainForest();
+	}
 
-	delete battleContext->battleModel->terrainSurfaceModel;
-	battleContext->battleModel->terrainSurfaceModel = nullptr;
+	delete _battlescript->_battleModel->terrainSurfaceModel;
+	_battlescript->_battleModel->terrainSurfaceModel = nullptr;
 
 	int n = lua_gettop(L);
 	const char* s = n < 1 ? nullptr : lua_tostring(L, 1);
@@ -139,7 +140,7 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 		NSString* path = [NSString stringWithCString:p encoding:NSASCIIStringEncoding];
 		NSData* data = [NSData dataWithContentsOfFile:path];
 
-		battleContext->battleModel->terrainSurfaceModel = new SmoothTerrainSurface(bounds2f(0, 0, 1024, 1024), ConvertTiffToImage(data));
+		_battlescript->_battleModel->terrainSurfaceModel = new SmoothTerrainSurface(bounds2f(0, 0, 1024, 1024), ConvertTiffToImage(data));
 	}
 	else if (s != nullptr && std::strcmp(s, "tiled") == 0)
 	{
@@ -147,7 +148,7 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 		int x = n < 2 ? 0 : (int)lua_tonumber(L, 2);
 		int y = n < 3 ? 0 : (int)lua_tonumber(L, 3);
 
-		battleContext->battleModel->terrainSurfaceModel = new TiledTerrainSurface(bounds2f(0, 0, 1024, 1024), glm::ivec2(x, y));
+		_battlescript->_battleModel->terrainSurfaceModel = new TiledTerrainSurface(bounds2f(0, 0, 1024, 1024), glm::ivec2(x, y));
 	}
 
 	return 0;
@@ -156,12 +157,14 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 
 int BattleScript::openwar_simulator_init(lua_State* L)
 {
-	BattleContext* battleContext = _battlescript->_battleContext;
-	if (battleContext->battleModel == nullptr)
-		battleContext->battleModel = new BattleModel(battleContext);
+	if (_battlescript->_battleModel == nullptr)
+	{
+		_battlescript->_battleModel = new BattleModel();
+		_battlescript->_battleModel->terrainForest = new BillboardTerrainForest();
+	}
 
-	battleContext->simulationRules = new SimulationRules(battleContext->battleModel);
-	battleContext->simulationRules->currentPlayer = Player1;
+	//battleContext->simulationRules = new BattleSimulator(_battlescript->_battleModel);
+	//battleContext->simulationRules->currentPlayer = Player1;
 
 	return 0;
 }
@@ -226,7 +229,7 @@ int BattleScript::battle_get_unit_status(lua_State* L)
 	int n = lua_gettop(L);
 	int unitId = n < 1 ? 0 : (int)lua_tonumber(L, 1);
 
-	Unit* unit = _battlescript->_battleContext->battleModel->GetUnit(unitId);
+	Unit* unit = _battlescript->_battleModel->GetUnit(unitId);
 	if (unit != nullptr)
 	{
 		UnitStatus status(unit);
@@ -245,7 +248,7 @@ int BattleScript::battle_get_unit_status(lua_State* L)
 
 int BattleScript::battle_set_terrain_tile(lua_State* L)
 {
-	TiledTerrainSurface* terrainSurfaceModel = dynamic_cast<TiledTerrainSurface*>(_battlescript->_battleContext->battleModel->terrainSurfaceModel);
+	TiledTerrainSurface* terrainSurfaceModel = dynamic_cast<TiledTerrainSurface*>(_battlescript->_battleModel->terrainSurfaceModel);
 
 	int n = lua_gettop(L);
 	int x = n < 1 ? 0 : (int)lua_tonumber(L, 1);
@@ -262,7 +265,7 @@ int BattleScript::battle_set_terrain_tile(lua_State* L)
 
 int BattleScript::battle_set_terrain_height(lua_State* L)
 {
-	TiledTerrainSurface* terrainSurfaceModel = dynamic_cast<TiledTerrainSurface*>(_battlescript->_battleContext->battleModel->terrainSurfaceModel);
+	TiledTerrainSurface* terrainSurfaceModel = dynamic_cast<TiledTerrainSurface*>(_battlescript->_battleModel->terrainSurfaceModel);
 
 	int n = lua_gettop(L);
 	int x = n < 1 ? 0 : (int)lua_tonumber(L, 1);
@@ -281,7 +284,7 @@ int BattleScript::battle_add_terrain_tree(lua_State* L)
 	float x = n < 1 ? 0 : (float)lua_tonumber(L, 1);
 	float y = n < 2 ? 0 : (float)lua_tonumber(L, 2);
 
-	_battlescript->_battleContext->terrainForest->AddTree(glm::vec2(x, y));
+	_battlescript->_battleModel->terrainForest->AddTree(glm::vec2(x, y));
 
 	return 0;
 }

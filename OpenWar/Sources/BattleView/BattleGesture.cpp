@@ -5,7 +5,6 @@
 #include "BattleGesture.h"
 #include "BattleModel.h"
 #include "BattleView.h"
-#include "BattleContext.h"
 #include "SoundPlayer.h"
 #include "UnitCounter.h"
 #include "TrackingMarker.h"
