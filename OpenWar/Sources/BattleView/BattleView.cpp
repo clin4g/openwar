@@ -7,13 +7,13 @@
 #include "TerrainSurfaceModelTiled.h"
 #include "BattleContext.h"
 #include "TerrainFeatureModelBillboard.h"
-#include "UnitMarker.h"
+#include "UnitCounter.h"
 #include "CasualtyMarker.h"
-#include "SmokeMarker.h"
+#include "SmokeCounter.h"
 #include "RangeMarker.h"
 #include "TrackingMarker.h"
 #include "MovementMarker.h"
-#include "ShootingMarker.h"
+#include "ShootingCounter.h"
 
 
 
@@ -538,7 +538,7 @@ void BattleView::RenderFighterWeapons()
 	_shape_fighter_weapons._mode = GL_LINES;
 	_shape_fighter_weapons._vertices.clear();
 
-	for (UnitMarker* marker : _battleModel->_unitMarkers)
+	for (UnitCounter* marker : _battleModel->_unitMarkers)
 	{
 		AppendFighterWeapons(marker->_unit);
 	}
@@ -629,7 +629,7 @@ void BattleView::AppendCasualtyBillboards()
 
 void BattleView::AppendFighterBillboards()
 {
-	for (UnitMarker* marker : _battleModel->_unitMarkers)
+	for (UnitCounter* marker : _battleModel->_unitMarkers)
 	{
 		Unit* unit = marker->_unit;
 
@@ -681,9 +681,9 @@ void BattleView::AppendFighterBillboards()
 
 void BattleView::AppendSmokeBillboards()
 {
-	for (SmokeMarker* marker : _battleModel->_smokeMarkers)
+	for (SmokeCounter* marker : _battleModel->_smokeMarkers)
 	{
-		for (SmokeMarker::Particle& projectile : marker->particles)
+		for (SmokeCounter::Particle& projectile : marker->particles)
 		{
 			if (projectile.time > 0)
 			{
@@ -787,7 +787,7 @@ void BattleView::RenderUnitMarkers()
 	_texture_billboards2._mode = GL_POINTS;
 	_texture_billboards2._vertices.clear();
 
-	for (UnitMarker* marker : _battleModel->_unitMarkers)
+	for (UnitCounter* marker : _battleModel->_unitMarkers)
 	{
 		Unit* unit = marker->_unit;
 
@@ -836,7 +836,7 @@ void BattleView::RenderUnitMarkers()
 }
 
 
-void BattleView::AppendUnitMarker(UnitMarker* marker)
+void BattleView::AppendUnitMarker(UnitCounter* marker)
 {
 	Unit* unit = marker->_unit;
 
@@ -1180,7 +1180,7 @@ void BattleView::RenderShootingMarkers()
 	_missileMarker_shape._mode = GL_LINES;
 	_missileMarker_shape._vertices.clear();
 
-	for (ShootingMarker* marker : _battleModel->_shootingMarkers)
+	for (ShootingCounter* marker : _battleModel->_shootingMarkers)
 	{
 		AppendShootingMarker(marker);
 	}
@@ -1192,9 +1192,9 @@ void BattleView::RenderShootingMarkers()
 }
 
 
-void BattleView::AppendShootingMarker(ShootingMarker* marker)
+void BattleView::AppendShootingMarker(ShootingCounter* marker)
 {
-	for (ShootingMarker::Projectile& projectile : marker->_projectiles)
+	for (ShootingCounter::Projectile& projectile : marker->_projectiles)
 	{
 		float t = projectile.time / projectile.duration;
 		if (0 <= t && t <= 1)

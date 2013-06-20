@@ -16,7 +16,7 @@ class BattleView;
 class BattleModel;
 class TrackingMarker;
 class Unit;
-class UnitMarker;
+class UnitCounter;
 
 
 class BattleGesture : public Gesture

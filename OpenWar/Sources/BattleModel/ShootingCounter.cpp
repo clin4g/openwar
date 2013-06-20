@@ -2,12 +2,12 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "ShootingMarker.h"
+#include "ShootingCounter.h"
 #include "SoundPlayer.h"
 
 
 
-ShootingMarker::ShootingMarker(UnitWeapon unitWeapon) :
+ShootingCounter::ShootingCounter(UnitWeapon unitWeapon) :
 _unitWeapon(unitWeapon),
 _projectiles(),
 _soundCookie(0),
@@ -20,12 +20,12 @@ _impacted(false)
 }
 
 
-ShootingMarker::~ShootingMarker()
+ShootingCounter::~ShootingCounter()
 {
 }
 
 
-void ShootingMarker::AddProjectile(glm::vec3 position1, glm::vec3 position2, float delay, float duration)
+void ShootingCounter::AddProjectile(glm::vec3 position1, glm::vec3 position2, float delay, float duration)
 {
 	Projectile projectile;
 	projectile.position1 = position1;
@@ -37,7 +37,7 @@ void ShootingMarker::AddProjectile(glm::vec3 position1, glm::vec3 position2, flo
 }
 
 
-bool ShootingMarker::Animate(float seconds)
+bool ShootingCounter::Animate(float seconds)
 {
 	bool alive = false;
 	bool impact = false;

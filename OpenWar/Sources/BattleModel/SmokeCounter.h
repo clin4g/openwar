@@ -8,7 +8,7 @@
 #include "SimulationState.h"
 
 
-class SmokeMarker
+class SmokeCounter
 {
 public:
 	struct Particle
@@ -29,8 +29,8 @@ public:
 	bool _impacted;
 
 public:
-	SmokeMarker(UnitWeapon unitWeapon);
-	~SmokeMarker();
+	SmokeCounter(UnitWeapon unitWeapon);
+	~SmokeCounter();
 
 	bool Animate(float seconds);
 	void AddParticle(glm::vec3 position1, glm::vec3 position2, float delay);

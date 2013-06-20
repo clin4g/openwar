@@ -13,12 +13,12 @@
 class BattleContext;
 class BattleModel;
 class CasualtyMarker;
-class UnitMarker;
+class UnitCounter;
 class MovementMarker;
 class TrackingMarker;
 class RangeMarker;
-class ShootingMarker;
-class SmokeMarker;
+class ShootingCounter;
+class SmokeCounter;
 
 
 class BattleModel
@@ -28,12 +28,12 @@ public:
 	glm::vec2 _mapSize;
 	Player _player;
 	CasualtyMarker* _casualtyMarker;
-	std::vector<UnitMarker*> _unitMarkers;
+	std::vector<UnitCounter*> _unitMarkers;
 	std::vector<MovementMarker*> _movementMarkers;
 	std::vector<TrackingMarker*> _trackingMarkers;
 	std::vector<RangeMarker*> _rangeMarkers;
-	std::vector<ShootingMarker*> _shootingMarkers;
-	std::vector<SmokeMarker*> _smokeMarkers;
+	std::vector<ShootingCounter*> _shootingMarkers;
+	std::vector<SmokeCounter*> _smokeMarkers;
 
 public:
 	BattleModel(BattleContext* battleContext);
@@ -61,14 +61,14 @@ public:
 	void AddShootingAndSmokeMarkers(const Shooting& shooting);
 
 	void AddShootingMarker(const Shooting& shooting);
-	ShootingMarker* AddShootingMarker(UnitWeapon unitWeapon);
+	ShootingCounter* AddShootingMarker(UnitWeapon unitWeapon);
 	void RemoveAllShootingMarkers();
 
 	void AddSmokeMarker(const Shooting& shooting);
-	SmokeMarker* AddSmokeMarker(UnitWeapon unitWeapon);
+	SmokeCounter* AddSmokeMarker(UnitWeapon unitWeapon);
 	void RemoveAllSmokeMarkers();
 
-	UnitMarker* GetNearestUnitMarker(glm::vec2 position, Player player);
+	UnitCounter* GetNearestUnitMarker(glm::vec2 position, Player player);
 	MovementMarker* GetNearestMovementMarker(glm::vec2 position, Player player);
 };
 

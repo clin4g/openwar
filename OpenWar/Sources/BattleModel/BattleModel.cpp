@@ -9,10 +9,10 @@
 #include "CasualtyMarker.h"
 #include "MovementMarker.h"
 #include "RangeMarker.h"
-#include "ShootingMarker.h"
-#include "SmokeMarker.h"
+#include "ShootingCounter.h"
+#include "SmokeCounter.h"
 #include "TrackingMarker.h"
-#include "UnitMarker.h"
+#include "UnitCounter.h"
 
 
 
@@ -35,13 +35,13 @@ BattleModel::~BattleModel()
 	for (RangeMarker* marker : _rangeMarkers)
 		delete marker;
 
-	for (ShootingMarker* marker : _shootingMarkers)
+	for (ShootingCounter* marker : _shootingMarkers)
 		delete marker;
 
-	for (SmokeMarker* marker : _smokeMarkers)
+	for (SmokeCounter* marker : _smokeMarkers)
 		delete marker;
 
-	for (UnitMarker* marker : _unitMarkers)
+	for (UnitCounter* marker : _unitMarkers)
 		delete marker;
 
 	for (MovementMarker* marker : _movementMarkers)
@@ -98,7 +98,7 @@ void BattleModel::Initialize(SimulationState* simulationState)
 
 void BattleModel::AddUnitMarker(Unit* unit)
 {
-	UnitMarker* marker = new UnitMarker(this, unit);
+	UnitCounter* marker = new UnitCounter(this, unit);
 	marker->Animate(0);
 	_unitMarkers.push_back(marker);
 }
@@ -176,7 +176,7 @@ void BattleModel::AddShootingAndSmokeMarkers(const Shooting& shooting)
 
 void BattleModel::AddShootingMarker(const Shooting& shooting)
 {
-	ShootingMarker* shootingMarker = AddShootingMarker(shooting.unitWeapon);
+	ShootingCounter* shootingMarker = AddShootingMarker(shooting.unitWeapon);
 
 	for (const Projectile& projectile : shooting.projectiles)
 	{
@@ -187,9 +187,9 @@ void BattleModel::AddShootingMarker(const Shooting& shooting)
 }
 
 
-ShootingMarker* BattleModel::AddShootingMarker(UnitWeapon unitWeapon)
+ShootingCounter* BattleModel::AddShootingMarker(UnitWeapon unitWeapon)
 {
-	ShootingMarker* marker = new ShootingMarker(unitWeapon);
+	ShootingCounter* marker = new ShootingCounter(unitWeapon);
 	_shootingMarkers.push_back(marker);
 	return marker;
 }
@@ -197,7 +197,7 @@ ShootingMarker* BattleModel::AddShootingMarker(UnitWeapon unitWeapon)
 
 void BattleModel::RemoveAllShootingMarkers()
 {
-	for (ShootingMarker* marker : _shootingMarkers)
+	for (ShootingCounter* marker : _shootingMarkers)
 	{
 		marker->Animate(100);
 	}
@@ -206,7 +206,7 @@ void BattleModel::RemoveAllShootingMarkers()
 
 void BattleModel::AddSmokeMarker(const Shooting& shooting)
 {
-	SmokeMarker* marker = AddSmokeMarker(shooting.unitWeapon);
+	SmokeCounter* marker = AddSmokeMarker(shooting.unitWeapon);
 
 	for (const Projectile& projectile : shooting.projectiles)
 	{
@@ -217,9 +217,9 @@ void BattleModel::AddSmokeMarker(const Shooting& shooting)
 }
 
 
-SmokeMarker* BattleModel::AddSmokeMarker(UnitWeapon unitWeapon)
+SmokeCounter* BattleModel::AddSmokeMarker(UnitWeapon unitWeapon)
 {
-	SmokeMarker* marker = new SmokeMarker(unitWeapon);
+	SmokeCounter* marker = new SmokeCounter(unitWeapon);
 	_smokeMarkers.push_back(marker);
 	return marker;
 }
@@ -227,19 +227,19 @@ SmokeMarker* BattleModel::AddSmokeMarker(UnitWeapon unitWeapon)
 
 void BattleModel::RemoveAllSmokeMarkers()
 {
-	for (SmokeMarker* marker : _smokeMarkers)
+	for (SmokeCounter* marker : _smokeMarkers)
 	{
 		marker->Animate(100);
 	}
 }
 
 
-UnitMarker* BattleModel::GetNearestUnitMarker(glm::vec2 position, Player player)
+UnitCounter* BattleModel::GetNearestUnitMarker(glm::vec2 position, Player player)
 {
-	UnitMarker* result = 0;
+	UnitCounter* result = 0;
 	float nearest = INFINITY;
 
-	for (UnitMarker* marker : _unitMarkers)
+	for (UnitCounter* marker : _unitMarkers)
 	{
 		Unit* unit = marker->_unit;
 		if (player != PlayerNone && unit->player != player)

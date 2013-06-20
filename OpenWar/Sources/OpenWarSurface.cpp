@@ -15,7 +15,7 @@
 #include "SoundPlayer.h"
 #include "TerrainGesture.h"
 #include "TerrainSurfaceModelTiled.h"
-#include "UnitMarker.h"
+#include "UnitCounter.h"
 
 
 OpenWarSurface::OpenWarSurface(glm::vec2 size, float pixelDensity) : Surface(size, pixelDensity),
@@ -169,7 +169,7 @@ void OpenWarSurface::UpdateSoundPlayer()
 	int infantryMarching = 0;
 	int infantryRunning = 0;
 
-	for (UnitMarker* unitMarker : _battleView->GetBattleModel()->_unitMarkers)
+	for (UnitCounter* unitMarker : _battleView->GetBattleModel()->_unitMarkers)
 	{
 		Unit* unit = unitMarker->_unit;
 		if (_battleContext->simulationState->GetUnit(unit->unitId) != 0 && glm::length(unit->movement.GetFinalDestination() - unit->state.center) > 4.0f)

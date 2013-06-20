@@ -21,9 +21,9 @@ class BattleModel;
 class CasualtyMarker;
 class MovementMarker;
 class RangeMarker;
-class ShootingMarker;
+class ShootingCounter;
 class TrackingMarker;
-class UnitMarker;
+class UnitCounter;
 
 
 class BattleView : public TerrainView, public SimulationListener
@@ -120,7 +120,7 @@ public:
 	void MakeRangeMarker(vertexbuffer<color_vertex3>& shape, glm::vec2 position, float direction, float minimumRange, float maximumRange);
 
 	void RenderUnitMarkers();
-	void AppendUnitMarker(UnitMarker* marker);
+	void AppendUnitMarker(UnitCounter* marker);
 
 	void RenderUnitMissileTarget(Unit* unit);
 
@@ -137,7 +137,7 @@ public:
 	void RenderMovementFighters(Unit* unit);
 
 	void RenderShootingMarkers();
-	void AppendShootingMarker(ShootingMarker* marker);
+	void AppendShootingMarker(ShootingCounter* marker);
 	void AppendShootingMarkerArrow(glm::vec3 p1, glm::vec3 p2, float t);
 	void AppendShootingMarkerBullet(glm::vec3 p1, glm::vec3 p2, float t);
 

@@ -8,7 +8,7 @@
 #include "SimulationState.h"
 
 
-class ShootingMarker
+class ShootingCounter
 {
 public:
 	struct Projectile
@@ -31,8 +31,8 @@ public:
 	bool _impacted;
 
 public:
-	ShootingMarker(UnitWeapon unitWeapon);
-	~ShootingMarker();
+	ShootingCounter(UnitWeapon unitWeapon);
+	~ShootingCounter();
 
 	bool Animate(float seconds);
 	void AddProjectile(glm::vec3 position1, glm::vec3 position2, float delay, float duration);

@@ -8,7 +8,7 @@
 #include "BattleModel.h"
 
 
-class UnitMarker
+class UnitCounter
 {
 public:
 	BattleModel* _battleModel;
@@ -16,8 +16,8 @@ public:
 	float _routingTimer;
 
 public:
-	UnitMarker(BattleModel* battleModel, Unit* unit);
-	~UnitMarker();
+	UnitCounter(BattleModel* battleModel, Unit* unit);
+	~UnitCounter();
 
 	bool Animate(float seconds);
 };

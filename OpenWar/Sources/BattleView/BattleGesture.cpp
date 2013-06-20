@@ -7,7 +7,7 @@
 #include "BattleView.h"
 #include "BattleContext.h"
 #include "SoundPlayer.h"
-#include "UnitMarker.h"
+#include "UnitCounter.h"
 #include "TrackingMarker.h"
 #include "MovementMarker.h"
 
@@ -54,7 +54,7 @@ void BattleGesture::RenderHints()
 	sprite._color = glm::vec4(0, 0, 0, 1);
 	sprite._viewport = _battleView->GetViewportBounds();
 
-	for (UnitMarker* unitMarker : _battleView->GetBattleModel()->_unitMarkers)
+	for (UnitCounter* unitMarker : _battleView->GetBattleModel()->_unitMarkers)
 	{
 		bounds2f bounds = GetUnitCurrentScreenBounds(unitMarker->_unit);
 
@@ -407,7 +407,7 @@ bounds2f BattleGesture::GetUnitFutureScreenBounds(Unit* unit)
 Unit* BattleGesture::GetTouchedUnitMarker(glm::vec2 screenPosition, glm::vec2 terrainPosition)
 {
 	Unit* result = nullptr;
-	UnitMarker* unitMarker = _battleView->GetBattleModel()->GetNearestUnitMarker(terrainPosition, _battleView->GetBattleModel()->_player);
+	UnitCounter* unitMarker = _battleView->GetBattleModel()->GetNearestUnitMarker(terrainPosition, _battleView->GetBattleModel()->_player);
 	if (unitMarker != nullptr)
 	{
 		Unit* unit = unitMarker->_unit;
@@ -531,13 +531,13 @@ void BattleGesture::UpdateTrackingMarker()
 
 Unit* BattleGesture::FindUnit(glm::vec2 touchPosition, glm::vec2 markerPosition, Player player)
 {
-	UnitMarker* enemyMarker = nullptr;
+	UnitCounter* enemyMarker = nullptr;
 
 	glm::vec2 p = markerPosition;
 	glm::vec2 d = (touchPosition - markerPosition) / 4.0f;
 	for (int i = 0; i < 4; ++i)
 	{
-		UnitMarker* unitMarker = _battleView->GetBattleModel()->GetNearestUnitMarker(p, player);
+		UnitCounter* unitMarker = _battleView->GetBattleModel()->GetNearestUnitMarker(p, player);
 		if (unitMarker && glm::length(unitMarker->_unit->state.center - p) <= SNAP_TO_UNIT_TRESHOLD)
 		{
 			enemyMarker = unitMarker;

@@ -2,12 +2,12 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "SmokeMarker.h"
+#include "SmokeCounter.h"
 #include "SoundPlayer.h"
 
 
 
-SmokeMarker::SmokeMarker(UnitWeapon unitWeapon) :
+SmokeCounter::SmokeCounter(UnitWeapon unitWeapon) :
 _unitWeapon(unitWeapon),
 particles(),
 _soundCookie(0),
@@ -20,12 +20,12 @@ _impacted(false)
 }
 
 
-SmokeMarker::~SmokeMarker()
+SmokeCounter::~SmokeCounter()
 {
 }
 
 
-void SmokeMarker::AddParticle(glm::vec3 position1, glm::vec3 position2, float delay)
+void SmokeCounter::AddParticle(glm::vec3 position1, glm::vec3 position2, float delay)
 {
 	glm::vec3 dir = glm::normalize(position2 - position1);
 
@@ -38,7 +38,7 @@ void SmokeMarker::AddParticle(glm::vec3 position1, glm::vec3 position2, float de
 }
 
 
-bool SmokeMarker::Animate(float seconds)
+bool SmokeCounter::Animate(float seconds)
 {
 	float duration = 3;
 	bool alive = false;

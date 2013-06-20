@@ -2,12 +2,12 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "UnitMarker.h"
+#include "UnitCounter.h"
 #include "BattleContext.h"
 
 
 
-UnitMarker::UnitMarker(BattleModel* battleModel, Unit* unit) :
+UnitCounter::UnitCounter(BattleModel* battleModel, Unit* unit) :
 _battleModel(battleModel),
 _unit(unit),
 _routingTimer(0)
@@ -15,12 +15,12 @@ _routingTimer(0)
 }
 
 
-UnitMarker::~UnitMarker()
+UnitCounter::~UnitCounter()
 {
 }
 
 
-bool UnitMarker::Animate(float seconds)
+bool UnitCounter::Animate(float seconds)
 {
 	if (_battleModel->GetBattleContext()->simulationState->GetUnit(_unit->unitId) == 0)
 		return false;
