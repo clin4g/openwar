@@ -6,6 +6,7 @@
 #define ShootingMarker_H
 
 #include "BattleModel.h"
+class ColorLineRenderer;
 
 
 class ShootingCounter
@@ -36,6 +37,12 @@ public:
 
 	bool Animate(float seconds);
 	void AddProjectile(glm::vec3 position1, glm::vec3 position2, float delay, float duration);
+
+	void Render(ColorLineRenderer* renderer);
+
+private:
+	void RenderArrow(ColorLineRenderer* renderer, glm::vec3 p1, glm::vec3 p2, float t);
+	void RenderBullet(ColorLineRenderer* renderer, glm::vec3 p1, glm::vec3 p2, float t);
 };
 
 

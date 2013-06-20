@@ -3,9 +3,6 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "BattleView.h"
-#include "BattleModel.h"
-#include "TiledTerrainSurface.h"
-#include "BillboardTerrainForest.h"
 #include "UnitCounter.h"
 #include "CasualtyMarker.h"
 #include "SmokeCounter.h"
@@ -13,10 +10,10 @@
 #include "TrackingMarker.h"
 #include "MovementMarker.h"
 #include "ShootingCounter.h"
-
+#include "ColorLineRenderer.h"
+#include "SmoothTerrainWater.h"
+#include "SmoothTerrainSky.h"
 #include "sprite.h"
-#import "SmoothTerrainWater.h"
-#import "SmoothTerrainSky.h"
 
 
 static affine2 billboard_texcoords(int x, int y, bool flip)
@@ -37,7 +34,6 @@ _battleModel(battleModel),
 _bluePlayer(bluePlayer),
 _movementMarker_pathShape(),
 _rangeMarker_shape(),
-_missileMarker_shape(),
 _trackingMarker_shadowShape(),
 _trackingMarker_pathShape(),
 _trackingMarker_orientationShape(),
@@ -53,7 +49,8 @@ _billboardRenderer(nullptr),
 _casualtyMarker(0),
 _movementMarkers(),
 _trackingMarkers(),
-_player(PlayerNone)
+_player(PlayerNone),
+colorLineRenderer(nullptr)
 {
 	SetContentBounds(bounds2f(0, 0, 1024, 1024));
 
@@ -135,6 +132,8 @@ _player(PlayerNone)
 	_billboardRenderer = new BillboardRenderer();
 
 	_casualtyMarker = new CasualtyMarker();
+
+	colorLineRenderer = new ColorLineRenderer();
 }
 
 
@@ -155,7 +154,7 @@ BattleView::~BattleView()
 
 void BattleView::OnShooting(Shooting const & shooting)
 {
-	_battleModel->AddShootingAndSmokeMarkers(shooting);
+	_battleModel->AddShootingAndSmokeCounters(shooting);
 }
 
 
@@ -383,7 +382,12 @@ void BattleView::Render()
 	RenderTrackingMarkers();
 	RenderMovementMarkers();
 
-	RenderShootingMarkers();
+
+	colorLineRenderer->Reset();
+	for (ShootingCounter* shootingCounter : _battleModel->_shootingCounters)
+		shootingCounter->Render(colorLineRenderer);
+	colorLineRenderer->Draw(GetTransform());
+
 
 	glDepthMask(true);
 
@@ -1180,76 +1184,6 @@ void BattleView::RenderMovementFighters(Unit* unit)
 	}
 }
 
-
-void BattleView::RenderShootingMarkers()
-{
-	_missileMarker_shape._mode = GL_LINES;
-	_missileMarker_shape._vertices.clear();
-
-	for (ShootingCounter* marker : _battleModel->_shootingMarkers)
-	{
-		AppendShootingMarker(marker);
-	}
-
-	glLineWidth(1);
-	gradient_uniforms uniforms;
-	uniforms._transform = GetTransform();
-	_renderers->_gradient_renderer3->render(_missileMarker_shape, uniforms);
-}
-
-
-void BattleView::AppendShootingMarker(ShootingCounter* marker)
-{
-	for (ShootingCounter::Projectile& projectile : marker->_projectiles)
-	{
-		float t = projectile.time / projectile.duration;
-		if (0 <= t && t <= 1)
-		{
-			if (marker->_unitWeapon == UnitWeaponArq)
-				AppendShootingMarkerBullet(projectile.position1, projectile.position2, t);
-			else
-				AppendShootingMarkerArrow(projectile.position1, projectile.position2, t);
-		}
-	}
-}
-
-
-void BattleView::AppendShootingMarkerArrow(glm::vec3 p1, glm::vec3 p2, float t)
-{
-	float size = 4;
-	glm::vec3 diff = p2 - p1;
-	float distance = glm::length(diff);
-	glm::vec3 dir = diff / distance;
-
-	float dt = size / distance;
-	float t1 = t * (1 - dt);
-	float t2 = t1 + dt;
-	float h1 = 0.3f * distance * (t1 - t1 * t1);
-	float h2 = 0.3f * distance * (t2 - t2 * t2);
-
-	glm::vec3 pp1 = p1 + t * (distance - size) * dir;
-	glm::vec3 pp2 = pp1 + size * dir;
-
-	pp1.z += h1;
-	pp2.z += h2;
-
-	_missileMarker_shape._vertices.push_back(color_vertex3(pp1, glm::vec4(0, 0, 0, 0.2)));
-	_missileMarker_shape._vertices.push_back(color_vertex3(pp2, glm::vec4(0, 0, 0, 0.2)));
-}
-
-
-void BattleView::AppendShootingMarkerBullet(glm::vec3 p1, glm::vec3 p2, float t)
-{
-	float size = 50;
-	glm::vec3 diff = p2 - p1;
-	glm::vec3 dir = glm::normalize(diff);
-
-	glm::vec3 pp1 = p1 + t * (glm::length(diff) - size) * dir;
-	glm::vec3 pp2 = pp1 + size * dir;
-
-	_missileMarker_shape._vertices.push_back(color_vertex3(pp1, glm::vec4(1, 1, 0, 0.2)));
-	_missileMarker_shape._vertices.push_back(color_vertex3(pp2, glm::vec4(1, 1, 1, 0.2)));
-}
 
 
 texture_billboard_vertex BattleView::MakeBillboardVertex(glm::vec2 position, float height, int i, int j, bool flipx, bool flipy)

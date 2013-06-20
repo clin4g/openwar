@@ -259,8 +259,8 @@ BattleModel::~BattleModel()
 		delete unit;
 	}
 
-	for (ShootingCounter* marker : _shootingMarkers)
-		delete marker;
+	for (ShootingCounter* shootingCounter : _shootingCounters)
+		delete shootingCounter;
 
 	for (SmokeCounter* marker : _smokeMarkers)
 		delete marker;
@@ -416,7 +416,7 @@ template <class T> void AnimateMarkers(std::vector<T*>& markers, float seconds)
 void BattleModel::AnimateMarkers(float seconds)
 {
 	::AnimateMarkers(_unitMarkers, seconds);
-	::AnimateMarkers(_shootingMarkers, seconds);
+	::AnimateMarkers(_shootingCounters, seconds);
 	::AnimateMarkers(_smokeMarkers, seconds);
 }
 
@@ -439,40 +439,40 @@ void BattleModel::AddUnitMarker(Unit* unit)
 }
 
 
-void BattleModel::AddShootingAndSmokeMarkers(const Shooting& shooting)
+void BattleModel::AddShootingAndSmokeCounters(const Shooting& shooting)
 {
-	AddShootingMarker(shooting);
+	AddShootingCounter(shooting);
 	if (shooting.unitWeapon == UnitWeaponArq)
 		AddSmokeMarker(shooting);
 }
 
 
-void BattleModel::AddShootingMarker(const Shooting& shooting)
+void BattleModel::AddShootingCounter(const Shooting& shooting)
 {
-	ShootingCounter* shootingMarker = AddShootingMarker(shooting.unitWeapon);
+	ShootingCounter* shootingCounter = AddShootingCounter(shooting.unitWeapon);
 
 	for (const Projectile& projectile : shooting.projectiles)
 	{
 		glm::vec3 p1 = glm::vec3(projectile.position1, terrainSurface->GetHeight(projectile.position1));
 		glm::vec3 p2 = glm::vec3(projectile.position2, terrainSurface->GetHeight(projectile.position2));
-		shootingMarker->AddProjectile(p1, p2, projectile.delay, shooting.timeToImpact);
+		shootingCounter->AddProjectile(p1, p2, projectile.delay, shooting.timeToImpact);
 	}
 }
 
 
-ShootingCounter* BattleModel::AddShootingMarker(UnitWeapon unitWeapon)
+ShootingCounter* BattleModel::AddShootingCounter(UnitWeapon unitWeapon)
 {
-	ShootingCounter* marker = new ShootingCounter(unitWeapon);
-	_shootingMarkers.push_back(marker);
-	return marker;
+	ShootingCounter* shootingCounter = new ShootingCounter(unitWeapon);
+	_shootingCounters.push_back(shootingCounter);
+	return shootingCounter;
 }
 
 
 void BattleModel::RemoveAllShootingMarkers()
 {
-	for (ShootingCounter* marker : _shootingMarkers)
+	for (ShootingCounter* shootingCounters : _shootingCounters)
 	{
-		marker->Animate(100);
+		shootingCounters->Animate(100);
 	}
 }
 

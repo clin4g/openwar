@@ -22,6 +22,7 @@ class RangeMarker;
 class ShootingCounter;
 class TrackingMarker;
 class UnitCounter;
+class ColorLineRenderer;
 
 
 class BattleView : public TerrainView, public SimulationListener
@@ -40,8 +41,6 @@ class BattleView : public TerrainView, public SimulationListener
 	vertexbuffer<plain_vertex3> _shape_fighter_weapons;
 	vertexbuffer<color_vertex3> _rangeMarker_shape;
 	vertexbuffer<texture_vertex3> _movementMarker_pathShape;
-
-	vertexbuffer<color_vertex3> _missileMarker_shape;
 
 	vertexbuffer<texture_vertex3> _trackingMarker_pathShape;
 	vertexbuffer<texture_vertex3> _trackingMarker_orientationShape;
@@ -76,6 +75,8 @@ class BattleView : public TerrainView, public SimulationListener
 	std::vector<MovementMarker*> _movementMarkers;
 	std::vector<TrackingMarker*> _trackingMarkers;
 	std::vector<RangeMarker*> _rangeMarkers;
+
+	ColorLineRenderer* colorLineRenderer;
 
 public:
 	SmoothTerrainSurfaceRenderer* _terrainSurfaceRendererSmooth;
@@ -145,11 +146,6 @@ public:
 	void RenderMovementMarker(Unit* unit);
 	void RenderMovementPath(Unit* unit);
 	void RenderMovementFighters(Unit* unit);
-
-	void RenderShootingMarkers();
-	void AppendShootingMarker(ShootingCounter* marker);
-	void AppendShootingMarkerArrow(glm::vec3 p1, glm::vec3 p2, float t);
-	void AppendShootingMarkerBullet(glm::vec3 p1, glm::vec3 p2, float t);
 
 	texture_billboard_vertex MakeBillboardVertex(glm::vec2 position, float height, int i, int j, bool flipx = false, bool flipy = false);
 

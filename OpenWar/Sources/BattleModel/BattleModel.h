@@ -323,7 +323,7 @@ public:
 	glm::vec2 _mapSize;
 
 	std::vector<UnitCounter*> _unitMarkers;
-	std::vector<ShootingCounter*> _shootingMarkers;
+	std::vector<ShootingCounter*> _shootingCounters;
 	std::vector<SmokeCounter*> _smokeMarkers;
 
 public:
@@ -348,10 +348,10 @@ public:
 
 	void AddUnitMarker(Unit* unit);
 
-	void AddShootingAndSmokeMarkers(const Shooting& shooting);
+	void AddShootingAndSmokeCounters(const Shooting& shooting);
 
-	void AddShootingMarker(const Shooting& shooting);
-	ShootingCounter* AddShootingMarker(UnitWeapon unitWeapon);
+	void AddShootingCounter(const Shooting& shooting);
+	ShootingCounter* AddShootingCounter(UnitWeapon unitWeapon);
 	void RemoveAllShootingMarkers();
 
 	void AddSmokeMarker(const Shooting& shooting);

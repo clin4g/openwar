@@ -4,6 +4,7 @@
 
 #include "ShootingCounter.h"
 #include "SoundPlayer.h"
+#import "ColorLineRenderer.h"
 
 
 
@@ -80,3 +81,56 @@ bool ShootingCounter::Animate(float seconds)
 
 	return alive;
 }
+
+
+void ShootingCounter::Render(ColorLineRenderer* renderer)
+{
+	for (ShootingCounter::Projectile& projectile : _projectiles)
+	{
+		float t = projectile.time / projectile.duration;
+		if (0 <= t && t <= 1)
+		{
+			if (_unitWeapon == UnitWeaponBow)
+				RenderArrow(renderer, projectile.position1, projectile.position2, t);
+			else
+				RenderBullet(renderer, projectile.position1, projectile.position2, t);
+		}
+	}
+}
+
+
+void ShootingCounter::RenderArrow(ColorLineRenderer* renderer, glm::vec3 p1, glm::vec3 p2, float t)
+{
+	float size = 4;
+	glm::vec3 diff = p2 - p1;
+	float distance = glm::length(diff);
+	glm::vec3 dir = diff / distance;
+
+	float dt = size / distance;
+	float t1 = t * (1 - dt);
+	float t2 = t1 + dt;
+	float h1 = 0.3f * distance * (t1 - t1 * t1);
+	float h2 = 0.3f * distance * (t2 - t2 * t2);
+
+	glm::vec3 pp1 = p1 + t * (distance - size) * dir;
+	glm::vec3 pp2 = pp1 + size * dir;
+
+	pp1.z += h1;
+	pp2.z += h2;
+
+	renderer->AddLine(pp1, pp2, glm::vec4(0, 0, 0, 0.2), glm::vec4(0, 0, 0, 0.2));
+}
+
+
+void ShootingCounter::RenderBullet(ColorLineRenderer* renderer, glm::vec3 p1, glm::vec3 p2, float t)
+{
+	float size = 50;
+	glm::vec3 diff = p2 - p1;
+	glm::vec3 dir = glm::normalize(diff);
+
+	glm::vec3 pp1 = p1 + t * (glm::length(diff) - size) * dir;
+	glm::vec3 pp2 = pp1 + size * dir;
+
+	renderer->AddLine(pp1, pp2, glm::vec4(1, 1, 0, 0.2), glm::vec4(1, 1, 1, 0.2));
+}
+
