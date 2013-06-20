@@ -13,7 +13,6 @@
 #include "BattleView.h"
 
 class BattleView;
-class Director;
 class BattleModel;
 class TrackingMarker;
 class Unit;
