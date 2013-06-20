@@ -9,11 +9,9 @@
 
 #include "Gesture.h"
 #include "Touch.h"
-#include "SimulationState.h"
+#include "BattleModel.h"
 #include "BattleView.h"
 
-class BattleView;
-class BattleModel;
 class TrackingMarker;
 class Unit;
 class UnitCounter;

@@ -7,9 +7,7 @@
 
 BattleContext::BattleContext() :
 battleScript(nullptr),
-simulationState(nullptr),
 simulationRules(nullptr),
-terrainSurfaceModel(nullptr),
 terrainFeatureModelBillboard(nullptr),
 billboardTextureAtlas(nullptr),
 battleModel(nullptr)

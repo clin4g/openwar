@@ -11,6 +11,7 @@
 #include "TrackingMarker.h"
 #include "MovementMarker.h"
 
+#include "sprite.h"
 
 
 #define SNAP_TO_UNIT_TRESHOLD 22 // meters
@@ -407,7 +408,7 @@ bounds2f BattleGesture::GetUnitFutureScreenBounds(Unit* unit)
 Unit* BattleGesture::GetTouchedUnitMarker(glm::vec2 screenPosition, glm::vec2 terrainPosition)
 {
 	Unit* result = nullptr;
-	UnitCounter* unitMarker = _battleView->GetBattleModel()->GetNearestUnitMarker(terrainPosition, _battleView->GetBattleModel()->_player);
+	UnitCounter* unitMarker = _battleView->GetBattleModel()->GetNearestUnitMarker(terrainPosition, _battleView->_player);
 	if (unitMarker != nullptr)
 	{
 		Unit* unit = unitMarker->_unit;
@@ -423,7 +424,7 @@ Unit* BattleGesture::GetTouchedUnitMarker(glm::vec2 screenPosition, glm::vec2 te
 Unit* BattleGesture::GetTouchedMovementMarker(glm::vec2 screenPosition, glm::vec2 terrainPosition)
 {
 	Unit* result = nullptr;
-	MovementMarker* movementMarker = _battleView->GetNearestMovementMarker(terrainPosition, _battleView->GetBattleModel()->_player);
+	MovementMarker* movementMarker = _battleView->GetNearestMovementMarker(terrainPosition, _battleView->_player);
 	if (movementMarker != nullptr)
 	{
 		Unit* unit = movementMarker->_unit;
@@ -470,7 +471,7 @@ void BattleGesture::UpdateTrackingMarker()
 		float delta = 2 / fmaxf(1, glm::length(currentDestination - markerPosition));
 		for (float k = 0; k < 1; k += delta)
 		{
-			if (_battleView->GetBattleModel()->GetBattleContext()->terrainSurfaceModel->IsImpassable(glm::mix(currentDestination, markerPosition, k)))
+			if (_battleView->GetBattleModel()->terrainSurfaceModel->IsImpassable(glm::mix(currentDestination, markerPosition, k)))
 			{
 				waterEdgeFactor = k;
 				break;

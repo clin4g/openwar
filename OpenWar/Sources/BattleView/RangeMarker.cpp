@@ -24,7 +24,7 @@ RangeMarker::~RangeMarker()
 
 bool RangeMarker::Animate(float seconds)
 {
-	if (_battleModel->GetBattleContext()->simulationState->GetUnit(_unit->unitId) == 0)
+	if (_battleModel->GetUnit(_unit->unitId) == 0)
 		return false;
 
 	return true;

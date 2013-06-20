@@ -5,8 +5,7 @@
 #ifndef RangeMarker_H
 #define RangeMarker_H
 
-#include "SimulationState.h"
-class BattleModel;
+#include "BattleModel.h"
 
 
 class RangeMarker

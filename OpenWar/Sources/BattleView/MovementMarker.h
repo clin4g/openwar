@@ -5,8 +5,7 @@
 #ifndef MovementMarker_H
 #define MovementMarker_H
 
-#include "SimulationState.h"
-class BattleModel;
+#include "BattleModel.h"
 
 
 class MovementMarker

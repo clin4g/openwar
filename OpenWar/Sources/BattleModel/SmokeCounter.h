@@ -5,7 +5,7 @@
 #ifndef SmokeMarker_H
 #define SmokeMarker_H
 
-#include "SimulationState.h"
+#include "BattleModel.h"
 
 
 class SmokeCounter

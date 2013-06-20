@@ -11,8 +11,8 @@ SimulationListener::~SimulationListener()
 }
 
 
-SimulationRules::SimulationRules(SimulationState* simulationState) :
-_simulationState(simulationState),
+SimulationRules::SimulationRules(BattleModel* battleModel) :
+_battleModel(battleModel),
 _fighterQuadTree(0, 0, 1024, 1024),
 _weaponQuadTree(0, 0, 1024, 1024),
 _secondsSinceLastTimeStep(0),
@@ -32,10 +32,10 @@ void SimulationRules::AdvanceTime(float secondsSinceLastTime)
 	recentCasualties.clear();
 
 	_secondsSinceLastTimeStep += secondsSinceLastTime;
-	while (_secondsSinceLastTimeStep >= _simulationState->timeStep)
+	while (_secondsSinceLastTimeStep >= _battleModel->timeStep)
 	{
 		SimulateOneTimeStep();
-		_secondsSinceLastTimeStep -= _simulationState->timeStep;
+		_secondsSinceLastTimeStep -= _battleModel->timeStep;
 	}
 
 	if (listener != 0)
@@ -47,12 +47,12 @@ void SimulationRules::AdvanceTime(float secondsSinceLastTime)
 			listener->OnCasualty(casualty);
 	}
 
-	if (_simulationState->winner == PlayerNone)
+	if (_battleModel->winner == PlayerNone)
 	{
 		int count1 = 0;
 		int count2 = 0;
 
-		for (std::map<int, Unit*>::iterator i = _simulationState->units.begin(); i != _simulationState->units.end(); ++i)
+		for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 		{
 			Unit* unit = (*i).second;
 			if (!unit->state.IsRouting())
@@ -72,9 +72,9 @@ void SimulationRules::AdvanceTime(float secondsSinceLastTime)
 		}
 
 		if (count1 == 0)
-			_simulationState->winner = Player2;
+			_battleModel->winner = Player2;
 		else if (count2 == 0)
-			_simulationState->winner = Player1;
+			_battleModel->winner = Player1;
 	}
 }
 
@@ -83,10 +83,10 @@ void SimulationRules::SimulateOneTimeStep()
 {
 	RebuildQuadTree();
 
-	for (std::map<int, Unit*>::iterator i = _simulationState->units.begin(); i != _simulationState->units.end(); ++i)
+	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 	{
 		Unit* unit = (*i).second;
-		MovementRules::AdvanceTime(unit, _simulationState->timeStep);
+		MovementRules::AdvanceTime(unit, _battleModel->timeStep);
 	}
 
 	ComputeNextState();
@@ -97,7 +97,7 @@ void SimulationRules::SimulateOneTimeStep()
 	RemoveCasualties();
 	RemoveDeadUnits();
 
-	_simulationState->time += _simulationState->timeStep;
+	_battleModel->time += _battleModel->timeStep;
 }
 
 
@@ -106,7 +106,7 @@ void SimulationRules::RebuildQuadTree()
 	_fighterQuadTree.clear();
 	_weaponQuadTree.clear();
 
-	for (std::map<int, Unit*>::iterator i = _simulationState->units.begin(); i != _simulationState->units.end(); ++i)
+	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 	{
 		Unit* unit = (*i).second;
 		if (unit->state.unitMode != UnitModeInitializing)
@@ -129,7 +129,7 @@ void SimulationRules::RebuildQuadTree()
 
 void SimulationRules::ComputeNextState()
 {
-	for (std::map<int, Unit*>::iterator i = _simulationState->units.begin(); i != _simulationState->units.end(); ++i)
+	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 	{
 		Unit* unit = (*i).second;
 		unit->nextState = NextUnitState(unit);
@@ -142,7 +142,7 @@ void SimulationRules::ComputeNextState()
 
 void SimulationRules::AssignNextState()
 {
-	for (std::map<int, Unit*>::iterator i = _simulationState->units.begin(); i != _simulationState->units.end(); ++i)
+	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 	{
 		Unit* unit = (*i).second;
 		unit->state = unit->nextState;
@@ -164,7 +164,7 @@ void SimulationRules::AssignNextState()
 
 void SimulationRules::ResolveMeleeCombat()
 {
-	for (std::map<int, Unit*>::iterator i = _simulationState->units.begin(); i != _simulationState->units.end(); ++i)
+	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 	{
 		Unit* unit = (*i).second;
 		bool isMissile = unit->stats.unitWeapon == UnitWeaponArq || unit->stats.unitWeapon == UnitWeaponBow;
@@ -206,7 +206,7 @@ void SimulationRules::ResolveMeleeCombat()
 
 void SimulationRules::ResolveMissileCombat()
 {
-	for (std::map<int, Unit*>::iterator i = _simulationState->units.begin(); i != _simulationState->units.end(); ++i)
+	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 	{
 		Unit* unit = (*i).second;
 		bool controlsUnit = practice || currentPlayer == PlayerNone || unit->player == currentPlayer;
@@ -248,18 +248,18 @@ void SimulationRules::TriggerShooting(Unit* unit)
 	float speed = arq ? 750 : 75; // meters per second
 	shooting.timeToImpact = distance / speed;
 
-	_simulationState->shootings.push_back(shooting);
+	_battleModel->shootings.push_back(shooting);
 	recentShootings.push_back(shooting);
 }
 
 
 void SimulationRules::ResolveProjectileCasualties()
 {
-	for (std::vector<Shooting>::iterator s = _simulationState->shootings.begin(); s != _simulationState->shootings.end(); ++s)
+	for (std::vector<Shooting>::iterator s = _battleModel->shootings.begin(); s != _battleModel->shootings.end(); ++s)
 	{
 		Shooting& shooting = *s;
 
-		shooting.timeToImpact -= _simulationState->timeStep;
+		shooting.timeToImpact -= _battleModel->timeStep;
 
 		std::vector<Projectile>::iterator i = shooting.projectiles.begin();
 		while (i != shooting.projectiles.end())
@@ -286,7 +286,7 @@ void SimulationRules::ResolveProjectileCasualties()
 
 void SimulationRules::RemoveCasualties()
 {
-	for (std::map<int, Unit*>::iterator i = _simulationState->units.begin(); i != _simulationState->units.end(); ++i)
+	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 	{
 		Unit* unit = (*i).second;
 		for (Fighter* fighter = unit->fighters, * end = fighter + unit->fightersCount; fighter != end; ++fighter)
@@ -296,7 +296,7 @@ void SimulationRules::RemoveCasualties()
 		}
 	}
 
-	for (std::map<int, Unit*>::iterator i = _simulationState->units.begin(); i != _simulationState->units.end(); ++i)
+	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 	{
 		Unit* unit = (*i).second;
 		int index = 0;
@@ -332,7 +332,7 @@ void SimulationRules::RemoveCasualties()
 void SimulationRules::RemoveDeadUnits()
 {
 	std::vector<int> remove;
-	for (std::map<int, Unit*>::iterator i = _simulationState->units.begin(); i != _simulationState->units.end(); ++i)
+	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 	{
 		Unit* unit = (*i).second;
 		if (unit->fightersCount == 0)
@@ -344,17 +344,17 @@ void SimulationRules::RemoveDeadUnits()
 	for (std::vector<int>::iterator i = remove.begin(); i != remove.end(); ++i)
 	{
 		int unitIndex = *i;
-		_simulationState->units.erase(unitIndex);
+		_battleModel->units.erase(unitIndex);
 	}
 
-	for (std::map<int, Unit*>::iterator i = _simulationState->units.begin(); i != _simulationState->units.end(); ++i)
+	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 	{
 		Unit* unit = (*i).second;
 
-		if (unit->missileTarget != 0 && _simulationState->GetUnit(unit->missileTarget->unitId) == 0)
+		if (unit->missileTarget != 0 && _battleModel->GetUnit(unit->missileTarget->unitId) == 0)
 			unit->missileTarget = 0;
 
-		if (unit->movement.target != 0 && _simulationState->GetUnit(unit->movement.target->unitId) == 0)
+		if (unit->movement.target != 0 && _battleModel->GetUnit(unit->movement.target->unitId) == 0)
 			unit->movement.target = 0;
 	}
 }
@@ -375,7 +375,7 @@ UnitState SimulationRules::NextUnitState(Unit* unit)
 	{
 		result.shootingTimer = 4;
 	}
-	else if (unit->state.shootingTimer < _simulationState->timeStep)
+	else if (unit->state.shootingTimer < _battleModel->timeStep)
 	{
 		if (unit->missileTargetLocked)
 		{
@@ -403,7 +403,7 @@ UnitState SimulationRules::NextUnitState(Unit* unit)
 	}
 	else
 	{
-		result.shootingTimer = unit->state.shootingTimer - _simulationState->timeStep;
+		result.shootingTimer = unit->state.shootingTimer - _battleModel->timeStep;
 	}
 
 	result.morale = unit->state.morale;
@@ -416,7 +416,7 @@ UnitState SimulationRules::NextUnitState(Unit* unit)
 		result.morale += (0.1f + unit->stats.trainingLevel) / 2000;
 	}
 
-	for (std::map<int, Unit*>::iterator i = _simulationState->units.begin(); i != _simulationState->units.end(); ++i)
+	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 	{
 		Unit* other = (*i).second;
 		float distance = glm::length(other->state.center - unit->state.center);
@@ -430,7 +430,7 @@ UnitState SimulationRules::NextUnitState(Unit* unit)
 		}
 	}
 
-	if (_simulationState->winner != PlayerNone && unit->player != _simulationState->winner)
+	if (_battleModel->winner != PlayerNone && unit->player != _battleModel->winner)
 	{
 		result.morale = -1;
 	}
@@ -459,7 +459,7 @@ Unit* SimulationRules::ClosestEnemyWithinLineOfFire(Unit* unit)
 {
 	Unit* closestEnemy = 0;
 	float closestDistance = 10000;
-	for (std::map<int, Unit*>::iterator i = _simulationState->units.begin(); i != _simulationState->units.end(); ++i)
+	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 	{
 		Unit* target = (*i).second;
 		if (target->player != unit->player && IsWithinLineOfFire(unit, target->state.center))
@@ -600,9 +600,9 @@ FighterState SimulationRules::NextFighterState(Fighter* fighter)
 			break;
 
 		case ReadyStateReadying:
-			if (original.readyingTimer > _simulationState->timeStep)
+			if (original.readyingTimer > _battleModel->timeStep)
 			{
-				result.readyingTimer = original.readyingTimer - _simulationState->timeStep;
+				result.readyingTimer = original.readyingTimer - _battleModel->timeStep;
 			}
 			else
 			{
@@ -624,9 +624,9 @@ FighterState SimulationRules::NextFighterState(Fighter* fighter)
 			break;
 
 		case ReadyStateStriking:
-			if (original.strikingTimer > _simulationState->timeStep)
+			if (original.strikingTimer > _battleModel->timeStep)
 			{
-				result.strikingTimer = original.strikingTimer - _simulationState->timeStep;
+				result.strikingTimer = original.strikingTimer - _battleModel->timeStep;
 				result.opponent = original.opponent;
 			}
 			else
@@ -639,9 +639,9 @@ FighterState SimulationRules::NextFighterState(Fighter* fighter)
 			break;
 
 		case ReadyStateStunned:
-			if (original.stunnedTimer > _simulationState->timeStep)
+			if (original.stunnedTimer > _battleModel->timeStep)
 			{
-				result.stunnedTimer = original.stunnedTimer - _simulationState->timeStep;
+				result.stunnedTimer = original.stunnedTimer - _battleModel->timeStep;
 			}
 			else
 			{
@@ -670,7 +670,7 @@ glm::vec2 SimulationRules::NextFighterPosition(Fighter* fighter)
 	}
 	else
 	{
-		glm::vec2 result = fighter->state.position + fighter->state.velocity * _simulationState->timeStep;
+		glm::vec2 result = fighter->state.position + fighter->state.velocity * _battleModel->timeStep;
 		glm::vec2 adjust;
 		int count = 0;
 
@@ -742,8 +742,8 @@ glm::vec2 SimulationRules::NextFighterVelocity(Fighter* fighter)
 	if (glm::length(fighter->state.position - fighter->terrainPosition) > 5)
 	{
 		fighter->terrainPosition = fighter->state.position;
-		fighter->terrainForest = _simulationState->terrainSurfaceModel->IsForest(fighter->state.position);
-		fighter->terrainWater = _simulationState->terrainSurfaceModel->IsWater(fighter->state.position);
+		fighter->terrainForest = _battleModel->terrainSurfaceModel->IsForest(fighter->state.position);
+		fighter->terrainWater = _battleModel->terrainSurfaceModel->IsWater(fighter->state.position);
 	}
 
 	if (fighter->terrainForest)

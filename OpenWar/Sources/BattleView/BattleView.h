@@ -6,7 +6,7 @@
 #define BATTLEVIEW_H
 
 #include "BattleRendering.h"
-#include "SimulationState.h"
+#include "BattleModel.h"
 #include "SimulationRules.h"
 #include "TerrainSurfaceRendererSmooth.h"
 #include "TerrainSurfaceRendererTiled.h"
@@ -16,8 +16,6 @@
 #include "BillboardRenderer.h"
 
 
-
-class BattleModel;
 class CasualtyMarker;
 class MovementMarker;
 class RangeMarker;
@@ -84,11 +82,13 @@ class BattleView : public TerrainView, public SimulationListener
 public:
 	TerrainSurfaceRendererSmooth* _terrainSurfaceRendererSmooth;
 	TerrainSurfaceRendererTiled* _terrainSurfaceRendererTiled;
+	Player _player;
 
 	BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer);
 	~BattleView();
 
 	virtual BattleModel* GetBattleModel() const { return _battleModel; }
+	virtual BattleView* GetBattleView() { return this; }
 	virtual void OnShooting(const Shooting& shooting);
 	virtual void OnCasualty(const Casualty& casualty);
 
@@ -104,7 +104,7 @@ public:
 
 	void AddRangeMarker(Unit* unit);
 
-	void Initialize(SimulationState* simulationState, bool editor = false);
+	void Initialize(bool editor = false);
 	void InitializeTerrainShadow();
 
 	void InitializeTerrainTrees();

@@ -97,7 +97,7 @@
 
 	if (_surface != nullptr)
 	{
-		TerrainSurfaceModelSmooth* terrainSurfaceModelSmooth = dynamic_cast<TerrainSurfaceModelSmooth*>(_surface->_battleContext->terrainSurfaceModel);
+		TerrainSurfaceModelSmooth* terrainSurfaceModelSmooth = dynamic_cast<TerrainSurfaceModelSmooth*>(_surface->_battleContext->battleModel->terrainSurfaceModel);
 		if ([typeName isEqualToString:@"SmoothMap"] && terrainSurfaceModelSmooth != nullptr)
 		{
 			terrainSurfaceModelSmooth->SaveHeightmapToImage();
@@ -159,17 +159,11 @@
 	battleContext->billboardTextureAtlas = new BillboardModel();
 	battleContext->terrainFeatureModelBillboard = new TerrainFeatureModelBillboard();
 
-	battleContext->terrainSurfaceModel = new TerrainSurfaceModelSmooth(bounds2f(0, 0, 1024, 1024), ConvertTiffToImage(smoothMap));
-
-	battleContext->simulationState = new SimulationState();
-	battleContext->simulationState->terrainSurfaceModel = battleContext->terrainSurfaceModel;
-
-	battleContext->simulationRules = new SimulationRules(battleContext->simulationState);
-	battleContext->simulationRules->currentPlayer = Player1;
-
 	battleContext->battleModel = new BattleModel(battleContext);
-	battleContext->battleModel->_player = Player1;
-	battleContext->battleModel->Initialize(battleContext->simulationState);
+	battleContext->battleModel->terrainSurfaceModel = new TerrainSurfaceModelSmooth(bounds2f(0, 0, 1024, 1024), ConvertTiffToImage(smoothMap));
+
+	battleContext->simulationRules = new SimulationRules(battleContext->battleModel);
+	battleContext->simulationRules->currentPlayer = Player1;
 
 	return battleContext;
 }
@@ -184,23 +178,15 @@
 
 	battleContext->battleScript = new BattleScript(battleContext, _sourceDirectory.filePathURL.path.UTF8String, (const char*)script.bytes, script.length);
 
-	if (battleContext->simulationState == nullptr)
+	if (battleContext->battleModel == nullptr)
 	{
-		battleContext->simulationState = new SimulationState();
-		battleContext->simulationState->terrainSurfaceModel = battleContext->terrainSurfaceModel;
+		battleContext->battleModel = new BattleModel(battleContext);
 	}
 
 	if (battleContext->simulationRules == nullptr)
 	{
-		battleContext->simulationRules = new SimulationRules(battleContext->simulationState);
+		battleContext->simulationRules = new SimulationRules(battleContext->battleModel);
 		battleContext->simulationRules->currentPlayer = Player1;
-	}
-
-	if (battleContext->battleModel == nullptr)
-	{
-		battleContext->battleModel = new BattleModel(battleContext);
-		battleContext->battleModel->_player = Player1;
-		battleContext->battleModel->Initialize(battleContext->simulationState);
 	}
 
 	return battleContext;

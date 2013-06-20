@@ -5,13 +5,12 @@
 #ifndef BattleScript_H
 #define BattleScript_H
 
-#include "SimulationState.h"
+#include "BattleModel.h"
 #include "lua.h"
 
 class BattleContext;
-class BattleModel;
 class BattleView;
-class SimulationState;
+class BattleModel;
 class TerrainSurfaceRendererTiled;
 
 

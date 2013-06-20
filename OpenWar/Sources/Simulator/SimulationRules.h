@@ -5,12 +5,12 @@
 #ifndef SIMULATIONRULES_H
 #define SIMULATIONRULES_H
 
-#include "SimulationState.h"
+#include "BattleModel.h"
 #include "quadtree.h"
 
-class BattleModel;
 class Fighter;
 class Unit;
+class BattleView;
 
 
 class SimulationListener
@@ -20,13 +20,14 @@ public:
 	virtual void OnShooting(const Shooting& shooting) = 0;
 	virtual void OnCasualty(const Casualty& casualty) = 0;
 	virtual BattleModel* GetBattleModel() const = 0;
+	virtual BattleView* GetBattleView() = 0;
 };
 
 
 class SimulationRules
 {
 public:
-	SimulationState* _simulationState;
+	BattleModel* _battleModel;
 	quadtree<Fighter*> _weaponQuadTree;
 	quadtree<Fighter*> _fighterQuadTree;
 	float _secondsSinceLastTimeStep;
@@ -38,7 +39,7 @@ public:
 	std::vector<Shooting> recentShootings;
 	std::vector<Casualty> recentCasualties;
 
-	SimulationRules(SimulationState* simulationState);
+	SimulationRules(BattleModel* battleModel);
 
 	void AdvanceTime(float secondsSinceLastTime);
 

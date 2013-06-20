@@ -86,9 +86,9 @@ void BattleScript::Tick()
 
 int BattleScript::NewUnit(Player player, UnitPlatform platform, UnitWeapon weapon, int strength, glm::vec2 position, float bearing)
 {
-	UnitStats unitStats = SimulationState::GetDefaultUnitStats(platform, weapon);
+	UnitStats unitStats = BattleModel::GetDefaultUnitStats(platform, weapon);
 
-	Unit* unit = _battleContext->simulationState->AddUnit(player, strength, unitStats, position);
+	Unit* unit = _battleContext->battleModel->AddUnit(player, strength, unitStats, position);
 	unit->movement.direction = glm::radians(90 - bearing);
 
 	_battleContext->battleModel->AddUnitMarker(unit);
@@ -99,14 +99,14 @@ int BattleScript::NewUnit(Player player, UnitPlatform platform, UnitWeapon weapo
 
 void BattleScript::SetUnitMovement(int unitId, bool running, std::vector<glm::vec2> path, int chargeId, float heading)
 {
-	Unit* unit = _battleContext->simulationState->GetUnit(unitId);
+	Unit* unit = _battleContext->battleModel->GetUnit(unitId);
 	if (unit != nullptr)
 	{
 		unit->movement.path = path;
 		//unit->movement.path_t0 = 0;
 		unit->movement.destination = path.empty() ? unit->state.center : path.front();
 		unit->movement.direction = heading;
-		unit->movement.target = _battleContext->simulationState->GetUnit(chargeId);
+		unit->movement.target = _battleContext->battleModel->GetUnit(chargeId);
 		unit->movement.running = running;
 
 		//if (_battleContext->battleModel->GetMovementMarker(unit) == nullptr)
@@ -122,6 +122,11 @@ void BattleScript::SetUnitMovement(int unitId, bool running, std::vector<glm::ve
 int BattleScript::openwar_terrain_init(lua_State* L)
 {
 	BattleContext* battleContext = _battlescript->_battleContext;
+	if (battleContext->battleModel == nullptr)
+		battleContext->battleModel = new BattleModel(battleContext);
+
+	delete battleContext->battleModel->terrainSurfaceModel;
+	battleContext->battleModel->terrainSurfaceModel = nullptr;
 
 	int n = lua_gettop(L);
 	const char* s = n < 1 ? nullptr : lua_tostring(L, 1);
@@ -133,17 +138,15 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 		NSString* path = [NSString stringWithCString:p encoding:NSASCIIStringEncoding];
 		NSData* data = [NSData dataWithContentsOfFile:path];
 
-		battleContext->terrainSurfaceModel = new TerrainSurfaceModelSmooth(bounds2f(0, 0, 1024, 1024), ConvertTiffToImage(data));
+		battleContext->battleModel->terrainSurfaceModel = new TerrainSurfaceModelSmooth(bounds2f(0, 0, 1024, 1024), ConvertTiffToImage(data));
 	}
 	else if (s != nullptr && std::strcmp(s, "tiled") == 0)
 	{
-		delete battleContext->terrainSurfaceModel;
-		battleContext->terrainSurfaceModel = nullptr;
 
 		int x = n < 2 ? 0 : (int)lua_tonumber(L, 2);
 		int y = n < 3 ? 0 : (int)lua_tonumber(L, 3);
 
-		battleContext->terrainSurfaceModel = new TerrainSurfaceModelTiled(bounds2f(0, 0, 1024, 1024), glm::ivec2(x, y));
+		battleContext->battleModel->terrainSurfaceModel = new TerrainSurfaceModelTiled(bounds2f(0, 0, 1024, 1024), glm::ivec2(x, y));
 	}
 
 	return 0;
@@ -153,16 +156,11 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 int BattleScript::openwar_simulator_init(lua_State* L)
 {
 	BattleContext* battleContext = _battlescript->_battleContext;
+	if (battleContext->battleModel == nullptr)
+		battleContext->battleModel = new BattleModel(battleContext);
 
-	battleContext->simulationState = new SimulationState();
-	battleContext->simulationState->terrainSurfaceModel = battleContext->terrainSurfaceModel;
-
-	battleContext->simulationRules = new SimulationRules(battleContext->simulationState);
+	battleContext->simulationRules = new SimulationRules(battleContext->battleModel);
 	battleContext->simulationRules->currentPlayer = Player1;
-
-	battleContext->battleModel = new BattleModel(battleContext);
-	battleContext->battleModel->_player = Player1;
-	battleContext->battleModel->Initialize(battleContext->simulationState);
 
 	return 0;
 }
@@ -227,7 +225,7 @@ int BattleScript::battle_get_unit_status(lua_State* L)
 	int n = lua_gettop(L);
 	int unitId = n < 1 ? 0 : (int)lua_tonumber(L, 1);
 
-	Unit* unit = _battlescript->_battleContext->simulationState->GetUnit(unitId);
+	Unit* unit = _battlescript->_battleContext->battleModel->GetUnit(unitId);
 	if (unit != nullptr)
 	{
 		UnitStatus status(unit);
@@ -246,7 +244,7 @@ int BattleScript::battle_get_unit_status(lua_State* L)
 
 int BattleScript::battle_set_terrain_tile(lua_State* L)
 {
-	TerrainSurfaceModelTiled* terrainSurfaceModel = dynamic_cast<TerrainSurfaceModelTiled*>(_battlescript->_battleContext->terrainSurfaceModel);
+	TerrainSurfaceModelTiled* terrainSurfaceModel = dynamic_cast<TerrainSurfaceModelTiled*>(_battlescript->_battleContext->battleModel->terrainSurfaceModel);
 
 	int n = lua_gettop(L);
 	int x = n < 1 ? 0 : (int)lua_tonumber(L, 1);
@@ -263,7 +261,7 @@ int BattleScript::battle_set_terrain_tile(lua_State* L)
 
 int BattleScript::battle_set_terrain_height(lua_State* L)
 {
-	TerrainSurfaceModelTiled* terrainSurfaceModel = dynamic_cast<TerrainSurfaceModelTiled*>(_battlescript->_battleContext->terrainSurfaceModel);
+	TerrainSurfaceModelTiled* terrainSurfaceModel = dynamic_cast<TerrainSurfaceModelTiled*>(_battlescript->_battleContext->battleModel->terrainSurfaceModel);
 
 	int n = lua_gettop(L);
 	int x = n < 1 ? 0 : (int)lua_tonumber(L, 1);

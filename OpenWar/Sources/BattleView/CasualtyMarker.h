@@ -5,7 +5,7 @@
 #ifndef CasualtyMarker_H
 #define CasualtyMarker_H
 
-#include "SimulationState.h"
+#include "BattleModel.h"
 
 
 class CasualtyMarker

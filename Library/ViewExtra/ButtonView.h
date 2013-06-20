@@ -9,7 +9,6 @@
 #include "texture.h"
 
 #include "View.h"
-#include "SimulationState.h"
 #include "ButtonRendering.h"
 
 

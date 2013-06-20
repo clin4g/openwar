@@ -15,6 +15,7 @@
 #include "MovementMarker.h"
 #include "ShootingCounter.h"
 
+#include "sprite.h"
 
 
 static affine2 billboard_texcoords(int x, int y, bool flip)
@@ -28,7 +29,7 @@ static affine2 billboard_texcoords(int x, int y, bool flip)
 
 
 
-BattleView::BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer) : TerrainView(screen, battleModel->GetBattleContext()->terrainSurfaceModel),
+BattleView::BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer) : TerrainView(screen, battleModel->terrainSurfaceModel),
 _renderers(r),
 _battleRendering(battleRendering),
 _battleModel(battleModel),
@@ -50,7 +51,8 @@ _billboardModel(nullptr),
 _billboardRenderer(nullptr),
 _casualtyMarker(0),
 _movementMarkers(),
-_trackingMarkers()
+_trackingMarkers(),
+_player(PlayerNone)
 {
 	SetContentBounds(bounds2f(0, 0, 1024, 1024));
 
@@ -164,7 +166,7 @@ void BattleView::OnCasualty(Casualty const & casualty)
 
 void BattleView::AddCasualty(const Casualty& casualty)
 {
-	glm::vec3 position = glm::vec3(casualty.position, _battleModel->_battleContext->terrainSurfaceModel->GetHeight(casualty.position));
+	glm::vec3 position = glm::vec3(casualty.position, _battleModel->terrainSurfaceModel->GetHeight(casualty.position));
 	_casualtyMarker->AddCasualty(position, casualty.player, casualty.platform);
 }
 
@@ -175,13 +177,13 @@ static float random_float()
 }
 
 
-void BattleView::Initialize(SimulationState* simulationState, bool editor)
+void BattleView::Initialize(bool editor)
 {
 	InitializeTerrainShadow();
 	InitializeTerrainTrees();
 	InitializeTerrainWater(editor);
 
-	InitializeCameraPosition(simulationState->units);
+	InitializeCameraPosition(_battleModel->units);
 }
 
 
@@ -345,7 +347,7 @@ void BattleView::InitializeTerrainWater(bool editor)
 		for (int y = 0; y < n; ++y)
 		{
 			glm::vec2 p = s * glm::vec2(x, y);
-			if (editor || _battleModel->GetBattleContext()->terrainSurfaceModel->ContainsWater(bounds2f(p, p + s)))
+			if (editor || _battleModel->terrainSurfaceModel->ContainsWater(bounds2f(p, p + s)))
 			{
 				plain_vertex v11 = plain_vertex(p);
 				plain_vertex v12 = plain_vertex(p + glm::vec2(0, s.y));
@@ -387,7 +389,7 @@ void BattleView::InitializeCameraPosition(const std::map<int, Unit*>& units)
 		Unit* unit = item.second;
 		if (!unit->state.IsRouting())
 		{
-			if (unit->player == _battleModel->_player)
+			if (unit->player == _player)
 			{
 				friendlyCenter += unit->state.center;
 				++friendlyCount;
@@ -824,7 +826,7 @@ void BattleView::RenderTerrainBillboards()
 
 void BattleView::RenderRangeMarkers()
 {
-	for (std::pair<int, Unit*> item : _battleModel->GetBattleContext()->simulationState->units)
+	for (std::pair<int, Unit*> item : _battleModel->units)
 	{
 		Unit* unit = item.second;
 		if (unit->stats.maximumRange > 0 && unit->state.unitMode != UnitModeMoving && !unit->state.IsRouting())

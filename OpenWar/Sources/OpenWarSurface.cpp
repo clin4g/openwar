@@ -10,7 +10,6 @@
 #include "ButtonView.h"
 #include "ButtonGesture.h"
 #include "EditorGesture.h"
-#include "SimulationState.h"
 #include "SimulationRules.h"
 #include "SoundPlayer.h"
 #include "TerrainGesture.h"
@@ -94,19 +93,20 @@ void OpenWarSurface::Reset(BattleContext* battleContext)
 	_battleContext = battleContext;
 
 	_battleView = new BattleView(this, _battleContext->battleModel, _renderers, _battleRendering, Player1);
+	_battleView->_player = Player1;
 
 	battleContext->simulationRules->listener = _battleView;
 
-	TerrainSurfaceModelSmooth* terrainSurfaceModelSmooth = dynamic_cast<TerrainSurfaceModelSmooth*>(_battleContext->terrainSurfaceModel);
+	TerrainSurfaceModelSmooth* terrainSurfaceModelSmooth = dynamic_cast<TerrainSurfaceModelSmooth*>(_battleContext->battleModel->terrainSurfaceModel);
 	if (terrainSurfaceModelSmooth != nullptr)
 		_battleView->_terrainSurfaceRendererSmooth = new TerrainSurfaceRendererSmooth(terrainSurfaceModelSmooth, true);
 
-	TerrainSurfaceModelTiled* terrainSurfaceModelTiled = dynamic_cast<TerrainSurfaceModelTiled*>(_battleContext->terrainSurfaceModel);
+	TerrainSurfaceModelTiled* terrainSurfaceModelTiled = dynamic_cast<TerrainSurfaceModelTiled*>(_battleContext->battleModel->terrainSurfaceModel);
 	if (terrainSurfaceModelTiled != nullptr)
 		_battleView->_terrainSurfaceRendererTiled = new TerrainSurfaceRendererTiled(terrainSurfaceModelTiled);
 
 
-	_battleView->Initialize(_battleContext->simulationState, true);
+	_battleView->Initialize(true);
 
 	_editorModel = new EditorModel(_battleView, _battleView->_terrainSurfaceRendererSmooth);
 	_editorGesture = new EditorGesture(_battleView, _editorModel);
@@ -172,7 +172,7 @@ void OpenWarSurface::UpdateSoundPlayer()
 	for (UnitCounter* unitMarker : _battleView->GetBattleModel()->_unitMarkers)
 	{
 		Unit* unit = unitMarker->_unit;
-		if (_battleContext->simulationState->GetUnit(unit->unitId) != 0 && glm::length(unit->movement.GetFinalDestination() - unit->state.center) > 4.0f)
+		if (_battleContext->battleModel->GetUnit(unit->unitId) != 0 && glm::length(unit->movement.GetFinalDestination() - unit->state.center) > 4.0f)
 		{
 			if (unit->stats.unitPlatform == UnitPlatformCav || unit->stats.unitPlatform == UnitPlatformGen)
 			{
@@ -200,7 +200,7 @@ void OpenWarSurface::UpdateSoundPlayer()
 	SoundPlayer::singleton->UpdateCavalryWalking(horseTrot != 0);
 	SoundPlayer::singleton->UpdateCavalryRunning(horseGallop != 0);
 
-	SoundPlayer::singleton->UpdateFighting(_battleContext->simulationState->IsMelee());
+	SoundPlayer::singleton->UpdateFighting(_battleContext->battleModel->IsMelee());
 }
 
 
@@ -220,7 +220,7 @@ void OpenWarSurface::ClickedPause()
 
 void OpenWarSurface::ClickedRewind()
 {
-	_battleContext->simulationState->time = 0; // TODO: reload & reset simlation state
+	_battleContext->battleModel->time = 0; // TODO: reload & reset simlation state
 	_mode = Mode::Editing;
 	UpdateButtonsAndGestures();
 }
@@ -277,7 +277,7 @@ void OpenWarSurface::UpdateButtonsAndGestures()
 			break;
 
 		case Mode::Editing:
-			if (_battleContext->simulationState->time != 0)
+			if (_battleContext->battleModel->time != 0)
 				_buttonsTopRight->AddButtonArea()->AddButtonItem(_buttonRendering->buttonIconRewind)->SetAction([this](){ ClickedRewind(); });
 			_buttonsTopRight->AddButtonArea()->AddButtonItem(_buttonRendering->buttonIconPlay)->SetAction([this](){ ClickedPlay(); });
 			break;

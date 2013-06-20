@@ -5,7 +5,7 @@
 #ifndef ShootingMarker_H
 #define ShootingMarker_H
 
-#include "SimulationState.h"
+#include "BattleModel.h"
 
 
 class ShootingCounter

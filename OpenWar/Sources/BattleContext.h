@@ -9,7 +9,7 @@ class BattleModel;
 class BattleScript;
 class BillboardModel;
 class SimulationRules;
-class SimulationState;
+class BattleModel;
 class TerrainSurfaceModel;
 class TerrainFeatureModel;
 class TerrainFeatureModelBillboard;
@@ -25,10 +25,7 @@ public:
 	BattleScript* battleScript;
 	BattleModel* battleModel;
 
-	SimulationState* simulationState;
 	SimulationRules* simulationRules;
-
-	TerrainSurfaceModel* terrainSurfaceModel;
 
 	TerrainFeatureModelBillboard* terrainFeatureModelBillboard;
 

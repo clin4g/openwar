@@ -5,7 +5,7 @@
 #ifndef TrackingMarker_H
 #define TrackingMarker_H
 
-#include "SimulationState.h"
+#include "BattleModel.h"
 
 
 class TrackingMarker

@@ -20,7 +20,6 @@ class ButtonRendering;
 class ButtonView;
 class EditorGesture;
 class SimulationRules;
-class SimulationState;
 class TerrainSurfaceRendererSmooth;
 class TerrainGesture;
 class TerrainSurfaceRendererTiled;

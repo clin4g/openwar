@@ -23,7 +23,7 @@ MovementMarker::~MovementMarker()
 
 bool MovementMarker::Animate(float seconds)
 {
-	if (_battleModel->GetBattleContext()->simulationState->GetUnit(_unit->unitId) == 0 || _unit->state.IsRouting())
+	if (_battleModel->GetUnit(_unit->unitId) == 0 || _unit->state.IsRouting())
 		return false;
 
 	glm::vec2 position = _unit->state.center;
