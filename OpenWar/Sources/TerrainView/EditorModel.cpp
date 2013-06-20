@@ -5,6 +5,7 @@
 #include "EditorModel.h"
 #include "BattleModel.h"
 #include "BattleView.h"
+#include "SmoothTerrainWater.h"
 
 
 
@@ -87,6 +88,7 @@ void EditorModel::EditWater(glm::vec2 position, bool value)
 	bounds2f bounds = _terrainSurfaceRenderer->GetTerrainSurfaceModel()->EditWater(position, 15, value ? 0.5 : -0.5);
 	_terrainSurfaceRenderer->UpdateHeights(bounds);
 	_battleView->UpdateTerrainTrees(bounds);
+	_battleView->GetBattleModel()->terrainWater->Update();
 }
 
 

@@ -8,13 +8,15 @@
 
 #include "TerrainSurface.h"
 class BillboardTerrainForest;
+class SmoothTerrainWater;
 
 
 class TerrainModel
 {
 public:
-	TerrainSurface* terrainSurfaceModel;
+	TerrainSurface* terrainSurface;
 	BillboardTerrainForest* terrainForest;
+	SmoothTerrainWater* terrainWater;
 
 public:
 	TerrainModel();

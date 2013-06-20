@@ -453,8 +453,8 @@ void BattleModel::AddShootingMarker(const Shooting& shooting)
 
 	for (const Projectile& projectile : shooting.projectiles)
 	{
-		glm::vec3 p1 = glm::vec3(projectile.position1, terrainSurfaceModel->GetHeight(projectile.position1));
-		glm::vec3 p2 = glm::vec3(projectile.position2, terrainSurfaceModel->GetHeight(projectile.position2));
+		glm::vec3 p1 = glm::vec3(projectile.position1, terrainSurface->GetHeight(projectile.position1));
+		glm::vec3 p2 = glm::vec3(projectile.position2, terrainSurface->GetHeight(projectile.position2));
 		shootingMarker->AddProjectile(p1, p2, projectile.delay, shooting.timeToImpact);
 	}
 }
@@ -483,8 +483,8 @@ void BattleModel::AddSmokeMarker(const Shooting& shooting)
 
 	for (const Projectile& projectile : shooting.projectiles)
 	{
-		glm::vec3 p1 = glm::vec3(projectile.position1, terrainSurfaceModel->GetHeight(projectile.position1));
-		glm::vec3 p2 = glm::vec3(projectile.position2, terrainSurfaceModel->GetHeight(projectile.position2));
+		glm::vec3 p1 = glm::vec3(projectile.position1, terrainSurface->GetHeight(projectile.position1));
+		glm::vec3 p2 = glm::vec3(projectile.position2, terrainSurface->GetHeight(projectile.position2));
 		marker->AddParticle(p1, p2, projectile.delay);
 	}
 }

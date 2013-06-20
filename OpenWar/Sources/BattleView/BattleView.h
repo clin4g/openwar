@@ -32,8 +32,6 @@ class BattleView : public TerrainView, public SimulationListener
 	Player _bluePlayer;
 
 	// static shapes
-	vertexbuffer<plain_vertex> _shape_water_inside;
-	vertexbuffer<plain_vertex> _shape_water_border;
 	vertexbuffer<plain_vertex> _shape_terrain_shadow;
 
 	// dynamic shapes
@@ -110,8 +108,6 @@ public:
 	void InitializeTerrainTrees();
 	void UpdateTerrainTrees(bounds2f bounds);
 
-	void InitializeTerrainWater(bool editor);
-
 	void InitializeCameraPosition(const std::map<int, Unit*>& units);
 
 	virtual void Render();
@@ -122,7 +118,6 @@ public:
 
 	void RenderTerrainShadow();
 	void RenderTerrainGround();
-	void RenderTerrainWater();
 
 	void RenderFighterWeapons();
 	void AppendFighterWeapons(Unit* unit);

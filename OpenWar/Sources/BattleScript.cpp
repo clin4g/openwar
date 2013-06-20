@@ -8,6 +8,7 @@
 #include "BillboardTerrainForest.h"
 #include "SmoothTerrainSurface.h"
 #include "TiledTerrainSurface.h"
+#include "SmoothTerrainWater.h"
 
 #include "lauxlib.h"
 #include "lualib.h"
@@ -127,8 +128,8 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 		_battlescript->_battleModel->terrainForest = new BillboardTerrainForest();
 	}
 
-	delete _battlescript->_battleModel->terrainSurfaceModel;
-	_battlescript->_battleModel->terrainSurfaceModel = nullptr;
+	delete _battlescript->_battleModel->terrainSurface;
+	_battlescript->_battleModel->terrainSurface = nullptr;
 
 	int n = lua_gettop(L);
 	const char* s = n < 1 ? nullptr : lua_tostring(L, 1);
@@ -139,8 +140,10 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 
 		NSString* path = [NSString stringWithCString:p encoding:NSASCIIStringEncoding];
 		NSData* data = [NSData dataWithContentsOfFile:path];
+		image* map = ConvertTiffToImage(data);
 
-		_battlescript->_battleModel->terrainSurfaceModel = new SmoothTerrainSurface(bounds2f(0, 0, 1024, 1024), ConvertTiffToImage(data));
+		_battlescript->_battleModel->terrainSurface = new SmoothTerrainSurface(bounds2f(0, 0, 1024, 1024), map);
+		_battlescript->_battleModel->terrainWater = new SmoothTerrainWater(map, false);
 	}
 	else if (s != nullptr && std::strcmp(s, "tiled") == 0)
 	{
@@ -148,7 +151,7 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 		int x = n < 2 ? 0 : (int)lua_tonumber(L, 2);
 		int y = n < 3 ? 0 : (int)lua_tonumber(L, 3);
 
-		_battlescript->_battleModel->terrainSurfaceModel = new TiledTerrainSurface(bounds2f(0, 0, 1024, 1024), glm::ivec2(x, y));
+		_battlescript->_battleModel->terrainSurface = new TiledTerrainSurface(bounds2f(0, 0, 1024, 1024), glm::ivec2(x, y));
 	}
 
 	return 0;
@@ -248,7 +251,7 @@ int BattleScript::battle_get_unit_status(lua_State* L)
 
 int BattleScript::battle_set_terrain_tile(lua_State* L)
 {
-	TiledTerrainSurface* terrainSurfaceModel = dynamic_cast<TiledTerrainSurface*>(_battlescript->_battleModel->terrainSurfaceModel);
+	TiledTerrainSurface* terrainSurfaceModel = dynamic_cast<TiledTerrainSurface*>(_battlescript->_battleModel->terrainSurface);
 
 	int n = lua_gettop(L);
 	int x = n < 1 ? 0 : (int)lua_tonumber(L, 1);
@@ -265,7 +268,7 @@ int BattleScript::battle_set_terrain_tile(lua_State* L)
 
 int BattleScript::battle_set_terrain_height(lua_State* L)
 {
-	TiledTerrainSurface* terrainSurfaceModel = dynamic_cast<TiledTerrainSurface*>(_battlescript->_battleModel->terrainSurfaceModel);
+	TiledTerrainSurface* terrainSurfaceModel = dynamic_cast<TiledTerrainSurface*>(_battlescript->_battleModel->terrainSurface);
 
 	int n = lua_gettop(L);
 	int x = n < 1 ? 0 : (int)lua_tonumber(L, 1);

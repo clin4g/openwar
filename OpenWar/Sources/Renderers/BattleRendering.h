@@ -60,9 +60,6 @@ struct BattleRendering
 	renderer<texture_vertex3, ground_texture_uniforms>* _ground_texture_renderer;
 	renderer<plain_vertex, plain_uniforms>* _ground_shadow_renderer;
 
-	renderer<plain_vertex, ground_texture_uniforms>* _water_inside_renderer;
-	renderer<plain_vertex, ground_texture_uniforms>* _water_border_renderer;
-
 	texture* _textureBackgroundLinen;
 	texture* _textureUnitMarkers;
 	texture* _textureMovementBlue;

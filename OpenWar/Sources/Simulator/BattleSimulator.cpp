@@ -3,6 +3,7 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "BattleSimulator.h"
+#include "SmoothTerrainWater.h"
 
 
 
@@ -742,8 +743,8 @@ glm::vec2 BattleSimulator::NextFighterVelocity(Fighter* fighter)
 	if (glm::length(fighter->state.position - fighter->terrainPosition) > 5)
 	{
 		fighter->terrainPosition = fighter->state.position;
-		fighter->terrainForest = _battleModel->terrainSurfaceModel->IsForest(fighter->state.position);
-		fighter->terrainWater = _battleModel->terrainSurfaceModel->IsWater(fighter->state.position);
+		fighter->terrainForest = _battleModel->terrainSurface->IsForest(fighter->state.position);
+		fighter->terrainWater = _battleModel->terrainWater->IsWater(fighter->state.position);
 	}
 
 	if (fighter->terrainForest)

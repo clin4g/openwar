@@ -8,6 +8,7 @@
 #include "OpenWarSurface.h"
 #include "BattleScript.h"
 #include "BillboardTerrainForest.h"
+#include "SmoothTerrainWater.h"
 
 
 @implementation OpenWarDocument
@@ -96,7 +97,7 @@
 
 	if (_surface != nullptr)
 	{
-		SmoothTerrainSurface* terrainSurfaceModelSmooth = dynamic_cast<SmoothTerrainSurface*>(_surface->_battleSimulator->GetBattleModel()->terrainSurfaceModel);
+		SmoothTerrainSurface* terrainSurfaceModelSmooth = dynamic_cast<SmoothTerrainSurface*>(_surface->_battleSimulator->GetBattleModel()->terrainSurface);
 		if ([typeName isEqualToString:@"SmoothMap"] && terrainSurfaceModelSmooth != nullptr)
 		{
 			terrainSurfaceModelSmooth->SaveHeightmapToImage();
@@ -155,8 +156,11 @@
 {
 	BattleModel* battleModel = new BattleModel();
 
-	battleModel->terrainSurfaceModel = new SmoothTerrainSurface(bounds2f(0, 0, 1024, 1024), ConvertTiffToImage(smoothMap));
+	image* map = ConvertTiffToImage(smoothMap);
+
+	battleModel->terrainSurface = new SmoothTerrainSurface(bounds2f(0, 0, 1024, 1024), map);
 	battleModel->terrainForest = new BillboardTerrainForest();
+	battleModel->terrainWater = new SmoothTerrainWater(map, false);
 
 	return battleModel;
 }

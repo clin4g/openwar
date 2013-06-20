@@ -18,11 +18,8 @@ public:
 	virtual glm::vec3 GetNormal(glm::vec2 position) const = 0;
 	virtual const float* Intersect(ray r) = 0;
 
-	virtual bool IsWater(glm::vec2 position) const = 0;
 	virtual bool IsForest(glm::vec2 position) const = 0;
 	virtual bool IsImpassable(glm::vec2 position) const = 0;
-
-	virtual bool ContainsWater(bounds2f bounds) const = 0;
 };
 
 

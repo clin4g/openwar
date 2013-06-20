@@ -30,11 +30,8 @@ public:
 	virtual glm::vec3 GetNormal(glm::vec2 position) const;
 	virtual const float* Intersect(ray r);
 
-	virtual bool IsWater(glm::vec2 position) const;
 	virtual bool IsForest(glm::vec2 position) const;
 	virtual bool IsImpassable(glm::vec2 position) const;
-
-	virtual bool ContainsWater(bounds2f bounds) const;
 
 
 

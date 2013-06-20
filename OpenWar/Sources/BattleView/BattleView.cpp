@@ -15,6 +15,7 @@
 #include "ShootingCounter.h"
 
 #include "sprite.h"
+#import "SmoothTerrainWater.h"
 
 
 static affine2 billboard_texcoords(int x, int y, bool flip)
@@ -28,7 +29,7 @@ static affine2 billboard_texcoords(int x, int y, bool flip)
 
 
 
-BattleView::BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer) : TerrainView(screen, battleModel->terrainSurfaceModel),
+BattleView::BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer) : TerrainView(screen, battleModel->terrainSurface),
 _renderers(r),
 _battleRendering(battleRendering),
 _battleModel(battleModel),
@@ -165,7 +166,7 @@ void BattleView::OnCasualty(Casualty const & casualty)
 
 void BattleView::AddCasualty(const Casualty& casualty)
 {
-	glm::vec3 position = glm::vec3(casualty.position, _battleModel->terrainSurfaceModel->GetHeight(casualty.position));
+	glm::vec3 position = glm::vec3(casualty.position, _battleModel->terrainSurface->GetHeight(casualty.position));
 	_casualtyMarker->AddCasualty(position, casualty.player, casualty.platform);
 }
 
@@ -180,7 +181,6 @@ void BattleView::Initialize(bool editor)
 {
 	InitializeTerrainShadow();
 	InitializeTerrainTrees();
-	InitializeTerrainWater(editor);
 
 	InitializeCameraPosition(_battleModel->units);
 }
@@ -300,82 +300,6 @@ void BattleView::UpdateTerrainTrees(bounds2f bounds)
 
 
 
-static int inside_circle(glm::vec2 p)
-{
-	return glm::length(p - glm::vec2(512, 512)) <= 512 ? 1 : 0;
-}
-
-
-static int inside_circle(plain_vertex v1, plain_vertex v2, plain_vertex v3)
-{
-	return inside_circle(v1._position)
-			+ inside_circle(v2._position)
-			+ inside_circle(v3._position);
-
-}
-
-
-static vertexbuffer<plain_vertex>* choose_shape(int count, vertexbuffer<plain_vertex>* inside, vertexbuffer<plain_vertex>* border)
-{
-	switch (count)
-	{
-		case 1:
-		case 2:
-			return border;
-
-		case 3:
-			return inside;
-
-		default:
-			return nullptr;
-	}
-
-}
-
-void BattleView::InitializeTerrainWater(bool editor)
-{
-	_shape_water_inside._mode = GL_TRIANGLES;
-	_shape_water_border._mode = GL_TRIANGLES;
-
-	_shape_water_inside._vertices.clear();
-	_shape_water_border._vertices.clear();
-
-	int n = 64;
-	glm::vec2 s = glm::vec2(1024, 1024) / (float)n;
-	for (int x = 0; x < n; ++x)
-		for (int y = 0; y < n; ++y)
-		{
-			glm::vec2 p = s * glm::vec2(x, y);
-			if (editor || _battleModel->terrainSurfaceModel->ContainsWater(bounds2f(p, p + s)))
-			{
-				plain_vertex v11 = plain_vertex(p);
-				plain_vertex v12 = plain_vertex(p + glm::vec2(0, s.y));
-				plain_vertex v21 = plain_vertex(p + glm::vec2(s.x, 0));
-				plain_vertex v22 = plain_vertex(p + s);
-
-				vertexbuffer<plain_vertex>* s = choose_shape(inside_circle(v11, v22, v12), &_shape_water_inside, &_shape_water_border);
-				if (s != nullptr)
-				{
-					s->_vertices.push_back(v11);
-					s->_vertices.push_back(v22);
-					s->_vertices.push_back(v12);
-				}
-
-				s = choose_shape(inside_circle(v22, v11, v21), &_shape_water_inside, &_shape_water_border);
-				if (s != nullptr)
-				{
-					s->_vertices.push_back(v22);
-					s->_vertices.push_back(v11);
-					s->_vertices.push_back(v21);
-				}
-			}
-		}
-
-	_shape_water_inside.update(GL_STATIC_DRAW);
-	_shape_water_border.update(GL_STATIC_DRAW);
-}
-
-
 void BattleView::InitializeCameraPosition(const std::map<int, Unit*>& units)
 {
 	glm::vec2 friendlyCenter;
@@ -438,7 +362,8 @@ void BattleView::Render()
 	RenderTerrainGround();
 	glDisable(GL_CULL_FACE);
 
-	RenderTerrainWater();
+	if (_battleModel->terrainWater != nullptr)
+		_battleModel->terrainWater->Render(GetTransform());
 
 	glDepthMask(false);
 
@@ -638,17 +563,6 @@ void BattleView::RenderTerrainGround()
 
 	if (_terrainSurfaceRendererTiled != nullptr)
 		_terrainSurfaceRendererTiled->Render(GetTransform(), _lightNormal);
-}
-
-
-void BattleView::RenderTerrainWater()
-{
-	BattleRendering::ground_texture_uniforms uniforms;
-	uniforms._transform = GetTransform();
-	uniforms._texture = nullptr;
-
-	_battleRendering->_water_inside_renderer->render(_shape_water_inside, uniforms);
-	_battleRendering->_water_border_renderer->render(_shape_water_border, uniforms);
 }
 
 

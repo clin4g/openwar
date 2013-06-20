@@ -93,11 +93,11 @@ void OpenWarSurface::Reset(BattleModel* battleModel)
 	_battleView = new BattleView(this, battleModel, _renderers, _battleRendering, Player1);
 	_battleView->_player = Player1;
 
-	SmoothTerrainSurface* terrainSurfaceModelSmooth = dynamic_cast<SmoothTerrainSurface*>(battleModel->terrainSurfaceModel);
+	SmoothTerrainSurface* terrainSurfaceModelSmooth = dynamic_cast<SmoothTerrainSurface*>(battleModel->terrainSurface);
 	if (terrainSurfaceModelSmooth != nullptr)
 		_battleView->_terrainSurfaceRendererSmooth = new SmoothTerrainSurfaceRenderer(terrainSurfaceModelSmooth, true);
 
-	TiledTerrainSurface* terrainSurfaceModelTiled = dynamic_cast<TiledTerrainSurface*>(battleModel->terrainSurfaceModel);
+	TiledTerrainSurface* terrainSurfaceModelTiled = dynamic_cast<TiledTerrainSurface*>(battleModel->terrainSurface);
 	if (terrainSurfaceModelTiled != nullptr)
 		_battleView->_terrainSurfaceRendererTiled = new TiledTerrainSurfaceRenderer(terrainSurfaceModelTiled);
 

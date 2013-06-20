@@ -74,15 +74,6 @@ const float* SmoothTerrainSurface::Intersect(ray r)
 }
 
 
-bool SmoothTerrainSurface::IsWater(glm::vec2 position) const
-{
-	int x = (int)(512 * position.x / 1024);
-	int y = (int)(512 * position.y / 1024);
-	glm::vec4 c = _map->get_pixel(x, y);
-	return c.b >= 0.5;
-}
-
-
 bool SmoothTerrainSurface::IsForest(glm::vec2 position) const
 {
 	int x = (int)(512 * position.x / 1024);
@@ -98,31 +89,6 @@ bool SmoothTerrainSurface::IsImpassable(glm::vec2 position) const
 	int y = (int)(512 * position.y / 1024);
 	glm::vec4 c = _map->get_pixel(x, y);
 	return c.b >= 0.5 && c.r < 0.5;
-}
-
-
-bool SmoothTerrainSurface::ContainsWater(bounds2f bounds) const
-{
-	glm::ivec2 size(512, 512);
-	glm::vec2 min = glm::vec2(size.x - 1, size.y - 1) * (bounds.min - _bounds.min) / _bounds.size();
-	glm::vec2 max = glm::vec2(size.x - 1, size.y - 1) * (bounds.max - _bounds.min) / _bounds.size();
-	int xmin = (int)floorf(min.x);
-	int ymin = (int)floorf(min.y);
-	int xmax = (int)ceilf(max.x);
-	int ymax = (int)ceilf(max.y);
-
-	if (_map != nullptr)
-	{
-		for (int x = xmin; x <= xmax; ++x)
-			for (int y = ymin; y <= ymax; ++y)
-			{
-				glm::vec4 c = _map->get_pixel(x, y);
-				if (c.b >= 0.5 || c.r >= 0.5)
-					return true;
-			}
-	}
-
-	return false;
 }
 
 
