@@ -2,8 +2,8 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#ifndef TERRAINSURFACERENDERER_H
-#define TERRAINSURFACERENDERER_H
+#ifndef TerrainSurfaceRenderer_H
+#define TerrainSurfaceRenderer_H
 
 
 

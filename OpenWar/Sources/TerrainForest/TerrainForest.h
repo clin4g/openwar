@@ -6,11 +6,11 @@
 #define TERRAINFEATUREMODEL_H
 
 
-class TerrainFeatureModel
+class TerrainForest
 {
 public:
-	TerrainFeatureModel();
-	virtual ~TerrainFeatureModel();
+	TerrainForest();
+	virtual ~TerrainForest();
 };
 
 

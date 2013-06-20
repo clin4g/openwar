@@ -20,9 +20,9 @@ class ButtonRendering;
 class ButtonView;
 class EditorGesture;
 class SimulationRules;
-class TerrainSurfaceRendererSmooth;
+class SmoothTerrainSurfaceRenderer;
 class TerrainGesture;
-class TerrainSurfaceRendererTiled;
+class TiledTerrainSurfaceRenderer;
 
 
 class OpenWarSurface : public Surface

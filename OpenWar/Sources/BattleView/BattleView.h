@@ -8,8 +8,8 @@
 #include "BattleRendering.h"
 #include "BattleModel.h"
 #include "SimulationRules.h"
-#include "TerrainSurfaceRendererSmooth.h"
-#include "TerrainSurfaceRendererTiled.h"
+#include "SmoothTerrainSurfaceRenderer.h"
+#include "TiledTerrainSurfaceRenderer.h"
 #include "TerrainView.h"
 #include "vertexbuffer.h"
 
@@ -80,8 +80,8 @@ class BattleView : public TerrainView, public SimulationListener
 	std::vector<RangeMarker*> _rangeMarkers;
 
 public:
-	TerrainSurfaceRendererSmooth* _terrainSurfaceRendererSmooth;
-	TerrainSurfaceRendererTiled* _terrainSurfaceRendererTiled;
+	SmoothTerrainSurfaceRenderer* _terrainSurfaceRendererSmooth;
+	TiledTerrainSurfaceRenderer* _terrainSurfaceRendererTiled;
 	Player _player;
 
 	BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer);

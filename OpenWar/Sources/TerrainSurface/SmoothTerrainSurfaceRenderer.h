@@ -2,10 +2,10 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#ifndef TERRAINSURFACERENDERERSMOOTH_H
-#define TERRAINSURFACERENDERERSMOOTH_H
+#ifndef SmoothTerrainSurfaceRenderer_H
+#define SmoothTerrainSurfaceRenderer_H
 
-#include "TerrainSurfaceModelSmooth.h"
+#include "SmoothTerrainSurface.h"
 #include "framebuffer.h"
 #include "renderbuffer.h"
 #include "vertexbuffer.h"
@@ -97,9 +97,9 @@ struct sobel_uniforms
 
 
 
-class TerrainSurfaceRendererSmooth : public TerrainSurfaceRenderer
+class SmoothTerrainSurfaceRenderer : public TerrainSurfaceRenderer
 {
-	TerrainSurfaceModelSmooth* _terrainSurfaceModel;
+	SmoothTerrainSurface* _terrainSurfaceModel;
 
 	int _framebuffer_width;
 	int _framebuffer_height;
@@ -117,10 +117,10 @@ class TerrainSurfaceRendererSmooth : public TerrainSurfaceRenderer
 	terrain_renderers* _renderers;
 
 public:
-	TerrainSurfaceRendererSmooth(TerrainSurfaceModelSmooth* terrainSurfaceModel, bool render_edges);
-	virtual ~TerrainSurfaceRendererSmooth();
+	SmoothTerrainSurfaceRenderer(SmoothTerrainSurface* terrainSurfaceModel, bool render_edges);
+	virtual ~SmoothTerrainSurfaceRenderer();
 
-	TerrainSurfaceModelSmooth* GetTerrainSurfaceModel() const { return _terrainSurfaceModel; }
+	SmoothTerrainSurface* GetTerrainSurfaceModel() const { return _terrainSurfaceModel; }
 
 	void UpdateHeights(bounds2f bounds);
 	void UpdateMapTexture();
@@ -166,14 +166,14 @@ private:
 
 struct terrain_viewpoint
 {
-	TerrainSurfaceRendererSmooth* _terrainRendering;
+	SmoothTerrainSurfaceRenderer* _terrainRendering;
 	glm::vec3 _viewpoint;
 	float _near;
 	float _far;
 	int _near_lod;
 	float _distance_lod_max;
 
-	terrain_viewpoint(TerrainSurfaceRendererSmooth* terrainRendering);
+	terrain_viewpoint(SmoothTerrainSurfaceRenderer* terrainRendering);
 
 	void set_parameters(float errorLodMax, float maxPixelError, float screenWidth, float horizontalFOVDegrees);
 

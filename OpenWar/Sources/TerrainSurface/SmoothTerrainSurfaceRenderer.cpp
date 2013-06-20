@@ -2,7 +2,7 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "TerrainSurfaceRendererSmooth.h"
+#include "SmoothTerrainSurfaceRenderer.h"
 #include "image.h"
 
 
@@ -521,7 +521,7 @@ static NSString* FramebufferStatusString(GLenum status)
 
 
 
-TerrainSurfaceRendererSmooth::TerrainSurfaceRendererSmooth(TerrainSurfaceModelSmooth* terrainSurfaceModel, bool render_edges) :
+SmoothTerrainSurfaceRenderer::SmoothTerrainSurfaceRenderer(SmoothTerrainSurface* terrainSurfaceModel, bool render_edges) :
 _terrainSurfaceModel(terrainSurfaceModel),
 _framebuffer_width(0),
 _framebuffer_height(0),
@@ -589,7 +589,7 @@ _mapTexture(nullptr)
 
 
 
-TerrainSurfaceRendererSmooth::~TerrainSurfaceRendererSmooth()
+SmoothTerrainSurfaceRenderer::~SmoothTerrainSurfaceRenderer()
 {
 	for (std::pair<terrain_address, terrain_chunk*> i : _chunks)
 		delete i.second;
@@ -603,7 +603,7 @@ TerrainSurfaceRendererSmooth::~TerrainSurfaceRendererSmooth()
 
 
 
-void TerrainSurfaceRendererSmooth::UpdateHeights(bounds2f bounds)
+void SmoothTerrainSurfaceRenderer::UpdateHeights(bounds2f bounds)
 {
 	for (std::pair<terrain_address, terrain_chunk*> iter : _chunks)
 	{
@@ -646,13 +646,13 @@ void TerrainSurfaceRendererSmooth::UpdateHeights(bounds2f bounds)
 }
 
 
-void TerrainSurfaceRendererSmooth::UpdateMapTexture()
+void SmoothTerrainSurfaceRenderer::UpdateMapTexture()
 {
 	_mapTexture->load(*_terrainSurfaceModel->GetMap());
 }
 
 
-void TerrainSurfaceRendererSmooth::UpdateDepthTextureSize()
+void SmoothTerrainSurfaceRenderer::UpdateDepthTextureSize()
 {
 	if (_depth != nullptr)
 	{
@@ -676,7 +676,7 @@ void TerrainSurfaceRendererSmooth::UpdateDepthTextureSize()
 
 
 
-void TerrainSurfaceRendererSmooth::InitializeEdge()
+void SmoothTerrainSurfaceRenderer::InitializeEdge()
 {
 	_shape_terrain_edge._mode = GL_TRIANGLE_STRIP;
 	_shape_terrain_edge._vertices.clear();
@@ -701,7 +701,7 @@ void TerrainSurfaceRendererSmooth::InitializeEdge()
 
 
 
-void TerrainSurfaceRendererSmooth::Render(const glm::mat4x4& transform, const glm::vec3& lightNormal)
+void SmoothTerrainSurfaceRenderer::Render(const glm::mat4x4& transform, const glm::vec3& lightNormal)
 {
 	terrain_uniforms uniforms;
 	uniforms._transform = transform;
@@ -771,7 +771,7 @@ void TerrainSurfaceRendererSmooth::Render(const glm::mat4x4& transform, const gl
 
 
 
-void TerrainSurfaceRendererSmooth::ForEachLeaf(terrain_address chunk, std::function<void(terrain_chunk&)> f)
+void SmoothTerrainSurfaceRenderer::ForEachLeaf(terrain_address chunk, std::function<void(terrain_chunk&)> f)
 {
 	if (_split.find(chunk) != _split.end())
 	{
@@ -787,21 +787,21 @@ void TerrainSurfaceRendererSmooth::ForEachLeaf(terrain_address chunk, std::funct
 
 
 
-bool TerrainSurfaceRendererSmooth::IsLoaded(terrain_address chunk)
+bool SmoothTerrainSurfaceRenderer::IsLoaded(terrain_address chunk)
 {
 	return _chunks.find(chunk) != _chunks.end();
 }
 
 
 
-void TerrainSurfaceRendererSmooth::LoadChunk(terrain_address chunk, float priority)
+void SmoothTerrainSurfaceRenderer::LoadChunk(terrain_address chunk, float priority)
 {
 	if (_chunks.find(chunk) == _chunks.end())
 		_chunks[chunk] = CreateNode(chunk);
 }
 
 
-void TerrainSurfaceRendererSmooth::UnloadChunk(terrain_address chunk)
+void SmoothTerrainSurfaceRenderer::UnloadChunk(terrain_address chunk)
 {
 	_chunks.erase(chunk);
 }
@@ -809,7 +809,7 @@ void TerrainSurfaceRendererSmooth::UnloadChunk(terrain_address chunk)
 
 
 
-void TerrainSurfaceRendererSmooth::LoadChildren(terrain_address chunk, float priority)
+void SmoothTerrainSurfaceRenderer::LoadChildren(terrain_address chunk, float priority)
 {
 	if (priority < 0.5f)
 	{
@@ -823,7 +823,7 @@ void TerrainSurfaceRendererSmooth::LoadChildren(terrain_address chunk, float pri
 
 
 
-terrain_chunk* TerrainSurfaceRendererSmooth::CreateNode(terrain_address chunk)
+terrain_chunk* SmoothTerrainSurfaceRenderer::CreateNode(terrain_address chunk)
 {
 	terrain_chunk* result = new terrain_chunk(chunk);
 
@@ -841,7 +841,7 @@ terrain_chunk* TerrainSurfaceRendererSmooth::CreateNode(terrain_address chunk)
 
 
 
-void TerrainSurfaceRendererSmooth::RequestLoadChildrenUnloadGrandChildren(terrain_address chunk, float priority)
+void SmoothTerrainSurfaceRenderer::RequestLoadChildrenUnloadGrandChildren(terrain_address chunk, float priority)
 {
 	chunk.foreach_child([this, priority](terrain_address child) {
 		if (!IsLoaded(child))
@@ -853,7 +853,7 @@ void TerrainSurfaceRendererSmooth::RequestLoadChildrenUnloadGrandChildren(terrai
 
 
 
-void TerrainSurfaceRendererSmooth::RequestUnloadChildren(terrain_address chunk)
+void SmoothTerrainSurfaceRenderer::RequestUnloadChildren(terrain_address chunk)
 {
 	chunk.foreach_child([this](terrain_address child) {
 		UnloadChunk(child);
@@ -862,14 +862,14 @@ void TerrainSurfaceRendererSmooth::RequestUnloadChildren(terrain_address chunk)
 
 
 
-bool TerrainSurfaceRendererSmooth::IsSplit(terrain_address chunk)
+bool SmoothTerrainSurfaceRenderer::IsSplit(terrain_address chunk)
 {
 	return _split.find(chunk) != _split.end();
 }
 
 
 
-bool TerrainSurfaceRendererSmooth::CanChunkBeSplitted(terrain_address chunk)
+bool SmoothTerrainSurfaceRenderer::CanChunkBeSplitted(terrain_address chunk)
 {
 	if (IsSplit(chunk))
 		return true; // already split
@@ -892,14 +892,14 @@ bool TerrainSurfaceRendererSmooth::CanChunkBeSplitted(terrain_address chunk)
 
 
 
-bool TerrainSurfaceRendererSmooth::CanGrandParentBeSplitted(terrain_address chunk)
+bool SmoothTerrainSurfaceRenderer::CanGrandParentBeSplitted(terrain_address chunk)
 {
 	return chunk._level < 2 ? false : CanChunkBeSplitted(chunk.get_parent().get_parent());
 }
 
 
 
-void TerrainSurfaceRendererSmooth::SetSplit(terrain_address chunk)
+void SmoothTerrainSurfaceRenderer::SetSplit(terrain_address chunk)
 {
 	if (_split.find(chunk) == _split.end())
 		_split[chunk] = true;
@@ -911,7 +911,7 @@ void TerrainSurfaceRendererSmooth::SetSplit(terrain_address chunk)
 
 
 
-void TerrainSurfaceRendererSmooth::ClearSplit(terrain_address chunk)
+void SmoothTerrainSurfaceRenderer::ClearSplit(terrain_address chunk)
 {
 	std::vector<terrain_address> s;
 	for (auto i : _split)
@@ -933,14 +933,14 @@ void TerrainSurfaceRendererSmooth::ClearSplit(terrain_address chunk)
 
 
 
-void TerrainSurfaceRendererSmooth::SetLod(terrain_address chunk, float lod)
+void SmoothTerrainSurfaceRenderer::SetLod(terrain_address chunk, float lod)
 {
 	_lod[chunk] = lod;
 }
 
 
 
-float TerrainSurfaceRendererSmooth::GetLod(terrain_address chunk)
+float SmoothTerrainSurfaceRenderer::GetLod(terrain_address chunk)
 {
 	if (_lod.find(chunk) != _lod.end())
 		return _lod[chunk];
@@ -949,7 +949,7 @@ float TerrainSurfaceRendererSmooth::GetLod(terrain_address chunk)
 
 
 
-bounds3f TerrainSurfaceRendererSmooth::GetBounds(terrain_address chunk) const
+bounds3f SmoothTerrainSurfaceRenderer::GetBounds(terrain_address chunk) const
 {
 	glm::vec2 size = _terrainSurfaceModel->GetBounds().size() / (float)(1 << chunk._level);
 	glm::vec2 corner = _terrainSurfaceModel->GetBounds().min + size * glm::vec2(chunk._x, chunk._y);
@@ -962,7 +962,7 @@ bounds3f TerrainSurfaceRendererSmooth::GetBounds(terrain_address chunk) const
 
 
 
-void TerrainSurfaceRendererSmooth::BuildLines(vertexbuffer<color_vertex3>& shape, terrain_address chunk)
+void SmoothTerrainSurfaceRenderer::BuildLines(vertexbuffer<color_vertex3>& shape, terrain_address chunk)
 {
 	bounds2f bounds = GetBounds(chunk).xy();
 	glm::vec2 corner = bounds.p11();
@@ -1016,7 +1016,7 @@ static int inside_circle(terrain_vertex v1, terrain_vertex v2, terrain_vertex v3
 
 
 
-void TerrainSurfaceRendererSmooth::BuildTriangles(terrain_chunk* chunk)
+void SmoothTerrainSurfaceRenderer::BuildTriangles(terrain_chunk* chunk)
 {
 	bounds2f bounds = GetBounds(chunk->_address).xy();
 	glm::vec2 corner = bounds.p11();
@@ -1067,7 +1067,7 @@ void TerrainSurfaceRendererSmooth::BuildTriangles(terrain_chunk* chunk)
 
 
 
-terrain_vertex TerrainSurfaceRendererSmooth::MakeTerrainVertex(float x, float y)
+terrain_vertex SmoothTerrainSurfaceRenderer::MakeTerrainVertex(float x, float y)
 {
 	glm::vec2 p = glm::vec2(x, y);
 	float z = _terrainSurfaceModel->GetHeight(p);
@@ -1075,7 +1075,7 @@ terrain_vertex TerrainSurfaceRendererSmooth::MakeTerrainVertex(float x, float y)
 }
 
 
-color_vertex3 TerrainSurfaceRendererSmooth::MakeColorVertex(float x, float y)
+color_vertex3 SmoothTerrainSurfaceRenderer::MakeColorVertex(float x, float y)
 {
 	float h = _terrainSurfaceModel->GetHeight(glm::vec2(x, y));
 	float k = 0.7f + 0.25f * h / 60;
@@ -1091,7 +1091,7 @@ color_vertex3 TerrainSurfaceRendererSmooth::MakeColorVertex(float x, float y)
 /***/
 
 
-terrain_viewpoint::terrain_viewpoint(TerrainSurfaceRendererSmooth* terrainRendering) : _terrainRendering(terrainRendering)
+terrain_viewpoint::terrain_viewpoint(SmoothTerrainSurfaceRenderer* terrainRendering) : _terrainRendering(terrainRendering)
 {
 }
 

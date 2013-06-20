@@ -5,14 +5,14 @@
 #ifndef TERRAINFEATUREMODELBILLBOARD_H
 #define TERRAINFEATUREMODELBILLBOARD_H
 
-#include "TerrainFeatureModel.h"
+#include "TerrainForest.h"
 
 
-class TerrainFeatureModelBillboard : public TerrainFeatureModel
+class BillboardTerrainForest : public TerrainForest
 {
 public:
-	TerrainFeatureModelBillboard();
-	virtual ~TerrainFeatureModelBillboard();
+	BillboardTerrainForest();
+	virtual ~BillboardTerrainForest();
 
 	std::vector<glm::vec2> _trees;
 	void AddTree(glm::vec2 position);

@@ -2,24 +2,24 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "TerrainSurfaceRendererTiled.h"
+#include "TiledTerrainSurfaceRenderer.h"
 #include "renderer.h"
 #include "image.h"
-#include "TerrainSurfaceModelTiled.h"
+#include "TiledTerrainSurface.h"
 
 
-TerrainSurfaceRendererTiled::TerrainSurfaceRendererTiled(TerrainSurfaceModelTiled* terrainSurfaceModel) :
+TiledTerrainSurfaceRenderer::TiledTerrainSurfaceRenderer(TiledTerrainSurface* terrainSurfaceModel) :
 _terrainSurfaceModel(terrainSurfaceModel)
 {
 }
 
 
-TerrainSurfaceRendererTiled::~TerrainSurfaceRendererTiled()
+TiledTerrainSurfaceRenderer::~TiledTerrainSurfaceRenderer()
 {
 }
 
 
-void TerrainSurfaceRendererTiled::Render(const glm::mat4x4& transform, const glm::vec3& lightNormal)
+void TiledTerrainSurfaceRenderer::Render(const glm::mat4x4& transform, const glm::vec3& lightNormal)
 {
 	bounds2f bounds = _terrainSurfaceModel->GetBounds();
 	glm::ivec2 size = _terrainSurfaceModel->GetSize();
@@ -32,7 +32,7 @@ void TerrainSurfaceRendererTiled::Render(const glm::mat4x4& transform, const glm
 	for (int x = 0; x < size.x; ++x)
 		for (int y = 0; y < size.y; ++y)
 		{
-			TerrainSurfaceModelTiled::Tile* tile = _terrainSurfaceModel->GetTile(x, y);
+			TiledTerrainSurface::Tile* tile = _terrainSurfaceModel->GetTile(x, y);
 
 			glm::vec2 p0 = bounds.min + delta * glm::vec2(x, y);
 			glm::vec2 p1 = p0 + delta;

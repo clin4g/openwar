@@ -10,9 +10,9 @@ class BattleScript;
 class BillboardModel;
 class SimulationRules;
 class BattleModel;
-class TerrainSurfaceModel;
-class TerrainFeatureModel;
-class TerrainFeatureModelBillboard;
+class TerrainSurface;
+class TerrainForest;
+class BillboardTerrainForest;
 class TerrainFeatureModelMesh;
 
 
@@ -27,7 +27,7 @@ public:
 
 	SimulationRules* simulationRules;
 
-	TerrainFeatureModelBillboard* terrainFeatureModelBillboard;
+	BillboardTerrainForest* terrainForest;
 
 	BillboardModel* billboardTextureAtlas;
 };

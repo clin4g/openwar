@@ -4,9 +4,9 @@
 
 #include "BattleView.h"
 #include "BattleModel.h"
-#include "TerrainSurfaceModelTiled.h"
+#include "TiledTerrainSurface.h"
 #include "BattleContext.h"
-#include "TerrainFeatureModelBillboard.h"
+#include "BillboardTerrainForest.h"
 #include "UnitCounter.h"
 #include "CasualtyMarker.h"
 #include "SmokeCounter.h"

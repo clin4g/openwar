@@ -6,7 +6,7 @@
 
 
 
-TerrainView::TerrainView(Surface* screen, TerrainSurfaceModel* terrainSurfaceModel) : View(screen),
+TerrainView::TerrainView(Surface* screen, TerrainSurface* terrainSurfaceModel) : View(screen),
 _terrainSurfaceModel(terrainSurfaceModel),
 _cameraTilt((float)M_PI_4),
 _cameraFacing(0)

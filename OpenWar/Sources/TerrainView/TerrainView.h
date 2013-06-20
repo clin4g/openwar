@@ -7,7 +7,7 @@
 
 #include "View.h"
 #include "geometry.h"
-#include "TerrainSurfaceModel.h"
+#include "TerrainSurface.h"
 
 
 class TerrainView : public View
@@ -18,10 +18,10 @@ class TerrainView : public View
 	float _cameraFacing;
 
 protected:
-	TerrainSurfaceModel* _terrainSurfaceModel;
+	TerrainSurface* _terrainSurfaceModel;
 
 public:
-	TerrainView(Surface* screen, TerrainSurfaceModel* terrainSurfaceModel);
+	TerrainView(Surface* screen, TerrainSurface* terrainSurfaceModel);
 	virtual ~TerrainView();
 
 	bounds2f GetContentBounds() const { return _contentBounds; }

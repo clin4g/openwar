@@ -6,13 +6,13 @@
 #define TerrainModel_H
 
 
-#include "TerrainSurfaceModel.h"
+#include "TerrainSurface.h"
 
 
 class TerrainModel
 {
 public:
-	TerrainSurfaceModel* terrainSurfaceModel;
+	TerrainSurface* terrainSurfaceModel;
 
 public:
 	TerrainModel();

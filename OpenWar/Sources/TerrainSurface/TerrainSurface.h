@@ -2,17 +2,17 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#ifndef TERRAINSURFACEMODEL_H
-#define TERRAINSURFACEMODEL_H
+#ifndef TerrainSurface_H
+#define TerrainSurface_H
 
 #include "geometry.h"
 
 
-class TerrainSurfaceModel
+class TerrainSurface
 {
 public:
-	TerrainSurfaceModel();
-	virtual ~TerrainSurfaceModel();
+	TerrainSurface();
+	virtual ~TerrainSurface();
 
 	virtual float GetHeight(glm::vec2 position) const = 0;
 	virtual glm::vec3 GetNormal(glm::vec2 position) const = 0;

@@ -8,7 +8,7 @@
 #include "BattleView.h"
 #include "OpenWarSurface.h"
 #include "BattleScript.h"
-#include "TerrainFeatureModelBillboard.h"
+#include "BillboardTerrainForest.h"
 
 
 @implementation OpenWarDocument
@@ -97,7 +97,7 @@
 
 	if (_surface != nullptr)
 	{
-		TerrainSurfaceModelSmooth* terrainSurfaceModelSmooth = dynamic_cast<TerrainSurfaceModelSmooth*>(_surface->_battleContext->battleModel->terrainSurfaceModel);
+		SmoothTerrainSurface* terrainSurfaceModelSmooth = dynamic_cast<SmoothTerrainSurface*>(_surface->_battleContext->battleModel->terrainSurfaceModel);
 		if ([typeName isEqualToString:@"SmoothMap"] && terrainSurfaceModelSmooth != nullptr)
 		{
 			terrainSurfaceModelSmooth->SaveHeightmapToImage();
@@ -157,10 +157,10 @@
 	BattleContext* battleContext = new BattleContext();
 
 	battleContext->billboardTextureAtlas = new BillboardModel();
-	battleContext->terrainFeatureModelBillboard = new TerrainFeatureModelBillboard();
+	battleContext->terrainForest = new BillboardTerrainForest();
 
 	battleContext->battleModel = new BattleModel(battleContext);
-	battleContext->battleModel->terrainSurfaceModel = new TerrainSurfaceModelSmooth(bounds2f(0, 0, 1024, 1024), ConvertTiffToImage(smoothMap));
+	battleContext->battleModel->terrainSurfaceModel = new SmoothTerrainSurface(bounds2f(0, 0, 1024, 1024), ConvertTiffToImage(smoothMap));
 
 	battleContext->simulationRules = new SimulationRules(battleContext->battleModel);
 	battleContext->simulationRules->currentPlayer = Player1;
@@ -174,7 +174,7 @@
 	BattleContext* battleContext = new BattleContext();
 
 	battleContext->billboardTextureAtlas = new BillboardModel();
-	battleContext->terrainFeatureModelBillboard = new TerrainFeatureModelBillboard();
+	battleContext->terrainForest = new BillboardTerrainForest();
 
 	battleContext->battleScript = new BattleScript(battleContext, _sourceDirectory.filePathURL.path.UTF8String, (const char*)script.bytes, script.length);
 

@@ -11,7 +11,7 @@
 class BattleContext;
 class BattleView;
 class BattleModel;
-class TerrainSurfaceRendererTiled;
+class TiledTerrainSurfaceRenderer;
 
 
 class BattleScript

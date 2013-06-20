@@ -13,7 +13,7 @@
 #include "SimulationRules.h"
 #include "SoundPlayer.h"
 #include "TerrainGesture.h"
-#include "TerrainSurfaceModelTiled.h"
+#include "TiledTerrainSurface.h"
 #include "UnitCounter.h"
 
 
@@ -97,13 +97,13 @@ void OpenWarSurface::Reset(BattleContext* battleContext)
 
 	battleContext->simulationRules->listener = _battleView;
 
-	TerrainSurfaceModelSmooth* terrainSurfaceModelSmooth = dynamic_cast<TerrainSurfaceModelSmooth*>(_battleContext->battleModel->terrainSurfaceModel);
+	SmoothTerrainSurface* terrainSurfaceModelSmooth = dynamic_cast<SmoothTerrainSurface*>(_battleContext->battleModel->terrainSurfaceModel);
 	if (terrainSurfaceModelSmooth != nullptr)
-		_battleView->_terrainSurfaceRendererSmooth = new TerrainSurfaceRendererSmooth(terrainSurfaceModelSmooth, true);
+		_battleView->_terrainSurfaceRendererSmooth = new SmoothTerrainSurfaceRenderer(terrainSurfaceModelSmooth, true);
 
-	TerrainSurfaceModelTiled* terrainSurfaceModelTiled = dynamic_cast<TerrainSurfaceModelTiled*>(_battleContext->battleModel->terrainSurfaceModel);
+	TiledTerrainSurface* terrainSurfaceModelTiled = dynamic_cast<TiledTerrainSurface*>(_battleContext->battleModel->terrainSurfaceModel);
 	if (terrainSurfaceModelTiled != nullptr)
-		_battleView->_terrainSurfaceRendererTiled = new TerrainSurfaceRendererTiled(terrainSurfaceModelTiled);
+		_battleView->_terrainSurfaceRendererTiled = new TiledTerrainSurfaceRenderer(terrainSurfaceModelTiled);
 
 
 	_battleView->Initialize(true);
