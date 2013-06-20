@@ -7,6 +7,7 @@
 #include "BattleContext.h"
 #include "SimulationRules.h"
 #include "TerrainFeatureModelBillboard.h"
+#include "TerrainSurfaceModelSmooth.h"
 #include "TerrainSurfaceModelTiled.h"
 
 #include "lauxlib.h"

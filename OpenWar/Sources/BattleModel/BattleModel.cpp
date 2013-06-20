@@ -245,7 +245,6 @@ lastUnitId(0),
 winner(PlayerNone),
 time(0),
 timeStep(1.0f / 15.0f),
-terrainSurfaceModel(nullptr),
 _battleContext(battleContext),
 _mapSize(1024, 1024),
 _unitMarkers()

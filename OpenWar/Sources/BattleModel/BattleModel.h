@@ -6,7 +6,7 @@
 #define BATTLEMODEL_H
 
 #include "MovementRules.h"
-#include "TerrainSurfaceModelSmooth.h"
+#include "TerrainModel.h"
 
 
 class BattleContext;
@@ -310,7 +310,7 @@ struct Unit
 };
 
 
-struct BattleModel
+class BattleModel : public TerrainModel
 {
 public:
 	int lastUnitId;
@@ -320,8 +320,6 @@ public:
 
 	std::map<int, Unit*> units;
 	std::vector<Shooting> shootings;
-
-	TerrainSurfaceModel* terrainSurfaceModel;
 
 	BattleContext* _battleContext;
 	glm::vec2 _mapSize;

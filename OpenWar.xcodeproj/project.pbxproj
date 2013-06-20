@@ -96,6 +96,7 @@
 		63F558F3DA0D79E2A27DEA67 /* TerrainSurfaceRendererSmooth.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55C0C489EDE2607C05472 /* TerrainSurfaceRendererSmooth.cpp */; };
 		63F55A33DBAF76A6C343BCE9 /* TerrainSurfaceModelTiled.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5556DDCB8C164BC5BB73E /* TerrainSurfaceModelTiled.cpp */; };
 		63F55A672EE972CC4D26DE6E /* CasualtyMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55E589EB43FE093106219 /* CasualtyMarker.cpp */; };
+		63F55AC0A60506A7D690049E /* TerrainModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55A77C807E38F54D128BF /* TerrainModel.cpp */; };
 		63F55C99EAB3B7172666EAFB /* BattleGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55FEDBDF52613CDF0F16C /* BattleGesture.cpp */; };
 		63F55CC86046CE9AEFFBE71D /* affine2.h in Resources */ = {isa = PBXBuildFile; fileRef = 63F5596F135A23A4AAAA5FB5 /* affine2.h */; };
 		63F55E9BE90C837BF2BFAC4E /* TrackingMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F551015746B4BAC3ADA148 /* TrackingMarker.cpp */; };
@@ -237,6 +238,7 @@
 		63F5536EC562EAF1ADA3D96C /* BattleView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BattleView.cpp; sourceTree = "<group>"; };
 		63F5539136BD1EC880B88D54 /* BattleModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BattleModel.cpp; sourceTree = "<group>"; };
 		63F55396176B05C674B9DE7F /* BattleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BattleView.h; sourceTree = "<group>"; };
+		63F553BE79BA6450912372D5 /* TerrainModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TerrainModel.h; sourceTree = "<group>"; };
 		63F5540A8AF3B3D853FA7D3F /* heightmap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = heightmap.cpp; sourceTree = "<group>"; };
 		63F5543DBC49F5BCD744028E /* ShootingCounter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShootingCounter.h; sourceTree = "<group>"; };
 		63F55477A28CF8DCA4CE3E24 /* BillboardTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BillboardTexture.h; sourceTree = "<group>"; };
@@ -268,6 +270,7 @@
 		63F559F78E1543FDC888634E /* SimulationRules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimulationRules.h; sourceTree = "<group>"; };
 		63F55A21CB78891343349B4F /* EditorModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EditorModel.cpp; sourceTree = "<group>"; };
 		63F55A700AAA224E404DB6A4 /* TerrainFeatureModelBillboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TerrainFeatureModelBillboard.h; sourceTree = "<group>"; };
+		63F55A77C807E38F54D128BF /* TerrainModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainModel.cpp; sourceTree = "<group>"; };
 		63F55AEBFFE1181BD825CE08 /* TerrainSurfaceModelSmooth.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainSurfaceModelSmooth.cpp; sourceTree = "<group>"; };
 		63F55AF200D5648D23279089 /* bspline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bspline.cpp; sourceTree = "<group>"; };
 		63F55B90DF083FC510A2E494 /* RangeMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RangeMarker.h; sourceTree = "<group>"; };
@@ -702,6 +705,8 @@
 				63F550B2432AA8D1FBBB6CCF /* TerrainFeatureModel.cpp */,
 				63F55DF8EAFD323C42FF935B /* TerrainSurfaceModelSmooth.h */,
 				63F5516B521150D95865A50C /* TerrainSurfaceRendererTiled.h */,
+				63F55A77C807E38F54D128BF /* TerrainModel.cpp */,
+				63F553BE79BA6450912372D5 /* TerrainModel.h */,
 			);
 			path = TerrainModel;
 			sourceTree = "<group>";
@@ -881,6 +886,7 @@
 				63F55197EA31BF00D877C955 /* ShootingCounter.cpp in Sources */,
 				63F55FA86A98E9D9EF3F06FA /* SmokeCounter.cpp in Sources */,
 				63F550C68636CD7316B5CC08 /* UnitCounter.cpp in Sources */,
+				63F55AC0A60506A7D690049E /* TerrainModel.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
