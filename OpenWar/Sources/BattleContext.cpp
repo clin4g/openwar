@@ -11,7 +11,6 @@ simulationState(nullptr),
 simulationRules(nullptr),
 terrainSurfaceModel(nullptr),
 terrainFeatureModelBillboard(nullptr),
-terrainFeatureModelMesh(nullptr),
 billboardTextureAtlas(nullptr),
 battleModel(nullptr)
 {

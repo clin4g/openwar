@@ -7,6 +7,9 @@
 #include "BattleView.h"
 #include "BattleContext.h"
 #include "SoundPlayer.h"
+#include "UnitMarker.h"
+#include "TrackingMarker.h"
+#include "MovementMarker.h"
 
 
 

@@ -7,6 +7,13 @@
 #include "TerrainSurfaceModelTiled.h"
 #include "BattleContext.h"
 #include "TerrainFeatureModelBillboard.h"
+#include "UnitMarker.h"
+#include "CasualtyMarker.h"
+#include "SmokeMarker.h"
+#include "RangeMarker.h"
+#include "TrackingMarker.h"
+#include "MovementMarker.h"
+#include "ShootingMarker.h"
 
 
 

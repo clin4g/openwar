@@ -9,8 +9,6 @@
 #include "OpenWarSurface.h"
 #include "BattleScript.h"
 #include "TerrainFeatureModelBillboard.h"
-#include "TerrainFeatureModelMesh.h"
-#include "TerrainSurfaceModelTiled.h"
 
 
 @implementation OpenWarDocument
@@ -160,7 +158,6 @@
 
 	battleContext->billboardTextureAtlas = new BillboardModel();
 	battleContext->terrainFeatureModelBillboard = new TerrainFeatureModelBillboard();
-	battleContext->terrainFeatureModelMesh = new TerrainFeatureModelMesh();
 
 	battleContext->terrainSurfaceModel = new TerrainSurfaceModelSmooth(bounds2f(0, 0, 1024, 1024), ConvertTiffToImage(smoothMap));
 
@@ -184,7 +181,6 @@
 
 	battleContext->billboardTextureAtlas = new BillboardModel();
 	battleContext->terrainFeatureModelBillboard = new TerrainFeatureModelBillboard();
-	battleContext->terrainFeatureModelMesh = new TerrainFeatureModelMesh();
 
 	battleContext->battleScript = new BattleScript(battleContext, _sourceDirectory.filePathURL.path.UTF8String, (const char*)script.bytes, script.length);
 

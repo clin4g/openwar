@@ -15,7 +15,7 @@
 #include "SoundPlayer.h"
 #include "TerrainGesture.h"
 #include "TerrainSurfaceModelTiled.h"
-
+#include "UnitMarker.h"
 
 
 OpenWarSurface::OpenWarSurface(glm::vec2 size, float pixelDensity) : Surface(size, pixelDensity),

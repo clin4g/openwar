@@ -23,6 +23,7 @@ public:
 	~BattleContext();
 
 	BattleScript* battleScript;
+	BattleModel* battleModel;
 
 	SimulationState* simulationState;
 	SimulationRules* simulationRules;
@@ -30,10 +31,8 @@ public:
 	TerrainSurfaceModel* terrainSurfaceModel;
 
 	TerrainFeatureModelBillboard* terrainFeatureModelBillboard;
-	TerrainFeatureModelMesh* terrainFeatureModelMesh;
 
 	BillboardModel* billboardTextureAtlas;
-	BattleModel* battleModel;
 };
 
 
