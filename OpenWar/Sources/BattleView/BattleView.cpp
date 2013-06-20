@@ -16,6 +16,7 @@
 
 #include "sprite.h"
 #import "SmoothTerrainWater.h"
+#import "SmoothTerrainSky.h"
 
 
 static affine2 billboard_texcoords(int x, int y, bool flip)
@@ -352,7 +353,9 @@ void BattleView::Render()
 	glDisable(GL_DEPTH_TEST);
 
 	RenderBackgroundLinen();
-	RenderBackgroundSky();
+
+	if (_battleModel->terrainSky != nullptr)
+		_battleModel->terrainSky->Render(_renderers, GetCameraDirection().z, GetFlip());
 
 	RenderTerrainShadow();
 
@@ -499,8 +502,8 @@ void BattleView::RenderBackgroundLinen()
 	shape._mode = GL_TRIANGLES;
 	shape._vertices.clear();
 
-	glm::vec2 vt0 = glm::vec2(0, 0);
-	glm::vec2 vt1 = glm::vec2((int)(viewport.width() / 128), (int)(viewport.height() / 128));
+	glm::vec2 vt0 = glm::vec2();
+	glm::vec2 vt1 = viewport.size() / 128.0f;
 
 	shape._vertices.push_back(texture_vertex(glm::vec2(-1, -1), glm::vec2(vt0.x, vt0.y)));
 	shape._vertices.push_back(texture_vertex(glm::vec2(-1, 1), glm::vec2(vt0.x, vt1.y)));
@@ -523,36 +526,6 @@ void BattleView::RenderTerrainShadow()
 	uniforms._transform = GetTransform();
 
 	_battleRendering->_ground_shadow_renderer->render(_shape_terrain_shadow, uniforms);
-}
-
-
-void BattleView::RenderBackgroundSky()
-{
-	vertexbuffer<color_vertex> shape;
-
-	float y = GetCameraDirection().z;
-	float x = sqrtf(1 - y * y);
-	float a = 1 - fabsf(atan2f(y, x) / (float)M_PI_2);
-	float blend = bounds1f(0, 1).clamp(3.0f * (a - 0.3f));
-
-	shape._mode = GL_TRIANGLES;
-	shape._vertices.clear();
-
-	glm::vec4 c1 = glm::vec4(56, 165, 230, 0) / 255.0f;
-	glm::vec4 c2 = glm::vec4(160, 207, 243, 255) / 255.0f;
-	c2.a = blend;
-
-	shape._vertices.push_back(color_vertex(glm::vec2(-1, 0.2), c1));
-	shape._vertices.push_back(color_vertex(glm::vec2(-1, 1.0), c2));
-	shape._vertices.push_back(color_vertex(glm::vec2(1, 1.0), c2));
-	shape._vertices.push_back(color_vertex(glm::vec2(1, 1.0), c2));
-	shape._vertices.push_back(color_vertex(glm::vec2(1, 0.2), c1));
-	shape._vertices.push_back(color_vertex(glm::vec2(-1, 0.2), c1));
-
-	gradient_uniforms uniforms;
-	uniforms._transform = GetFlip() ? glm::scale(glm::mat4x4(), glm::vec3(-1.0f, -1.0f, 1.0f)) : glm::mat4x4();
-
-	_renderers->_gradient_renderer->render(shape, uniforms);
 }
 
 

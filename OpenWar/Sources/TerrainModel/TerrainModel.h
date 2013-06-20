@@ -9,6 +9,7 @@
 #include "TerrainSurface.h"
 class BillboardTerrainForest;
 class SmoothTerrainWater;
+class SmoothTerrainSky;
 
 
 class TerrainModel
@@ -17,6 +18,7 @@ public:
 	TerrainSurface* terrainSurface;
 	BillboardTerrainForest* terrainForest;
 	SmoothTerrainWater* terrainWater;
+	SmoothTerrainSky* terrainSky;
 
 public:
 	TerrainModel();

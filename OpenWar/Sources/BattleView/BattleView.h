@@ -114,7 +114,6 @@ public:
 	virtual void Update(double secondsSinceLastUpdate);
 
 	void RenderBackgroundLinen();
-	void RenderBackgroundSky();
 
 	void RenderTerrainShadow();
 	void RenderTerrainGround();

@@ -9,6 +9,7 @@
 #include "BattleScript.h"
 #include "BillboardTerrainForest.h"
 #include "SmoothTerrainWater.h"
+#include "SmoothTerrainSky.h"
 
 
 @implementation OpenWarDocument
@@ -161,6 +162,7 @@
 	battleModel->terrainSurface = new SmoothTerrainSurface(bounds2f(0, 0, 1024, 1024), map);
 	battleModel->terrainForest = new BillboardTerrainForest();
 	battleModel->terrainWater = new SmoothTerrainWater(map, false);
+	battleModel->terrainSky = new SmoothTerrainSky();
 
 	return battleModel;
 }

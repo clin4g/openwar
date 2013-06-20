@@ -9,6 +9,7 @@
 #include "SmoothTerrainSurface.h"
 #include "TiledTerrainSurface.h"
 #include "SmoothTerrainWater.h"
+#include "SmoothTerrainSky.h"
 
 #include "lauxlib.h"
 #include "lualib.h"
@@ -144,6 +145,7 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 
 		_battlescript->_battleModel->terrainSurface = new SmoothTerrainSurface(bounds2f(0, 0, 1024, 1024), map);
 		_battlescript->_battleModel->terrainWater = new SmoothTerrainWater(map, false);
+		_battlescript->_battleModel->terrainSky = new SmoothTerrainSky();
 	}
 	else if (s != nullptr && std::strcmp(s, "tiled") == 0)
 	{
