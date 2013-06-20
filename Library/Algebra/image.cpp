@@ -175,6 +175,9 @@ void image::init_data_context()
 
 NSData* ConvertImageToTiff(image* map)
 {
+#if TARGET_OS_IPHONE
+	return nil;
+#else
 	NSBitmapImageRep* imageRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:&map->_data
 														   pixelsWide:map->_width
 														   pixelsHigh:map->_height
@@ -188,15 +191,20 @@ NSData* ConvertImageToTiff(image* map)
 	NSData* result = [imageRep TIFFRepresentationUsingCompression:NSTIFFCompressionLZW factor:0.5];
 	[imageRep release];
 	return result;
+#endif
 }
 
 
 image* ConvertTiffToImage(NSData* data)
 {
+#if TARGET_OS_IPHONE
+	return nullptr;
+#else
 	NSImage* img = [[NSImage alloc] initWithData:data];
 	NSSize size = img.size;
 	NSRect rect = NSMakeRect(0, 0, size.width, size.height);
 	image* result = new image([img CGImageForProposedRect:&rect context:nil hints:nil]);
 	[img release];
 	return result;
+#endif
 }
