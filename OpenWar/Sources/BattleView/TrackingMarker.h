@@ -6,11 +6,13 @@
 #define TrackingMarker_H
 
 #include "BattleModel.h"
+class ColorBillboardRenderer;
 
 
 class TrackingMarker
 {
 public:
+	BattleModel* _battleModel;
 	Unit* _unit;
 
 	Unit* _destinationUnit;
@@ -25,7 +27,7 @@ public:
 	bool _running;
 
 public:
-	TrackingMarker(Unit* unit);
+	TrackingMarker(BattleModel* battleModel, Unit* unit);
 	~TrackingMarker();
 
 	glm::vec2* GetDestination() { return _hasDestination ? &_destination : 0; }
@@ -55,6 +57,8 @@ public:
 		else if (_hasOrientation) return &_orientation;
 		else return 0;
 	}
+
+	void RenderTrackingFighters(ColorBillboardRenderer* renderer);
 };
 
 

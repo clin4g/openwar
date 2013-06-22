@@ -85,6 +85,7 @@
 		63F553F3C68821A1B9E6F120 /* TerrainSky.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55F6233FACDB333EBADE7 /* TerrainSky.cpp */; };
 		63F554C7D39D8DBC2C9B4D8B /* TerrainSurfaceRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55A1C944D09E02843500A /* TerrainSurfaceRenderer.cpp */; };
 		63F554E5EADD1A7A006BFFF8 /* BattleScript.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55026F1B1D4FA3ED86125 /* BattleScript.cpp */; };
+		63F554FCCC86C53227A6B4B2 /* ColorBillboardRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55BAB005D7C0FA5CDF609 /* ColorBillboardRenderer.cpp */; };
 		63F5550707A96AFE37F3C01A /* TerrainForest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55C316CF9F03BB75E7959 /* TerrainForest.cpp */; };
 		63F5552FC0EB22287834E72A /* BattleModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5539136BD1EC880B88D54 /* BattleModel.cpp */; };
 		63F555392A719212301644A1 /* EditorModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55A21CB78891343349B4F /* EditorModel.cpp */; };
@@ -280,6 +281,7 @@
 		63F55AF200D5648D23279089 /* bspline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bspline.cpp; sourceTree = "<group>"; };
 		63F55B195A6A3B94C8FB9B39 /* TerrainWater.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainWater.cpp; sourceTree = "<group>"; };
 		63F55B90DF083FC510A2E494 /* RangeMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RangeMarker.h; sourceTree = "<group>"; };
+		63F55BAB005D7C0FA5CDF609 /* ColorBillboardRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ColorBillboardRenderer.cpp; sourceTree = "<group>"; };
 		63F55BDA157057D157E307C9 /* ShootingCounter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShootingCounter.cpp; sourceTree = "<group>"; };
 		63F55C316CF9F03BB75E7959 /* TerrainForest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainForest.cpp; sourceTree = "<group>"; };
 		63F55CC494AF7D66DEF9BF5F /* TerrainGesture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainGesture.cpp; sourceTree = "<group>"; };
@@ -288,6 +290,7 @@
 		63F55D5665CB9D3AF5C73979 /* EditorGesture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EditorGesture.cpp; sourceTree = "<group>"; };
 		63F55D5C0BFD572DC508C164 /* SmoothTerrainSurface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SmoothTerrainSurface.cpp; sourceTree = "<group>"; };
 		63F55D7EAA894FB9860C460A /* BattleRendering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BattleRendering.h; sourceTree = "<group>"; };
+		63F55DE8356965D6BA378D53 /* ColorBillboardRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorBillboardRenderer.h; sourceTree = "<group>"; };
 		63F55E3481851C824DAA0233 /* SmoothTerrainSurfaceRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SmoothTerrainSurfaceRenderer.cpp; sourceTree = "<group>"; };
 		63F55E589EB43FE093106219 /* CasualtyMarker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CasualtyMarker.cpp; sourceTree = "<group>"; };
 		63F55E6B18AF2217B015F065 /* TerrainView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TerrainView.h; sourceTree = "<group>"; };
@@ -638,6 +641,8 @@
 				63F5523A7244C95AEDF46F74 /* BattleRendering.cpp */,
 				63F552B3C115B78AE36F9437 /* ColorLineRenderer.cpp */,
 				63F555C678D7A78C046F5277 /* ColorLineRenderer.h */,
+				63F55BAB005D7C0FA5CDF609 /* ColorBillboardRenderer.cpp */,
+				63F55DE8356965D6BA378D53 /* ColorBillboardRenderer.h */,
 			);
 			path = Renderers;
 			sourceTree = "<group>";
@@ -943,6 +948,7 @@
 				63F553F3C68821A1B9E6F120 /* TerrainSky.cpp in Sources */,
 				63F55B6111869A810DE69D25 /* SmoothTerrainSky.cpp in Sources */,
 				63F55D5FEDA3371C5428E435 /* ColorLineRenderer.cpp in Sources */,
+				63F554FCCC86C53227A6B4B2 /* ColorBillboardRenderer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

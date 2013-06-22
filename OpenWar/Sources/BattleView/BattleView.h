@@ -23,7 +23,7 @@ class ShootingCounter;
 class TrackingMarker;
 class UnitCounter;
 class ColorLineRenderer;
-
+class ColorBillboardRenderer;
 
 class BattleView : public TerrainView, public SimulationListener
 {
@@ -33,7 +33,6 @@ class BattleView : public TerrainView, public SimulationListener
 	BattleRendering* _battleRendering;
 
 	glm::vec3 _lightNormal;
-
 
 	BillboardTexture* _billboardTexture;
 	BillboardModel* _billboardModel;
@@ -45,6 +44,7 @@ class BattleView : public TerrainView, public SimulationListener
 	std::vector<TrackingMarker*> _trackingMarkers;
 
 	ColorLineRenderer* colorLineRenderer;
+	ColorBillboardRenderer* _colorBillboardRenderer;
 
 public:
 	SmoothTerrainSurfaceRenderer* _terrainSurfaceRendererSmooth;
@@ -88,8 +88,6 @@ public:
 
 	void RenderFighterWeapons(BattleRendering* rendering);
 
-	void RenderCasualtyColorBillboards(BattleRendering* rendering);
-
 	void RenderRangeMarkers(BattleRendering* rendering);
 
 	void RenderUnitMarkers(BattleRendering* rendering);
@@ -102,12 +100,10 @@ public:
 	void RenderTrackingShadow(BattleRendering* rendering, TrackingMarker* marker);
 	void RenderTrackingPath(BattleRendering* rendering, TrackingMarker* marker);
 	void RenderTrackingOrientation(BattleRendering* rendering, TrackingMarker* marker);
-	void RenderTrackingFighters(BattleRendering* rendering, TrackingMarker* marker);
 
 	void RenderMovementMarkers(BattleRendering* rendering);
 	void RenderMovementMarker(BattleRendering* rendering, Unit* unit);
 	void RenderMovementPath(BattleRendering* rendering, Unit* unit);
-	void RenderMovementFighters(BattleRendering* rendering, Unit* unit);
 
 
 

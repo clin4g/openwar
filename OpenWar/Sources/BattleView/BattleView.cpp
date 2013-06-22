@@ -11,6 +11,7 @@
 #include "MovementMarker.h"
 #include "ShootingCounter.h"
 #include "ColorLineRenderer.h"
+#include "ColorBillboardRenderer.h"
 #include "SmoothTerrainWater.h"
 #include "SmoothTerrainSky.h"
 #include "sprite.h"
@@ -40,7 +41,8 @@ _casualtyMarker(0),
 _movementMarkers(),
 _trackingMarkers(),
 _player(PlayerNone),
-colorLineRenderer(nullptr)
+colorLineRenderer(nullptr),
+_colorBillboardRenderer(nullptr)
 {
 	SetContentBounds(bounds2f(0, 0, 1024, 1024));
 
@@ -125,6 +127,7 @@ colorLineRenderer(nullptr)
 	_casualtyMarker = new CasualtyMarker(_battleModel);
 
 	colorLineRenderer = new ColorLineRenderer();
+	_colorBillboardRenderer = new ColorBillboardRenderer();
 }
 
 
@@ -359,7 +362,10 @@ void BattleView::Render()
 
 	RenderFighterWeapons(_battleRendering);
 
-	RenderCasualtyColorBillboards(_battleRendering);
+
+	_colorBillboardRenderer->Reset();
+	_casualtyMarker->RenderCasualtyColorBillboards(_colorBillboardRenderer);
+	_colorBillboardRenderer->Draw(GetTransform(), GetCameraUpVector(), GetViewportBounds().height());
 
 
 	_casualtyMarker->AppendCasualtyBillboards(_billboardModel);
@@ -374,7 +380,18 @@ void BattleView::Render()
 	RenderUnitMarkers(_battleRendering);
 
 	RenderTrackingMarkers(_battleRendering);
+
+	_colorBillboardRenderer->Reset();
+	for (TrackingMarker* marker : _trackingMarkers)
+		marker->RenderTrackingFighters(_colorBillboardRenderer);
+	_colorBillboardRenderer->Draw(GetTransform(), GetCameraUpVector(), GetViewportBounds().height());
+
 	RenderMovementMarkers(_battleRendering);
+
+	_colorBillboardRenderer->Reset();
+	for (MovementMarker* marker : _movementMarkers)
+		marker->RenderMovementFighters(_colorBillboardRenderer);
+	_colorBillboardRenderer->Draw(GetTransform(), GetCameraUpVector(), GetViewportBounds().height());
 
 
 	colorLineRenderer->Reset();
@@ -462,7 +479,7 @@ MovementMarker* BattleView::GetNearestMovementMarker(glm::vec2 position, Player 
 
 TrackingMarker* BattleView::AddTrackingMarker(Unit* unit)
 {
-	TrackingMarker* trackingMarker = new TrackingMarker(unit);
+	TrackingMarker* trackingMarker = new TrackingMarker(_battleModel, unit);
 	_trackingMarkers.push_back(trackingMarker);
 	return trackingMarker;
 }
@@ -554,23 +571,6 @@ void BattleView::RenderFighterWeapons(BattleRendering* rendering)
 }
 
 
-void BattleView::RenderCasualtyColorBillboards(BattleRendering* rendering)
-{
-	rendering->_vboColorBillboards._mode = GL_POINTS;
-	rendering->_vboColorBillboards._vertices.clear();
-
-	_casualtyMarker->RenderCasualtyColorBillboards(rendering);
-
-	BattleRendering::color_billboard_uniforms uniforms;
-	uniforms._transform = GetTransform();
-	uniforms._upvector = GetCameraUpVector();
-	uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
-
-	rendering->_color_billboard_renderer->render(rendering->_vboColorBillboards, uniforms);
-}
-
-
-
 
 void BattleView::RenderRangeMarkers(BattleRendering* rendering)
 {
@@ -590,9 +590,6 @@ void BattleView::RenderRangeMarkers(BattleRendering* rendering)
 
 void BattleView::RenderUnitMarkers(BattleRendering* rendering)
 {
-	rendering->_vboColorBillboards._mode = GL_POINTS;
-	rendering->_vboColorBillboards._vertices.clear();
-
 	rendering->_vboTextureBillboards1._mode = GL_POINTS;
 	rendering->_vboTextureBillboards1._vertices.clear();
 
@@ -606,12 +603,6 @@ void BattleView::RenderUnitMarkers(BattleRendering* rendering)
 		RenderUnitMissileTarget(rendering, unit);
 		AppendUnitMarker(rendering, marker);
 	}
-
-	BattleRendering::color_billboard_uniforms uniforms1;
-	uniforms1._transform = GetTransform();
-	uniforms1._upvector = GetCameraUpVector();
-	uniforms1._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
-	rendering->_color_billboard_renderer->render(rendering->_vboColorBillboards, uniforms1);
 
 	float y = GetCameraDirection().z;
 	float x = sqrtf(1 - y * y);
@@ -716,7 +707,7 @@ void BattleView::RenderTrackingMarkers(BattleRendering* rendering)
 		glEnable(GL_DEPTH_TEST);
 		RenderTrackingPath(rendering, marker);
 		RenderTrackingOrientation(rendering, marker);
-		RenderTrackingFighters(rendering, marker);
+
 	}
 }
 
@@ -845,42 +836,6 @@ void BattleView::RenderTrackingOrientation(BattleRendering* rendering, TrackingM
 }
 
 
-void BattleView::RenderTrackingFighters(BattleRendering* rendering, TrackingMarker* marker)
-{
-	if (!marker->_destinationUnit && !marker->_orientationUnit)
-	{
-		bool isBlue = marker->_unit->player == _battleModel->bluePlayer;
-		glm::vec4 color = isBlue ? glm::vec4(0, 0, 255, 16) / 255.0f : glm::vec4(255, 0, 0, 16) / 255.0f;
-
-		glm::vec2 destination = DestinationXXX(marker);
-		glm::vec2 orientation = marker->_orientationUnit ? marker->_orientationUnit->state.center : marker->_orientation;
-
-		Formation formation = marker->_unit->formation;
-		formation.SetDirection(angle(orientation - destination));
-
-		glm::vec2 frontLeft = formation.GetFrontLeft(destination);
-
-		rendering->_vboColorBillboards._mode = GL_POINTS;
-		rendering->_vboColorBillboards._vertices.clear();
-
-		for (Fighter* fighter = marker->_unit->fighters, * end = fighter + marker->_unit->fightersCount; fighter != end; ++fighter)
-		{
-			glm::vec2 offsetRight = formation.towardRight * (float)Unit::GetFighterFile(fighter);
-			glm::vec2 offsetBack = formation.towardBack * (float)Unit::GetFighterRank(fighter);
-
-			rendering->_vboColorBillboards._vertices.push_back(BattleRendering::color_billboard_vertex(GetPosition(frontLeft + offsetRight + offsetBack, 0.5), color, 3.0));
-		}
-
-		BattleRendering::color_billboard_uniforms uniforms;
-		uniforms._transform = GetTransform();
-		uniforms._upvector = GetCameraUpVector();
-		uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
-
-		rendering->_color_billboard_renderer->render(rendering->_vboColorBillboards, uniforms);
-	}
-}
-
-
 void BattleView::RenderMovementMarkers(BattleRendering* rendering)
 {
 	for (MovementMarker* marker : _movementMarkers)
@@ -889,7 +844,6 @@ void BattleView::RenderMovementMarkers(BattleRendering* rendering)
 		RenderMovementMarker(rendering, marker->_unit);
 		glEnable(GL_DEPTH_TEST);
 		RenderMovementPath(rendering, marker->_unit);
-		RenderMovementFighters(rendering, marker->_unit);
 	}
 }
 
@@ -951,40 +905,6 @@ void BattleView::RenderMovementPath(BattleRendering* rendering, Unit* unit)
 	}
 }
 
-
-void BattleView::RenderMovementFighters(BattleRendering* rendering, Unit* unit)
-{
-	if (!unit->movement.target)
-	{
-		bool isBlue = unit->player == _battleModel->bluePlayer;
-		glm::vec4 color = isBlue ? glm::vec4(0, 0, 255, 32) / 255.0f : glm::vec4(255, 0, 0, 32) / 255.0f;
-
-		glm::vec2 finalDestination = unit->movement.GetFinalDestination();
-
-		Formation formation = unit->formation;
-		formation.SetDirection(unit->movement.direction);
-
-		glm::vec2 frontLeft = formation.GetFrontLeft(finalDestination);
-
-		rendering->_vboColorBillboards._mode = GL_POINTS;
-		rendering->_vboColorBillboards._vertices.clear();
-
-		for (Fighter* fighter = unit->fighters, * end = fighter + unit->fightersCount; fighter != end; ++fighter)
-		{
-			glm::vec2 offsetRight = formation.towardRight * (float)Unit::GetFighterFile(fighter);
-			glm::vec2 offsetBack = formation.towardBack * (float)Unit::GetFighterRank(fighter);
-
-			rendering->_vboColorBillboards._vertices.push_back(BattleRendering::color_billboard_vertex(GetPosition(frontLeft + offsetRight + offsetBack, 0.5), color, 3.0));
-		}
-
-		BattleRendering::color_billboard_uniforms uniforms;
-		uniforms._transform = GetTransform();
-		uniforms._upvector = GetCameraUpVector();
-		uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
-
-		rendering->_color_billboard_renderer->render(rendering->_vboColorBillboards, uniforms);
-	}
-}
 
 
 void BattleView::TexRectN(vertexbuffer<texture_vertex>& shape, int size, int x, int y, int w, int h)

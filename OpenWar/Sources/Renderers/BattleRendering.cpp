@@ -7,62 +7,6 @@
 
 BattleRendering::BattleRendering()
 {
-	_color_billboard_renderer = new renderer<color_billboard_vertex, color_billboard_uniforms>((
-			VERTEX_ATTRIBUTE(color_billboard_vertex, _position),
-					VERTEX_ATTRIBUTE(color_billboard_vertex, _color),
-					VERTEX_ATTRIBUTE(color_billboard_vertex, _height),
-					SHADER_UNIFORM(color_billboard_uniforms, _transform),
-					SHADER_UNIFORM(color_billboard_uniforms, _upvector),
-					SHADER_UNIFORM(color_billboard_uniforms, _viewport_height),
-					VERTEX_SHADER
-		({
-						uniform
-						mat4 transform;
-						uniform
-						vec3 upvector;
-						uniform float viewport_height;
-						attribute
-						vec3 position;
-						attribute
-						vec4 color;
-						attribute float height;
-						varying
-						vec4 _color;
-
-						void main()
-						{
-							float scale = 0.5 * height * viewport_height;
-							vec3 position2 = position + scale * upvector;
-							vec4 p = transform * vec4(position, 1);
-							vec4 q = transform * vec4(position2, 1);
-							float s = abs(q.y / q.w - p.y / p.w);
-
-							float a = color.a;
-							if (s < 1.0)
-							{
-								a = a * s;
-								s = 1.0;
-							}
-
-							_color = vec4(color.rgb, a);
-							gl_Position = p;
-							gl_PointSize = s;
-						}
-					}),
-					FRAGMENT_SHADER
-		({
-						varying
-						vec4 _color;
-
-						void main()
-						{
-							gl_FragColor = _color;
-						}
-					})));
-	_color_billboard_renderer->_blend_sfactor = GL_SRC_ALPHA;
-	_color_billboard_renderer->_blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
-
-
 	_ground_gradient_renderer = new renderer<color_vertex3, ground_gradient_uniforms>((
 			VERTEX_ATTRIBUTE(color_vertex3, _position),
 					VERTEX_ATTRIBUTE(color_vertex3, _color),

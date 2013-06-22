@@ -5,7 +5,9 @@
 #ifndef MovementMarker_H
 #define MovementMarker_H
 
-#include "BattleModel.h"
+class BattleModel;
+class ColorBillboardRenderer;
+class Unit;
 
 
 class MovementMarker
@@ -19,6 +21,8 @@ public:
 	~MovementMarker();
 
 	bool Animate(float seconds);
+
+	void RenderMovementFighters(ColorBillboardRenderer* renderer);
 };
 
 

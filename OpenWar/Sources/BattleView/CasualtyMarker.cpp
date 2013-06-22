@@ -4,6 +4,7 @@
 
 #include "CasualtyMarker.h"
 #include "BattleRendering.h"
+#import "ColorBillboardRenderer.h"
 
 
 
@@ -34,7 +35,7 @@ bool CasualtyMarker::Animate(float seconds)
 
 
 
-void CasualtyMarker::RenderCasualtyColorBillboards(BattleRendering* rendering)
+void CasualtyMarker::RenderCasualtyColorBillboards(ColorBillboardRenderer* renderer)
 {
 	if (casualties.empty())
 		return;
@@ -48,7 +49,7 @@ void CasualtyMarker::RenderCasualtyColorBillboards(BattleRendering* rendering)
 		if (casualty.time <= 1)
 		{
 			glm::vec4 c = glm::mix(c1, casualty.player == Player1 ? cb : cr, casualty.time);
-			rendering->_vboColorBillboards._vertices.push_back(BattleRendering::color_billboard_vertex(casualty.position, c, 6.0));
+			renderer->AddBillboard(casualty.position, c, 6.0);
 		}
 	}
 }
