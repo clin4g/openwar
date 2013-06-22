@@ -7,6 +7,7 @@
 
 #include "BattleModel.h"
 class BattleRendering;
+class BillboardModel;
 
 
 class CasualtyMarker
@@ -23,16 +24,19 @@ public:
 		Casualty(glm::vec3 position_, Player player_, UnitPlatform platform_) :
 		position(position_), player(player_), platform(platform_), time(0), seed(rand() & 0x7fff) { }
 	};
+
 	std::vector<Casualty> casualties;
+	BattleModel* _battleModel;
 
 public:
-	CasualtyMarker();
+	CasualtyMarker(BattleModel* battleModel);
 	~CasualtyMarker();
 
 	void AddCasualty(glm::vec3 position, Player player, UnitPlatform platform);
 	bool Animate(float seconds);
 
 	void RenderCasualtyColorBillboards(BattleRendering* rendering);
+	void AppendCasualtyBillboards(BillboardModel* billboardModel);
 };
 
 

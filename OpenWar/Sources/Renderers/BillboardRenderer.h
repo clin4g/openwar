@@ -50,6 +50,18 @@ struct BillboardModel
 	BillboardTexture* texture;
 	std::vector<Billboard> staticBillboards;
 	std::vector<Billboard> dynamicBillboards;
+
+	int _billboardTreeShapes[16];
+	int _billboardShapeCasualtyAsh[8];
+	int _billboardShapeCasualtySam[8];
+	int _billboardShapeCasualtyCav[16];
+	int _billboardShapeFighterSamBlue;
+	int _billboardShapeFighterSamRed;
+	int _billboardShapeFighterAshBlue;
+	int _billboardShapeFighterAshRed;
+	int _billboardShapeFighterCavBlue;
+	int _billboardShapeFighterCavRed;
+	int _billboardShapeSmoke[8];
 };
 
 

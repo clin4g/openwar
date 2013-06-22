@@ -7,7 +7,8 @@
 
 
 
-CasualtyMarker::CasualtyMarker()
+CasualtyMarker::CasualtyMarker(BattleModel* battleModel) :
+_battleModel(battleModel)
 {
 }
 
@@ -49,5 +50,43 @@ void CasualtyMarker::RenderCasualtyColorBillboards(BattleRendering* rendering)
 			glm::vec4 c = glm::mix(c1, casualty.player == Player1 ? cb : cr, casualty.time);
 			rendering->_vboColorBillboards._vertices.push_back(BattleRendering::color_billboard_vertex(casualty.position, c, 6.0));
 		}
+	}
+}
+
+
+void CasualtyMarker::AppendCasualtyBillboards(BillboardModel* billboardModel)
+{
+	for (const CasualtyMarker::Casualty& casualty : casualties)
+	{
+		int shape = 0;
+		float height = 0;
+		//int j = 0, i = 0;
+		switch (casualty.platform)
+		{
+			case UnitPlatformAsh:
+				shape = billboardModel->_billboardShapeCasualtyAsh[casualty.seed & 7];
+				height = 2.5f;
+				//i = 3;
+				//j = casualty.seed & 3;
+				break;
+			case UnitPlatformSam:
+				shape = billboardModel->_billboardShapeCasualtySam[casualty.seed & 7];
+				height = 2.5f;
+				//i = 3;
+				//j = 4 + (casualty.seed & 3);
+				break;
+			case UnitPlatformCav:
+			case UnitPlatformGen:
+				shape = billboardModel->_billboardShapeCasualtySam[casualty.seed & 15];
+				height = 3.0f;
+				//i = 4;
+				//j = casualty.seed & 7;
+				break;
+		}
+
+		const float adjust = 0.5 - 2.0 / 64.0; // place texture 2 texels below ground
+		glm::vec3 p = _battleModel->terrainSurface->GetPosition(casualty.position.xy(), adjust * height);
+		billboardModel->dynamicBillboards.push_back(Billboard(p, 0, height, shape));
+
 	}
 }

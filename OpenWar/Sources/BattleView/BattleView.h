@@ -36,21 +36,10 @@ class BattleView : public TerrainView, public SimulationListener
 	glm::vec3 _lightNormal;
 
 
-
 	BillboardTexture* _billboardTexture;
 	BillboardModel* _billboardModel;
 	BillboardRenderer* _billboardRenderer;
-	int _billboardTreeShapes[16];
-	int _billboardShapeCasualtyAsh[8];
-	int _billboardShapeCasualtySam[8];
-	int _billboardShapeCasualtyCav[16];
-	int _billboardShapeFighterSamBlue;
-	int _billboardShapeFighterSamRed;
-	int _billboardShapeFighterAshBlue;
-	int _billboardShapeFighterAshRed;
-	int _billboardShapeFighterCavBlue;
-	int _billboardShapeFighterCavRed;
-	int _billboardShapeSmoke[8];
+
 
 	CasualtyMarker* _casualtyMarker;
 	std::vector<MovementMarker*> _movementMarkers;
@@ -105,7 +94,6 @@ public:
 
 	void RenderCasualtyColorBillboards(BattleRendering* rendering);
 
-	void AppendCasualtyBillboards(BillboardModel* billboardModel);
 	void AppendFighterBillboards(BillboardModel* billboardModel);
 	void AppendSmokeBillboards(BillboardModel* billboardModel);
 	void RenderTerrainBillboards();
