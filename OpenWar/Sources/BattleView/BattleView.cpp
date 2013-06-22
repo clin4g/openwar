@@ -32,15 +32,6 @@ _renderers(r),
 _battleRendering(battleRendering),
 _battleModel(battleModel),
 _bluePlayer(bluePlayer),
-_movementMarker_pathShape(),
-_rangeMarker_shape(),
-_trackingMarker_shadowShape(),
-_trackingMarker_pathShape(),
-_trackingMarker_orientationShape(),
-_trackingMarker_missileHeadShape(),
-_unitMarker_targetLineShape(),
-_unitMarker_targetHeadShape(),
-_shape_fighter_weapons(),
 _terrainSurfaceRendererSmooth(nullptr),
 _terrainSurfaceRendererTiled(nullptr),
 _billboardTexture(nullptr),
@@ -179,22 +170,22 @@ static float random_float()
 
 void BattleView::Initialize(bool editor)
 {
-	InitializeTerrainShadow();
+	InitializeTerrainShadow(_battleRendering);
 	InitializeTerrainTrees();
 
 	InitializeCameraPosition(_battleModel->units);
 }
 
 
-void BattleView::InitializeTerrainShadow()
+void BattleView::InitializeTerrainShadow(BattleRendering* rendering)
 {
 	bounds2f bounds = GetContentBounds();
 	glm::vec2 center = bounds.center();
 	float radius1 = 512;
 	float radius2 = 550;
 
-	_shape_terrain_shadow._mode = GL_TRIANGLES;
-	_shape_terrain_shadow._vertices.clear();
+	rendering->_vboTerrainShadow._mode = GL_TRIANGLES;
+	rendering->_vboTerrainShadow._vertices.clear();
 
 	int n = 16;
 	for (int i = 0; i < n; ++i)
@@ -207,15 +198,15 @@ void BattleView::InitializeTerrainShadow()
 		glm::vec2 p3 = center + radius2 * vector2_from_angle(angle2);
 		glm::vec2 p4 = center + radius1 * vector2_from_angle(angle2);
 
-		_shape_terrain_shadow._vertices.push_back(plain_vertex(p1));
-		_shape_terrain_shadow._vertices.push_back(plain_vertex(p2));
-		_shape_terrain_shadow._vertices.push_back(plain_vertex(p3));
-		_shape_terrain_shadow._vertices.push_back(plain_vertex(p3));
-		_shape_terrain_shadow._vertices.push_back(plain_vertex(p4));
-		_shape_terrain_shadow._vertices.push_back(plain_vertex(p1));
+		rendering->_vboTerrainShadow._vertices.push_back(plain_vertex(p1));
+		rendering->_vboTerrainShadow._vertices.push_back(plain_vertex(p2));
+		rendering->_vboTerrainShadow._vertices.push_back(plain_vertex(p3));
+		rendering->_vboTerrainShadow._vertices.push_back(plain_vertex(p3));
+		rendering->_vboTerrainShadow._vertices.push_back(plain_vertex(p4));
+		rendering->_vboTerrainShadow._vertices.push_back(plain_vertex(p1));
 	}
 
-	_shape_terrain_shadow.update(GL_STATIC_DRAW);
+	rendering->_vboTerrainShadow.update(GL_STATIC_DRAW);
 }
 
 
@@ -351,17 +342,17 @@ void BattleView::Render()
 
 	glDisable(GL_DEPTH_TEST);
 
-	RenderBackgroundLinen();
+	RenderBackgroundLinen(_battleRendering);
 
 	if (_battleModel->terrainSky != nullptr)
 		_battleModel->terrainSky->Render(_renderers, GetCameraDirection().z, GetFlip());
 
-	RenderTerrainShadow();
+	RenderTerrainShadow(_battleRendering);
 
 	glEnable(GL_DEPTH_TEST);
 
 	glEnable(GL_CULL_FACE);
-	RenderTerrainGround();
+	RenderTerrainGround(_battleRendering);
 	glDisable(GL_CULL_FACE);
 
 	if (_battleModel->terrainWater != nullptr)
@@ -369,18 +360,18 @@ void BattleView::Render()
 
 	glDepthMask(false);
 
-	RenderFighterWeapons();
+	RenderFighterWeapons(_battleRendering);
 
-	AppendCasualtyBillboards();
+	AppendCasualtyBillboards(_battleRendering);
 	AppendFighterBillboards();
 	AppendSmokeBillboards();
 	RenderTerrainBillboards();
 
-	RenderRangeMarkers();
-	RenderUnitMarkers();
+	RenderRangeMarkers(_battleRendering);
+	RenderUnitMarkers(_battleRendering);
 
-	RenderTrackingMarkers();
-	RenderMovementMarkers();
+	RenderTrackingMarkers(_battleRendering);
+	RenderMovementMarkers(_battleRendering);
 
 
 	colorLineRenderer->Reset();
@@ -497,7 +488,7 @@ void BattleView::RemoveTrackingMarker(TrackingMarker* trackingMarker)
 
 
 
-void BattleView::RenderBackgroundLinen()
+void BattleView::RenderBackgroundLinen(BattleRendering* rendering)
 {
 	bounds2f viewport = GetViewportBounds();
 
@@ -518,22 +509,22 @@ void BattleView::RenderBackgroundLinen()
 
 	texture_uniforms uniforms;
 	uniforms._transform = GetFlip() ? glm::scale(glm::mat4x4(), glm::vec3(-1.0f, -1.0f, 1.0f)) : glm::mat4x4();
-	uniforms._texture = _battleRendering->_textureBackgroundLinen;
+	uniforms._texture = rendering->_textureBackgroundLinen;
 
 	_renderers->_texture_renderer->render(shape, uniforms);
 }
 
 
-void BattleView::RenderTerrainShadow()
+void BattleView::RenderTerrainShadow(BattleRendering* rendering)
 {
 	plain_uniforms uniforms;
 	uniforms._transform = GetTransform();
 
-	_battleRendering->_ground_shadow_renderer->render(_shape_terrain_shadow, uniforms);
+	rendering->_ground_shadow_renderer->render(rendering->_vboTerrainShadow, uniforms);
 }
 
 
-void BattleView::RenderTerrainGround()
+void BattleView::RenderTerrainGround(BattleRendering* rendering)
 {
 	if (_terrainSurfaceRendererSmooth != nullptr)
 		_terrainSurfaceRendererSmooth->Render(GetTransform(), _lightNormal);
@@ -543,25 +534,25 @@ void BattleView::RenderTerrainGround()
 }
 
 
-void BattleView::RenderFighterWeapons()
+void BattleView::RenderFighterWeapons(BattleRendering* rendering)
 {
-	_shape_fighter_weapons._mode = GL_LINES;
-	_shape_fighter_weapons._vertices.clear();
+	rendering->_vboFighterWeapons._mode = GL_LINES;
+	rendering->_vboFighterWeapons._vertices.clear();
 
 	for (UnitCounter* marker : _battleModel->_unitMarkers)
 	{
-		AppendFighterWeapons(marker->_unit);
+		AppendFighterWeapons(rendering, marker->_unit);
 	}
 
 	BattleRendering::ground_color_uniforms uniforms3;
 	uniforms3._transform = GetTransform();
 	uniforms3._color = glm::vec4(0.4, 0.4, 0.4, 0.6);
-	_battleRendering->_ground_plain_renderer->render(_shape_fighter_weapons, uniforms3);
+	rendering->_ground_plain_renderer->render(rendering->_vboFighterWeapons, uniforms3);
 
 }
 
 
-void BattleView::AppendFighterWeapons(Unit* unit)
+void BattleView::AppendFighterWeapons(BattleRendering* rendering, Unit* unit)
 {
 	if (unit->stats.weaponReach > 0)
 	{
@@ -570,20 +561,20 @@ void BattleView::AppendFighterWeapons(Unit* unit)
 			glm::vec2 p1 = fighter->state.position;
 			glm::vec2 p2 = p1 + unit->stats.weaponReach * vector2_from_angle(fighter->state.direction);
 
-			_shape_fighter_weapons._vertices.push_back(plain_vertex3(to_vector3(p1)));
-			_shape_fighter_weapons._vertices.push_back(plain_vertex3(to_vector3(p2)));
+			rendering->_vboFighterWeapons._vertices.push_back(plain_vertex3(to_vector3(p1)));
+			rendering->_vboFighterWeapons._vertices.push_back(plain_vertex3(to_vector3(p2)));
 		}
 	}
 }
 
 
-void BattleView::AppendCasualtyBillboards()
+void BattleView::AppendCasualtyBillboards(BattleRendering* rendering)
 {
 	if (_casualtyMarker->casualties.empty())
 		return;
 
-	_color_billboards._mode = GL_POINTS;
-	_color_billboards._vertices.clear();
+	rendering->_vboColorBillboards._mode = GL_POINTS;
+	rendering->_vboColorBillboards._vertices.clear();
 
 	glm::vec4 c1 = glm::vec4(1, 1, 1, 0.8);
 	glm::vec4 cr = glm::vec4(1, 0, 0, 0);
@@ -593,7 +584,7 @@ void BattleView::AppendCasualtyBillboards()
 		if (casualty.time <= 1)
 		{
 			glm::vec4 c = glm::mix(c1, casualty.player == Player1 ? cb : cr, casualty.time);
-			_color_billboards._vertices.push_back(BattleRendering::color_billboard_vertex(casualty.position, c, 6.0));
+			rendering->_vboColorBillboards._vertices.push_back(BattleRendering::color_billboard_vertex(casualty.position, c, 6.0));
 		}
 
 		int shape = 0;
@@ -633,7 +624,7 @@ void BattleView::AppendCasualtyBillboards()
 	uniforms._upvector = GetCameraUpVector();
 	uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
 
-	_battleRendering->_color_billboard_renderer->render(_color_billboards, uniforms);
+	rendering->_color_billboard_renderer->render(rendering->_vboColorBillboards, uniforms);
 }
 
 
@@ -714,25 +705,25 @@ void BattleView::RenderTerrainBillboards()
 }
 
 
-void BattleView::RenderRangeMarkers()
+void BattleView::RenderRangeMarkers(BattleRendering* rendering)
 {
 	for (std::pair<int, Unit*> item : _battleModel->units)
 	{
 		Unit* unit = item.second;
 		if (unit->stats.maximumRange > 0 && unit->state.unitMode != UnitModeMoving && !unit->state.IsRouting())
 		{
-			BattleView::MakeRangeMarker(_rangeMarker_shape, unit->state.center, unit->state.direction, 20, unit->stats.maximumRange);
+			BattleView::MakeRangeMarker(rendering, rendering->_vboRangeMarker, unit->state.center, unit->state.direction, 20, unit->stats.maximumRange);
 
 			BattleRendering::ground_gradient_uniforms uniforms;
 			uniforms._transform = GetTransform();
 
-			_battleRendering->_ground_gradient_renderer->render(_rangeMarker_shape, uniforms);
+			rendering->_ground_gradient_renderer->render(rendering->_vboRangeMarker, uniforms);
 		}
 	}
 }
 
 
-void BattleView::MakeRangeMarker(vertexbuffer<color_vertex3>& shape, glm::vec2 position, float direction, float minimumRange, float maximumRange)
+void BattleView::MakeRangeMarker(BattleRendering* rendering, vertexbuffer<color_vertex3>& shape, glm::vec2 position, float direction, float minimumRange, float maximumRange)
 {
 	const float thickness = 8;
 	const float two_pi = 2 * (float)M_PI;
@@ -786,30 +777,30 @@ void BattleView::MakeRangeMarker(vertexbuffer<color_vertex3>& shape, glm::vec2 p
 }
 
 
-void BattleView::RenderUnitMarkers()
+void BattleView::RenderUnitMarkers(BattleRendering* rendering)
 {
-	_color_billboards._mode = GL_POINTS;
-	_color_billboards._vertices.clear();
+	rendering->_vboColorBillboards._mode = GL_POINTS;
+	rendering->_vboColorBillboards._vertices.clear();
 
-	_texture_billboards1._mode = GL_POINTS;
-	_texture_billboards1._vertices.clear();
+	rendering->_vboTextureBillboards1._mode = GL_POINTS;
+	rendering->_vboTextureBillboards1._vertices.clear();
 
-	_texture_billboards2._mode = GL_POINTS;
-	_texture_billboards2._vertices.clear();
+	rendering->_vboTextureBillboards2._mode = GL_POINTS;
+	rendering->_vboTextureBillboards2._vertices.clear();
 
 	for (UnitCounter* marker : _battleModel->_unitMarkers)
 	{
 		Unit* unit = marker->_unit;
 
-		RenderUnitMissileTarget(unit);
-		AppendUnitMarker(marker);
+		RenderUnitMissileTarget(rendering, unit);
+		AppendUnitMarker(rendering, marker);
 	}
 
 	BattleRendering::color_billboard_uniforms uniforms1;
 	uniforms1._transform = GetTransform();
 	uniforms1._upvector = GetCameraUpVector();
 	uniforms1._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
-	_battleRendering->_color_billboard_renderer->render(_color_billboards, uniforms1);
+	rendering->_color_billboard_renderer->render(rendering->_vboColorBillboards, uniforms1);
 
 	float y = GetCameraDirection().z;
 	float x = sqrtf(1 - y * y);
@@ -826,7 +817,7 @@ void BattleView::RenderUnitMarkers()
 
 	texture_billboard_uniforms uniforms2;
 	uniforms2._transform = GetTransform();
-	uniforms2._texture = _battleRendering->_textureUnitMarkers;
+	uniforms2._texture = rendering->_textureUnitMarkers;
 	uniforms2._upvector = GetCameraUpVector();
 	uniforms2._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
 	uniforms2._min_point_size = (32 - 8 * a) * renderer_base::pixels_per_point();
@@ -837,16 +828,16 @@ void BattleView::RenderUnitMarkers()
 		uniforms2._max_point_size *= 57.0f / 72.0f;
 	}
 
-	_texture_billboards1.update(GL_STATIC_DRAW);
+	rendering->_vboTextureBillboards1.update(GL_STATIC_DRAW);
 
 	glDisable(GL_DEPTH_TEST);
-	_billboardRenderer->_texture_billboard_renderer->render(_texture_billboards1, uniforms2);
-	_billboardRenderer->_texture_billboard_renderer->render(_texture_billboards2, uniforms2);
+	_billboardRenderer->_texture_billboard_renderer->render(rendering->_vboTextureBillboards1, uniforms2);
+	_billboardRenderer->_texture_billboard_renderer->render(rendering->_vboTextureBillboards2, uniforms2);
 	glEnable(GL_DEPTH_TEST);
 }
 
 
-void BattleView::AppendUnitMarker(UnitCounter* marker)
+void BattleView::AppendUnitMarker(BattleRendering* rendering, UnitCounter* marker)
 {
 	Unit* unit = marker->_unit;
 
@@ -880,41 +871,41 @@ void BattleView::AppendUnitMarker(UnitCounter* marker)
 		texsize = -texsize;
 	}
 
-	_texture_billboards1._vertices.push_back(texture_billboard_vertex(position, 32, texcoord1, texsize));
-	_texture_billboards2._vertices.push_back(texture_billboard_vertex(position, 32, texcoord2, texsize));
+	rendering->_vboTextureBillboards1._vertices.push_back(texture_billboard_vertex(position, 32, texcoord1, texsize));
+	rendering->_vboTextureBillboards2._vertices.push_back(texture_billboard_vertex(position, 32, texcoord2, texsize));
 }
 
 
-void BattleView::RenderUnitMissileTarget(Unit* unit)
+void BattleView::RenderUnitMissileTarget(BattleRendering* rendering, Unit* unit)
 {
 	float scale = 0.5;
 
 	if (unit->missileTarget != nullptr && unit->missileTargetLocked)
 	{
-		BattleView::MissileLine(_unitMarker_targetLineShape, unit->state.center, unit->missileTarget->state.center, scale);
-		BattleView::MissileHead(_unitMarker_targetHeadShape, unit->state.center, unit->missileTarget->state.center, scale);
+		BattleView::MissileLine(rendering->_vboUnitMarkerTargetLine, unit->state.center, unit->missileTarget->state.center, scale);
+		BattleView::MissileHead(rendering->_vboUnitMarkerTargetHead, unit->state.center, unit->missileTarget->state.center, scale);
 
 		BattleRendering::ground_texture_uniforms uniforms;
 		uniforms._transform = GetTransform();
-		uniforms._texture = unit->player == _bluePlayer ? _battleRendering->_textureMissileBlue : _battleRendering->_textureMissileRed;;
+		uniforms._texture = unit->player == _bluePlayer ? rendering->_textureMissileBlue : rendering->_textureMissileRed;;
 
-		_battleRendering->_ground_texture_renderer->render(_unitMarker_targetLineShape, uniforms);
-		_battleRendering->_ground_texture_renderer->render(_unitMarker_targetHeadShape, uniforms);
+		rendering->_ground_texture_renderer->render(rendering->_vboUnitMarkerTargetLine, uniforms);
+		rendering->_ground_texture_renderer->render(rendering->_vboUnitMarkerTargetHead, uniforms);
 	}
 }
 
 
-void BattleView::RenderTrackingMarkers()
+void BattleView::RenderTrackingMarkers(BattleRendering* rendering)
 {
 	for (TrackingMarker* marker : _trackingMarkers)
 	{
 		glDisable(GL_DEPTH_TEST);
-		RenderTrackingMarker(marker);
-		RenderTrackingShadow(marker);
+		RenderTrackingMarker(rendering, marker);
+		RenderTrackingShadow(rendering, marker);
 		glEnable(GL_DEPTH_TEST);
-		RenderTrackingPath(marker);
-		RenderTrackingOrientation(marker);
-		RenderTrackingFighters(marker);
+		RenderTrackingPath(rendering, marker);
+		RenderTrackingOrientation(rendering, marker);
+		RenderTrackingFighters(rendering, marker);
 	}
 }
 
@@ -928,7 +919,7 @@ static glm::vec2 DestinationXXX(TrackingMarker* marker)
 }
 
 
-void BattleView::RenderTrackingMarker(TrackingMarker* marker)
+void BattleView::RenderTrackingMarker(BattleRendering* rendering, TrackingMarker* marker)
 {
 	glm::vec2 position = marker->_unit->state.center;
 	glm::vec2 destination = DestinationXXX(marker);
@@ -947,39 +938,39 @@ void BattleView::RenderTrackingMarker(TrackingMarker* marker)
 
 		if (marker->_destinationUnit == nullptr)
 		{
-			_texture_billboards1._mode = GL_POINTS;
-			_texture_billboards1._vertices.clear();
+			rendering->_vboTextureBillboards1._mode = GL_POINTS;
+			rendering->_vboTextureBillboards1._vertices.clear();
 
 			glm::vec3 position = to_vector3(destination, 0);
 			//float pointsize = GetUnitMarkerScreenSize(position);
 			glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
 			glm::vec2 texcoord = texsize * glm::vec2(marker->_unit->player != _bluePlayer ? 4 : 3, 0);
 
-			_texture_billboards1._vertices.push_back(texture_billboard_vertex(position, 32, texcoord, texsize));
-			_texture_billboards1.update(GL_STATIC_DRAW);
+			rendering->_vboTextureBillboards1._vertices.push_back(texture_billboard_vertex(position, 32, texcoord, texsize));
+			rendering->_vboTextureBillboards1.update(GL_STATIC_DRAW);
 
 			texture_billboard_uniforms uniforms;
 			uniforms._transform = GetTransform();
-			uniforms._texture = _battleRendering->_textureUnitMarkers;
+			uniforms._texture = rendering->_textureUnitMarkers;
 			uniforms._upvector = GetCameraUpVector();
 			uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
 			uniforms._min_point_size = 24 * renderer_base::pixels_per_point();
 			uniforms._max_point_size = 48 * renderer_base::pixels_per_point();
-			_billboardRenderer->_texture_billboard_renderer->render(_texture_billboards1, uniforms);
+			_billboardRenderer->_texture_billboard_renderer->render(rendering->_vboTextureBillboards1, uniforms);
 		}
 	}
 }
 
 
-void BattleView::RenderTrackingShadow(TrackingMarker* marker)
+void BattleView::RenderTrackingShadow(BattleRendering* rendering, TrackingMarker* marker)
 {
 	glm::vec2 p = DestinationXXX(marker);
 	glm::vec2 offset = ContentToScreen(to_vector3(p, 0));
 	float scale = 5;
 
-	TexRectN(_trackingMarker_shadowShape, 32, 0, 0, 32, 32);
+	TexRectN(rendering->_vboTrackingMarkerShadow, 32, 0, 0, 32, 32);
 
-	for (texture_vertex& vertex : _trackingMarker_shadowShape._vertices)
+	for (texture_vertex& vertex : rendering->_vboTrackingMarkerShadow._vertices)
 	{
 		vertex._position *= scale;
 		vertex._position += offset;
@@ -990,12 +981,12 @@ void BattleView::RenderTrackingShadow(TrackingMarker* marker)
 
 	texture_uniforms uniforms;
 	uniforms._transform = s.transform();//GetTransform() * matrix4::translate(p._x, p._y, 0) * matrix4::scale(scale, scale, 1);
-	uniforms._texture = _battleRendering->_textureTouchMarker;
-	_renderers->_texture_renderer->render(_trackingMarker_shadowShape, uniforms);
+	uniforms._texture = rendering->_textureTouchMarker;
+	_renderers->_texture_renderer->render(rendering->_vboTrackingMarkerShadow, uniforms);
 }
 
 
-void BattleView::RenderTrackingPath(TrackingMarker* marker)
+void BattleView::RenderTrackingPath(BattleRendering* rendering, TrackingMarker* marker)
 {
 	if (marker->_path.size() != 0)
 	{
@@ -1011,39 +1002,39 @@ void BattleView::RenderTrackingPath(TrackingMarker* marker)
 		if (marker->_destinationUnit != 0)
 			path.insert(path.end(), marker->_destinationUnit->state.center);
 
-		BattleView::Path(_trackingMarker_pathShape, mode, position, path, 0);
+		BattleView::Path(rendering->_vboTrackingMarkerPath, mode, position, path, 0);
 
 		BattleRendering::ground_texture_uniforms uniforms;
 		uniforms._transform = GetTransform();
-		uniforms._texture = _battleRendering->_textureMovementGray;
-		_battleRendering->_ground_texture_renderer->render(_trackingMarker_pathShape, uniforms);
+		uniforms._texture = rendering->_textureMovementGray;
+		rendering->_ground_texture_renderer->render(rendering->_vboTrackingMarkerPath, uniforms);
 	}
 }
 
 
-void BattleView::RenderTrackingOrientation(TrackingMarker* marker)
+void BattleView::RenderTrackingOrientation(BattleRendering* rendering, TrackingMarker* marker)
 {
 	if (marker->_orientationUnit != nullptr || marker->_hasOrientation)
 	{
 		glm::vec2 destination = DestinationXXX(marker);
 		glm::vec2 orientation = marker->_orientationUnit ? marker->_orientationUnit->state.center : marker->_orientation;
 
-		BattleView::MissileLine(_trackingMarker_orientationShape, destination, orientation, 0.5);
-		BattleView::MissileHead(_trackingMarker_missileHeadShape, destination, orientation, 0.5);
+		BattleView::MissileLine(rendering->_vboTrackingMarkerOrientation, destination, orientation, 0.5);
+		BattleView::MissileHead(rendering->_vboTrackingMarkerMissileHead, destination, orientation, 0.5);
 
 		BattleRendering::ground_texture_uniforms uniforms;
 		uniforms._transform = GetTransform();
-		uniforms._texture = _battleRendering->_textureMissileGray;
+		uniforms._texture = rendering->_textureMissileGray;
 
 		//_ground_texture_renderer3->render(_trackingMarker_orientationShape, uniforms);
 
 		if (marker->_orientationUnit != nullptr)
-			_battleRendering->_ground_texture_renderer->render(_trackingMarker_missileHeadShape, uniforms);
+			rendering->_ground_texture_renderer->render(rendering->_vboTrackingMarkerMissileHead, uniforms);
 	}
 }
 
 
-void BattleView::RenderTrackingFighters(TrackingMarker* marker)
+void BattleView::RenderTrackingFighters(BattleRendering* rendering, TrackingMarker* marker)
 {
 	if (!marker->_destinationUnit && !marker->_orientationUnit)
 	{
@@ -1058,15 +1049,15 @@ void BattleView::RenderTrackingFighters(TrackingMarker* marker)
 
 		glm::vec2 frontLeft = formation.GetFrontLeft(destination);
 
-		_color_billboards._mode = GL_POINTS;
-		_color_billboards._vertices.clear();
+		rendering->_vboColorBillboards._mode = GL_POINTS;
+		rendering->_vboColorBillboards._vertices.clear();
 
 		for (Fighter* fighter = marker->_unit->fighters, * end = fighter + marker->_unit->fightersCount; fighter != end; ++fighter)
 		{
 			glm::vec2 offsetRight = formation.towardRight * (float)Unit::GetFighterFile(fighter);
 			glm::vec2 offsetBack = formation.towardBack * (float)Unit::GetFighterRank(fighter);
 
-			_color_billboards._vertices.push_back(BattleRendering::color_billboard_vertex(to_vector3(frontLeft + offsetRight + offsetBack, 0.5), color, 3.0));
+			rendering->_vboColorBillboards._vertices.push_back(BattleRendering::color_billboard_vertex(to_vector3(frontLeft + offsetRight + offsetBack, 0.5), color, 3.0));
 		}
 
 		BattleRendering::color_billboard_uniforms uniforms;
@@ -1074,25 +1065,25 @@ void BattleView::RenderTrackingFighters(TrackingMarker* marker)
 		uniforms._upvector = GetCameraUpVector();
 		uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
 
-		_battleRendering->_color_billboard_renderer->render(_color_billboards, uniforms);
+		rendering->_color_billboard_renderer->render(rendering->_vboColorBillboards, uniforms);
 	}
 }
 
 
-void BattleView::RenderMovementMarkers()
+void BattleView::RenderMovementMarkers(BattleRendering* rendering)
 {
 	for (MovementMarker* marker : _movementMarkers)
 	{
 		glDisable(GL_DEPTH_TEST);
-		RenderMovementMarker(marker->_unit);
+		RenderMovementMarker(rendering, marker->_unit);
 		glEnable(GL_DEPTH_TEST);
-		RenderMovementPath(marker->_unit);
-		RenderMovementFighters(marker->_unit);
+		RenderMovementPath(rendering, marker->_unit);
+		RenderMovementFighters(rendering, marker->_unit);
 	}
 }
 
 
-void BattleView::RenderMovementMarker(Unit* unit)
+void BattleView::RenderMovementMarker(BattleRendering* rendering, Unit* unit)
 {
 	glm::vec2 finalDestination = unit->movement.GetFinalDestination();
 
@@ -1100,31 +1091,31 @@ void BattleView::RenderMovementMarker(Unit* unit)
 	{
 		if (!unit->movement.target)
 		{
-			_texture_billboards1._mode = GL_POINTS;
-			_texture_billboards1._vertices.clear();
+			rendering->_vboTextureBillboards1._mode = GL_POINTS;
+			rendering->_vboTextureBillboards1._vertices.clear();
 
 			glm::vec3 position = to_vector3(finalDestination, 0.5);
 			//float pointsize = GetUnitMarkerScreenSize(vector3(finalDestination, 0));
 			glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
 			glm::vec2 texcoord = texsize * glm::vec2(unit->player != _bluePlayer ? 4 : 3, 0);
 
-			_texture_billboards1._vertices.push_back(texture_billboard_vertex(position, 32, texcoord, texsize));
-			_texture_billboards1.update(GL_STATIC_DRAW);
+			rendering->_vboTextureBillboards1._vertices.push_back(texture_billboard_vertex(position, 32, texcoord, texsize));
+			rendering->_vboTextureBillboards1.update(GL_STATIC_DRAW);
 
 			texture_billboard_uniforms uniforms;
 			uniforms._transform = GetTransform();
-			uniforms._texture = _battleRendering->_textureUnitMarkers;
+			uniforms._texture = rendering->_textureUnitMarkers;
 			uniforms._upvector = GetCameraUpVector();
 			uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
 			uniforms._min_point_size = 24 * renderer_base::pixels_per_point();
 			uniforms._max_point_size = 48 * renderer_base::pixels_per_point();
-			_billboardRenderer->_texture_billboard_renderer->render(_texture_billboards1, uniforms);
+			_billboardRenderer->_texture_billboard_renderer->render(rendering->_vboTextureBillboards1, uniforms);
 		}
 	}
 }
 
 
-void BattleView::RenderMovementPath(Unit* unit)
+void BattleView::RenderMovementPath(BattleRendering* rendering, Unit* unit)
 {
 	if (unit->movement.path.size() != 0)
 	{
@@ -1140,17 +1131,17 @@ void BattleView::RenderMovementPath(Unit* unit)
 		if (unit->movement.target != 0)
 			path.insert(path.end(), unit->movement.target->state.center);
 
-		Path(_movementMarker_pathShape, mode, position, path, unit->movement.path_t0);
+		Path(rendering->_vboMovementMarkerPath, mode, position, path, unit->movement.path_t0);
 
 		BattleRendering::ground_texture_uniforms uniforms;
 		uniforms._transform = GetTransform();
-		uniforms._texture = unit->player == _bluePlayer ? _battleRendering->_textureMovementBlue : _battleRendering->_textureMovementRed;
-		_battleRendering->_ground_texture_renderer->render(_movementMarker_pathShape, uniforms);
+		uniforms._texture = unit->player == _bluePlayer ? rendering->_textureMovementBlue : rendering->_textureMovementRed;
+		rendering->_ground_texture_renderer->render(rendering->_vboMovementMarkerPath, uniforms);
 	}
 }
 
 
-void BattleView::RenderMovementFighters(Unit* unit)
+void BattleView::RenderMovementFighters(BattleRendering* rendering, Unit* unit)
 {
 	if (!unit->movement.target)
 	{
@@ -1164,15 +1155,15 @@ void BattleView::RenderMovementFighters(Unit* unit)
 
 		glm::vec2 frontLeft = formation.GetFrontLeft(finalDestination);
 
-		_color_billboards._mode = GL_POINTS;
-		_color_billboards._vertices.clear();
+		rendering->_vboColorBillboards._mode = GL_POINTS;
+		rendering->_vboColorBillboards._vertices.clear();
 
 		for (Fighter* fighter = unit->fighters, * end = fighter + unit->fightersCount; fighter != end; ++fighter)
 		{
 			glm::vec2 offsetRight = formation.towardRight * (float)Unit::GetFighterFile(fighter);
 			glm::vec2 offsetBack = formation.towardBack * (float)Unit::GetFighterRank(fighter);
 
-			_color_billboards._vertices.push_back(BattleRendering::color_billboard_vertex(to_vector3(frontLeft + offsetRight + offsetBack, 0.5), color, 3.0));
+			rendering->_vboColorBillboards._vertices.push_back(BattleRendering::color_billboard_vertex(to_vector3(frontLeft + offsetRight + offsetBack, 0.5), color, 3.0));
 		}
 
 		BattleRendering::color_billboard_uniforms uniforms;
@@ -1180,31 +1171,8 @@ void BattleView::RenderMovementFighters(Unit* unit)
 		uniforms._upvector = GetCameraUpVector();
 		uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
 
-		_battleRendering->_color_billboard_renderer->render(_color_billboards, uniforms);
+		rendering->_color_billboard_renderer->render(rendering->_vboColorBillboards, uniforms);
 	}
-}
-
-
-
-texture_billboard_vertex BattleView::MakeBillboardVertex(glm::vec2 position, float height, int i, int j, bool flipx, bool flipy)
-{
-	glm::vec2 texsize = glm::vec2(0.125, 0.125);
-	glm::vec2 texcoord = texsize * glm::vec2(j, i);
-
-	if (flipx)
-	{
-		texcoord.x += texsize.x;
-		texsize.x = -texsize.x;
-	}
-	if (flipy)
-	{
-		texcoord.y += texsize.y;
-		texsize.y = -texsize.y;
-	}
-
-	const float adjust = 0.5 - 2.0 / 64.0; // place texture 2 texels below ground
-	glm::vec3 p = to_vector3(position, adjust * height);
-	return texture_billboard_vertex(p, height, texcoord, texsize);
 }
 
 

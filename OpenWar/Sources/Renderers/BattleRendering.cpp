@@ -234,6 +234,5 @@ BattleRendering::BattleRendering()
 	_textureMissileBlue = new texture(@"MissileBlue16x16.png");
 	_textureMissileGray = new texture(@"MissileGray16x16.png");
 	_textureMissileRed = new texture(@"MissileRed16x16.png");
-	_textureBillboards = new texture(@"Billboards.png");
 	_textureTouchMarker = new texture(@"TouchMarker.png");
 }

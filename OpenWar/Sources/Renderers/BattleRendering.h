@@ -52,9 +52,21 @@ struct BattleRendering
 		const texture* _texture;
 	};
 
+	vertexbuffer<plain_vertex> _vboTerrainShadow;
+	vertexbuffer<BattleRendering::color_billboard_vertex> _vboColorBillboards;
+	vertexbuffer<plain_vertex3> _vboFighterWeapons;
+	vertexbuffer<color_vertex3> _vboRangeMarker;
+	vertexbuffer<texture_vertex3> _vboMovementMarkerPath;
+	vertexbuffer<texture_vertex3> _vboTrackingMarkerPath;
+	vertexbuffer<texture_vertex3> _vboTrackingMarkerOrientation;
+	vertexbuffer<texture_vertex3> _vboTrackingMarkerMissileHead;
+	vertexbuffer<texture_vertex3> _vboUnitMarkerTargetLine;
+	vertexbuffer<texture_vertex3> _vboUnitMarkerTargetHead;
+	vertexbuffer<texture_vertex> _vboTrackingMarkerShadow;
+	vertexbuffer<texture_billboard_vertex> _vboTextureBillboards1;
+	vertexbuffer<texture_billboard_vertex> _vboTextureBillboards2;
 
 	renderer<color_billboard_vertex, color_billboard_uniforms>* _color_billboard_renderer;
-
 	renderer<color_vertex3, ground_gradient_uniforms>* _ground_gradient_renderer;
 	renderer<plain_vertex3, ground_color_uniforms>* _ground_plain_renderer;
 	renderer<texture_vertex3, ground_texture_uniforms>* _ground_texture_renderer;
@@ -68,7 +80,6 @@ struct BattleRendering
 	texture* _textureMissileBlue;
 	texture* _textureMissileGray;
 	texture* _textureMissileRed;
-	texture* _textureBillboards;
 	texture* _textureTouchMarker;
 
 	BattleRendering();

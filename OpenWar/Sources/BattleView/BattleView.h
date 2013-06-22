@@ -28,33 +28,14 @@ class ColorLineRenderer;
 class BattleView : public TerrainView, public SimulationListener
 {
 	renderers* _renderers;
-	BattleRendering* _battleRendering;
 	BattleModel* _battleModel;
 	Player _bluePlayer;
 
-	// static shapes
-	vertexbuffer<plain_vertex> _shape_terrain_shadow;
-
-	// dynamic shapes
-	vertexbuffer<BattleRendering::color_billboard_vertex> _color_billboards;
-
-	vertexbuffer<plain_vertex3> _shape_fighter_weapons;
-	vertexbuffer<color_vertex3> _rangeMarker_shape;
-	vertexbuffer<texture_vertex3> _movementMarker_pathShape;
-
-	vertexbuffer<texture_vertex3> _trackingMarker_pathShape;
-	vertexbuffer<texture_vertex3> _trackingMarker_orientationShape;
-	vertexbuffer<texture_vertex3> _trackingMarker_missileHeadShape;
-	vertexbuffer<texture_vertex3> _unitMarker_targetLineShape;
-	vertexbuffer<texture_vertex3> _unitMarker_targetHeadShape;
-
-	vertexbuffer<texture_vertex> _trackingMarker_shadowShape;
+	BattleRendering* _battleRendering;
 
 	glm::vec3 _lightNormal;
 
 
-	vertexbuffer<texture_billboard_vertex> _texture_billboards1;
-	vertexbuffer<texture_billboard_vertex> _texture_billboards2;
 
 	BillboardTexture* _billboardTexture;
 	BillboardModel* _billboardModel;
@@ -104,7 +85,7 @@ public:
 	void AddRangeMarker(Unit* unit);
 
 	void Initialize(bool editor = false);
-	void InitializeTerrainShadow();
+	void InitializeTerrainShadow(BattleRendering* rendering);
 
 	void InitializeTerrainTrees();
 	void UpdateTerrainTrees(bounds2f bounds);
@@ -114,40 +95,43 @@ public:
 	virtual void Render();
 	virtual void Update(double secondsSinceLastUpdate);
 
-	void RenderBackgroundLinen();
 
-	void RenderTerrainShadow();
-	void RenderTerrainGround();
 
-	void RenderFighterWeapons();
-	void AppendFighterWeapons(Unit* unit);
 
-	void AppendCasualtyBillboards();
+	void RenderBackgroundLinen(BattleRendering* rendering);
+
+	void RenderTerrainShadow(BattleRendering* rendering);
+	void RenderTerrainGround(BattleRendering* rendering);
+
+	void RenderFighterWeapons(BattleRendering* rendering);
+	void AppendFighterWeapons(BattleRendering* rendering, Unit* unit);
+
+	void AppendCasualtyBillboards(BattleRendering* rendering);
 	void AppendFighterBillboards();
 	void AppendSmokeBillboards();
 	void RenderTerrainBillboards();
 
-	void RenderRangeMarkers();
-	void MakeRangeMarker(vertexbuffer<color_vertex3>& shape, glm::vec2 position, float direction, float minimumRange, float maximumRange);
+	void RenderRangeMarkers(BattleRendering* rendering);
+	void MakeRangeMarker(BattleRendering* rendering, vertexbuffer<color_vertex3>& shape, glm::vec2 position, float direction, float minimumRange, float maximumRange);
 
-	void RenderUnitMarkers();
-	void AppendUnitMarker(UnitCounter* marker);
+	void RenderUnitMarkers(BattleRendering* rendering);
+	void AppendUnitMarker(BattleRendering* rendering, UnitCounter* marker);
 
-	void RenderUnitMissileTarget(Unit* unit);
+	void RenderUnitMissileTarget(BattleRendering* rendering, Unit* unit);
 
-	void RenderTrackingMarkers();
-	void RenderTrackingMarker(TrackingMarker* marker);
-	void RenderTrackingShadow(TrackingMarker* marker);
-	void RenderTrackingPath(TrackingMarker* marker);
-	void RenderTrackingOrientation(TrackingMarker* marker);
-	void RenderTrackingFighters(TrackingMarker* marker);
+	void RenderTrackingMarkers(BattleRendering* rendering);
+	void RenderTrackingMarker(BattleRendering* rendering, TrackingMarker* marker);
+	void RenderTrackingShadow(BattleRendering* rendering, TrackingMarker* marker);
+	void RenderTrackingPath(BattleRendering* rendering, TrackingMarker* marker);
+	void RenderTrackingOrientation(BattleRendering* rendering, TrackingMarker* marker);
+	void RenderTrackingFighters(BattleRendering* rendering, TrackingMarker* marker);
 
-	void RenderMovementMarkers();
-	void RenderMovementMarker(Unit* unit);
-	void RenderMovementPath(Unit* unit);
-	void RenderMovementFighters(Unit* unit);
+	void RenderMovementMarkers(BattleRendering* rendering);
+	void RenderMovementMarker(BattleRendering* rendering, Unit* unit);
+	void RenderMovementPath(BattleRendering* rendering, Unit* unit);
+	void RenderMovementFighters(BattleRendering* rendering, Unit* unit);
 
-	texture_billboard_vertex MakeBillboardVertex(glm::vec2 position, float height, int i, int j, bool flipx = false, bool flipy = false);
+
 
 	static void TexRectN(vertexbuffer<texture_vertex>& shape, int size, int x, int y, int w, int h);
 	static void TexRect256(vertexbuffer<texture_vertex>& shape, int x, int y, int w, int h);
