@@ -44,7 +44,6 @@ class BattleView : public TerrainView, public SimulationListener
 	CasualtyMarker* _casualtyMarker;
 	std::vector<MovementMarker*> _movementMarkers;
 	std::vector<TrackingMarker*> _trackingMarkers;
-	std::vector<RangeMarker*> _rangeMarkers;
 
 	ColorLineRenderer* colorLineRenderer;
 
@@ -71,8 +70,6 @@ public:
 	TrackingMarker* GetTrackingMarker(Unit* unit);
 	void RemoveTrackingMarker(TrackingMarker* trackingMarker);
 
-	void AddRangeMarker(Unit* unit);
-
 	void Initialize(bool editor = false);
 	void InitializeTerrainShadow(BattleRendering* rendering);
 
@@ -93,10 +90,6 @@ public:
 	void RenderFighterWeapons(BattleRendering* rendering);
 
 	void RenderCasualtyColorBillboards(BattleRendering* rendering);
-
-	void AppendFighterBillboards(BillboardModel* billboardModel);
-	void AppendSmokeBillboards(BillboardModel* billboardModel);
-	void RenderTerrainBillboards();
 
 	void RenderRangeMarkers(BattleRendering* rendering);
 

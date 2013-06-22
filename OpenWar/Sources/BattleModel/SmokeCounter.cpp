@@ -4,6 +4,7 @@
 
 #include "SmokeCounter.h"
 #include "SoundPlayer.h"
+#include "BillboardRenderer.h"
 
 
 
@@ -61,4 +62,20 @@ bool SmokeCounter::Animate(float seconds)
 	}
 
 	return alive;
+}
+
+
+void SmokeCounter::AppendSmokeBillboards(BillboardModel* billboardModel)
+{
+	for (SmokeCounter::Particle& projectile : particles)
+	{
+		if (projectile.time > 0)
+		{
+			int i = (int)(8 * projectile.time);
+			if (i > 7)
+				i = 7;
+
+			billboardModel->dynamicBillboards.push_back(Billboard(projectile.position, 0, 1 + 3 * projectile.time, billboardModel->_billboardShapeSmoke[i]));
+		}
+	}
 }

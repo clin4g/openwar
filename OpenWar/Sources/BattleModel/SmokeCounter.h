@@ -6,6 +6,7 @@
 #define SmokeMarker_H
 
 #include "BattleModel.h"
+class BillboardModel;
 
 
 class SmokeCounter
@@ -34,6 +35,7 @@ public:
 
 	bool Animate(float seconds);
 	void AddParticle(glm::vec3 position1, glm::vec3 position2, float delay);
+	void AppendSmokeBillboards(BillboardModel* billboardModel);
 };
 
 

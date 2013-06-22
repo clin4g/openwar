@@ -362,10 +362,14 @@ void BattleView::Render()
 
 	RenderCasualtyColorBillboards(_battleRendering);
 
+
 	_casualtyMarker->AppendCasualtyBillboards(_billboardModel);
-	AppendFighterBillboards(_billboardModel);
-	AppendSmokeBillboards(_billboardModel);
-	RenderTerrainBillboards();
+	for (UnitCounter* marker : _battleModel->_unitMarkers)
+		marker->AppendFighterBillboards(_billboardModel);
+	for (SmokeCounter* marker : _battleModel->_smokeMarkers)
+		marker->AppendSmokeBillboards(_billboardModel);
+	_billboardRenderer->Render(_billboardModel, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()));
+
 
 	RenderRangeMarkers(_battleRendering);
 	RenderUnitMarkers(_battleRendering);
@@ -567,39 +571,6 @@ void BattleView::RenderCasualtyColorBillboards(BattleRendering* rendering)
 }
 
 
-
-void BattleView::AppendFighterBillboards(BillboardModel* billboardModel)
-{
-	for (UnitCounter* marker : _battleModel->_unitMarkers)
-	{
-		marker->AppendFighterBillboards(billboardModel);
-	}
-}
-
-
-void BattleView::AppendSmokeBillboards(BillboardModel* billboardModel)
-{
-	for (SmokeCounter* marker : _battleModel->_smokeMarkers)
-	{
-		for (SmokeCounter::Particle& projectile : marker->particles)
-		{
-			if (projectile.time > 0)
-			{
-				int i = (int)(8 * projectile.time);
-				if (i > 7)
-					i = 7;
-
-				billboardModel->dynamicBillboards.push_back(Billboard(projectile.position, 0, 1 + 3 * projectile.time, _billboardModel->_billboardShapeSmoke[i]));
-			}
-		}
-	}
-}
-
-
-void BattleView::RenderTerrainBillboards()
-{
-	_billboardRenderer->Render(_billboardModel, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()));
-}
 
 
 void BattleView::RenderRangeMarkers(BattleRendering* rendering)
