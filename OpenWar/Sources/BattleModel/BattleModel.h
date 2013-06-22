@@ -313,6 +313,7 @@ class BattleModel : public TerrainModel
 {
 public:
 	int lastUnitId;
+	Player bluePlayer;
 	Player winner;
 	float time;
 	float timeStep;

@@ -27,11 +27,10 @@ static affine2 billboard_texcoords(int x, int y, bool flip)
 
 
 
-BattleView::BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer) : TerrainView(screen, battleModel->terrainSurface),
+BattleView::BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering) : TerrainView(screen, battleModel->terrainSurface),
 _renderers(r),
 _battleRendering(battleRendering),
 _battleModel(battleModel),
-_bluePlayer(bluePlayer),
 _terrainSurfaceRendererSmooth(nullptr),
 _terrainSurfaceRendererTiled(nullptr),
 _billboardTexture(nullptr),
@@ -668,7 +667,7 @@ void BattleView::AppendUnitMarker(BattleRendering* rendering, UnitCounter* marke
 	int state = 0;
 	if (routingIndicator)
 		state = 2;
-	else if (unit->player != _bluePlayer)
+	else if (unit->player != _battleModel->bluePlayer)
 		state = 1;
 
 	glm::vec3 position = GetPosition(unit->state.center, 0);
@@ -699,7 +698,7 @@ void BattleView::RenderUnitMissileTarget(BattleRendering* rendering, Unit* unit)
 
 		BattleRendering::ground_texture_uniforms uniforms;
 		uniforms._transform = GetTransform();
-		uniforms._texture = unit->player == _bluePlayer ? rendering->_textureMissileBlue : rendering->_textureMissileRed;;
+		uniforms._texture = unit->player == _battleModel->bluePlayer ? rendering->_textureMissileBlue : rendering->_textureMissileRed;;
 
 		rendering->_ground_texture_renderer->render(rendering->_vboUnitMarkerTargetLine, uniforms);
 		rendering->_ground_texture_renderer->render(rendering->_vboUnitMarkerTargetHead, uniforms);
@@ -756,7 +755,7 @@ void BattleView::RenderTrackingMarker(BattleRendering* rendering, TrackingMarker
 			glm::vec3 position = GetPosition(destination, 0);
 			//float pointsize = GetUnitMarkerScreenSize(position);
 			glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
-			glm::vec2 texcoord = texsize * glm::vec2(marker->_unit->player != _bluePlayer ? 4 : 3, 0);
+			glm::vec2 texcoord = texsize * glm::vec2(marker->_unit->player != _battleModel->bluePlayer ? 4 : 3, 0);
 
 			rendering->_vboTextureBillboards1._vertices.push_back(texture_billboard_vertex(position, 32, texcoord, texsize));
 			rendering->_vboTextureBillboards1.update(GL_STATIC_DRAW);
@@ -850,7 +849,7 @@ void BattleView::RenderTrackingFighters(BattleRendering* rendering, TrackingMark
 {
 	if (!marker->_destinationUnit && !marker->_orientationUnit)
 	{
-		bool isBlue = marker->_unit->player == _bluePlayer;
+		bool isBlue = marker->_unit->player == _battleModel->bluePlayer;
 		glm::vec4 color = isBlue ? glm::vec4(0, 0, 255, 16) / 255.0f : glm::vec4(255, 0, 0, 16) / 255.0f;
 
 		glm::vec2 destination = DestinationXXX(marker);
@@ -909,7 +908,7 @@ void BattleView::RenderMovementMarker(BattleRendering* rendering, Unit* unit)
 			glm::vec3 position = GetPosition(finalDestination, 0.5);
 			//float pointsize = GetUnitMarkerScreenSize(vector3(finalDestination, 0));
 			glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
-			glm::vec2 texcoord = texsize * glm::vec2(unit->player != _bluePlayer ? 4 : 3, 0);
+			glm::vec2 texcoord = texsize * glm::vec2(unit->player != _battleModel->bluePlayer ? 4 : 3, 0);
 
 			rendering->_vboTextureBillboards1._vertices.push_back(texture_billboard_vertex(position, 32, texcoord, texsize));
 			rendering->_vboTextureBillboards1.update(GL_STATIC_DRAW);
@@ -947,7 +946,7 @@ void BattleView::RenderMovementPath(BattleRendering* rendering, Unit* unit)
 
 		BattleRendering::ground_texture_uniforms uniforms;
 		uniforms._transform = GetTransform();
-		uniforms._texture = unit->player == _bluePlayer ? rendering->_textureMovementBlue : rendering->_textureMovementRed;
+		uniforms._texture = unit->player == _battleModel->bluePlayer ? rendering->_textureMovementBlue : rendering->_textureMovementRed;
 		rendering->_ground_texture_renderer->render(rendering->_vboMovementMarkerPath, uniforms);
 	}
 }
@@ -957,7 +956,7 @@ void BattleView::RenderMovementFighters(BattleRendering* rendering, Unit* unit)
 {
 	if (!unit->movement.target)
 	{
-		bool isBlue = unit->player == _bluePlayer;
+		bool isBlue = unit->player == _battleModel->bluePlayer;
 		glm::vec4 color = isBlue ? glm::vec4(0, 0, 255, 32) / 255.0f : glm::vec4(255, 0, 0, 32) / 255.0f;
 
 		glm::vec2 finalDestination = unit->movement.GetFinalDestination();

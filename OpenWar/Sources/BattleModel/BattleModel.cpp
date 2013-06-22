@@ -241,6 +241,7 @@ Fighter* Unit::GetFighter(Unit* unit, int rank, int file)
 
 BattleModel::BattleModel() :
 lastUnitId(0),
+bluePlayer(Player1),
 winner(PlayerNone),
 time(0),
 timeStep(1.0f / 15.0f),

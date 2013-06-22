@@ -90,7 +90,8 @@ OpenWarSurface::~OpenWarSurface()
 
 void OpenWarSurface::Reset(BattleModel* battleModel)
 {
-	_battleView = new BattleView(this, battleModel, _renderers, _battleRendering, Player1);
+	battleModel->bluePlayer = Player1;
+	_battleView = new BattleView(this, battleModel, _renderers, _battleRendering);
 	_battleView->_player = Player1;
 
 	SmoothTerrainSurface* terrainSurfaceModelSmooth = dynamic_cast<SmoothTerrainSurface*>(battleModel->terrainSurface);

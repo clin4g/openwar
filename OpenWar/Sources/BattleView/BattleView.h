@@ -29,7 +29,6 @@ class BattleView : public TerrainView, public SimulationListener
 {
 	renderers* _renderers;
 	BattleModel* _battleModel;
-	Player _bluePlayer;
 
 	BattleRendering* _battleRendering;
 
@@ -52,7 +51,7 @@ public:
 	TiledTerrainSurfaceRenderer* _terrainSurfaceRendererTiled;
 	Player _player;
 
-	BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering, Player bluePlayer);
+	BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering);
 	~BattleView();
 
 	virtual BattleModel* GetBattleModel() const { return _battleModel; }
