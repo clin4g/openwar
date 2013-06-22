@@ -137,9 +137,6 @@ BattleView::~BattleView()
 
 	for (TrackingMarker* marker : _trackingMarkers)
 		delete marker;
-
-	for (RangeMarker* marker : _rangeMarkers)
-		delete marker;
 }
 
 
@@ -274,13 +271,13 @@ void BattleView::UpdateTerrainTrees(bounds2f bounds)
 				glm::vec2 position = glm::vec2(x + dx, y + dy);
 				if (bounds.contains(position) && glm::length(position - 512.0f) < 512.0f)
 				{
-					float z = _terrainSurfaceModel->GetHeight(position);
+					float z = _terrainSurface->GetHeight(position);
 					if (z > 0
 							&& map->get_pixel((int)(position.x / 2), (int)(position.y / 2)).g > 0.5
-							&& _terrainSurfaceModel->GetNormal(position).z >= 0.84)
+							&& _terrainSurface->GetNormal(position).z >= 0.84)
 					{
 						const float adjust = 0.5 - 2.0 / 64.0; // place texture 2 texels below ground
-						_billboardModel->staticBillboards.push_back(Billboard(to_vector3(position, adjust * 5), 0, 5, _billboardTreeShapes[shape]));
+						_billboardModel->staticBillboards.push_back(Billboard(GetPosition(position, adjust * 5), 0, 5, _billboardTreeShapes[shape]));
 					}
 				}
 
@@ -362,9 +359,11 @@ void BattleView::Render()
 
 	RenderFighterWeapons(_battleRendering);
 
-	AppendCasualtyBillboards(_battleRendering);
-	AppendFighterBillboards();
-	AppendSmokeBillboards();
+	RenderCasualtyColorBillboards(_battleRendering);
+
+	AppendCasualtyBillboards(_billboardModel);
+	AppendFighterBillboards(_billboardModel);
+	AppendSmokeBillboards(_billboardModel);
 	RenderTerrainBillboards();
 
 	RenderRangeMarkers(_battleRendering);
@@ -410,7 +409,6 @@ void BattleView::Update(double secondsSinceLastUpdate)
 	_casualtyMarker->Animate((float)secondsSinceLastUpdate);
 
 	::AnimateMarkers(_movementMarkers, (float)secondsSinceLastUpdate);
-	::AnimateMarkers(_rangeMarkers, (float)secondsSinceLastUpdate);
 }
 
 
@@ -541,7 +539,7 @@ void BattleView::RenderFighterWeapons(BattleRendering* rendering)
 
 	for (UnitCounter* marker : _battleModel->_unitMarkers)
 	{
-		AppendFighterWeapons(rendering, marker->_unit);
+		marker->AppendFighterWeapons(rendering);
 	}
 
 	BattleRendering::ground_color_uniforms uniforms3;
@@ -552,41 +550,27 @@ void BattleView::RenderFighterWeapons(BattleRendering* rendering)
 }
 
 
-void BattleView::AppendFighterWeapons(BattleRendering* rendering, Unit* unit)
+void BattleView::RenderCasualtyColorBillboards(BattleRendering* rendering)
 {
-	if (unit->stats.weaponReach > 0)
-	{
-		for (Fighter* fighter = unit->fighters, * end = fighter + unit->fightersCount; fighter != end; ++fighter)
-		{
-			glm::vec2 p1 = fighter->state.position;
-			glm::vec2 p2 = p1 + unit->stats.weaponReach * vector2_from_angle(fighter->state.direction);
-
-			rendering->_vboFighterWeapons._vertices.push_back(plain_vertex3(to_vector3(p1)));
-			rendering->_vboFighterWeapons._vertices.push_back(plain_vertex3(to_vector3(p2)));
-		}
-	}
-}
-
-
-void BattleView::AppendCasualtyBillboards(BattleRendering* rendering)
-{
-	if (_casualtyMarker->casualties.empty())
-		return;
-
 	rendering->_vboColorBillboards._mode = GL_POINTS;
 	rendering->_vboColorBillboards._vertices.clear();
 
-	glm::vec4 c1 = glm::vec4(1, 1, 1, 0.8);
-	glm::vec4 cr = glm::vec4(1, 0, 0, 0);
-	glm::vec4 cb = glm::vec4(0, 0, 1, 0);
+	_casualtyMarker->RenderCasualtyColorBillboards(rendering);
+
+	BattleRendering::color_billboard_uniforms uniforms;
+	uniforms._transform = GetTransform();
+	uniforms._upvector = GetCameraUpVector();
+	uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
+
+	rendering->_color_billboard_renderer->render(rendering->_vboColorBillboards, uniforms);
+}
+
+
+
+void BattleView::AppendCasualtyBillboards(BillboardModel* billboardModel)
+{
 	for (const CasualtyMarker::Casualty& casualty : _casualtyMarker->casualties)
 	{
-		if (casualty.time <= 1)
-		{
-			glm::vec4 c = glm::mix(c1, casualty.player == Player1 ? cb : cr, casualty.time);
-			rendering->_vboColorBillboards._vertices.push_back(BattleRendering::color_billboard_vertex(casualty.position, c, 6.0));
-		}
-
 		int shape = 0;
 		float height = 0;
 		//int j = 0, i = 0;
@@ -614,21 +598,14 @@ void BattleView::AppendCasualtyBillboards(BattleRendering* rendering)
 		}
 
 		const float adjust = 0.5 - 2.0 / 64.0; // place texture 2 texels below ground
-		glm::vec3 p = to_vector3(casualty.position.xy(), adjust * height);
-		_billboardModel->dynamicBillboards.push_back(Billboard(p, 0, height, shape));
+		glm::vec3 p = GetPosition(casualty.position.xy(), adjust * height);
+		billboardModel->dynamicBillboards.push_back(Billboard(p, 0, height, shape));
 
 	}
-
-	BattleRendering::color_billboard_uniforms uniforms;
-	uniforms._transform = GetTransform();
-	uniforms._upvector = GetCameraUpVector();
-	uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
-
-	rendering->_color_billboard_renderer->render(rendering->_vboColorBillboards, uniforms);
 }
 
 
-void BattleView::AppendFighterBillboards()
+void BattleView::AppendFighterBillboards(BillboardModel* billboardModel)
 {
 	for (UnitCounter* marker : _battleModel->_unitMarkers)
 	{
@@ -672,15 +649,15 @@ void BattleView::AppendFighterBillboards()
 
 
 			const float adjust = 0.5 - 2.0 / 64.0; // place texture 2 texels below ground
-			glm::vec3 p = to_vector3(fighter->state.position, adjust * size);
+			glm::vec3 p = GetPosition(fighter->state.position, adjust * size);
 			float facing = glm::degrees(fighter->state.direction);
-			_billboardModel->dynamicBillboards.push_back(Billboard(p, facing, size, shape));
+			billboardModel->dynamicBillboards.push_back(Billboard(p, facing, size, shape));
 		}
 	}
 }
 
 
-void BattleView::AppendSmokeBillboards()
+void BattleView::AppendSmokeBillboards(BillboardModel* billboardModel)
 {
 	for (SmokeCounter* marker : _battleModel->_smokeMarkers)
 	{
@@ -692,7 +669,7 @@ void BattleView::AppendSmokeBillboards()
 				if (i > 7)
 					i = 7;
 
-				_billboardModel->dynamicBillboards.push_back(Billboard(projectile.position, 0, 1 + 3 * projectile.time, _billboardShapeSmoke[i]));
+				billboardModel->dynamicBillboards.push_back(Billboard(projectile.position, 0, 1 + 3 * projectile.time, _billboardShapeSmoke[i]));
 			}
 		}
 	}
@@ -709,72 +686,16 @@ void BattleView::RenderRangeMarkers(BattleRendering* rendering)
 {
 	for (std::pair<int, Unit*> item : _battleModel->units)
 	{
-		Unit* unit = item.second;
-		if (unit->stats.maximumRange > 0 && unit->state.unitMode != UnitModeMoving && !unit->state.IsRouting())
-		{
-			BattleView::MakeRangeMarker(rendering, rendering->_vboRangeMarker, unit->state.center, unit->state.direction, 20, unit->stats.maximumRange);
+		RangeMarker marker(_battleModel, item.second);
+		marker.Render(rendering);
 
-			BattleRendering::ground_gradient_uniforms uniforms;
-			uniforms._transform = GetTransform();
-
-			rendering->_ground_gradient_renderer->render(rendering->_vboRangeMarker, uniforms);
-		}
+		BattleRendering::ground_gradient_uniforms uniforms;
+		uniforms._transform = GetTransform();
+		rendering->_ground_gradient_renderer->render(rendering->_vboRangeMarker, uniforms);
 	}
 }
 
 
-void BattleView::MakeRangeMarker(BattleRendering* rendering, vertexbuffer<color_vertex3>& shape, glm::vec2 position, float direction, float minimumRange, float maximumRange)
-{
-	const float thickness = 8;
-	const float two_pi = 2 * (float)M_PI;
-	glm::vec4 c0 = glm::vec4(255, 64, 64, 0) / 255.0f;
-	glm::vec4 c1 = glm::vec4(255, 64, 64, 16) / 255.0f;
-
-	shape._mode = GL_TRIANGLE_STRIP;
-	shape._vertices.clear();
-
-	float d = direction - two_pi / 8;
-	glm::vec2 p2 = maximumRange * vector2_from_angle(d - 0.03f);
-	glm::vec2 p3 = minimumRange * vector2_from_angle(d);
-	glm::vec2 p4 = maximumRange * vector2_from_angle(d);
-	glm::vec2 p5 = (maximumRange - thickness) * vector2_from_angle(d);
-	glm::vec2 p1 = p3 + (p2 - p4);
-
-	for (int i = 0; i <= 8; ++i)
-	{
-		float t = i / 8.0f;
-		shape._vertices.push_back(color_vertex3(to_vector3(position + glm::mix(p3, p5, t)), c0));
-		shape._vertices.push_back(color_vertex3(to_vector3(position + glm::mix(p1, p2, t)), c1));
-	}
-
-	shape._vertices.push_back(color_vertex3(to_vector3(position + p4), c1));
-	shape._vertices.push_back(color_vertex3(to_vector3(position + p4), c1));
-	shape._vertices.push_back(color_vertex3(to_vector3(position + p5), c0));
-
-	int n = 10;
-	for (int i = 0; i <= n; ++i)
-	{
-		float k = (i - (float)n / 2) / n;
-		d = direction + k * two_pi / 4;
-		shape._vertices.push_back(color_vertex3(to_vector3(position + (maximumRange - thickness) * vector2_from_angle(d)), c0));
-		shape._vertices.push_back(color_vertex3(to_vector3(position + maximumRange * vector2_from_angle(d)), c1));
-	}
-
-	d = direction + two_pi / 8;
-	p2 = maximumRange * vector2_from_angle(d + 0.03f);
-	p3 = minimumRange * vector2_from_angle(d);
-	p4 = maximumRange * vector2_from_angle(d);
-	p5 = (maximumRange - thickness) * vector2_from_angle(d);
-	p1 = p3 + (p2 - p4);
-
-	shape._vertices.push_back(color_vertex3(to_vector3(position + p4), c1));
-	for (int i = 0; i <= 8; ++i)
-	{
-		float t = i / 8.0f;
-		shape._vertices.push_back(color_vertex3(to_vector3(position + glm::mix(p2, p1, t)), c1));
-		shape._vertices.push_back(color_vertex3(to_vector3(position + glm::mix(p5, p3, t)), c0));
-	}
-}
 
 
 void BattleView::RenderUnitMarkers(BattleRendering* rendering)
@@ -859,7 +780,7 @@ void BattleView::AppendUnitMarker(BattleRendering* rendering, UnitCounter* marke
 	else if (unit->player != _bluePlayer)
 		state = 1;
 
-	glm::vec3 position = to_vector3(unit->state.center, 0);
+	glm::vec3 position = GetPosition(unit->state.center, 0);
 	glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
 	glm::vec2 texcoord1 = texsize * glm::vec2(state, 0);
 	glm::vec2 texcoord2 = texsize * glm::vec2((int)unit->stats.unitWeapon, 1 + (int)unit->stats.unitPlatform);
@@ -941,7 +862,7 @@ void BattleView::RenderTrackingMarker(BattleRendering* rendering, TrackingMarker
 			rendering->_vboTextureBillboards1._mode = GL_POINTS;
 			rendering->_vboTextureBillboards1._vertices.clear();
 
-			glm::vec3 position = to_vector3(destination, 0);
+			glm::vec3 position = GetPosition(destination, 0);
 			//float pointsize = GetUnitMarkerScreenSize(position);
 			glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
 			glm::vec2 texcoord = texsize * glm::vec2(marker->_unit->player != _bluePlayer ? 4 : 3, 0);
@@ -965,7 +886,7 @@ void BattleView::RenderTrackingMarker(BattleRendering* rendering, TrackingMarker
 void BattleView::RenderTrackingShadow(BattleRendering* rendering, TrackingMarker* marker)
 {
 	glm::vec2 p = DestinationXXX(marker);
-	glm::vec2 offset = ContentToScreen(to_vector3(p, 0));
+	glm::vec2 offset = ContentToScreen(GetPosition(p, 0));
 	float scale = 5;
 
 	TexRectN(rendering->_vboTrackingMarkerShadow, 32, 0, 0, 32, 32);
@@ -1057,7 +978,7 @@ void BattleView::RenderTrackingFighters(BattleRendering* rendering, TrackingMark
 			glm::vec2 offsetRight = formation.towardRight * (float)Unit::GetFighterFile(fighter);
 			glm::vec2 offsetBack = formation.towardBack * (float)Unit::GetFighterRank(fighter);
 
-			rendering->_vboColorBillboards._vertices.push_back(BattleRendering::color_billboard_vertex(to_vector3(frontLeft + offsetRight + offsetBack, 0.5), color, 3.0));
+			rendering->_vboColorBillboards._vertices.push_back(BattleRendering::color_billboard_vertex(GetPosition(frontLeft + offsetRight + offsetBack, 0.5), color, 3.0));
 		}
 
 		BattleRendering::color_billboard_uniforms uniforms;
@@ -1094,7 +1015,7 @@ void BattleView::RenderMovementMarker(BattleRendering* rendering, Unit* unit)
 			rendering->_vboTextureBillboards1._mode = GL_POINTS;
 			rendering->_vboTextureBillboards1._vertices.clear();
 
-			glm::vec3 position = to_vector3(finalDestination, 0.5);
+			glm::vec3 position = GetPosition(finalDestination, 0.5);
 			//float pointsize = GetUnitMarkerScreenSize(vector3(finalDestination, 0));
 			glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
 			glm::vec2 texcoord = texsize * glm::vec2(unit->player != _bluePlayer ? 4 : 3, 0);
@@ -1163,7 +1084,7 @@ void BattleView::RenderMovementFighters(BattleRendering* rendering, Unit* unit)
 			glm::vec2 offsetRight = formation.towardRight * (float)Unit::GetFighterFile(fighter);
 			glm::vec2 offsetBack = formation.towardBack * (float)Unit::GetFighterRank(fighter);
 
-			rendering->_vboColorBillboards._vertices.push_back(BattleRendering::color_billboard_vertex(to_vector3(frontLeft + offsetRight + offsetBack, 0.5), color, 3.0));
+			rendering->_vboColorBillboards._vertices.push_back(BattleRendering::color_billboard_vertex(GetPosition(frontLeft + offsetRight + offsetBack, 0.5), color, 3.0));
 		}
 
 		BattleRendering::color_billboard_uniforms uniforms;
@@ -1222,11 +1143,11 @@ void BattleView::TexRectN(vertexbuffer<texture_vertex3>& shape, int size, int x,
 	shape._mode = GL_TRIANGLE_FAN;
 	shape._vertices.clear();
 
-	shape._vertices.push_back(texture_vertex3(to_vector3(glm::vec2(-xx, yy)), glm::vec2(tx1, ty1)));
-	shape._vertices.push_back(texture_vertex3(to_vector3(glm::vec2(-xx, -yy)), glm::vec2(tx1, ty2)));
-	shape._vertices.push_back(texture_vertex3(to_vector3(glm::vec2(xx, -yy)), glm::vec2(tx2, ty2)));
-	shape._vertices.push_back(texture_vertex3(to_vector3(glm::vec2(xx, yy)), glm::vec2(tx2, ty1)));
-	shape._vertices.push_back(texture_vertex3(to_vector3(glm::vec2(-xx, yy)), glm::vec2(tx1, ty1)));
+	shape._vertices.push_back(texture_vertex3(GetPosition(glm::vec2(-xx, yy)), glm::vec2(tx1, ty1)));
+	shape._vertices.push_back(texture_vertex3(GetPosition(glm::vec2(-xx, -yy)), glm::vec2(tx1, ty2)));
+	shape._vertices.push_back(texture_vertex3(GetPosition(glm::vec2(xx, -yy)), glm::vec2(tx2, ty2)));
+	shape._vertices.push_back(texture_vertex3(GetPosition(glm::vec2(xx, yy)), glm::vec2(tx2, ty1)));
+	shape._vertices.push_back(texture_vertex3(GetPosition(glm::vec2(-xx, yy)), glm::vec2(tx1, ty1)));
 }
 
 
@@ -1274,10 +1195,10 @@ void BattleView::TexLine16(vertexbuffer<texture_vertex3>& shape, glm::vec2 p1, g
 	shape._mode = GL_TRIANGLE_STRIP;
 	shape._vertices.clear();
 
-	shape._vertices.push_back(texture_vertex3(to_vector3(p2 + left), glm::vec2(tx1, 0)));
-	shape._vertices.push_back(texture_vertex3(to_vector3(p1 + left), glm::vec2(tx1, n)));
-	shape._vertices.push_back(texture_vertex3(to_vector3(p2 - left), glm::vec2(tx2, 0)));
-	shape._vertices.push_back(texture_vertex3(to_vector3(p1 - left), glm::vec2(tx2, n)));
+	shape._vertices.push_back(texture_vertex3(GetPosition(p2 + left), glm::vec2(tx1, 0)));
+	shape._vertices.push_back(texture_vertex3(GetPosition(p1 + left), glm::vec2(tx1, n)));
+	shape._vertices.push_back(texture_vertex3(GetPosition(p2 - left), glm::vec2(tx2, 0)));
+	shape._vertices.push_back(texture_vertex3(GetPosition(p1 - left), glm::vec2(tx2, n)));
 }
 
 
@@ -1338,12 +1259,12 @@ void BattleView::_Path(vertexbuffer<texture_vertex3>& shape, int mode, float sca
 		glm::vec2 p2L = p2 + left;
 		glm::vec2 p2R = p2 - left;
 
-		shape._vertices.push_back(texture_vertex3(to_vector3(p1L), glm::vec2(tx1, -ty1)));
-		shape._vertices.push_back(texture_vertex3(to_vector3(p2L), glm::vec2(tx1, -ty2)));
-		shape._vertices.push_back(texture_vertex3(to_vector3(p2R), glm::vec2(tx2, -ty2)));
-		shape._vertices.push_back(texture_vertex3(to_vector3(p2R), glm::vec2(tx2, -ty2)));
-		shape._vertices.push_back(texture_vertex3(to_vector3(p1R), glm::vec2(tx2, -ty1)));
-		shape._vertices.push_back(texture_vertex3(to_vector3(p1L), glm::vec2(tx1, -ty1)));
+		shape._vertices.push_back(texture_vertex3(GetPosition(p1L), glm::vec2(tx1, -ty1)));
+		shape._vertices.push_back(texture_vertex3(GetPosition(p2L), glm::vec2(tx1, -ty2)));
+		shape._vertices.push_back(texture_vertex3(GetPosition(p2R), glm::vec2(tx2, -ty2)));
+		shape._vertices.push_back(texture_vertex3(GetPosition(p2R), glm::vec2(tx2, -ty2)));
+		shape._vertices.push_back(texture_vertex3(GetPosition(p1R), glm::vec2(tx2, -ty1)));
+		shape._vertices.push_back(texture_vertex3(GetPosition(p1L), glm::vec2(tx1, -ty1)));
 
 		ty1 = ty2;
 	}

@@ -5,7 +5,9 @@
 #ifndef UnitMarker_H
 #define UnitMarker_H
 
-#include "BattleModel.h"
+class BattleModel;
+class BattleRendering;
+class Unit;
 
 
 class UnitCounter
@@ -20,6 +22,8 @@ public:
 	~UnitCounter();
 
 	bool Animate(float seconds);
+
+	void AppendFighterWeapons(BattleRendering* rendering);
 };
 
 

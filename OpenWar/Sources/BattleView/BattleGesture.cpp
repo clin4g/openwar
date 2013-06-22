@@ -388,7 +388,7 @@ Unit* BattleGesture::FindNearestTouchUnit(glm::vec2 screenPosition, glm::vec2 te
 bounds2f BattleGesture::GetUnitCurrentScreenBounds(Unit* unit)
 {
 	glm::mat4x4 transform = _battleView->GetTransform();
-	glm::vec4 position = transform * glm::vec4(_battleView->to_vector3(unit->state.center, 0), 1.0f);
+	glm::vec4 position = transform * glm::vec4(_battleView->GetPosition(unit->state.center, 0), 1.0f);
 	return bounds2_from_center(_battleView->ViewToScreen((glm::vec2)position.xy() / position.w), 32);
 }
 
@@ -399,7 +399,7 @@ bounds2f BattleGesture::GetUnitFutureScreenBounds(Unit* unit)
 		return bounds2f();
 
 	glm::mat4x4 transform = _battleView->GetTransform();
-	glm::vec4 position = transform * glm::vec4(_battleView->to_vector3(unit->movement.path.back(), 0), 1.0f);
+	glm::vec4 position = transform * glm::vec4(_battleView->GetPosition(unit->movement.path.back(), 0), 1.0f);
 	return bounds2_from_center(_battleView->ViewToScreen((glm::vec2)position.xy() / position.w), 32);
 }
 

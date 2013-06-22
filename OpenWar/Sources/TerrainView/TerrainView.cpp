@@ -7,7 +7,7 @@
 
 
 TerrainView::TerrainView(Surface* screen, TerrainSurface* terrainSurfaceModel) : View(screen),
-_terrainSurfaceModel(terrainSurfaceModel),
+_terrainSurface(terrainSurfaceModel),
 _cameraTilt((float)M_PI_4),
 _cameraFacing(0)
 {
@@ -174,7 +174,7 @@ glm::vec3 TerrainView::GetTerrainPosition2(glm::vec2 screenPosition) const
 glm::vec3 TerrainView::GetTerrainPosition3(glm::vec2 screenPosition) const
 {
 	ray r = GetCameraRay(screenPosition);
-	const float* d = _terrainSurfaceModel->Intersect(r);
+	const float* d = _terrainSurface->Intersect(r);
 	return r.point(d != nullptr ? *d : 0);
 }
 

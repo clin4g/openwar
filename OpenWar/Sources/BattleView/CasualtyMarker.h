@@ -6,6 +6,7 @@
 #define CasualtyMarker_H
 
 #include "BattleModel.h"
+class BattleRendering;
 
 
 class CasualtyMarker
@@ -30,6 +31,8 @@ public:
 
 	void AddCasualty(glm::vec3 position, Player player, UnitPlatform platform);
 	bool Animate(float seconds);
+
+	void RenderCasualtyColorBillboards(BattleRendering* rendering);
 };
 
 

@@ -20,8 +20,9 @@ public:
 
 	virtual bool IsForest(glm::vec2 position) const = 0;
 	virtual bool IsImpassable(glm::vec2 position) const = 0;
-};
 
+	glm::vec3 GetPosition(glm::vec2 p, float h) { return glm::vec3(p, GetHeight(p) + h); }
+};
 
 
 #endif

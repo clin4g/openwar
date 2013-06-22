@@ -6,6 +6,7 @@
 #define RangeMarker_H
 
 #include "BattleModel.h"
+class BattleRendering;
 
 
 class RangeMarker
@@ -16,9 +17,9 @@ public:
 
 public:
 	RangeMarker(BattleModel* battleModel, Unit* unit);
-	~RangeMarker();
 
-	bool Animate(float seconds);
+	void Render(BattleRendering* rendering);
+	void MakeRangeMarker(BattleRendering* rendering, glm::vec2 position, float direction, float minimumRange, float maximumRange);
 };
 
 

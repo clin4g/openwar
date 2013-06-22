@@ -18,7 +18,7 @@ class TerrainView : public View
 	float _cameraFacing;
 
 protected:
-	TerrainSurface* _terrainSurfaceModel;
+	TerrainSurface* _terrainSurface;
 
 public:
 	TerrainView(Surface* screen, TerrainSurface* terrainSurfaceModel);
@@ -58,10 +58,7 @@ public:
 	glm::vec3 ScreenToContent(glm::vec2 value) const;
 	glm::vec2 ContentToScreen(glm::vec3 value) const;
 
-	glm::vec3 to_vector3(glm::vec2 p, float h = 1)
-	{
-		return glm::vec3(p, _terrainSurfaceModel->GetHeight(p) + h);
-	}
+	glm::vec3 GetPosition(glm::vec2 p, float h = 1) { return _terrainSurface->GetPosition(p, h); };
 
 };
 

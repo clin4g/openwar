@@ -96,23 +96,21 @@ public:
 	virtual void Update(double secondsSinceLastUpdate);
 
 
-
-
 	void RenderBackgroundLinen(BattleRendering* rendering);
 
 	void RenderTerrainShadow(BattleRendering* rendering);
 	void RenderTerrainGround(BattleRendering* rendering);
 
 	void RenderFighterWeapons(BattleRendering* rendering);
-	void AppendFighterWeapons(BattleRendering* rendering, Unit* unit);
 
-	void AppendCasualtyBillboards(BattleRendering* rendering);
-	void AppendFighterBillboards();
-	void AppendSmokeBillboards();
+	void RenderCasualtyColorBillboards(BattleRendering* rendering);
+
+	void AppendCasualtyBillboards(BillboardModel* billboardModel);
+	void AppendFighterBillboards(BillboardModel* billboardModel);
+	void AppendSmokeBillboards(BillboardModel* billboardModel);
 	void RenderTerrainBillboards();
 
 	void RenderRangeMarkers(BattleRendering* rendering);
-	void MakeRangeMarker(BattleRendering* rendering, vertexbuffer<color_vertex3>& shape, glm::vec2 position, float direction, float minimumRange, float maximumRange);
 
 	void RenderUnitMarkers(BattleRendering* rendering);
 	void AppendUnitMarker(BattleRendering* rendering, UnitCounter* marker);
