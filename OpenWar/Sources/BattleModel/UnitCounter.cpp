@@ -5,7 +5,7 @@
 #include "UnitCounter.h"
 #include "BattleRendering.h"
 #include "BattleModel.h"
-#include "LineRenderer.h"
+#include "PlainRenderer.h"
 #include "TextureBillboardRenderer.h"
 
 
@@ -78,7 +78,7 @@ void UnitCounter::AppendUnitMarker(TextureBillboardRenderer* renderer1, TextureB
 
 
 
-void UnitCounter::AppendFighterWeapons(LineRenderer* renderer)
+void UnitCounter::AppendFighterWeapons(PlainLineRenderer* renderer)
 {
 	if (_unit->stats.weaponReach > 0)
 	{

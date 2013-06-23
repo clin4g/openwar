@@ -2,12 +2,12 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "ColorLineRenderer.h"
+#include "GradientRenderer.h"
 
 
-ColorLineRenderer::ColorLineRenderer()
+GradientRenderer::GradientRenderer()
 {
-	_renderer = new renderer<color_vertex3, gradient_uniforms>((
+	_renderer = new renderer<vertex, uniforms>((
 			VERTEX_ATTRIBUTE(color_vertex3, _position),
 			VERTEX_ATTRIBUTE(color_vertex3, _color),
 			SHADER_UNIFORM(gradient_uniforms, _transform),
@@ -44,31 +44,31 @@ ColorLineRenderer::ColorLineRenderer()
 }
 
 
-ColorLineRenderer::~ColorLineRenderer()
+GradientRenderer::~GradientRenderer()
 {
 }
 
 
-void ColorLineRenderer::Reset()
+void GradientRenderer::Reset()
 {
 	_vbo._vertices.clear();
 }
 
 
-void ColorLineRenderer::AddLine(const glm::vec3& p1, const glm::vec3& p2, const glm::vec4& c1, const glm::vec4& c2)
-{
-	_vbo._vertices.push_back(color_vertex3(p1, c1));
-	_vbo._vertices.push_back(color_vertex3(p2, c2));
-}
-
-
-void ColorLineRenderer::Draw(const glm::mat4x4& transform)
+void GradientRenderer::Draw(const glm::mat4x4& transform)
 {
 	glLineWidth(1);
 
 	_vbo._mode = GL_LINES;
 
-	gradient_uniforms uniforms;
+	uniforms uniforms;
 	uniforms._transform = transform;
 	_renderer->render(_vbo, uniforms);
+}
+
+
+void GradientLineRenderer::AddLine(const glm::vec3& p1, const glm::vec3& p2, const glm::vec4& c1, const glm::vec4& c2)
+{
+	_vbo._vertices.push_back(vertex(p1, c1));
+	_vbo._vertices.push_back(vertex(p2, c2));
 }

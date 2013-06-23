@@ -2,10 +2,10 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "LineRenderer.h"
+#include "PlainRenderer.h"
 
 
-LineRenderer::LineRenderer()
+PlainRenderer::PlainRenderer()
 {
 	_renderer = new renderer<vertex, uniforms>((
 		VERTEX_ATTRIBUTE(vertex, _position),
@@ -41,26 +41,18 @@ LineRenderer::LineRenderer()
 }
 
 
-LineRenderer::~LineRenderer()
+PlainRenderer::~PlainRenderer()
 {
 }
 
 
-void LineRenderer::Reset()
+void PlainRenderer::Reset()
 {
 	_vbo._vertices.clear();
 }
 
 
-void LineRenderer::AddLine(const glm::vec3& p1, const glm::vec3& p2)
-{
-	_vbo._vertices.push_back(vertex(p1));
-	_vbo._vertices.push_back(vertex(p2));
-
-}
-
-
-void LineRenderer::Draw(const glm::mat4x4& transform, const glm::vec4& color)
+void PlainRenderer::Draw(const glm::mat4x4& transform, const glm::vec4& color)
 {
 	glLineWidth(1);
 
@@ -71,4 +63,11 @@ void LineRenderer::Draw(const glm::mat4x4& transform, const glm::vec4& color)
 	uniforms._color = color;
 
 	_renderer->render(_vbo, uniforms);
+}
+
+
+void PlainLineRenderer::AddLine(const glm::vec3& p1, const glm::vec3& p2)
+{
+	_vbo._vertices.push_back(vertex(p1));
+	_vbo._vertices.push_back(vertex(p2));
 }

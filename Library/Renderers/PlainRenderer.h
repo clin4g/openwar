@@ -8,8 +8,9 @@
 #include "renderer.h"
 
 
-class LineRenderer
+class PlainRenderer
 {
+protected:
 	struct vertex
 	{
 		glm::vec3 _position;
@@ -31,12 +32,18 @@ class LineRenderer
 	renderer<vertex, uniforms>* _renderer;
 
 public:
-	LineRenderer();
-	~LineRenderer();
+	PlainRenderer();
+	~PlainRenderer();
 
 	void Reset();
-	void AddLine(const glm::vec3& p1, const glm::vec3& p2);
 	void Draw(const glm::mat4x4& transform, const glm::vec4& color);
+};
+
+
+class PlainLineRenderer : public PlainRenderer
+{
+public:
+	void AddLine(const glm::vec3& p1, const glm::vec3& p2);
 };
 
 

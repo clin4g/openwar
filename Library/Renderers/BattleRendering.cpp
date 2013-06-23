@@ -8,11 +8,11 @@
 BattleRendering::BattleRendering()
 {
 	_ground_gradient_renderer = new renderer<color_vertex3, ground_gradient_uniforms>((
-			VERTEX_ATTRIBUTE(color_vertex3, _position),
-					VERTEX_ATTRIBUTE(color_vertex3, _color),
-					SHADER_UNIFORM(ground_gradient_uniforms, _transform),
-					SHADER_UNIFORM(ground_gradient_uniforms, _point_size),
-					VERTEX_SHADER
+		VERTEX_ATTRIBUTE(color_vertex3, _position),
+		VERTEX_ATTRIBUTE(color_vertex3, _color),
+		SHADER_UNIFORM(ground_gradient_uniforms, _transform),
+		SHADER_UNIFORM(ground_gradient_uniforms, _point_size),
+		VERTEX_SHADER
 		({
 						attribute
 						vec3 position;

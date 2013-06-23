@@ -4,7 +4,7 @@
 
 #include "ShootingCounter.h"
 #include "SoundPlayer.h"
-#import "ColorLineRenderer.h"
+#include "GradientRenderer.h"
 
 
 
@@ -83,7 +83,7 @@ bool ShootingCounter::Animate(float seconds)
 }
 
 
-void ShootingCounter::Render(ColorLineRenderer* renderer)
+void ShootingCounter::Render(GradientLineRenderer* renderer)
 {
 	for (ShootingCounter::Projectile& projectile : _projectiles)
 	{
@@ -99,7 +99,7 @@ void ShootingCounter::Render(ColorLineRenderer* renderer)
 }
 
 
-void ShootingCounter::RenderArrow(ColorLineRenderer* renderer, glm::vec3 p1, glm::vec3 p2, float t)
+void ShootingCounter::RenderArrow(GradientLineRenderer* renderer, glm::vec3 p1, glm::vec3 p2, float t)
 {
 	float size = 4;
 	glm::vec3 diff = p2 - p1;
@@ -122,7 +122,7 @@ void ShootingCounter::RenderArrow(ColorLineRenderer* renderer, glm::vec3 p1, glm
 }
 
 
-void ShootingCounter::RenderBullet(ColorLineRenderer* renderer, glm::vec3 p1, glm::vec3 p2, float t)
+void ShootingCounter::RenderBullet(GradientLineRenderer* renderer, glm::vec3 p1, glm::vec3 p2, float t)
 {
 	float size = 50;
 	glm::vec3 diff = p2 - p1;

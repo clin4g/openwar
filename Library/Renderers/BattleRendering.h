@@ -11,15 +11,6 @@
 
 struct BattleRendering
 {
-	struct ground_color_uniforms
-	{
-		glm::mat4x4 _transform;
-		GLfloat _point_size;
-		glm::vec4 _color;
-
-		ground_color_uniforms() : _point_size(1) { }
-	};
-
 	struct ground_gradient_uniforms
 	{
 		glm::mat4x4 _transform;
@@ -45,7 +36,6 @@ struct BattleRendering
 	vertexbuffer<texture_vertex> _vboTrackingMarkerShadow;
 
 	vertexbuffer<texture_billboard_vertex> _vboTextureBillboards1;
-	vertexbuffer<texture_billboard_vertex> _vboTextureBillboards2;
 
 	renderer<color_vertex3, ground_gradient_uniforms>* _ground_gradient_renderer;
 	renderer<texture_vertex3, ground_texture_uniforms>* _ground_texture_renderer;

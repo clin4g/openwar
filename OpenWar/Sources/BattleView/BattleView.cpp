@@ -10,12 +10,12 @@
 #include "TrackingMarker.h"
 #include "MovementMarker.h"
 #include "ShootingCounter.h"
-#include "ColorLineRenderer.h"
+#include "GradientRenderer.h"
 #include "ColorBillboardRenderer.h"
 #include "SmoothTerrainWater.h"
 #include "SmoothTerrainSky.h"
 #include "sprite.h"
-#import "LineRenderer.h"
+#import "PlainRenderer.h"
 
 
 static affine2 billboard_texcoords(int x, int y, bool flip)
@@ -44,8 +44,8 @@ _casualtyMarker(0),
 _movementMarkers(),
 _trackingMarkers(),
 _player(PlayerNone),
-_lineRenderer(nullptr),
-colorLineRenderer(nullptr),
+_plainLineRenderer(nullptr),
+_gradientLineRenderer(nullptr),
 _colorBillboardRenderer(nullptr)
 {
 	SetContentBounds(bounds2f(0, 0, 1024, 1024));
@@ -132,8 +132,8 @@ _colorBillboardRenderer(nullptr)
 
 	_casualtyMarker = new CasualtyMarker(_battleModel);
 
-	_lineRenderer = new LineRenderer();
-	colorLineRenderer = new ColorLineRenderer();
+	_plainLineRenderer = new PlainLineRenderer();
+	_gradientLineRenderer = new GradientLineRenderer();
 	_colorBillboardRenderer = new ColorBillboardRenderer();
 }
 
@@ -367,10 +367,10 @@ void BattleView::Render()
 
 	glDepthMask(false);
 
-	_lineRenderer->Reset();
+	_plainLineRenderer->Reset();
 	for (UnitCounter* marker : _battleModel->_unitMarkers)
-		marker->AppendFighterWeapons(_lineRenderer);
-	_lineRenderer->Draw(GetTransform(), glm::vec4(0.4, 0.4, 0.4, 0.6));
+		marker->AppendFighterWeapons(_plainLineRenderer);
+	_plainLineRenderer->Draw(GetTransform(), glm::vec4(0.4, 0.4, 0.4, 0.6));
 
 
 	_colorBillboardRenderer->Reset();
@@ -424,10 +424,10 @@ void BattleView::Render()
 	_colorBillboardRenderer->Draw(GetTransform(), GetCameraUpVector(), GetViewportBounds().height());
 
 
-	colorLineRenderer->Reset();
+	_gradientLineRenderer->Reset();
 	for (ShootingCounter* shootingCounter : _battleModel->_shootingCounters)
-		shootingCounter->Render(colorLineRenderer);
-	colorLineRenderer->Draw(GetTransform());
+		shootingCounter->Render(_gradientLineRenderer);
+	_gradientLineRenderer->Draw(GetTransform());
 
 
 	glDepthMask(true);
@@ -651,22 +651,6 @@ void BattleView::RenderUnitMissileTarget(BattleRendering* rendering, Unit* unit)
 	}
 }
 
-
-void BattleView::RenderTrackingMarkers(BattleRendering* rendering)
-{
-	for (TrackingMarker* marker : _trackingMarkers)
-	{
-		glDisable(GL_DEPTH_TEST);
-		RenderTrackingMarker(rendering, marker);
-		RenderTrackingShadow(rendering, marker);
-		glEnable(GL_DEPTH_TEST);
-		RenderTrackingPath(rendering, marker);
-		RenderTrackingOrientation(rendering, marker);
-
-	}
-}
-
-
 static glm::vec2 DestinationXXX(TrackingMarker* marker)
 {
 	return marker->_destinationUnit ? marker->_destinationUnit->state.center
@@ -676,46 +660,42 @@ static glm::vec2 DestinationXXX(TrackingMarker* marker)
 }
 
 
+
+void BattleView::RenderTrackingMarkers(BattleRendering* rendering)
+{
+	for (TrackingMarker* marker : _trackingMarkers)
+	{
+		glDisable(GL_DEPTH_TEST);
+		RenderTrackingMarker(rendering, marker);
+		RenderTrackingShadow(rendering, marker);
+		glEnable(GL_DEPTH_TEST);
+
+		RenderTrackingPath(rendering, marker);
+		RenderTrackingOrientation(rendering, marker);
+	}
+}
+
+
+
+
 void BattleView::RenderTrackingMarker(BattleRendering* rendering, TrackingMarker* marker)
 {
-	glm::vec2 position = marker->_unit->state.center;
-	glm::vec2 destination = DestinationXXX(marker);
+	_textureBillboardRenderer1->Reset();
 
-	if (marker->_destinationUnit || marker->_hasDestination)
+	if ((marker->_destinationUnit || marker->_hasDestination) && marker->_destinationUnit == nullptr)
 	{
-		if (glm::length(position - destination) > 25)
-		{
-			//BoardView::WalkMarker(_movementShape, _texture, position, destination, mode, scale);
-			//_movementSprite->SetVisible(true);
-		}
-		else
-		{
-			//_movementSprite->SetVisible(false);
-		}
 
-		if (marker->_destinationUnit == nullptr)
-		{
-			rendering->_vboTextureBillboards1._mode = GL_POINTS;
-			rendering->_vboTextureBillboards1._vertices.clear();
+		glm::vec2 destination = DestinationXXX(marker);
+		glm::vec3 position = GetPosition(destination, 0);
+		glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
+		glm::vec2 texcoord = texsize * glm::vec2(marker->_unit->player != _battleModel->bluePlayer ? 4 : 3, 0);
 
-			glm::vec3 position = GetPosition(destination, 0);
-			//float pointsize = GetUnitMarkerScreenSize(position);
-			glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
-			glm::vec2 texcoord = texsize * glm::vec2(marker->_unit->player != _battleModel->bluePlayer ? 4 : 3, 0);
+		_textureBillboardRenderer1->AddBillboard(position, 32, affine2(texcoord, texcoord + texsize));
 
-			rendering->_vboTextureBillboards1._vertices.push_back(texture_billboard_vertex(position, 32, texcoord, texsize));
-			rendering->_vboTextureBillboards1.update(GL_STATIC_DRAW);
-
-			texture_billboard_uniforms uniforms;
-			uniforms._transform = GetTransform();
-			uniforms._texture = rendering->_textureUnitMarkers;
-			uniforms._upvector = GetCameraUpVector();
-			uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
-			uniforms._min_point_size = 24 * renderer_base::pixels_per_point();
-			uniforms._max_point_size = 48 * renderer_base::pixels_per_point();
-			_textureBillboardRenderer->_texture_billboard_renderer->render(rendering->_vboTextureBillboards1, uniforms);
-		}
 	}
+
+	bounds1f sizeLimit = bounds1f(24 * renderer_base::pixels_per_point(), 48 * renderer_base::pixels_per_point());
+	_textureBillboardRenderer1->Draw(rendering->_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), sizeLimit);
 }
 
 
@@ -733,11 +713,9 @@ void BattleView::RenderTrackingShadow(BattleRendering* rendering, TrackingMarker
 		vertex._position += offset;
 	}
 
-	sprite_transform s;
-	s._viewport = GetViewportBounds();
 
 	texture_uniforms uniforms;
-	uniforms._transform = s.transform();//GetTransform() * matrix4::translate(p._x, p._y, 0) * matrix4::scale(scale, scale, 1);
+	uniforms._transform = sprite_transform(GetViewportBounds()).transform();
 	uniforms._texture = rendering->_textureTouchMarker;
 	_renderers->_texture_renderer->render(rendering->_vboTrackingMarkerShadow, uniforms);
 }

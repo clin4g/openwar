@@ -8,7 +8,7 @@
 class BattleModel;
 class BattleRendering;
 class BillboardModel;
-class LineRenderer;
+class PlainLineRenderer;
 class Unit;
 class TextureBillboardRenderer;
 
@@ -26,7 +26,7 @@ public:
 	bool Animate(float seconds);
 
 	void AppendUnitMarker(TextureBillboardRenderer* renderer1, TextureBillboardRenderer* renderer2, bool flip);
-	void AppendFighterWeapons(LineRenderer* renderer);
+	void AppendFighterWeapons(PlainLineRenderer* renderer);
 	void AppendFighterBillboards(BillboardModel* billboardModel);
 };
 
