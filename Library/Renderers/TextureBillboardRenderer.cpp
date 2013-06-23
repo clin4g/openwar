@@ -70,16 +70,6 @@ TextureBillboardRenderer::~TextureBillboardRenderer()
 }
 
 
-static texture_billboard_vertex MakeBillboardVertex(BillboardModel* billboardModel, const Billboard& billboard, float cameraFacingDegrees)
-{
-	affine2 texcoords = billboardModel->texture->GetTexCoords(billboard.shape, billboard.facing - cameraFacingDegrees);
-	glm::vec2 texpos = texcoords.transform(glm::vec2(0, 0));
-	glm::vec2 texsize = texcoords.transform(glm::vec2(1, 1)) - texpos;
-
-	return texture_billboard_vertex(billboard.position, billboard.height, texpos, texsize);
-}
-
-
 void TextureBillboardRenderer::Reset()
 {
 	_vbo._mode = GL_POINTS;
