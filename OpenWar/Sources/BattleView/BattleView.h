@@ -24,6 +24,7 @@ class TrackingMarker;
 class UnitCounter;
 class PlainLineRenderer;
 class GradientLineRenderer;
+class GradientTriangleStripRenderer;
 class ColorBillboardRenderer;
 
 class BattleView : public TerrainView, public SimulationListener
@@ -47,6 +48,7 @@ class BattleView : public TerrainView, public SimulationListener
 
 	PlainLineRenderer* _plainLineRenderer;
 	GradientLineRenderer* _gradientLineRenderer;
+	GradientTriangleStripRenderer* _gradientTriangleStripRenderer;
 	ColorBillboardRenderer* _colorBillboardRenderer;
 
 public:

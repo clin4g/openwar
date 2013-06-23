@@ -46,6 +46,7 @@ _trackingMarkers(),
 _player(PlayerNone),
 _plainLineRenderer(nullptr),
 _gradientLineRenderer(nullptr),
+_gradientTriangleStripRenderer(nullptr),
 _colorBillboardRenderer(nullptr)
 {
 	SetContentBounds(bounds2f(0, 0, 1024, 1024));
@@ -134,6 +135,7 @@ _colorBillboardRenderer(nullptr)
 
 	_plainLineRenderer = new PlainLineRenderer();
 	_gradientLineRenderer = new GradientLineRenderer();
+	_gradientTriangleStripRenderer = new GradientTriangleStripRenderer();
 	_colorBillboardRenderer = new ColorBillboardRenderer();
 }
 
@@ -589,11 +591,10 @@ void BattleView::RenderRangeMarkers(BattleRendering* rendering)
 	for (std::pair<int, Unit*> item : _battleModel->units)
 	{
 		RangeMarker marker(_battleModel, item.second);
-		marker.Render(rendering);
 
-		BattleRendering::ground_gradient_uniforms uniforms;
-		uniforms._transform = GetTransform();
-		rendering->_ground_gradient_renderer->render(rendering->_vboRangeMarker, uniforms);
+		_gradientTriangleStripRenderer->Reset();
+		marker.Render(_gradientTriangleStripRenderer);
+		_gradientTriangleStripRenderer->Draw(GetTransform());
 	}
 }
 

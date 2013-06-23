@@ -6,7 +6,7 @@
 #define RangeMarker_H
 
 #include "BattleModel.h"
-class BattleRendering;
+class GradientTriangleStripRenderer;
 
 
 class RangeMarker
@@ -18,8 +18,8 @@ public:
 public:
 	RangeMarker(BattleModel* battleModel, Unit* unit);
 
-	void Render(BattleRendering* rendering);
-	void MakeRangeMarker(BattleRendering* rendering, glm::vec2 position, float direction, float minimumRange, float maximumRange);
+	void Render(GradientTriangleStripRenderer* renderer);
+	void MakeRangeMarker(GradientTriangleStripRenderer* renderer, glm::vec2 position, float direction, float minimumRange, float maximumRange);
 };
 
 

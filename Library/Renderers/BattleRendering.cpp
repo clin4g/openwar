@@ -7,49 +7,6 @@
 
 BattleRendering::BattleRendering()
 {
-	_ground_gradient_renderer = new renderer<color_vertex3, ground_gradient_uniforms>((
-		VERTEX_ATTRIBUTE(color_vertex3, _position),
-		VERTEX_ATTRIBUTE(color_vertex3, _color),
-		SHADER_UNIFORM(ground_gradient_uniforms, _transform),
-		SHADER_UNIFORM(ground_gradient_uniforms, _point_size),
-		VERTEX_SHADER
-		({
-						attribute
-						vec3 position;
-						attribute
-						vec4 color;
-						uniform
-						mat4 transform;
-						uniform float point_size;
-						varying
-						vec4 v_color;
-
-						void main()
-						{
-							vec4 p = transform * vec4(position, 1);
-
-							v_color = color;
-
-							gl_Position = p;
-							gl_PointSize = point_size;
-						}
-					}),
-					FRAGMENT_SHADER
-		({
-						varying
-						vec4 v_color;
-
-						void main()
-						{
-							gl_FragColor = v_color;
-						}
-					})
-	));
-	_ground_gradient_renderer->_blend_sfactor = GL_SRC_ALPHA;
-	_ground_gradient_renderer->_blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
-
-
-
 	_ground_texture_renderer = new renderer<texture_vertex3, ground_texture_uniforms>((
 			VERTEX_ATTRIBUTE(texture_vertex3, _position),
 					VERTEX_ATTRIBUTE(texture_vertex3, _texcoord),

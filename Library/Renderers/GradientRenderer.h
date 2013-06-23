@@ -33,9 +33,9 @@ protected:
 
 public:
 	GradientRenderer();
-	~GradientRenderer();
+	virtual ~GradientRenderer();
 
-	void Reset();
+	virtual void Reset() = 0;
 	void Draw(const glm::mat4x4& transform);
 };
 
@@ -43,7 +43,16 @@ public:
 class GradientLineRenderer : public GradientRenderer
 {
 public:
+	virtual void Reset();
 	void AddLine(const glm::vec3& p1, const glm::vec3& p2, const glm::vec4& c1, const glm::vec4& c2);
+};
+
+
+class GradientTriangleStripRenderer : public GradientRenderer
+{
+public:
+	virtual void Reset();
+	void AddVertex(const glm::vec3& p, const glm::vec4& c);
 };
 
 

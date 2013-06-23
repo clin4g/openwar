@@ -26,7 +26,6 @@ struct BattleRendering
 	};
 
 	vertexbuffer<plain_vertex> _vboTerrainShadow;
-	vertexbuffer<color_vertex3> _vboRangeMarker;
 	vertexbuffer<texture_vertex3> _vboMovementMarkerPath;
 	vertexbuffer<texture_vertex3> _vboTrackingMarkerPath;
 	vertexbuffer<texture_vertex3> _vboTrackingMarkerOrientation;
@@ -37,7 +36,6 @@ struct BattleRendering
 
 	vertexbuffer<texture_billboard_vertex> _vboTextureBillboards1;
 
-	renderer<color_vertex3, ground_gradient_uniforms>* _ground_gradient_renderer;
 	renderer<texture_vertex3, ground_texture_uniforms>* _ground_texture_renderer;
 	renderer<plain_vertex, plain_uniforms>* _ground_shadow_renderer;
 
