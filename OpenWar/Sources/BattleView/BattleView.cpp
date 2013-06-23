@@ -37,7 +37,9 @@ _terrainSurfaceRendererSmooth(nullptr),
 _terrainSurfaceRendererTiled(nullptr),
 _billboardTexture(nullptr),
 _billboardModel(nullptr),
-_billboardRenderer(nullptr),
+_textureBillboardRenderer(nullptr),
+_textureBillboardRenderer1(nullptr),
+_textureBillboardRenderer2(nullptr),
 _casualtyMarker(0),
 _movementMarkers(),
 _trackingMarkers(),
@@ -124,7 +126,9 @@ _colorBillboardRenderer(nullptr)
 		_billboardTexture->SetTexCoords(_billboardModel->_billboardShapeSmoke[i], 0, billboard_texcoords(i, 7, false));
 	}
 
-	_billboardRenderer = new BillboardRenderer();
+	_textureBillboardRenderer = new TextureBillboardRenderer();
+	_textureBillboardRenderer1 = new TextureBillboardRenderer();
+	_textureBillboardRenderer2 = new TextureBillboardRenderer();
 
 	_casualtyMarker = new CasualtyMarker(_battleModel);
 
@@ -379,11 +383,31 @@ void BattleView::Render()
 		marker->AppendFighterBillboards(_billboardModel);
 	for (SmokeCounter* marker : _battleModel->_smokeMarkers)
 		marker->AppendSmokeBillboards(_billboardModel);
-	_billboardRenderer->Render(_billboardModel, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()));
+	_textureBillboardRenderer->Render(_billboardModel, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()));
 
 
 	RenderRangeMarkers(_battleRendering);
-	RenderUnitMarkers(_battleRendering);
+
+
+	for (UnitCounter* marker : _battleModel->_unitMarkers)
+	{
+		Unit* unit = marker->_unit;
+		RenderUnitMissileTarget(_battleRendering, unit);
+	}
+
+	_textureBillboardRenderer1->Reset();
+	_textureBillboardRenderer2->Reset();
+
+	for (UnitCounter* marker : _battleModel->_unitMarkers)
+		marker->AppendUnitMarker(_textureBillboardRenderer1, _textureBillboardRenderer2, GetFlip());
+
+	bounds1f sizeLimit = GetUnitIconSizeLimit();
+
+	glDisable(GL_DEPTH_TEST);
+	_textureBillboardRenderer1->Draw(_battleRendering->_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), sizeLimit);
+	_textureBillboardRenderer2->Draw(_battleRendering->_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), sizeLimit);
+	glEnable(GL_DEPTH_TEST);
+
 
 	RenderTrackingMarkers(_battleRendering);
 
@@ -574,95 +598,39 @@ void BattleView::RenderRangeMarkers(BattleRendering* rendering)
 }
 
 
-
-void BattleView::RenderUnitMarkers(BattleRendering* rendering)
+static bool is_iphone()
 {
-	rendering->_vboTextureBillboards1._mode = GL_POINTS;
-	rendering->_vboTextureBillboards1._vertices.clear();
-
-	rendering->_vboTextureBillboards2._mode = GL_POINTS;
-	rendering->_vboTextureBillboards2._vertices.clear();
-
-	for (UnitCounter* marker : _battleModel->_unitMarkers)
+	static bool* _is_iphone = nullptr;
+	if (_is_iphone == nullptr)
 	{
-		Unit* unit = marker->_unit;
-
-		RenderUnitMissileTarget(rendering, unit);
-		AppendUnitMarker(rendering, marker);
+#if TARGET_OS_IPHONE
+		_is_iphone = new bool([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone);
+#else
+		_is_iphone = new bool(false);
+#endif
 	}
+	return *_is_iphone;
+}
 
+
+
+bounds1f BattleView::GetUnitIconSizeLimit() const
+{
 	float y = GetCameraDirection().z;
 	float x = sqrtf(1 - y * y);
 	float a = 1 - fabsf(atan2f(y, x) / (float)M_PI_2);
-	static bool* is_iphone = nullptr;
-	if (is_iphone == nullptr)
+
+	bounds1f result(0, 0);
+	result.min = (32 - 8 * a) * renderer_base::pixels_per_point();
+	result.max = (32 + 16 * a) * renderer_base::pixels_per_point();
+	if (is_iphone())
 	{
-#if TARGET_OS_IPHONE
-		is_iphone = new bool([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone);
-#else
-		is_iphone = new bool(false);
-#endif
+		result.min *= 57.0f / 72.0f;
+		result.max *= 57.0f / 72.0f;
 	}
-
-	texture_billboard_uniforms uniforms2;
-	uniforms2._transform = GetTransform();
-	uniforms2._texture = rendering->_textureUnitMarkers;
-	uniforms2._upvector = GetCameraUpVector();
-	uniforms2._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
-	uniforms2._min_point_size = (32 - 8 * a) * renderer_base::pixels_per_point();
-	uniforms2._max_point_size = (32 + 16 * a) * renderer_base::pixels_per_point();
-	if (*is_iphone)
-	{
-		uniforms2._min_point_size *= 57.0f / 72.0f;
-		uniforms2._max_point_size *= 57.0f / 72.0f;
-	}
-
-	rendering->_vboTextureBillboards1.update(GL_STATIC_DRAW);
-
-	glDisable(GL_DEPTH_TEST);
-	_billboardRenderer->_texture_billboard_renderer->render(rendering->_vboTextureBillboards1, uniforms2);
-	_billboardRenderer->_texture_billboard_renderer->render(rendering->_vboTextureBillboards2, uniforms2);
-	glEnable(GL_DEPTH_TEST);
+	return result;
 }
 
-
-void BattleView::AppendUnitMarker(BattleRendering* rendering, UnitCounter* marker)
-{
-	Unit* unit = marker->_unit;
-
-	bool routingIndicator = false;
-	float routingBlinkTime = unit->state.GetRoutingBlinkTime();
-
-	if (unit->state.IsRouting())
-	{
-		routingIndicator = true;
-	}
-	else if (routingBlinkTime != 0 && 0 <= marker->_routingTimer && marker->_routingTimer < 0.2f)
-	{
-		routingIndicator = true;
-	}
-
-	int state = 0;
-	if (routingIndicator)
-		state = 2;
-	else if (unit->player != _battleModel->bluePlayer)
-		state = 1;
-
-	glm::vec3 position = GetPosition(unit->state.center, 0);
-	glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
-	glm::vec2 texcoord1 = texsize * glm::vec2(state, 0);
-	glm::vec2 texcoord2 = texsize * glm::vec2((int)unit->stats.unitWeapon, 1 + (int)unit->stats.unitPlatform);
-
-	if (GetFlip())
-	{
-		texcoord1 += texsize;
-		texcoord2 += texsize;
-		texsize = -texsize;
-	}
-
-	rendering->_vboTextureBillboards1._vertices.push_back(texture_billboard_vertex(position, 32, texcoord1, texsize));
-	rendering->_vboTextureBillboards2._vertices.push_back(texture_billboard_vertex(position, 32, texcoord2, texsize));
-}
 
 
 void BattleView::RenderUnitMissileTarget(BattleRendering* rendering, Unit* unit)
@@ -745,7 +713,7 @@ void BattleView::RenderTrackingMarker(BattleRendering* rendering, TrackingMarker
 			uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
 			uniforms._min_point_size = 24 * renderer_base::pixels_per_point();
 			uniforms._max_point_size = 48 * renderer_base::pixels_per_point();
-			_billboardRenderer->_texture_billboard_renderer->render(rendering->_vboTextureBillboards1, uniforms);
+			_textureBillboardRenderer->_texture_billboard_renderer->render(rendering->_vboTextureBillboards1, uniforms);
 		}
 	}
 }
@@ -861,7 +829,7 @@ void BattleView::RenderMovementMarker(BattleRendering* rendering, Unit* unit)
 			uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
 			uniforms._min_point_size = 24 * renderer_base::pixels_per_point();
 			uniforms._max_point_size = 48 * renderer_base::pixels_per_point();
-			_billboardRenderer->_texture_billboard_renderer->render(rendering->_vboTextureBillboards1, uniforms);
+			_textureBillboardRenderer->_texture_billboard_renderer->render(rendering->_vboTextureBillboards1, uniforms);
 		}
 	}
 }

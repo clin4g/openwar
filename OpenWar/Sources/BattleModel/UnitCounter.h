@@ -10,6 +10,7 @@ class BattleRendering;
 class BillboardModel;
 class LineRenderer;
 class Unit;
+class TextureBillboardRenderer;
 
 class UnitCounter
 {
@@ -24,6 +25,7 @@ public:
 
 	bool Animate(float seconds);
 
+	void AppendUnitMarker(TextureBillboardRenderer* renderer1, TextureBillboardRenderer* renderer2, bool flip);
 	void AppendFighterWeapons(LineRenderer* renderer);
 	void AppendFighterBillboards(BillboardModel* billboardModel);
 };

@@ -2,10 +2,10 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "BillboardRenderer.h"
+#include "TextureBillboardRenderer.h"
 
 
-BillboardRenderer::BillboardRenderer()
+TextureBillboardRenderer::TextureBillboardRenderer()
 {
 	_texture_billboard_renderer = new renderer<texture_billboard_vertex, texture_billboard_uniforms>((
 		VERTEX_ATTRIBUTE(texture_billboard_vertex, _position),
@@ -65,7 +65,7 @@ BillboardRenderer::BillboardRenderer()
 }
 
 
-BillboardRenderer::~BillboardRenderer()
+TextureBillboardRenderer::~TextureBillboardRenderer()
 {
 }
 
@@ -80,22 +80,24 @@ static texture_billboard_vertex MakeBillboardVertex(BillboardModel* billboardMod
 }
 
 
-void BillboardRenderer::Render(BillboardModel* billboardModel, glm::mat4x4 const & transform, const glm::vec3& cameraUp, float cameraFacingDegrees)
+void TextureBillboardRenderer::Reset()
 {
-	std::vector<texture_billboard_vertex> vertices;
-
-	for (const Billboard& billboard : billboardModel->staticBillboards)
-		vertices.push_back(MakeBillboardVertex(billboardModel, billboard, cameraFacingDegrees));
-
-	for (const Billboard& billboard : billboardModel->dynamicBillboards)
-		vertices.push_back(MakeBillboardVertex(billboardModel, billboard, cameraFacingDegrees));
-
 	_vbo._mode = GL_POINTS;
 	_vbo._vertices.clear();
+}
 
 
-	_vbo._vertices.insert(_vbo._vertices.end(), vertices.begin(), vertices.end());
+void TextureBillboardRenderer::AddBillboard(glm::vec3 position, float height, affine2 texcoords)
+{
+	glm::vec2 texpos = texcoords.transform(glm::vec2(0, 0));
+	glm::vec2 texsize = texcoords.transform(glm::vec2(1, 1)) - texpos;
 
+	_vbo._vertices.push_back(texture_billboard_vertex(position, height, texpos, texsize));
+}
+
+
+void TextureBillboardRenderer::Draw(texture* tex, const glm::mat4x4& transform, const glm::vec3& cameraUp, float cameraFacingDegrees, bounds1f sizeLimit)
+{
 	float a = -glm::radians(cameraFacingDegrees);
 	float cos_a = cosf(a);
 	float sin_a = sinf(a);
@@ -109,11 +111,25 @@ void BillboardRenderer::Render(BillboardModel* billboardModel, glm::mat4x4 const
 
 	texture_billboard_uniforms uniforms;
 	uniforms._transform = transform;
-	uniforms._texture = billboardModel->texture->GetTexture();
+	uniforms._texture = tex;
 	uniforms._upvector = cameraUp;
 	uniforms._viewport_height = 768;///*0.25 **/ renderer_base::pixels_per_point() * GetViewportBounds().height();
-	uniforms._min_point_size = 0;
-	uniforms._max_point_size = 1024;
+	uniforms._min_point_size = sizeLimit.min;
+	uniforms._max_point_size = sizeLimit.max;
 
 	_texture_billboard_renderer->render(_vbo, uniforms);
+}
+
+
+void TextureBillboardRenderer::Render(BillboardModel* billboardModel, glm::mat4x4 const & transform, const glm::vec3& cameraUp, float cameraFacingDegrees)
+{
+	Reset();
+
+	for (const Billboard& billboard : billboardModel->staticBillboards)
+		AddBillboard(billboard.position, billboard.height, billboardModel->texture->GetTexCoords(billboard.shape, billboard.facing - cameraFacingDegrees));
+
+	for (const Billboard& billboard : billboardModel->dynamicBillboards)
+		AddBillboard(billboard.position, billboard.height, billboardModel->texture->GetTexCoords(billboard.shape, billboard.facing - cameraFacingDegrees));
+
+	Draw(billboardModel->texture->GetTexture(), transform, cameraUp, cameraFacingDegrees);
 }

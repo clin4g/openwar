@@ -6,13 +6,11 @@
 #define BATTLERENDERING_H
 
 #include "renderer.h"
-#include "BillboardRenderer.h"
+#include "TextureBillboardRenderer.h"
 
 
 struct BattleRendering
 {
-
-
 	struct ground_color_uniforms
 	{
 		glm::mat4x4 _transform;
@@ -45,6 +43,7 @@ struct BattleRendering
 	vertexbuffer<texture_vertex3> _vboUnitMarkerTargetLine;
 	vertexbuffer<texture_vertex3> _vboUnitMarkerTargetHead;
 	vertexbuffer<texture_vertex> _vboTrackingMarkerShadow;
+
 	vertexbuffer<texture_billboard_vertex> _vboTextureBillboards1;
 	vertexbuffer<texture_billboard_vertex> _vboTextureBillboards2;
 

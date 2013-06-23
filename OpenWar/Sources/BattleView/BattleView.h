@@ -13,7 +13,7 @@
 #include "TerrainView.h"
 #include "vertexbuffer.h"
 
-#include "BillboardRenderer.h"
+#include "TextureBillboardRenderer.h"
 
 
 class CasualtyMarker;
@@ -37,8 +37,9 @@ class BattleView : public TerrainView, public SimulationListener
 
 	BillboardTexture* _billboardTexture;
 	BillboardModel* _billboardModel;
-	BillboardRenderer* _billboardRenderer;
-
+	TextureBillboardRenderer* _textureBillboardRenderer;
+	TextureBillboardRenderer* _textureBillboardRenderer1;
+	TextureBillboardRenderer* _textureBillboardRenderer2;
 
 	CasualtyMarker* _casualtyMarker;
 	std::vector<MovementMarker*> _movementMarkers;
@@ -90,8 +91,7 @@ public:
 
 	void RenderRangeMarkers(BattleRendering* rendering);
 
-	void RenderUnitMarkers(BattleRendering* rendering);
-	void AppendUnitMarker(BattleRendering* rendering, UnitCounter* marker);
+	bounds1f GetUnitIconSizeLimit() const;
 
 	void RenderUnitMissileTarget(BattleRendering* rendering, Unit* unit);
 
