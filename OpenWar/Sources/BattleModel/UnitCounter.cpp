@@ -5,7 +5,7 @@
 #include "UnitCounter.h"
 #include "BattleRendering.h"
 #include "BattleModel.h"
-#include "BillboardRenderer.h"
+#include "LineRenderer.h"
 
 
 UnitCounter::UnitCounter(BattleModel* battleModel, Unit* unit) :
@@ -39,7 +39,7 @@ bool UnitCounter::Animate(float seconds)
 }
 
 
-void UnitCounter::AppendFighterWeapons(BattleRendering* rendering)
+void UnitCounter::AppendFighterWeapons(LineRenderer* renderer)
 {
 	if (_unit->stats.weaponReach > 0)
 	{
@@ -48,8 +48,9 @@ void UnitCounter::AppendFighterWeapons(BattleRendering* rendering)
 			glm::vec2 p1 = fighter->state.position;
 			glm::vec2 p2 = p1 + _unit->stats.weaponReach * vector2_from_angle(fighter->state.direction);
 
-			rendering->_vboFighterWeapons._vertices.push_back(plain_vertex3(_battleModel->terrainSurface->GetPosition(p1, 1)));
-			rendering->_vboFighterWeapons._vertices.push_back(plain_vertex3(_battleModel->terrainSurface->GetPosition(p2, 1)));
+			renderer->AddLine(
+					_battleModel->terrainSurface->GetPosition(p1, 1),
+					_battleModel->terrainSurface->GetPosition(p2, 1));
 		}
 	}
 }

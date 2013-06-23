@@ -71,5 +71,4 @@ void ColorLineRenderer::Draw(const glm::mat4x4& transform)
 	gradient_uniforms uniforms;
 	uniforms._transform = transform;
 	_renderer->render(_vbo, uniforms);
-
 }

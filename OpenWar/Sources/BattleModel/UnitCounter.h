@@ -8,8 +8,8 @@
 class BattleModel;
 class BattleRendering;
 class BillboardModel;
+class LineRenderer;
 class Unit;
-
 
 class UnitCounter
 {
@@ -24,7 +24,7 @@ public:
 
 	bool Animate(float seconds);
 
-	void AppendFighterWeapons(BattleRendering* rendering);
+	void AppendFighterWeapons(LineRenderer* renderer);
 	void AppendFighterBillboards(BillboardModel* billboardModel);
 };
 

@@ -22,6 +22,7 @@ class RangeMarker;
 class ShootingCounter;
 class TrackingMarker;
 class UnitCounter;
+class LineRenderer;
 class ColorLineRenderer;
 class ColorBillboardRenderer;
 
@@ -43,6 +44,7 @@ class BattleView : public TerrainView, public SimulationListener
 	std::vector<MovementMarker*> _movementMarkers;
 	std::vector<TrackingMarker*> _trackingMarkers;
 
+	LineRenderer* _lineRenderer;
 	ColorLineRenderer* colorLineRenderer;
 	ColorBillboardRenderer* _colorBillboardRenderer;
 
@@ -85,8 +87,6 @@ public:
 
 	void RenderTerrainShadow(BattleRendering* rendering);
 	void RenderTerrainGround(BattleRendering* rendering);
-
-	void RenderFighterWeapons(BattleRendering* rendering);
 
 	void RenderRangeMarkers(BattleRendering* rendering);
 

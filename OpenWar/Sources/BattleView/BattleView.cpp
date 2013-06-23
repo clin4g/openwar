@@ -15,6 +15,7 @@
 #include "SmoothTerrainWater.h"
 #include "SmoothTerrainSky.h"
 #include "sprite.h"
+#import "LineRenderer.h"
 
 
 static affine2 billboard_texcoords(int x, int y, bool flip)
@@ -41,6 +42,7 @@ _casualtyMarker(0),
 _movementMarkers(),
 _trackingMarkers(),
 _player(PlayerNone),
+_lineRenderer(nullptr),
 colorLineRenderer(nullptr),
 _colorBillboardRenderer(nullptr)
 {
@@ -126,6 +128,7 @@ _colorBillboardRenderer(nullptr)
 
 	_casualtyMarker = new CasualtyMarker(_battleModel);
 
+	_lineRenderer = new LineRenderer();
 	colorLineRenderer = new ColorLineRenderer();
 	_colorBillboardRenderer = new ColorBillboardRenderer();
 }
@@ -360,7 +363,10 @@ void BattleView::Render()
 
 	glDepthMask(false);
 
-	RenderFighterWeapons(_battleRendering);
+	_lineRenderer->Reset();
+	for (UnitCounter* marker : _battleModel->_unitMarkers)
+		marker->AppendFighterWeapons(_lineRenderer);
+	_lineRenderer->Draw(GetTransform(), glm::vec4(0.4, 0.4, 0.4, 0.6));
 
 
 	_colorBillboardRenderer->Reset();
@@ -553,24 +559,6 @@ void BattleView::RenderTerrainGround(BattleRendering* rendering)
 }
 
 
-void BattleView::RenderFighterWeapons(BattleRendering* rendering)
-{
-	rendering->_vboFighterWeapons._mode = GL_LINES;
-	rendering->_vboFighterWeapons._vertices.clear();
-
-	for (UnitCounter* marker : _battleModel->_unitMarkers)
-	{
-		marker->AppendFighterWeapons(rendering);
-	}
-
-	BattleRendering::ground_color_uniforms uniforms3;
-	uniforms3._transform = GetTransform();
-	uniforms3._color = glm::vec4(0.4, 0.4, 0.4, 0.6);
-	rendering->_ground_plain_renderer->render(rendering->_vboFighterWeapons, uniforms3);
-
-}
-
-
 
 void BattleView::RenderRangeMarkers(BattleRendering* rendering)
 {
@@ -584,7 +572,6 @@ void BattleView::RenderRangeMarkers(BattleRendering* rendering)
 		rendering->_ground_gradient_renderer->render(rendering->_vboRangeMarker, uniforms);
 	}
 }
-
 
 
 
