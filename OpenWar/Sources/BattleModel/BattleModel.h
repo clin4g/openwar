@@ -11,12 +11,12 @@
 
 class BattleModel;
 class CasualtyMarker;
-class MovementMarker;
+class UnitMovementMarker;
 class UnitCounter;
 class RangeMarker;
 class SmokeCounter;
 class ShootingCounter;
-class TrackingMarker;
+class UnitTrackingMarker;
 
 struct Fighter;
 struct Unit;

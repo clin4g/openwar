@@ -2,26 +2,24 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "MovementMarker.h"
+#include "UnitMovementMarker.h"
 #include "BattleModel.h"
 #include "ColorBillboardRenderer.h"
 #include "TextureBillboardRenderer.h"
 
 
 
-MovementMarker::MovementMarker(BattleModel* battleModel, Unit* unit) :
-_battleModel(battleModel),
-_unit(unit)
+UnitMovementMarker::UnitMovementMarker(BattleModel* battleModel, Unit* unit) : UnitMarker(battleModel, unit)
 {
 }
 
 
-MovementMarker::~MovementMarker()
+UnitMovementMarker::~UnitMovementMarker()
 {
 }
 
 
-bool MovementMarker::Animate(float seconds)
+bool UnitMovementMarker::Animate(float seconds)
 {
 	if (_battleModel->GetUnit(_unit->unitId) == 0 || _unit->state.IsRouting())
 		return false;
@@ -33,7 +31,7 @@ bool MovementMarker::Animate(float seconds)
 }
 
 
-void MovementMarker::RenderMovementFighters(ColorBillboardRenderer* renderer)
+void UnitMovementMarker::RenderMovementFighters(ColorBillboardRenderer* renderer)
 {
 	if (!_unit->movement.target)
 	{
@@ -59,7 +57,7 @@ void MovementMarker::RenderMovementFighters(ColorBillboardRenderer* renderer)
 
 
 
-void MovementMarker::RenderMovementMarker(TextureBillboardRenderer* renderer)
+void UnitMovementMarker::RenderMovementMarker(TextureBillboardRenderer* renderer)
 {
 	glm::vec2 finalDestination = _unit->movement.GetFinalDestination();
 	if (_unit->movement.path.size() > 1 || glm::length(_unit->state.center - finalDestination) > 25)
@@ -74,3 +72,27 @@ void MovementMarker::RenderMovementMarker(TextureBillboardRenderer* renderer)
 		}
 	}
 }
+
+
+
+void UnitMovementMarker::RenderMovementPath(TextureTriangleRenderer* renderer)
+{
+	if (_unit->movement.path.size() != 0)
+	{
+		glm::vec2 position = _unit->state.center;
+
+		int mode = 0;
+		if (_unit->movement.target)
+			mode = 2;
+		else if (_unit->movement.running)
+			mode = 1;
+
+		std::vector<glm::vec2> path(_unit->movement.path);
+		if (_unit->movement.target != 0)
+			path.insert(path.end(), _unit->movement.target->state.center);
+
+		Path(renderer, mode, position, path, _unit->movement.path_t0);
+	}
+}
+
+

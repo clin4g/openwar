@@ -2,15 +2,16 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#ifndef UnitMarker_H
-#define UnitMarker_H
+#ifndef UnitCounter_H
+#define UnitCounter_H
 
 class BattleModel;
 class BattleRendering;
 class BillboardModel;
 class PlainLineRenderer;
-class Unit;
 class TextureBillboardRenderer;
+class Unit;
+
 
 class UnitCounter
 {

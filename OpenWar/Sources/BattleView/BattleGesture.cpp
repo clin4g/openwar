@@ -7,8 +7,8 @@
 #include "BattleView.h"
 #include "SoundPlayer.h"
 #include "UnitCounter.h"
-#include "TrackingMarker.h"
-#include "MovementMarker.h"
+#include "UnitTrackingMarker.h"
+#include "UnitMovementMarker.h"
 
 #include "sprite.h"
 
@@ -220,7 +220,7 @@ void BattleGesture::TouchEnded(Touch* touch)
 	{
 		if (_trackingMarker != nullptr)
 		{
-			Unit* unit = _trackingMarker->_unit;
+			Unit* unit = _trackingMarker->GetUnit();
 
 			Unit* destinationUnit = _trackingMarker->_destinationUnit;
 			Unit* orientationUnit = _trackingMarker->_orientationUnit;
@@ -423,10 +423,10 @@ Unit* BattleGesture::GetTouchedUnitMarker(glm::vec2 screenPosition, glm::vec2 te
 Unit* BattleGesture::GetTouchedMovementMarker(glm::vec2 screenPosition, glm::vec2 terrainPosition)
 {
 	Unit* result = nullptr;
-	MovementMarker* movementMarker = _battleView->GetNearestMovementMarker(terrainPosition, _battleView->_player);
+	UnitMovementMarker* movementMarker = _battleView->GetNearestMovementMarker(terrainPosition, _battleView->_player);
 	if (movementMarker != nullptr)
 	{
-		Unit* unit = movementMarker->_unit;
+		Unit* unit = movementMarker->GetUnit();
 		if (!unit->state.IsRouting() && GetUnitFutureScreenBounds(unit).contains(screenPosition))
 		{
 			result = unit;
@@ -438,14 +438,14 @@ Unit* BattleGesture::GetTouchedMovementMarker(glm::vec2 screenPosition, glm::vec
 
 void BattleGesture::UpdateTrackingMarker()
 {
-	Unit* unit = _trackingMarker->_unit;
+	Unit* unit = _trackingMarker->GetUnit();
 
 	glm::vec2 screenTouchPosition = _trackingTouch->GetPosition();
 	glm::vec2 screenMarkerPosition = screenTouchPosition + glm::vec2(0, 1) * (_offsetToMarker * GetFlipSign());
 	glm::vec2 touchPosition = _battleView->GetTerrainPosition3(screenTouchPosition).xy();
 	glm::vec2 markerPosition = _battleView->GetTerrainPosition3(screenMarkerPosition).xy();
 
-	Player enemyPlayer = _trackingMarker->_unit->player == Player1 ? Player2 : Player1;
+	Player enemyPlayer = _trackingMarker->GetUnit()->player == Player1 ? Player2 : Player1;
 	Unit* enemyUnit = FindUnit(touchPosition, markerPosition, enemyPlayer);
 
 	glm::vec2 origin = unit->state.center;

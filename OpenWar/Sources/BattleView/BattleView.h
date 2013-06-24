@@ -20,12 +20,12 @@ class CasualtyMarker;
 class ColorBillboardRenderer;
 class GradientLineRenderer;
 class GradientTriangleStripRenderer;
-class MovementMarker;
+class UnitMovementMarker;
 class PlainLineRenderer;
 class RangeMarker;
 class ShootingCounter;
 class TextureTriangleRenderer;
-class TrackingMarker;
+class UnitTrackingMarker;
 class UnitCounter;
 
 
@@ -45,8 +45,8 @@ class BattleView : public TerrainView, public SimulationListener
 	TextureBillboardRenderer* _textureBillboardRenderer2;
 
 	CasualtyMarker* _casualtyMarker;
-	std::vector<MovementMarker*> _movementMarkers;
-	std::vector<TrackingMarker*> _trackingMarkers;
+	std::vector<UnitMovementMarker*> _movementMarkers;
+	std::vector<UnitTrackingMarker*> _trackingMarkers;
 
 	PlainLineRenderer* _plainLineRenderer;
 	GradientLineRenderer* _gradientLineRenderer;
@@ -69,13 +69,13 @@ public:
 
 	void AddCasualty(const Casualty& casualty);
 
-	MovementMarker* AddMovementMarker(Unit* unit);
-	MovementMarker* GetMovementMarker(Unit* unit);
-	MovementMarker* GetNearestMovementMarker(glm::vec2 position, Player player);
+	UnitMovementMarker* AddMovementMarker(Unit* unit);
+	UnitMovementMarker* GetMovementMarker(Unit* unit);
+	UnitMovementMarker* GetNearestMovementMarker(glm::vec2 position, Player player);
 
-	TrackingMarker* AddTrackingMarker(Unit* unit);
-	TrackingMarker* GetTrackingMarker(Unit* unit);
-	void RemoveTrackingMarker(TrackingMarker* trackingMarker);
+	UnitTrackingMarker* AddTrackingMarker(Unit* unit);
+	UnitTrackingMarker* GetTrackingMarker(Unit* unit);
+	void RemoveTrackingMarker(UnitTrackingMarker* trackingMarker);
 
 	void Initialize(bool editor = false);
 
@@ -87,20 +87,12 @@ public:
 	virtual void Render();
 	virtual void Update(double secondsSinceLastUpdate);
 
-	void RenderRangeMarkers(BattleRendering* rendering);
-
 	bounds1f GetUnitIconSizeLimit() const;
 
 	void RenderUnitMissileTarget(BattleRendering* rendering, Unit* unit);
 
-	void RenderTrackingMarkers(BattleRendering* rendering);
-
-	void RenderTrackingShadow(BattleRendering* rendering, TrackingMarker* marker);
-	void RenderTrackingPath(BattleRendering* rendering, TrackingMarker* marker);
-	void RenderTrackingOrientation(BattleRendering* rendering, TrackingMarker* marker);
-
-	void RenderMovementMarkers(BattleRendering* rendering);
-	void RenderMovementPath(BattleRendering* rendering, Unit* unit);
+	void RenderTrackingShadow(BattleRendering* rendering, UnitTrackingMarker* marker);
+	void RenderTrackingOrientation(BattleRendering* rendering, UnitTrackingMarker* marker);
 
 
 	void TexRectN(vertexbuffer<texture_vertex>& shape, int size, int x, int y, int w, int h);
@@ -108,9 +100,6 @@ public:
 	void MissileLine(vertexbuffer<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, float scale);
 	void MissileHead(vertexbuffer<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, float scale);
 	void TexLine16(vertexbuffer<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, int t1, int t2, float scale);
-
-	void _Path(vertexbuffer<texture_vertex3>& shape, int mode, float scale, const std::vector<glm::vec2>& path, float t0);
-	void Path(vertexbuffer<texture_vertex3>& shape, int mode, glm::vec2 position, const std::vector<glm::vec2>& path, float t0);
 };
 
 

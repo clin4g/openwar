@@ -12,7 +12,7 @@
 #include "BattleModel.h"
 #include "BattleView.h"
 
-class TrackingMarker;
+class UnitTrackingMarker;
 class Unit;
 class UnitCounter;
 
@@ -24,7 +24,7 @@ class BattleGesture : public Gesture
 	bool _tappedUnitCenter;
 	bool _tappedDestination;
 
-	TrackingMarker* _trackingMarker;
+	UnitTrackingMarker* _trackingMarker;
 
 	Touch* _trackingTouch;
 	Touch* _modifierTouch;

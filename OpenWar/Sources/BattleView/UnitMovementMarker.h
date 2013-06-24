@@ -2,29 +2,27 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#ifndef MovementMarker_H
-#define MovementMarker_H
+#ifndef UnitMovementMarker_H
+#define UnitMovementMarker_H
 
-class BattleModel;
+#include "UnitMarker.h"
+
 class ColorBillboardRenderer;
 class TextureBillboardRenderer;
-class Unit;
 
 
-class MovementMarker
+
+class UnitMovementMarker : public UnitMarker
 {
 public:
-	BattleModel* _battleModel;
-	Unit* _unit;
-
-public:
-	MovementMarker(BattleModel* battleModel, Unit* unit);
-	~MovementMarker();
+	UnitMovementMarker(BattleModel* battleModel, Unit* unit);
+	~UnitMovementMarker();
 
 	bool Animate(float seconds);
 
 	void RenderMovementFighters(ColorBillboardRenderer* renderer);
 	void RenderMovementMarker(TextureBillboardRenderer* renderer);
+	void RenderMovementPath(TextureTriangleRenderer* renderer);
 };
 
 

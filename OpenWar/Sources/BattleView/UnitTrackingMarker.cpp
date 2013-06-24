@@ -2,14 +2,12 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "TrackingMarker.h"
+#include "UnitTrackingMarker.h"
 #import "ColorBillboardRenderer.h"
 #import "TextureBillboardRenderer.h"
 
 
-TrackingMarker::TrackingMarker(BattleModel* battleModel, Unit* unit) :
-_battleModel(battleModel),
-_unit(unit),
+UnitTrackingMarker::UnitTrackingMarker(BattleModel* battleModel, Unit* unit) : UnitMarker(battleModel, unit),
 _destinationUnit(0),
 _destination(_unit->state.center),
 _hasDestination(false),
@@ -22,23 +20,23 @@ _running(false)
 }
 
 
-TrackingMarker::~TrackingMarker()
+UnitTrackingMarker::~UnitTrackingMarker()
 {
 }
 
 
 
-static glm::vec2 DestinationXXX(TrackingMarker* marker)
+static glm::vec2 DestinationXXX(UnitTrackingMarker* marker)
 {
 	return marker->_destinationUnit ? marker->_destinationUnit->state.center
 			: marker->_path.size() != 0 ? *(marker->_path.end() - 1)
 					: marker->_hasDestination ? marker->_destination
-							: marker->_unit->state.center;
+							: marker->GetUnit()->state.center;
 }
 
 
 
-void TrackingMarker::RenderTrackingFighters(ColorBillboardRenderer* renderer)
+void UnitTrackingMarker::RenderTrackingFighters(ColorBillboardRenderer* renderer)
 {
 	if (!_destinationUnit && !_orientationUnit)
 	{
@@ -65,7 +63,7 @@ void TrackingMarker::RenderTrackingFighters(ColorBillboardRenderer* renderer)
 
 
 
-void TrackingMarker::RenderTrackingMarker(TextureBillboardRenderer* renderer)
+void UnitTrackingMarker::RenderTrackingMarker(TextureBillboardRenderer* renderer)
 {
 	if ((_destinationUnit || _hasDestination) && _destinationUnit == nullptr)
 	{
@@ -76,4 +74,26 @@ void TrackingMarker::RenderTrackingMarker(TextureBillboardRenderer* renderer)
 
 		renderer->AddBillboard(position, 32, affine2(texcoord, texcoord + texsize));
 	}
+}
+
+
+void UnitTrackingMarker::RenderTrackingPath(TextureTriangleRenderer* renderer)
+{
+	if (_path.size() != 0)
+	{
+		glm::vec2 position = _unit->state.center;
+
+		int mode = 0;
+		if (_destinationUnit)
+			mode = 2;
+		else if (_running)
+			mode = 1;
+
+		std::vector<glm::vec2> path(_path);
+		if (_destinationUnit != 0)
+			path.insert(path.end(), _destinationUnit->state.center);
+
+		Path(renderer, mode, position, path, 0);
+	}
+
 }
