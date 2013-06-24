@@ -5,7 +5,6 @@
 #ifndef BATTLEVIEW_H
 #define BATTLEVIEW_H
 
-#include "BattleRendering.h"
 #include "BattleModel.h"
 #include "BattleSimulator.h"
 #include "SmoothTerrainSurfaceRenderer.h"
@@ -34,8 +33,6 @@ class BattleView : public TerrainView, public SimulationListener
 	renderers* _renderers;
 	BattleModel* _battleModel;
 
-	BattleRendering* _battleRendering;
-
 	glm::vec3 _lightNormal;
 
 	BillboardTexture* _billboardTexture;
@@ -54,12 +51,17 @@ class BattleView : public TerrainView, public SimulationListener
 	ColorBillboardRenderer* _colorBillboardRenderer;
 	TextureTriangleRenderer* _textureTriangleRenderer;
 
+	texture* _textureUnitMarkers;
+	texture* _textureMovementBlue;
+	texture* _textureMovementGray;
+	texture* _textureTouchMarker;
+
 public:
 	SmoothTerrainSurfaceRenderer* _terrainSurfaceRendererSmooth;
 	TiledTerrainSurfaceRenderer* _terrainSurfaceRendererTiled;
 	Player _player;
 
-	BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering);
+	BattleView(Surface* screen, BattleModel* battleModel, renderers* r);
 	~BattleView();
 
 	virtual BattleModel* GetBattleModel() const { return _battleModel; }
@@ -88,18 +90,6 @@ public:
 	virtual void Update(double secondsSinceLastUpdate);
 
 	bounds1f GetUnitIconSizeLimit() const;
-
-	void RenderUnitMissileTarget(BattleRendering* rendering, Unit* unit);
-
-	void RenderTrackingShadow(BattleRendering* rendering, UnitTrackingMarker* marker);
-	void RenderTrackingOrientation(BattleRendering* rendering, UnitTrackingMarker* marker);
-
-
-	void TexRectN(vertexbuffer<texture_vertex>& shape, int size, int x, int y, int w, int h);
-
-	void MissileLine(vertexbuffer<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, float scale);
-	void MissileHead(vertexbuffer<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, float scale);
-	void TexLine16(vertexbuffer<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, int t1, int t2, float scale);
 };
 
 

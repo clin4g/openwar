@@ -21,7 +21,6 @@ _mode(Mode::None),
 _battleView(nullptr),
 _battleSimulator(nullptr),
 _renderers(nullptr),
-_battleRendering(nullptr),
 _buttonRendering(nullptr),
 _editorModel(nullptr),
 _buttonsTopLeft(nullptr),
@@ -41,7 +40,6 @@ _buttonItemTrees(nullptr)
 	SoundPlayer::Initialize();
 
 	_renderers = renderers::singleton = new renderers();
-	_battleRendering = new BattleRendering();
 	_buttonRendering = new ButtonRendering(_renderers, pixelDensity);
 
 	_buttonsTopLeft = new ButtonView(this, _buttonRendering, ButtonAlignment::TopLeft);
@@ -91,7 +89,7 @@ OpenWarSurface::~OpenWarSurface()
 void OpenWarSurface::Reset(BattleModel* battleModel)
 {
 	battleModel->bluePlayer = Player1;
-	_battleView = new BattleView(this, battleModel, _renderers, _battleRendering);
+	_battleView = new BattleView(this, battleModel, _renderers);
 	_battleView->_player = Player1;
 
 	SmoothTerrainSurface* terrainSurfaceModelSmooth = dynamic_cast<SmoothTerrainSurface*>(battleModel->terrainSurface);

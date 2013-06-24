@@ -134,9 +134,14 @@
 
 	if (_sourceData == nil)
 	{
-		NSString* path = [[NSBundle mainBundle] pathForResource:@"DefaultMap" ofType:@"tiff" inDirectory:@"Maps"];
+		/*NSString* path = [[NSBundle mainBundle] pathForResource:@"DefaultMap" ofType:@"tiff" inDirectory:@"Maps"];
 		NSData* data = [NSData dataWithContentsOfFile:path];
-		battleModel = [self createBattleModelFromSmoothMap:data];
+		battleModel = [self createBattleModelFromSmoothMap:data];*/
+
+		NSString* path = [[NSBundle mainBundle] pathForResource:@"DefaultMap" ofType:@"lua" inDirectory:@"Maps"];
+		_sourceDirectory = [[[NSURL fileURLWithPath:path] URLByDeletingLastPathComponent] retain];
+		NSData* data = [NSData dataWithContentsOfFile:path];
+		battleModel = [self createBattleModelFromScript:data];
 	}
 	else if ([_sourceTypeName isEqualToString:@"SmoothMap"])
 	{

@@ -14,7 +14,6 @@
 #include "ColorBillboardRenderer.h"
 #include "SmoothTerrainWater.h"
 #include "SmoothTerrainSky.h"
-#include "sprite.h"
 #include "PlainRenderer.h"
 #include "TextureRenderer.h"
 
@@ -31,9 +30,8 @@ static affine2 billboard_texcoords(int x, int y, bool flip)
 
 
 
-BattleView::BattleView(Surface* screen, BattleModel* battleModel, renderers* r, BattleRendering* battleRendering) : TerrainView(screen, battleModel->terrainSurface),
+BattleView::BattleView(Surface* screen, BattleModel* battleModel, renderers* r) : TerrainView(screen, battleModel->terrainSurface),
 _renderers(r),
-_battleRendering(battleRendering),
 _battleModel(battleModel),
 _terrainSurfaceRendererSmooth(nullptr),
 _terrainSurfaceRendererTiled(nullptr),
@@ -52,6 +50,11 @@ _gradientTriangleStripRenderer(nullptr),
 _colorBillboardRenderer(nullptr),
 _textureTriangleRenderer(nullptr)
 {
+	_textureUnitMarkers = new texture(@"Texture256x256.png");
+	_textureMovementBlue = new texture(@"MovementBlue16x16.png");
+	_textureMovementGray = new texture(@"MovementGray16x16.png");
+	_textureTouchMarker = new texture(@"TouchMarker.png");
+
 	SetContentBounds(bounds2f(0, 0, 1024, 1024));
 
 	_billboardTexture = new BillboardTexture();
@@ -312,7 +315,6 @@ void BattleView::InitializeCameraPosition(const std::map<int, Unit*>& units)
 	}
 }
 
-
 void BattleView::Render()
 {
 	UseViewport();
@@ -390,11 +392,11 @@ void BattleView::Render()
 
 	// Missile Targets
 
-	for (UnitCounter* marker : _battleModel->_unitMarkers)
+	/*for (UnitCounter* marker : _battleModel->_unitMarkers)
 	{
 		Unit* unit = marker->_unit;
 		RenderUnitMissileTarget(_battleRendering, unit);
-	}
+	}*/
 
 
 	// Unit Markers
@@ -405,8 +407,8 @@ void BattleView::Render()
 	for (UnitCounter* marker : _battleModel->_unitMarkers)
 		marker->AppendUnitMarker(_textureBillboardRenderer1, _textureBillboardRenderer2, GetFlip());
 	bounds1f sizeLimit = GetUnitIconSizeLimit();
-	_textureBillboardRenderer1->Draw(_battleRendering->_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), sizeLimit);
-	_textureBillboardRenderer2->Draw(_battleRendering->_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), sizeLimit);
+	_textureBillboardRenderer1->Draw(_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), sizeLimit);
+	_textureBillboardRenderer2->Draw(_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), sizeLimit);
 
 
 	// Tracking Markers
@@ -420,13 +422,18 @@ void BattleView::Render()
 		marker->RenderTrackingMarker(_textureBillboardRenderer1);
 
 		bounds1f sizeLimit = bounds1f(24 * renderer_base::pixels_per_point(), 48 * renderer_base::pixels_per_point());
-		_textureBillboardRenderer1->Draw(_battleRendering->_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), sizeLimit);
+		_textureBillboardRenderer1->Draw(_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), sizeLimit);
 
-		RenderTrackingShadow(_battleRendering, marker);
+
+
+		_textureBillboardRenderer1->Reset();
+		marker->RenderTrackingShadow(_textureBillboardRenderer1);
+		_textureBillboardRenderer1->Draw(_textureTouchMarker, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), bounds1f(64, 64));
+
 
 		glEnable(GL_DEPTH_TEST);
 
-		RenderTrackingOrientation(_battleRendering, marker);
+		//RenderTrackingOrientation(_battleRendering, marker);
 	}
 
 
@@ -436,7 +443,7 @@ void BattleView::Render()
 	{
 		_textureTriangleRenderer->Reset();
 		marker->RenderTrackingPath(_textureTriangleRenderer);
-		_textureTriangleRenderer->Draw(GetTransform(), _battleRendering->_textureMovementGray);
+		_textureTriangleRenderer->Draw(GetTransform(), _textureMovementGray);
 	}
 
 
@@ -455,7 +462,7 @@ void BattleView::Render()
 	for (UnitMovementMarker* marker : _movementMarkers)
 		marker->RenderMovementMarker(_textureBillboardRenderer1);
 	bounds1f sizeLimit2(24 * renderer_base::pixels_per_point(), 48 * renderer_base::pixels_per_point());
-	_textureBillboardRenderer1->Draw(_battleRendering->_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), sizeLimit2);
+	_textureBillboardRenderer1->Draw(_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), sizeLimit2);
 
 
 	// Movement Paths
@@ -464,7 +471,7 @@ void BattleView::Render()
 	_textureTriangleRenderer->Reset();
 	for (UnitMovementMarker* marker : _movementMarkers)
 		marker->RenderMovementPath(_textureTriangleRenderer);
-	_textureTriangleRenderer->Draw(GetTransform(), _battleRendering->_textureMovementBlue);
+	_textureTriangleRenderer->Draw(GetTransform(), _textureMovementBlue);
 
 
 	// Movement Fighters
@@ -619,147 +626,4 @@ bounds1f BattleView::GetUnitIconSizeLimit() const
 		result.max *= 57.0f / 72.0f;
 	}
 	return result;
-}
-
-
-
-void BattleView::RenderUnitMissileTarget(BattleRendering* rendering, Unit* unit)
-{
-	float scale = 0.5;
-
-	if (unit->missileTarget != nullptr && unit->missileTargetLocked)
-	{
-		BattleView::MissileLine(rendering->_vboUnitMarkerTargetLine, unit->state.center, unit->missileTarget->state.center, scale);
-		BattleView::MissileHead(rendering->_vboUnitMarkerTargetHead, unit->state.center, unit->missileTarget->state.center, scale);
-
-		BattleRendering::ground_texture_uniforms uniforms;
-		uniforms._transform = GetTransform();
-		uniforms._texture = unit->player == _battleModel->bluePlayer ? rendering->_textureMissileBlue : rendering->_textureMissileRed;;
-
-		rendering->_ground_texture_renderer->render(rendering->_vboUnitMarkerTargetLine, uniforms);
-		rendering->_ground_texture_renderer->render(rendering->_vboUnitMarkerTargetHead, uniforms);
-	}
-}
-
-static glm::vec2 DestinationXXX(UnitTrackingMarker* marker)
-{
-	return marker->_destinationUnit ? marker->_destinationUnit->state.center
-			: marker->_path.size() != 0 ? *(marker->_path.end() - 1)
-					: marker->_hasDestination ? marker->_destination
-							: marker->GetUnit()->state.center;
-}
-
-
-
-
-void BattleView::RenderTrackingShadow(BattleRendering* rendering, UnitTrackingMarker* marker)
-{
-	glm::vec2 p = DestinationXXX(marker);
-	glm::vec2 offset = ContentToScreen(GetPosition(p, 0));
-	float scale = 5;
-
-	TexRectN(rendering->_vboTrackingMarkerShadow, 32, 0, 0, 32, 32);
-
-	for (texture_vertex& vertex : rendering->_vboTrackingMarkerShadow._vertices)
-	{
-		vertex._position *= scale;
-		vertex._position += offset;
-	}
-
-	texture_uniforms uniforms;
-	uniforms._transform = sprite_transform(GetViewportBounds()).transform();
-	uniforms._texture = rendering->_textureTouchMarker;
-	_renderers->_texture_renderer->render(rendering->_vboTrackingMarkerShadow, uniforms);
-}
-
-
-void BattleView::RenderTrackingOrientation(BattleRendering* rendering, UnitTrackingMarker* marker)
-{
-	if (marker->_orientationUnit != nullptr || marker->_hasOrientation)
-	{
-		glm::vec2 destination = DestinationXXX(marker);
-		glm::vec2 orientation = marker->_orientationUnit ? marker->_orientationUnit->state.center : marker->_orientation;
-
-		BattleView::MissileLine(rendering->_vboTrackingMarkerOrientation, destination, orientation, 0.5);
-		BattleView::MissileHead(rendering->_vboTrackingMarkerMissileHead, destination, orientation, 0.5);
-
-		BattleRendering::ground_texture_uniforms uniforms;
-		uniforms._transform = GetTransform();
-		uniforms._texture = rendering->_textureMissileGray;
-
-		//_ground_texture_renderer3->render(_trackingMarker_orientationShape, uniforms);
-
-		if (marker->_orientationUnit != nullptr)
-			rendering->_ground_texture_renderer->render(rendering->_vboTrackingMarkerMissileHead, uniforms);
-	}
-}
-
-
-
-void BattleView::TexRectN(vertexbuffer<texture_vertex>& shape, int size, int x, int y, int w, int h)
-{
-	float width = w / 2.0f;
-	float height = h / 2.0f;
-
-	float xx = width / 2;
-	float yy = height / 2;
-
-	float tx1 = x / (float)size;
-	float tx2 = (x + w) / (float)size;
-	float ty1 = y / (float)size;
-	float ty2 = (y + h) / (float)size;
-
-	shape._mode = GL_TRIANGLE_FAN;§
-	shape._vertices.clear();
-
-	shape._vertices.push_back(texture_vertex(glm::vec2(-xx, yy), glm::vec2(tx1, ty1)));
-	shape._vertices.push_back(texture_vertex(glm::vec2(-xx, -yy), glm::vec2(tx1, ty2)));
-	shape._vertices.push_back(texture_vertex(glm::vec2(xx, -yy), glm::vec2(tx2, ty2)));
-	shape._vertices.push_back(texture_vertex(glm::vec2(xx, yy), glm::vec2(tx2, ty1)));
-	shape._vertices.push_back(texture_vertex(glm::vec2(-xx, yy), glm::vec2(tx1, ty1)));
-}
-
-
-void BattleView::MissileLine(vertexbuffer<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, float scale)
-{
-	glm::vec2 dir = glm::normalize(p2 - p1);
-
-	p1 += dir * 12.0f * scale;
-	p2 -= dir * 12.0f * scale;
-
-	TexLine16(shape, p1, p2, 0, 3, scale);
-}
-
-
-void BattleView::MissileHead(vertexbuffer<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, float scale)
-{
-	glm::vec2 dir = glm::normalize(p2 - p1);
-
-	p2 -= dir * 8.0f * scale;
-	p1 = p2 - dir * 8.0f * scale;
-
-	TexLine16(shape, p1, p2, 3, 16, scale);
-}
-
-
-void BattleView::TexLine16(vertexbuffer<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, int t1, int t2, float scale)
-{
-	glm::vec2 diff = p2 - p1;
-	glm::vec2 dir = glm::normalize(diff);
-
-	glm::vec2 left = glm::vec2(-dir.y, dir.x);
-	left *= scale * (t2 - t1) / 4;
-
-	float n = glm::length(diff) / 8.0f / scale;
-
-	float tx1 = t1 * (1.0f / 16.0f);
-	float tx2 = t2 * (1.0f / 16.0f);
-
-	shape._mode = GL_TRIANGLE_STRIP;
-	shape._vertices.clear();
-
-	shape._vertices.push_back(texture_vertex3(GetPosition(p2 + left), glm::vec2(tx1, 0)));
-	shape._vertices.push_back(texture_vertex3(GetPosition(p1 + left), glm::vec2(tx1, n)));
-	shape._vertices.push_back(texture_vertex3(GetPosition(p2 - left), glm::vec2(tx2, 0)));
-	shape._vertices.push_back(texture_vertex3(GetPosition(p1 - left), glm::vec2(tx2, n)));
 }

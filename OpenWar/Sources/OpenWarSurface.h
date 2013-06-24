@@ -10,7 +10,6 @@
 
 class BattleGesture;
 class BattleModel;
-class BattleRendering;
 class BattleScript;
 class BattleView;
 class ButtonGesture;
@@ -34,7 +33,6 @@ public: // TODO: just testing
 	BattleSimulator* _battleSimulator;
 
 	renderers* _renderers;
-	BattleRendering* _battleRendering;
 	ButtonRendering* _buttonRendering;
 
 	EditorModel* _editorModel;

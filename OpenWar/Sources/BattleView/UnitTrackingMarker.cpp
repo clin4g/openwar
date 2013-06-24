@@ -97,3 +97,33 @@ void UnitTrackingMarker::RenderTrackingPath(TextureTriangleRenderer* renderer)
 	}
 
 }
+
+
+
+
+void UnitTrackingMarker::RenderTrackingShadow(TextureBillboardRenderer* renderer)
+{
+	glm::vec2 destination = DestinationXXX(this);
+	glm::vec3 position = _battleModel->terrainSurface->GetPosition(destination, 0);
+
+	renderer->AddBillboard(position, 32, affine2(glm::vec2(0, 0), glm::vec2(1, 1)));
+
+	/*
+	glm::vec2 p = DestinationXXX(marker);
+	glm::vec2 offset = ContentToScreen(GetPosition(p, 0));
+	float scale = 5;
+
+	TexRectN(rendering->_vboTrackingMarkerShadow, 32, 0, 0, 32, 32);
+
+	for (texture_vertex& vertex : rendering->_vboTrackingMarkerShadow._vertices)
+	{
+		vertex._position *= scale;
+		vertex._position += offset;
+	}
+
+	texture_uniforms uniforms;
+	uniforms._transform = sprite_transform(GetViewportBounds()).transform();
+	uniforms._texture = rendering->_textureTouchMarker;
+	_renderers->_texture_renderer->render(rendering->_vboTrackingMarkerShadow, uniforms);
+	*/
+}

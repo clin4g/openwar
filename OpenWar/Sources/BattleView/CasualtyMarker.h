@@ -7,7 +7,6 @@
 
 #include "BattleModel.h"
 class ColorBillboardRenderer;
-class BattleRendering;
 class BillboardModel;
 
 

@@ -3,8 +3,8 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "CasualtyMarker.h"
-#include "BattleRendering.h"
-#import "ColorBillboardRenderer.h"
+#include "ColorBillboardRenderer.h"
+#include "TextureBillboardRenderer.h"
 
 
 

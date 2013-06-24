@@ -6,7 +6,6 @@
 #define UnitCounter_H
 
 class BattleModel;
-class BattleRendering;
 class BillboardModel;
 class PlainLineRenderer;
 class TextureBillboardRenderer;

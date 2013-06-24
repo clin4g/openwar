@@ -173,6 +173,9 @@ glm::vec3 TerrainView::GetTerrainPosition2(glm::vec2 screenPosition) const
 
 glm::vec3 TerrainView::GetTerrainPosition3(glm::vec2 screenPosition) const
 {
+	if (_terrainSurface == nullptr)
+		return glm::vec3();
+
 	ray r = GetCameraRay(screenPosition);
 	const float* d = _terrainSurface->Intersect(r);
 	return r.point(d != nullptr ? *d : 0);
