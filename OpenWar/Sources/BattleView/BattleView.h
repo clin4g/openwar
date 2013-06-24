@@ -75,7 +75,6 @@ public:
 	void RemoveTrackingMarker(TrackingMarker* trackingMarker);
 
 	void Initialize(bool editor = false);
-	void InitializeTerrainShadow(BattleRendering* rendering);
 
 	void InitializeTerrainTrees();
 	void UpdateTerrainTrees(bounds2f bounds);
@@ -84,10 +83,6 @@ public:
 
 	virtual void Render();
 	virtual void Update(double secondsSinceLastUpdate);
-
-
-	void RenderTerrainShadow(BattleRendering* rendering);
-	void RenderTerrainGround(BattleRendering* rendering);
 
 	void RenderRangeMarkers(BattleRendering* rendering);
 

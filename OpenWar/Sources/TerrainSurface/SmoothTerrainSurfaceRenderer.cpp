@@ -569,6 +569,47 @@ _mapTexture(nullptr)
 
 	_mapTexture = new texture(*terrainSurfaceModel->GetMap());
 
+	_ground_shadow_renderer = new renderer<plain_vertex, plain_uniforms>((
+			VERTEX_ATTRIBUTE(plain_vertex, _position),
+					SHADER_UNIFORM(plain_uniforms, _transform),
+					VERTEX_SHADER
+		({
+						attribute
+						vec2 position;
+						uniform
+						mat4 transform;
+						varying
+						vec2 _groundpos;
+
+						void main()
+						{
+							vec4 p = transform * vec4(position, -2.5, 1);
+
+							_groundpos = position;
+
+							gl_Position = p;
+							gl_PointSize = 1.0;
+						}
+					}),
+					FRAGMENT_SHADER
+		({
+						varying
+						vec2 _groundpos;
+
+						void main()
+						{
+							float d = distance(_groundpos, vec2(512.0, 512.0)) - 512.0;
+							float a = clamp(0.3 - d / 20.0, 0.0, 0.3);
+
+							gl_FragColor = vec4(0, 0, 0, a);
+						}
+					}))
+	);
+	_ground_shadow_renderer->_blend_sfactor = GL_SRC_ALPHA;
+	_ground_shadow_renderer->_blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
+
+
+
 	LoadChunk(terrain_address(), 0);
 
 	InitializeEdge();
@@ -601,6 +642,39 @@ SmoothTerrainSurfaceRenderer::~SmoothTerrainSurfaceRenderer()
 	delete _depth;
 }
 
+
+
+void SmoothTerrainSurfaceRenderer::InitializeTerrainShadow(bounds2f bounds)
+{
+	//bounds2f bounds = GetContentBounds();
+	glm::vec2 center = bounds.center();
+	float radius1 = 512;
+	float radius2 = 550;
+
+	_vboTerrainShadow._mode = GL_TRIANGLES;
+	_vboTerrainShadow._vertices.clear();
+
+	int n = 16;
+	for (int i = 0; i < n; ++i)
+	{
+		float angle1 = i * 2 * (float)M_PI / n;
+		float angle2 = (i + 1) * 2 * (float)M_PI / n;
+
+		glm::vec2 p1 = center + radius1 * vector2_from_angle(angle1);
+		glm::vec2 p2 = center + radius2 * vector2_from_angle(angle1);
+		glm::vec2 p3 = center + radius2 * vector2_from_angle(angle2);
+		glm::vec2 p4 = center + radius1 * vector2_from_angle(angle2);
+
+		_vboTerrainShadow._vertices.push_back(plain_vertex(p1));
+		_vboTerrainShadow._vertices.push_back(plain_vertex(p2));
+		_vboTerrainShadow._vertices.push_back(plain_vertex(p3));
+		_vboTerrainShadow._vertices.push_back(plain_vertex(p3));
+		_vboTerrainShadow._vertices.push_back(plain_vertex(p4));
+		_vboTerrainShadow._vertices.push_back(plain_vertex(p1));
+	}
+
+	_vboTerrainShadow.update(GL_STATIC_DRAW);
+}
 
 
 void SmoothTerrainSurfaceRenderer::UpdateHeights(bounds2f bounds)
@@ -703,6 +777,11 @@ void SmoothTerrainSurfaceRenderer::InitializeEdge()
 
 void SmoothTerrainSurfaceRenderer::Render(const glm::mat4x4& transform, const glm::vec3& lightNormal)
 {
+	plain_uniforms shadow_uniforms;
+	shadow_uniforms._transform = transform;
+	_ground_shadow_renderer->render(_vboTerrainShadow, shadow_uniforms);
+
+
 	terrain_uniforms uniforms;
 	uniforms._transform = transform;
 	uniforms._light_normal = lightNormal;

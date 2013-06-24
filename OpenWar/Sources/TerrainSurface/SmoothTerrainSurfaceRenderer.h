@@ -116,11 +116,16 @@ class SmoothTerrainSurfaceRenderer : public TerrainSurfaceRenderer
 	vertexbuffer<terrain_edge_vertex> _shape_terrain_edge;
 	terrain_renderers* _renderers;
 
+	renderer<plain_vertex, plain_uniforms>* _ground_shadow_renderer;
+	vertexbuffer<plain_vertex> _vboTerrainShadow;
+
 public:
 	SmoothTerrainSurfaceRenderer(SmoothTerrainSurface* terrainSurfaceModel, bool render_edges);
 	virtual ~SmoothTerrainSurfaceRenderer();
 
 	SmoothTerrainSurface* GetTerrainSurfaceModel() const { return _terrainSurfaceModel; }
+
+	void InitializeTerrainShadow(bounds2f bounds);
 
 	void UpdateHeights(bounds2f bounds);
 	void UpdateMapTexture();

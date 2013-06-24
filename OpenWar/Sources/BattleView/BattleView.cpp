@@ -179,43 +179,12 @@ static float random_float()
 
 void BattleView::Initialize(bool editor)
 {
-	InitializeTerrainShadow(_battleRendering);
+	if (_terrainSurfaceRendererSmooth != nullptr)
+		_terrainSurfaceRendererSmooth->InitializeTerrainShadow(GetContentBounds());
+
 	InitializeTerrainTrees();
 
 	InitializeCameraPosition(_battleModel->units);
-}
-
-
-void BattleView::InitializeTerrainShadow(BattleRendering* rendering)
-{
-	bounds2f bounds = GetContentBounds();
-	glm::vec2 center = bounds.center();
-	float radius1 = 512;
-	float radius2 = 550;
-
-	rendering->_vboTerrainShadow._mode = GL_TRIANGLES;
-	rendering->_vboTerrainShadow._vertices.clear();
-
-	int n = 16;
-	for (int i = 0; i < n; ++i)
-	{
-		float angle1 = i * 2 * (float)M_PI / n;
-		float angle2 = (i + 1) * 2 * (float)M_PI / n;
-
-		glm::vec2 p1 = center + radius1 * vector2_from_angle(angle1);
-		glm::vec2 p2 = center + radius2 * vector2_from_angle(angle1);
-		glm::vec2 p3 = center + radius2 * vector2_from_angle(angle2);
-		glm::vec2 p4 = center + radius1 * vector2_from_angle(angle2);
-
-		rendering->_vboTerrainShadow._vertices.push_back(plain_vertex(p1));
-		rendering->_vboTerrainShadow._vertices.push_back(plain_vertex(p2));
-		rendering->_vboTerrainShadow._vertices.push_back(plain_vertex(p3));
-		rendering->_vboTerrainShadow._vertices.push_back(plain_vertex(p3));
-		rendering->_vboTerrainShadow._vertices.push_back(plain_vertex(p4));
-		rendering->_vboTerrainShadow._vertices.push_back(plain_vertex(p1));
-	}
-
-	rendering->_vboTerrainShadow.update(GL_STATIC_DRAW);
 }
 
 
@@ -358,12 +327,15 @@ void BattleView::Render()
 		_battleModel->terrainSky->Render(_renderers, GetCameraDirection().z, GetFlip());
 	}
 
-	RenderTerrainShadow(_battleRendering);
-
 	glEnable(GL_DEPTH_TEST);
-
 	glEnable(GL_CULL_FACE);
-	RenderTerrainGround(_battleRendering);
+
+	if (_terrainSurfaceRendererSmooth != nullptr)
+		_terrainSurfaceRendererSmooth->Render(GetTransform(), _lightNormal);
+
+	if (_terrainSurfaceRendererTiled != nullptr)
+		_terrainSurfaceRendererTiled->Render(GetTransform(), _lightNormal);
+
 	glDisable(GL_CULL_FACE);
 
 	if (_battleModel->terrainWater != nullptr)
@@ -537,26 +509,6 @@ void BattleView::RemoveTrackingMarker(TrackingMarker* trackingMarker)
 		_trackingMarkers.erase(i);
 		delete trackingMarker;
 	}
-}
-
-
-
-void BattleView::RenderTerrainShadow(BattleRendering* rendering)
-{
-	plain_uniforms uniforms;
-	uniforms._transform = GetTransform();
-
-	rendering->_ground_shadow_renderer->render(rendering->_vboTerrainShadow, uniforms);
-}
-
-
-void BattleView::RenderTerrainGround(BattleRendering* rendering)
-{
-	if (_terrainSurfaceRendererSmooth != nullptr)
-		_terrainSurfaceRendererSmooth->Render(GetTransform(), _lightNormal);
-
-	if (_terrainSurfaceRendererTiled != nullptr)
-		_terrainSurfaceRendererTiled->Render(GetTransform(), _lightNormal);
 }
 
 
