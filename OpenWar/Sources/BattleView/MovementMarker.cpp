@@ -5,6 +5,7 @@
 #include "MovementMarker.h"
 #include "BattleModel.h"
 #include "ColorBillboardRenderer.h"
+#include "TextureBillboardRenderer.h"
 
 
 
@@ -52,6 +53,24 @@ void MovementMarker::RenderMovementFighters(ColorBillboardRenderer* renderer)
 			glm::vec2 offsetBack = formation.towardBack * (float)Unit::GetFighterRank(fighter);
 
 			renderer->AddBillboard(_battleModel->terrainSurface->GetPosition(frontLeft + offsetRight + offsetBack, 0.5), color, 3.0);
+		}
+	}
+}
+
+
+
+void MovementMarker::RenderMovementMarker(TextureBillboardRenderer* renderer)
+{
+	glm::vec2 finalDestination = _unit->movement.GetFinalDestination();
+	if (_unit->movement.path.size() > 1 || glm::length(_unit->state.center - finalDestination) > 25)
+	{
+		if (!_unit->movement.target)
+		{
+			glm::vec3 position = _battleModel->terrainSurface->GetPosition(finalDestination, 0.5);
+			glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
+			glm::vec2 texcoord = texsize * glm::vec2(_unit->player != _battleModel->bluePlayer ? 4 : 3, 0);
+
+			renderer->AddBillboard(position, 32, affine2(texcoord, texcoord + texsize));
 		}
 	}
 }

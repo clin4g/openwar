@@ -15,7 +15,9 @@
 #include "SmoothTerrainWater.h"
 #include "SmoothTerrainSky.h"
 #include "sprite.h"
-#import "PlainRenderer.h"
+#include "PlainRenderer.h"
+#include "TextureRenderer.h"
+
 
 
 static affine2 billboard_texcoords(int x, int y, bool flip)
@@ -47,7 +49,8 @@ _player(PlayerNone),
 _plainLineRenderer(nullptr),
 _gradientLineRenderer(nullptr),
 _gradientTriangleStripRenderer(nullptr),
-_colorBillboardRenderer(nullptr)
+_colorBillboardRenderer(nullptr),
+_textureTriangleRenderer(nullptr)
 {
 	SetContentBounds(bounds2f(0, 0, 1024, 1024));
 
@@ -137,6 +140,7 @@ _colorBillboardRenderer(nullptr)
 	_gradientLineRenderer = new GradientLineRenderer();
 	_gradientTriangleStripRenderer = new GradientTriangleStripRenderer();
 	_colorBillboardRenderer = new ColorBillboardRenderer();
+	_textureTriangleRenderer = new TextureTriangleRenderer();
 }
 
 
@@ -594,8 +598,15 @@ void BattleView::RenderTrackingMarkers(BattleRendering* rendering)
 	for (TrackingMarker* marker : _trackingMarkers)
 	{
 		glDisable(GL_DEPTH_TEST);
-		RenderTrackingMarker(rendering, marker);
+		_textureBillboardRenderer1->Reset();
+
+		marker->RenderTrackingMarker(_textureBillboardRenderer1);
+
+		bounds1f sizeLimit = bounds1f(24 * renderer_base::pixels_per_point(), 48 * renderer_base::pixels_per_point());
+		_textureBillboardRenderer1->Draw(rendering->_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), sizeLimit);
+
 		RenderTrackingShadow(rendering, marker);
+
 		glEnable(GL_DEPTH_TEST);
 
 		RenderTrackingPath(rendering, marker);
@@ -603,28 +614,6 @@ void BattleView::RenderTrackingMarkers(BattleRendering* rendering)
 	}
 }
 
-
-
-
-void BattleView::RenderTrackingMarker(BattleRendering* rendering, TrackingMarker* marker)
-{
-	_textureBillboardRenderer1->Reset();
-
-	if ((marker->_destinationUnit || marker->_hasDestination) && marker->_destinationUnit == nullptr)
-	{
-
-		glm::vec2 destination = DestinationXXX(marker);
-		glm::vec3 position = GetPosition(destination, 0);
-		glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
-		glm::vec2 texcoord = texsize * glm::vec2(marker->_unit->player != _battleModel->bluePlayer ? 4 : 3, 0);
-
-		_textureBillboardRenderer1->AddBillboard(position, 32, affine2(texcoord, texcoord + texsize));
-
-	}
-
-	bounds1f sizeLimit = bounds1f(24 * renderer_base::pixels_per_point(), 48 * renderer_base::pixels_per_point());
-	_textureBillboardRenderer1->Draw(rendering->_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), sizeLimit);
-}
 
 
 void BattleView::RenderTrackingShadow(BattleRendering* rendering, TrackingMarker* marker)
@@ -640,7 +629,6 @@ void BattleView::RenderTrackingShadow(BattleRendering* rendering, TrackingMarker
 		vertex._position *= scale;
 		vertex._position += offset;
 	}
-
 
 	texture_uniforms uniforms;
 	uniforms._transform = sprite_transform(GetViewportBounds()).transform();
@@ -699,46 +687,23 @@ void BattleView::RenderTrackingOrientation(BattleRendering* rendering, TrackingM
 
 void BattleView::RenderMovementMarkers(BattleRendering* rendering)
 {
+	_textureBillboardRenderer1->Reset();
+
+	for (MovementMarker* marker : _movementMarkers)
+		marker->RenderMovementMarker(_textureBillboardRenderer1);
+
+	bounds1f sizeLimit(24 * renderer_base::pixels_per_point(), 48 * renderer_base::pixels_per_point());
+
+	glDisable(GL_DEPTH_TEST);
+	_textureBillboardRenderer1->Draw(rendering->_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), sizeLimit);
+	glEnable(GL_DEPTH_TEST);
+
 	for (MovementMarker* marker : _movementMarkers)
 	{
-		glDisable(GL_DEPTH_TEST);
-		RenderMovementMarker(rendering, marker->_unit);
-		glEnable(GL_DEPTH_TEST);
 		RenderMovementPath(rendering, marker->_unit);
 	}
 }
 
-
-void BattleView::RenderMovementMarker(BattleRendering* rendering, Unit* unit)
-{
-	glm::vec2 finalDestination = unit->movement.GetFinalDestination();
-
-	if (unit->movement.path.size() > 1 || glm::length(unit->state.center - finalDestination) > 25)
-	{
-		if (!unit->movement.target)
-		{
-			rendering->_vboTextureBillboards1._mode = GL_POINTS;
-			rendering->_vboTextureBillboards1._vertices.clear();
-
-			glm::vec3 position = GetPosition(finalDestination, 0.5);
-			//float pointsize = GetUnitMarkerScreenSize(vector3(finalDestination, 0));
-			glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
-			glm::vec2 texcoord = texsize * glm::vec2(unit->player != _battleModel->bluePlayer ? 4 : 3, 0);
-
-			rendering->_vboTextureBillboards1._vertices.push_back(texture_billboard_vertex(position, 32, texcoord, texsize));
-			rendering->_vboTextureBillboards1.update(GL_STATIC_DRAW);
-
-			texture_billboard_uniforms uniforms;
-			uniforms._transform = GetTransform();
-			uniforms._texture = rendering->_textureUnitMarkers;
-			uniforms._upvector = GetCameraUpVector();
-			uniforms._viewport_height = 0.25f * renderer_base::pixels_per_point() * GetViewportBounds().height();
-			uniforms._min_point_size = 24 * renderer_base::pixels_per_point();
-			uniforms._max_point_size = 48 * renderer_base::pixels_per_point();
-			_textureBillboardRenderer->_texture_billboard_renderer->render(rendering->_vboTextureBillboards1, uniforms);
-		}
-	}
-}
 
 
 void BattleView::RenderMovementPath(BattleRendering* rendering, Unit* unit)
@@ -767,7 +732,6 @@ void BattleView::RenderMovementPath(BattleRendering* rendering, Unit* unit)
 }
 
 
-
 void BattleView::TexRectN(vertexbuffer<texture_vertex>& shape, int size, int x, int y, int w, int h)
 {
 	float width = w / 2.0f;
@@ -789,42 +753,6 @@ void BattleView::TexRectN(vertexbuffer<texture_vertex>& shape, int size, int x, 
 	shape._vertices.push_back(texture_vertex(glm::vec2(xx, -yy), glm::vec2(tx2, ty2)));
 	shape._vertices.push_back(texture_vertex(glm::vec2(xx, yy), glm::vec2(tx2, ty1)));
 	shape._vertices.push_back(texture_vertex(glm::vec2(-xx, yy), glm::vec2(tx1, ty1)));
-}
-
-
-void BattleView::TexRect256(vertexbuffer<texture_vertex>& shape, int x, int y, int w, int h)
-{
-	TexRectN(shape, 256, x, y, w, h);
-}
-
-
-void BattleView::TexRectN(vertexbuffer<texture_vertex3>& shape, int size, int x, int y, int w, int h)
-{
-	float width = w / 2.0f;
-	float height = h / 2.0f;
-
-	float xx = width / 2;
-	float yy = height / 2;
-
-	float tx1 = x / (float)size;
-	float tx2 = (x + w) / (float)size;
-	float ty1 = y / (float)size;
-	float ty2 = (y + h) / (float)size;
-
-	shape._mode = GL_TRIANGLE_FAN;
-	shape._vertices.clear();
-
-	shape._vertices.push_back(texture_vertex3(GetPosition(glm::vec2(-xx, yy)), glm::vec2(tx1, ty1)));
-	shape._vertices.push_back(texture_vertex3(GetPosition(glm::vec2(-xx, -yy)), glm::vec2(tx1, ty2)));
-	shape._vertices.push_back(texture_vertex3(GetPosition(glm::vec2(xx, -yy)), glm::vec2(tx2, ty2)));
-	shape._vertices.push_back(texture_vertex3(GetPosition(glm::vec2(xx, yy)), glm::vec2(tx2, ty1)));
-	shape._vertices.push_back(texture_vertex3(GetPosition(glm::vec2(-xx, yy)), glm::vec2(tx1, ty1)));
-}
-
-
-void BattleView::TexRect256(vertexbuffer<texture_vertex3>& shape, int x, int y, int w, int h)
-{
-	TexRectN(shape, 256, x, y, w, h);
 }
 
 
@@ -942,37 +870,6 @@ void BattleView::_Path(vertexbuffer<texture_vertex3>& shape, int mode, float sca
 }
 
 
-/*static float _TrimEnd(std::vector<vector2>& path, float length)
-{
-	float result = 0;
-	while (true)
-	{
-		if (path.size() < 2)
-			break;
-
-		vector2 veryLast = *(path.end() - 1);
-		vector2 nextLast = *(path.end() - 2);
-		float distance = norm(veryLast - nextLast);
-		if (distance <= length)
-		{
-			if (path.size() > 2)
-			{
-				vector2 nextNext = *(path.end() - 3);
-				result += norm(nextLast - nextNext);
-			}
-
-			path.erase(path.end() - 1);
-			length -= distance;
-		}
-		else
-		{
-			*(path.end() - 1) = veryLast + (nextLast - veryLast) * length / distance;
-			break;
-		}
-	}
-	return result;
-}*/
-
 
 
 void BattleView::Path(vertexbuffer<texture_vertex3>& shape, int mode, glm::vec2 position, const std::vector<glm::vec2>& path, float t0)
@@ -983,12 +880,6 @@ void BattleView::Path(vertexbuffer<texture_vertex3>& shape, int mode, glm::vec2 
 	std::vector<glm::vec2> p;
 	p.insert(p.begin(), position);
 	p.insert(p.end(), path.begin(), path.end());
-
-	//float radius = 0.0f; // movement marker radius
-	//_TrimEnd(p, radius);
-	//std::reverse(p.begin(), p.end());
-	//t0 += _TrimEnd(p, radius);
-	//std::reverse(p.begin(), p.end());
 
 	_Path(shape, mode, 1, p, t0);
 }

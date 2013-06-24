@@ -4,6 +4,7 @@
 
 #include "TrackingMarker.h"
 #import "ColorBillboardRenderer.h"
+#import "TextureBillboardRenderer.h"
 
 
 TrackingMarker::TrackingMarker(BattleModel* battleModel, Unit* unit) :
@@ -59,5 +60,20 @@ void TrackingMarker::RenderTrackingFighters(ColorBillboardRenderer* renderer)
 
 			renderer->AddBillboard(_battleModel->terrainSurface->GetPosition(frontLeft + offsetRight + offsetBack, 0.5), color, 3.0);
 		}
+	}
+}
+
+
+
+void TrackingMarker::RenderTrackingMarker(TextureBillboardRenderer* renderer)
+{
+	if ((_destinationUnit || _hasDestination) && _destinationUnit == nullptr)
+	{
+		glm::vec2 destination = DestinationXXX(this);
+		glm::vec3 position = _battleModel->terrainSurface->GetPosition(destination, 0);
+		glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
+		glm::vec2 texcoord = texsize * glm::vec2(_unit->player != _battleModel->bluePlayer ? 4 : 3, 0);
+
+		renderer->AddBillboard(position, 32, affine2(texcoord, texcoord + texsize));
 	}
 }

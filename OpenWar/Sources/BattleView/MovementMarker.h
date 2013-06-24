@@ -7,6 +7,7 @@
 
 class BattleModel;
 class ColorBillboardRenderer;
+class TextureBillboardRenderer;
 class Unit;
 
 
@@ -23,6 +24,7 @@ public:
 	bool Animate(float seconds);
 
 	void RenderMovementFighters(ColorBillboardRenderer* renderer);
+	void RenderMovementMarker(TextureBillboardRenderer* renderer);
 };
 
 

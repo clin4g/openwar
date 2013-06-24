@@ -25,8 +25,6 @@ struct BattleRendering
 	vertexbuffer<texture_vertex3> _vboUnitMarkerTargetHead;
 	vertexbuffer<texture_vertex> _vboTrackingMarkerShadow;
 
-	vertexbuffer<texture_billboard_vertex> _vboTextureBillboards1;
-
 	renderer<texture_vertex3, ground_texture_uniforms>* _ground_texture_renderer;
 
 	texture* _textureUnitMarkers;

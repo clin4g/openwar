@@ -7,6 +7,7 @@
 
 #include "BattleModel.h"
 class ColorBillboardRenderer;
+class TextureBillboardRenderer;
 
 
 class TrackingMarker
@@ -59,6 +60,7 @@ public:
 	}
 
 	void RenderTrackingFighters(ColorBillboardRenderer* renderer);
+	void RenderTrackingMarker(TextureBillboardRenderer* renderer);
 };
 
 

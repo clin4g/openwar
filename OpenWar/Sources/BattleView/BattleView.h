@@ -17,15 +17,17 @@
 
 
 class CasualtyMarker;
-class MovementMarker;
-class RangeMarker;
-class ShootingCounter;
-class TrackingMarker;
-class UnitCounter;
-class PlainLineRenderer;
+class ColorBillboardRenderer;
 class GradientLineRenderer;
 class GradientTriangleStripRenderer;
-class ColorBillboardRenderer;
+class MovementMarker;
+class PlainLineRenderer;
+class RangeMarker;
+class ShootingCounter;
+class TextureTriangleRenderer;
+class TrackingMarker;
+class UnitCounter;
+
 
 class BattleView : public TerrainView, public SimulationListener
 {
@@ -50,6 +52,7 @@ class BattleView : public TerrainView, public SimulationListener
 	GradientLineRenderer* _gradientLineRenderer;
 	GradientTriangleStripRenderer* _gradientTriangleStripRenderer;
 	ColorBillboardRenderer* _colorBillboardRenderer;
+	TextureTriangleRenderer* _textureTriangleRenderer;
 
 public:
 	SmoothTerrainSurfaceRenderer* _terrainSurfaceRendererSmooth;
@@ -91,22 +94,16 @@ public:
 	void RenderUnitMissileTarget(BattleRendering* rendering, Unit* unit);
 
 	void RenderTrackingMarkers(BattleRendering* rendering);
-	void RenderTrackingMarker(BattleRendering* rendering, TrackingMarker* marker);
+
 	void RenderTrackingShadow(BattleRendering* rendering, TrackingMarker* marker);
 	void RenderTrackingPath(BattleRendering* rendering, TrackingMarker* marker);
 	void RenderTrackingOrientation(BattleRendering* rendering, TrackingMarker* marker);
 
 	void RenderMovementMarkers(BattleRendering* rendering);
-	void RenderMovementMarker(BattleRendering* rendering, Unit* unit);
 	void RenderMovementPath(BattleRendering* rendering, Unit* unit);
 
 
-
-	static void TexRectN(vertexbuffer<texture_vertex>& shape, int size, int x, int y, int w, int h);
-	static void TexRect256(vertexbuffer<texture_vertex>& shape, int x, int y, int w, int h);
-
-	void TexRectN(vertexbuffer<texture_vertex3>& shape, int size, int x, int y, int w, int h);
-	void TexRect256(vertexbuffer<texture_vertex3>& shape, int x, int y, int w, int h);
+	void TexRectN(vertexbuffer<texture_vertex>& shape, int size, int x, int y, int w, int h);
 
 	void MissileLine(vertexbuffer<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, float scale);
 	void MissileHead(vertexbuffer<texture_vertex3>& shape, glm::vec2 p1, glm::vec2 p2, float scale);
