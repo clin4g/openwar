@@ -7,6 +7,7 @@
 
 SmoothTerrainSky::SmoothTerrainSky()
 {
+	_textureBackgroundLinen = new texture(@"Linen128x128.png");
 }
 
 
@@ -42,4 +43,30 @@ void SmoothTerrainSky::Render(renderers* _renderers, float cameraDirectionZ, boo
 	uniforms._transform = flip ? glm::scale(glm::mat4x4(), glm::vec3(-1.0f, -1.0f, 1.0f)) : glm::mat4x4();
 
 	_renderers->_gradient_renderer->render(shape, uniforms);
+}
+
+
+
+void SmoothTerrainSky::RenderBackgroundLinen(renderers* _renderers, bounds2f viewport, bool flip)
+{
+	vertexbuffer<texture_vertex> shape;
+
+	shape._mode = GL_TRIANGLES;
+	shape._vertices.clear();
+
+	glm::vec2 vt0 = glm::vec2();
+	glm::vec2 vt1 = viewport.size() / 128.0f;
+
+	shape._vertices.push_back(texture_vertex(glm::vec2(-1, -1), glm::vec2(vt0.x, vt0.y)));
+	shape._vertices.push_back(texture_vertex(glm::vec2(-1, 1), glm::vec2(vt0.x, vt1.y)));
+	shape._vertices.push_back(texture_vertex(glm::vec2(1, 1), glm::vec2(vt1.x, vt1.y)));
+	shape._vertices.push_back(texture_vertex(glm::vec2(1, 1), glm::vec2(vt1.x, vt1.y)));
+	shape._vertices.push_back(texture_vertex(glm::vec2(1, -1), glm::vec2(vt1.x, vt0.y)));
+	shape._vertices.push_back(texture_vertex(glm::vec2(-1, -1), glm::vec2(vt0.x, vt0.y)));
+
+	texture_uniforms uniforms;
+	uniforms._transform = flip ? glm::scale(glm::mat4x4(), glm::vec3(-1.0f, -1.0f, 1.0f)) : glm::mat4x4();
+	uniforms._texture = _textureBackgroundLinen;
+
+	_renderers->_texture_renderer->render(shape, uniforms);
 }

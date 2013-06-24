@@ -11,11 +11,14 @@
 
 class SmoothTerrainSky : public TerrainSky
 {
+	texture* _textureBackgroundLinen;
+
 public:
 	SmoothTerrainSky();
 	virtual ~SmoothTerrainSky();
 
 	void Render(renderers* _renderers, float cameraDirectionZ, bool flip);
+	void RenderBackgroundLinen(renderers* _renderers, bounds2f viewport, bool flip);
 };
 
 

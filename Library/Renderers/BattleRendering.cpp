@@ -91,7 +91,6 @@ BattleRendering::BattleRendering()
 
 
 
-	_textureBackgroundLinen = new texture(@"Linen128x128.png");
 	_textureUnitMarkers = new texture(@"Texture256x256.png");
 	_textureMovementBlue = new texture(@"MovementBlue16x16.png");
 	_textureMovementGray = new texture(@"MovementGray16x16.png");

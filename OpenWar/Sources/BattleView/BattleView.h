@@ -86,8 +86,6 @@ public:
 	virtual void Update(double secondsSinceLastUpdate);
 
 
-	void RenderBackgroundLinen(BattleRendering* rendering);
-
 	void RenderTerrainShadow(BattleRendering* rendering);
 	void RenderTerrainGround(BattleRendering* rendering);
 

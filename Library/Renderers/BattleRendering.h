@@ -11,14 +11,6 @@
 
 struct BattleRendering
 {
-	struct ground_gradient_uniforms
-	{
-		glm::mat4x4 _transform;
-		GLfloat _point_size;
-
-		ground_gradient_uniforms() : _point_size(1) { }
-	};
-
 	struct ground_texture_uniforms
 	{
 		glm::mat4x4 _transform;
@@ -39,7 +31,6 @@ struct BattleRendering
 	renderer<texture_vertex3, ground_texture_uniforms>* _ground_texture_renderer;
 	renderer<plain_vertex, plain_uniforms>* _ground_shadow_renderer;
 
-	texture* _textureBackgroundLinen;
 	texture* _textureUnitMarkers;
 	texture* _textureMovementBlue;
 	texture* _textureMovementGray;
