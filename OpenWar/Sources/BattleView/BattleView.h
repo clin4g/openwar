@@ -21,6 +21,7 @@ class GradientLineRenderer;
 class GradientTriangleStripRenderer;
 class UnitMovementMarker;
 class PlainLineRenderer;
+class PlainTriangleRenderer;
 class RangeMarker;
 class ShootingCounter;
 class TextureTriangleRenderer;
@@ -46,6 +47,7 @@ class BattleView : public TerrainView, public SimulationListener
 	std::vector<UnitTrackingMarker*> _trackingMarkers;
 
 	PlainLineRenderer* _plainLineRenderer;
+	PlainTriangleRenderer* _plainTriangleRenderer;
 	GradientLineRenderer* _gradientLineRenderer;
 	GradientTriangleStripRenderer* _gradientTriangleStripRenderer;
 	ColorBillboardRenderer* _colorBillboardRenderer;

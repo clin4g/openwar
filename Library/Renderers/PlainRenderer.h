@@ -33,9 +33,9 @@ protected:
 
 public:
 	PlainRenderer();
-	~PlainRenderer();
+	virtual ~PlainRenderer();
 
-	void Reset();
+	virtual void Reset() = 0;
 	void Draw(const glm::mat4x4& transform, const glm::vec4& color);
 };
 
@@ -43,7 +43,16 @@ public:
 class PlainLineRenderer : public PlainRenderer
 {
 public:
+	virtual void Reset();
 	void AddLine(const glm::vec3& p1, const glm::vec3& p2);
+};
+
+
+class PlainTriangleRenderer : public PlainRenderer
+{
+public:
+	virtual void Reset();
+	void AddVertex(const glm::vec3& p);
 };
 
 

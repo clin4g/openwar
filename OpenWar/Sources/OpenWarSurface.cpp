@@ -108,7 +108,8 @@ void OpenWarSurface::Reset(BattleModel* battleModel)
 	_battleGesture = new BattleGesture(_battleView);
 	_terrainGesture = new TerrainGesture(_battleView);
 
-	_mode = Mode::Editing;
+	//_mode = Mode::Editing;
+	_mode = Mode::Playing;
 	UpdateButtonsAndGestures();
 
 	_battleSimulator = new BattleSimulator(battleModel);

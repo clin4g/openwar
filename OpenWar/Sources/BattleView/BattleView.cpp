@@ -45,6 +45,7 @@ _movementMarkers(),
 _trackingMarkers(),
 _player(PlayerNone),
 _plainLineRenderer(nullptr),
+_plainTriangleRenderer(nullptr),
 _gradientLineRenderer(nullptr),
 _gradientTriangleStripRenderer(nullptr),
 _colorBillboardRenderer(nullptr),
@@ -140,6 +141,7 @@ _textureTriangleRenderer(nullptr)
 	_casualtyMarker = new CasualtyMarker(_battleModel);
 
 	_plainLineRenderer = new PlainLineRenderer();
+	_plainTriangleRenderer = new PlainTriangleRenderer();
 	_gradientLineRenderer = new GradientLineRenderer();
 	_gradientTriangleStripRenderer = new GradientTriangleStripRenderer();
 	_colorBillboardRenderer = new ColorBillboardRenderer();

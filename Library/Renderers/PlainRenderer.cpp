@@ -46,17 +46,10 @@ PlainRenderer::~PlainRenderer()
 }
 
 
-void PlainRenderer::Reset()
-{
-	_vbo._vertices.clear();
-}
-
-
 void PlainRenderer::Draw(const glm::mat4x4& transform, const glm::vec4& color)
 {
 	glLineWidth(1);
 
-	_vbo._mode = GL_LINES;
 
 	uniforms uniforms;
 	uniforms._transform = transform;
@@ -66,8 +59,34 @@ void PlainRenderer::Draw(const glm::mat4x4& transform, const glm::vec4& color)
 }
 
 
+/***/
+
+
+void PlainLineRenderer::Reset()
+{
+	_vbo._mode = GL_LINES;
+	_vbo._vertices.clear();
+}
+
+
 void PlainLineRenderer::AddLine(const glm::vec3& p1, const glm::vec3& p2)
 {
 	_vbo._vertices.push_back(vertex(p1));
 	_vbo._vertices.push_back(vertex(p2));
+}
+
+
+/***/
+
+
+void PlainTriangleRenderer::Reset()
+{
+	_vbo._mode = GL_TRIANGLES;
+	_vbo._vertices.clear();
+}
+
+
+void PlainTriangleRenderer::AddVertex(const glm::vec3& p)
+{
+	_vbo._vertices.push_back(vertex(p));
 }
