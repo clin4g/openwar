@@ -20,6 +20,9 @@ public:
 
 	void Render(GradientTriangleStripRenderer* renderer);
 	void MakeRangeMarker(GradientTriangleStripRenderer* renderer, glm::vec2 position, float direction, float minimumRange, float maximumRange);
+
+private:
+	glm::vec3 GetPosition(glm::vec2 p) const;
 };
 
 
