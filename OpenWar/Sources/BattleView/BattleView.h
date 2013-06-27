@@ -54,8 +54,6 @@ class BattleView : public TerrainView, public SimulationListener
 	TextureTriangleRenderer* _textureTriangleRenderer;
 
 	texture* _textureUnitMarkers;
-	texture* _textureMovementBlue;
-	texture* _textureMovementGray;
 	texture* _textureTouchMarker;
 
 public:

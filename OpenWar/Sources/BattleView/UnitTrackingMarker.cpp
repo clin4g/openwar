@@ -63,26 +63,20 @@ void UnitTrackingMarker::RenderTrackingFighters(ColorBillboardRenderer* renderer
 
 
 
-void UnitTrackingMarker::RenderTrackingMarker(TextureBillboardRenderer* renderer)
+void UnitTrackingMarker::RenderTrackingShadow(TextureBillboardRenderer* renderer)
 {
-	if ((_destinationUnit || _hasDestination) && _destinationUnit == nullptr)
-	{
-		glm::vec2 destination = DestinationXXX(this);
-		glm::vec3 position = _battleModel->terrainSurface->GetPosition(destination, 0);
-		glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
-		glm::vec2 texcoord = texsize * glm::vec2(_unit->player != _battleModel->bluePlayer ? 4 : 3, 0);
+	glm::vec2 destination = DestinationXXX(this);
+	glm::vec3 position = _battleModel->terrainSurface->GetPosition(destination, 0);
 
-		renderer->AddBillboard(position, 32, affine2(texcoord, texcoord + texsize));
-	}
+	renderer->AddBillboard(position, 32, affine2(glm::vec2(0, 0), glm::vec2(1, 1)));
 }
 
 
-void UnitTrackingMarker::RenderTrackingPath(TextureTriangleRenderer* renderer)
+
+void UnitTrackingMarker::RenderTrackingPath(GradientLineRenderer* renderer)
 {
 	if (_path.size() != 0)
 	{
-		glm::vec2 position = _unit->state.center;
-
 		int mode = 0;
 		if (_destinationUnit)
 			mode = 2;
@@ -90,40 +84,11 @@ void UnitTrackingMarker::RenderTrackingPath(TextureTriangleRenderer* renderer)
 			mode = 1;
 
 		std::vector<glm::vec2> path(_path);
+		if (path.empty() || glm::distance(_unit->state.center, path[0]) > 0.1f)
+			path.insert(path.begin(), _unit->state.center);
 		if (_destinationUnit != 0)
 			path.insert(path.end(), _destinationUnit->state.center);
 
-		Path(renderer, mode, position, path, 0);
+		Path(renderer, mode, path);
 	}
-
-}
-
-
-
-
-void UnitTrackingMarker::RenderTrackingShadow(TextureBillboardRenderer* renderer)
-{
-	glm::vec2 destination = DestinationXXX(this);
-	glm::vec3 position = _battleModel->terrainSurface->GetPosition(destination, 0);
-
-	renderer->AddBillboard(position, 32, affine2(glm::vec2(0, 0), glm::vec2(1, 1)));
-
-	/*
-	glm::vec2 p = DestinationXXX(marker);
-	glm::vec2 offset = ContentToScreen(GetPosition(p, 0));
-	float scale = 5;
-
-	TexRectN(rendering->_vboTrackingMarkerShadow, 32, 0, 0, 32, 32);
-
-	for (texture_vertex& vertex : rendering->_vboTrackingMarkerShadow._vertices)
-	{
-		vertex._position *= scale;
-		vertex._position += offset;
-	}
-
-	texture_uniforms uniforms;
-	uniforms._transform = sprite_transform(GetViewportBounds()).transform();
-	uniforms._texture = rendering->_textureTouchMarker;
-	_renderers->_texture_renderer->render(rendering->_vboTrackingMarkerShadow, uniforms);
-	*/
 }

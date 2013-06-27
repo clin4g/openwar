@@ -59,9 +59,8 @@ public:
 	}
 
 	void RenderTrackingFighters(ColorBillboardRenderer* renderer);
-	void RenderTrackingMarker(TextureBillboardRenderer* renderer);
-	void RenderTrackingPath(TextureTriangleRenderer* renderer);
 	void RenderTrackingShadow(TextureBillboardRenderer* renderer);
+	void RenderTrackingPath(GradientLineRenderer* renderer);
 };
 
 

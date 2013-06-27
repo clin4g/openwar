@@ -21,8 +21,7 @@ public:
 	bool Animate(float seconds);
 
 	void RenderMovementFighters(ColorBillboardRenderer* renderer);
-	void RenderMovementMarker(TextureBillboardRenderer* renderer);
-	void RenderMovementPath(TextureTriangleRenderer* renderer);
+	void RenderMovementPath(GradientLineRenderer* renderer);
 };
 
 

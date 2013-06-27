@@ -52,8 +52,6 @@ _colorBillboardRenderer(nullptr),
 _textureTriangleRenderer(nullptr)
 {
 	_textureUnitMarkers = new texture(@"Texture256x256.png");
-	_textureMovementBlue = new texture(@"MovementBlue16x16.png");
-	_textureMovementGray = new texture(@"MovementGray16x16.png");
 	_textureTouchMarker = new texture(@"TouchMarker.png");
 
 	SetContentBounds(bounds2f(0, 0, 1024, 1024));
@@ -392,15 +390,6 @@ void BattleView::Render()
 	}
 
 
-	// Missile Targets
-
-	/*for (UnitCounter* marker : _battleModel->_unitMarkers)
-	{
-		Unit* unit = marker->_unit;
-		RenderUnitMissileTarget(_battleRendering, unit);
-	}*/
-
-
 	// Unit Markers
 
 	glDisable(GL_DEPTH_TEST);
@@ -415,37 +404,23 @@ void BattleView::Render()
 
 	// Tracking Markers
 
-	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_DEPTH_TEST);
 	for (UnitTrackingMarker* marker : _trackingMarkers)
 	{
-		glDisable(GL_DEPTH_TEST);
-		_textureBillboardRenderer1->Reset();
-
-		marker->RenderTrackingMarker(_textureBillboardRenderer1);
-
-		bounds1f sizeLimit = bounds1f(24 * renderer_base::pixels_per_point(), 48 * renderer_base::pixels_per_point());
-		_textureBillboardRenderer1->Draw(_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), sizeLimit);
-
-
-
 		_textureBillboardRenderer1->Reset();
 		marker->RenderTrackingShadow(_textureBillboardRenderer1);
 		_textureBillboardRenderer1->Draw(_textureTouchMarker, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), bounds1f(64, 64));
-
-
-		glEnable(GL_DEPTH_TEST);
-
-		//RenderTrackingOrientation(_battleRendering, marker);
 	}
 
 
 	// Tracking Path
 
+	glEnable(GL_DEPTH_TEST);
 	for (UnitTrackingMarker* marker : _trackingMarkers)
 	{
-		_textureTriangleRenderer->Reset();
-		marker->RenderTrackingPath(_textureTriangleRenderer);
-		_textureTriangleRenderer->Draw(GetTransform(), _textureMovementGray);
+	    _gradientLineRenderer->Reset();
+		marker->RenderTrackingPath(_gradientLineRenderer);
+		_gradientLineRenderer->Draw(GetTransform());//, glm::vec4(0.5, 0.5, 0.5, 0.5));
 	}
 
 
@@ -457,23 +432,13 @@ void BattleView::Render()
 	_colorBillboardRenderer->Draw(GetTransform(), GetCameraUpVector(), GetViewportBounds().height());
 
 
-	// Movement Markers
-
-	glDisable(GL_DEPTH_TEST);
-	_textureBillboardRenderer1->Reset();
-	for (UnitMovementMarker* marker : _movementMarkers)
-		marker->RenderMovementMarker(_textureBillboardRenderer1);
-	bounds1f sizeLimit2(24 * renderer_base::pixels_per_point(), 48 * renderer_base::pixels_per_point());
-	_textureBillboardRenderer1->Draw(_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), sizeLimit2);
-
-
 	// Movement Paths
 
 	glEnable(GL_DEPTH_TEST);
-	_textureTriangleRenderer->Reset();
+	_gradientLineRenderer->Reset();
 	for (UnitMovementMarker* marker : _movementMarkers)
-		marker->RenderMovementPath(_textureTriangleRenderer);
-	_textureTriangleRenderer->Draw(GetTransform(), _textureMovementBlue);
+		marker->RenderMovementPath(_gradientLineRenderer);
+	_gradientLineRenderer->Draw(GetTransform());//, glm::vec4(0.5, 0.5, 1, 0.25));
 
 
 	// Movement Fighters

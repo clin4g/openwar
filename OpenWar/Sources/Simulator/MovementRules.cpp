@@ -70,8 +70,8 @@ static bool IsForwardMotion(const std::vector<glm::vec2>& path, glm::vec2 positi
 
 void MovementRules::UpdateMovementPath(std::vector<glm::vec2>& path, glm::vec2 position, glm::vec2 destination, float velocity)
 {
-	float spacing = fminf(5, 2.5f + velocity / 15.0f); // length of each segment
-	float leading = fminf(25, spacing + velocity / 10.0f); // length of first segment
+	float spacing = 10; //fminf(25, 2.5f + velocity / 15.0f); // length of each segment
+	float leading = 10; //fminf(15, spacing + velocity / 10.0f); // length of first segment
 
 	if (path.size() == 0)
 		path.push_back(position);

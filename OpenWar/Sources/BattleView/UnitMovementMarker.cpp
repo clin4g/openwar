@@ -57,30 +57,10 @@ void UnitMovementMarker::RenderMovementFighters(ColorBillboardRenderer* renderer
 
 
 
-void UnitMovementMarker::RenderMovementMarker(TextureBillboardRenderer* renderer)
-{
-	glm::vec2 finalDestination = _unit->movement.GetFinalDestination();
-	if (_unit->movement.path.size() > 1 || glm::length(_unit->state.center - finalDestination) > 25)
-	{
-		if (!_unit->movement.target)
-		{
-			glm::vec3 position = _battleModel->terrainSurface->GetPosition(finalDestination, 0.5);
-			glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
-			glm::vec2 texcoord = texsize * glm::vec2(_unit->player != _battleModel->bluePlayer ? 4 : 3, 0);
-
-			renderer->AddBillboard(position, 32, affine2(texcoord, texcoord + texsize));
-		}
-	}
-}
-
-
-
-void UnitMovementMarker::RenderMovementPath(TextureTriangleRenderer* renderer)
+void UnitMovementMarker::RenderMovementPath(GradientLineRenderer* renderer)
 {
 	if (_unit->movement.path.size() != 0)
 	{
-		glm::vec2 position = _unit->state.center;
-
 		int mode = 0;
 		if (_unit->movement.target)
 			mode = 2;
@@ -88,10 +68,12 @@ void UnitMovementMarker::RenderMovementPath(TextureTriangleRenderer* renderer)
 			mode = 1;
 
 		std::vector<glm::vec2> path(_unit->movement.path);
+		if (path.empty() || glm::distance(_unit->state.center, path[0]) > 0.1f)
+			path.insert(path.begin(), _unit->state.center);
 		if (_unit->movement.target != 0)
 			path.insert(path.end(), _unit->movement.target->state.center);
 
-		Path(renderer, mode, position, path, _unit->movement.path_t0);
+		Path(renderer, mode, path);
 	}
 }
 

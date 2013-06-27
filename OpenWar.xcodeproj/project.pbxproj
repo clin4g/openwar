@@ -17,9 +17,6 @@
 		4115836F175E15B4004F58D1 /* MissileBlue16x16.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158361175E15B4004F58D1 /* MissileBlue16x16.png */; };
 		41158370175E15B4004F58D1 /* MissileGray16x16.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158362175E15B4004F58D1 /* MissileGray16x16.png */; };
 		41158371175E15B4004F58D1 /* MissileRed16x16.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158363175E15B4004F58D1 /* MissileRed16x16.png */; };
-		41158372175E15B4004F58D1 /* MovementBlue16x16.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158364175E15B4004F58D1 /* MovementBlue16x16.png */; };
-		41158373175E15B4004F58D1 /* MovementGray16x16.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158365175E15B4004F58D1 /* MovementGray16x16.png */; };
-		41158374175E15B4004F58D1 /* MovementRed16x16.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158366175E15B4004F58D1 /* MovementRed16x16.png */; };
 		41158375175E15B4004F58D1 /* TouchMarker.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158367175E15B4004F58D1 /* TouchMarker.png */; };
 		41158387175E15CC004F58D1 /* ArrowsFlying.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158379175E15CC004F58D1 /* ArrowsFlying.wav */; };
 		41158388175E15CC004F58D1 /* CavalryMarching.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837A175E15CC004F58D1 /* CavalryMarching.wav */; };
@@ -141,9 +138,6 @@
 		41158361175E15B4004F58D1 /* MissileBlue16x16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MissileBlue16x16.png; sourceTree = "<group>"; };
 		41158362175E15B4004F58D1 /* MissileGray16x16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MissileGray16x16.png; sourceTree = "<group>"; };
 		41158363175E15B4004F58D1 /* MissileRed16x16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MissileRed16x16.png; sourceTree = "<group>"; };
-		41158364175E15B4004F58D1 /* MovementBlue16x16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MovementBlue16x16.png; sourceTree = "<group>"; };
-		41158365175E15B4004F58D1 /* MovementGray16x16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MovementGray16x16.png; sourceTree = "<group>"; };
-		41158366175E15B4004F58D1 /* MovementRed16x16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MovementRed16x16.png; sourceTree = "<group>"; };
 		41158367175E15B4004F58D1 /* TouchMarker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TouchMarker.png; sourceTree = "<group>"; };
 		41158379175E15CC004F58D1 /* ArrowsFlying.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ArrowsFlying.wav; sourceTree = "<group>"; };
 		4115837A175E15CC004F58D1 /* CavalryMarching.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = CavalryMarching.wav; sourceTree = "<group>"; };
@@ -388,9 +382,6 @@
 				41158361175E15B4004F58D1 /* MissileBlue16x16.png */,
 				41158362175E15B4004F58D1 /* MissileGray16x16.png */,
 				41158363175E15B4004F58D1 /* MissileRed16x16.png */,
-				41158364175E15B4004F58D1 /* MovementBlue16x16.png */,
-				41158365175E15B4004F58D1 /* MovementGray16x16.png */,
-				41158366175E15B4004F58D1 /* MovementRed16x16.png */,
 				41158367175E15B4004F58D1 /* TouchMarker.png */,
 			);
 			path = Textures;
@@ -855,9 +846,6 @@
 				4115836F175E15B4004F58D1 /* MissileBlue16x16.png in Resources */,
 				41158370175E15B4004F58D1 /* MissileGray16x16.png in Resources */,
 				41158371175E15B4004F58D1 /* MissileRed16x16.png in Resources */,
-				41158372175E15B4004F58D1 /* MovementBlue16x16.png in Resources */,
-				41158373175E15B4004F58D1 /* MovementGray16x16.png in Resources */,
-				41158374175E15B4004F58D1 /* MovementRed16x16.png in Resources */,
 				41158375175E15B4004F58D1 /* TouchMarker.png in Resources */,
 				41158387175E15CC004F58D1 /* ArrowsFlying.wav in Resources */,
 				41158388175E15CC004F58D1 /* CavalryMarching.wav in Resources */,
