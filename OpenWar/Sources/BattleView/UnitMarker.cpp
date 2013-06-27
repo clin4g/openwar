@@ -32,45 +32,80 @@ UnitMarker::~UnitMarker()
 
 
 
-
-void UnitMarker::RenderPath(GradientLineRenderer* renderer, const std::vector<glm::vec2>& path)
+inline glm::vec2 rotate90(glm::vec2 v)
 {
-	TerrainSurface* terrainSurface = _battleModel->terrainSurface;
+	return glm::vec2(-v.y, v.x);
+}
 
-	float c = 0;
-	for (std::vector<glm::vec2>::const_iterator i = path.begin() + 1; i < path.end(); ++i)
-	{
-		glm::vec3 p1 = terrainSurface->GetPosition(*(i - 1), 1);
-		glm::vec3 p2 = terrainSurface->GetPosition(*i, 1);
-
-		renderer->AddLine(p1, p2, glm::vec4(c, c, c, 1), glm::vec4(c, c, c, 1));
-		//c = 1 - c;
-	}
+static float gap_radians(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
+{
+	return diff_radians(angle(p2 - p1), angle(p3 - p2));
 }
 
 
-/*void UnitMarker::_PathLines2(GradientLineRenderer* renderer, const std::vector<glm::vec2>& path, const std::vector<glm::vec2>& original)
+
+void UnitMarker::RenderPath(GradientTriangleRenderer* renderer, const std::vector<glm::vec2>& path)
 {
+	if (path.size() < 2)
+		return;
+
 	TerrainSurface* terrainSurface = _battleModel->terrainSurface;
 
-	float c = 0;
-	for (int i = 1; i < (int)path.size(); ++i)
+	float width = 4;
+
+	glm::vec4 cleft = glm::vec4(0, 0, 0.9f, 0.08f);
+	glm::vec4 cright = glm::vec4(0, 0, 1, 0);
+
+
+	glm::vec2 lastL = path[0];
+	glm::vec2 currL = path[1];
+	glm::vec2 nextL;
+	glm::vec2 dir = glm::normalize(currL - lastL);
+	glm::vec2 lastR = lastL - width * rotate90(dir);
+	glm::vec2 currR;
+
+	for (std::vector<glm::vec2>::const_iterator i = path.begin() + 1; i < path.end() - 1; ++i)
 	{
-		glm::vec2 p1 = path[i - 1];
-		glm::vec2 p2 = path[i];
+		currL = *i;
+		nextL = *(i + 1);
+		dir = glm::normalize(currL - lastL);
+		float gap = gap_radians(lastL, currL, nextL) / 2;
+		currR = currL - width * vector2_from_angle(angle(dir) + glm::half_pi<float>() - gap);
 
-		glm::vec2 q1 = original[i - 1];
-		glm::vec2 q2 = original[i];
+		glm::vec3 p1 = terrainSurface->GetPosition(lastL, 1);
+		glm::vec3 p2 = terrainSurface->GetPosition(currL, 1);
+		glm::vec3 p3 = terrainSurface->GetPosition(currR, 1);
+		glm::vec3 p4 = terrainSurface->GetPosition(lastR, 1);
 
-		glm::vec4 color = glm::vec4(c, c, c, 1);
+		renderer->AddVertex(p1, cleft);
+		renderer->AddVertex(p2, cleft);
+		renderer->AddVertex(p3, cright);
 
-		if (glm::dot(p2 - p1, q2 - q1) < 0)
-			color = glm::vec4(1, 0, 0, 1);
+		renderer->AddVertex(p3, cright);
+		renderer->AddVertex(p4, cright);
+		renderer->AddVertex(p1, cleft);
 
-		renderer->AddLine(terrainSurface->GetPosition(p1, 1), terrainSurface->GetPosition(p2, 1), color, color);
-		//c = 1 - c;
+		lastL = currL;
+		lastR = currR;
 	}
-}*/
+
+	currL = path.back();
+	dir = glm::normalize(currL - lastL);
+	currR = currL - width * rotate90(dir);
+
+	glm::vec3 p1 = terrainSurface->GetPosition(lastL, 1);
+	glm::vec3 p2 = terrainSurface->GetPosition(currL, 1);
+	glm::vec3 p3 = terrainSurface->GetPosition(currR, 1);
+	glm::vec3 p4 = terrainSurface->GetPosition(lastR, 1);
+
+	renderer->AddVertex(p1, cleft);
+	renderer->AddVertex(p2, cleft);
+	renderer->AddVertex(p3, cright);
+
+	renderer->AddVertex(p3, cright);
+	renderer->AddVertex(p4, cright);
+	renderer->AddVertex(p1, cleft);
+}
 
 
 
@@ -149,42 +184,83 @@ static void InsertStar(std::vector<glm::vec2>& path, std::vector<glm::vec2>::ite
 }
 
 
-void UnitMarker::Path(GradientLineRenderer* renderer, int mode, const std::vector<glm::vec2>& path)
+static void bspline_split_segments(std::vector<std::vector<glm::vec2>>& segments, const std::vector<std::pair<glm::vec2, glm::vec2>>& original, const std::vector<glm::vec2>& offset, bool append)
+{
+	if (!append)
+		segments.push_back(std::vector<glm::vec2>());
+
+	int n = (int)original.size();
+	for (int i = 1; i < n; ++i)
+	{
+		glm::vec2 p1 = offset[i - 1];
+		glm::vec2 p2 = offset[i];
+
+		glm::vec2 q1 = original[i - 1].first;
+		glm::vec2 q2 = original[i].first;
+
+		if (glm::dot(p2 - p1, q2 - q1) < 0)
+		{
+			if (!segments.back().empty())
+				segments.push_back(std::vector<glm::vec2>());
+		}
+		else
+		{
+			segments.back().push_back(p1);
+		}
+	}
+
+	if (!segments.empty())
+	{
+		if (segments.back().empty())
+			segments.pop_back();
+		else
+			segments.back().push_back(offset.back());
+	}
+}
+
+
+void UnitMarker::Path(GradientTriangleRenderer* renderer, int mode, const std::vector<glm::vec2>& path)
 {
 	if (path.size() == 0)
 		return;
 
-	std::vector<glm::vec2> path2 = path;
-	bspline_join(path2, 0.1f);
-	bspline_split(path2, 0.1f);
+	std::vector<glm::vec2> control_points = path;
+	bspline_join(control_points, 0.1f);
+	bspline_split(control_points, 0.1f);
 
-	std::vector<std::pair<glm::vec2, glm::vec2>> strip = spline_line_strip(path2);
+	std::vector<std::vector<glm::vec2>> segments;
 
-	std::vector<glm::vec2> stripp;
-	for (std::pair<glm::vec2, glm::vec2> i : strip)
-		stripp.push_back(i.first);
-
+	std::vector<std::pair<glm::vec2, glm::vec2>> strip = spline_line_strip(control_points);
 	std::vector<glm::vec2> pathL = bspline_offset(strip, 7);
+	bspline_split_segments(segments, strip, pathL, false);
+
+	if (segments.empty())
+		return;
+
+	int segmentIndex = (int)segments.size() - 1;
+	int vertexIndex = (int)segments.back().size();
+
 	std::vector<glm::vec2> pathR = bspline_offset(strip, -7);
+	std::reverse(strip.begin(), strip.end());
+	std::reverse(pathR.begin(), pathR.end());
+	bspline_split_segments(segments, strip, pathR, true);
 
-	if (pathL.size() > 1)
+	std::vector<glm::vec2>& head = segments[segmentIndex];
+	switch (mode)
 	{
-		std::vector<glm::vec2> path3 = pathL;
-		path3.insert(path3.end(), pathR.rbegin(), pathR.rend());
+		case 2:
+			InsertStar(head, head.begin() + vertexIndex);
+			break;
+		case 1:
+			InsertArrow2(head, head.begin() + vertexIndex);
+			break;
+		default:
+			InsertArrow1(head, head.begin() + vertexIndex);
+			break;
+	}
 
-		switch (mode)
-		{
-			case 2:
-				InsertStar(path3, path3.begin() + pathL.size());
-				break;
-			case 1:
-				InsertArrow2(path3, path3.begin() + pathL.size());
-				break;
-			default:
-				InsertArrow1(path3, path3.begin() + pathL.size());
-				break;
-		}
-
-		RenderPath(renderer, path3);
+	for (const std::vector<glm::vec2>& segment : segments)
+	{
+		RenderPath(renderer, segment);
 	}
 }

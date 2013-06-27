@@ -79,6 +79,22 @@ void GradientLineRenderer::AddLine(const glm::vec3& p1, const glm::vec3& p2, con
 /***/
 
 
+void GradientTriangleRenderer::Reset()
+{
+	_vbo._mode = GL_TRIANGLES;
+	_vbo._vertices.clear();
+}
+
+
+void GradientTriangleRenderer::AddVertex(const glm::vec3& p, const glm::vec4& c)
+{
+	_vbo._vertices.push_back(vertex(p, c));
+}
+
+
+/***/
+
+
 void GradientTriangleStripRenderer::Reset()
 {
 	_vbo._mode = GL_TRIANGLE_STRIP;

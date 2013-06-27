@@ -47,6 +47,7 @@ _player(PlayerNone),
 _plainLineRenderer(nullptr),
 _plainTriangleRenderer(nullptr),
 _gradientLineRenderer(nullptr),
+_gradientTriangleRenderer(nullptr),
 _gradientTriangleStripRenderer(nullptr),
 _colorBillboardRenderer(nullptr),
 _textureTriangleRenderer(nullptr)
@@ -141,6 +142,7 @@ _textureTriangleRenderer(nullptr)
 	_plainLineRenderer = new PlainLineRenderer();
 	_plainTriangleRenderer = new PlainTriangleRenderer();
 	_gradientLineRenderer = new GradientLineRenderer();
+	_gradientTriangleRenderer = new GradientTriangleRenderer();
 	_gradientTriangleStripRenderer = new GradientTriangleStripRenderer();
 	_colorBillboardRenderer = new ColorBillboardRenderer();
 	_textureTriangleRenderer = new TextureTriangleRenderer();
@@ -413,14 +415,22 @@ void BattleView::Render()
 	}
 
 
-	// Tracking Path
+	// Movement Paths
 
 	glEnable(GL_DEPTH_TEST);
+	_gradientTriangleRenderer->Reset();
+	for (UnitMovementMarker* marker : _movementMarkers)
+		marker->RenderMovementPath(_gradientTriangleRenderer);
+	_gradientTriangleRenderer->Draw(GetTransform());//, glm::vec4(0.5, 0.5, 1, 0.25));
+
+
+	// Tracking Path
+
 	for (UnitTrackingMarker* marker : _trackingMarkers)
 	{
-	    _gradientLineRenderer->Reset();
-		marker->RenderTrackingPath(_gradientLineRenderer);
-		_gradientLineRenderer->Draw(GetTransform());//, glm::vec4(0.5, 0.5, 0.5, 0.5));
+		_gradientTriangleRenderer->Reset();
+		marker->RenderTrackingPath(_gradientTriangleRenderer);
+		_gradientTriangleRenderer->Draw(GetTransform());//, glm::vec4(0.5, 0.5, 0.5, 0.5));
 	}
 
 
@@ -430,15 +440,6 @@ void BattleView::Render()
 	for (UnitTrackingMarker* marker : _trackingMarkers)
 		marker->RenderTrackingFighters(_colorBillboardRenderer);
 	_colorBillboardRenderer->Draw(GetTransform(), GetCameraUpVector(), GetViewportBounds().height());
-
-
-	// Movement Paths
-
-	glEnable(GL_DEPTH_TEST);
-	_gradientLineRenderer->Reset();
-	for (UnitMovementMarker* marker : _movementMarkers)
-		marker->RenderMovementPath(_gradientLineRenderer);
-	_gradientLineRenderer->Draw(GetTransform());//, glm::vec4(0.5, 0.5, 1, 0.25));
 
 
 	// Movement Fighters

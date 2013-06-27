@@ -6,9 +6,7 @@
 #define UnitMarker_H
 
 class BattleModel;
-class GradientLineRenderer;
-class PlainTriangleRenderer;
-class TextureTriangleRenderer;
+class GradientTriangleRenderer;
 class Unit;
 
 
@@ -25,10 +23,9 @@ public:
 	Unit* GetUnit() const { return _unit; }
 
 public:
-	void RenderPath(GradientLineRenderer* renderer, const std::vector<glm::vec2>& path);
-	//void _PathLines2(GradientLineRenderer* renderer, const std::vector<glm::vec2>& path, const std::vector<glm::vec2>& original);
+	void RenderPath(GradientTriangleRenderer* renderer, const std::vector<glm::vec2>& path);
 
-	void Path(GradientLineRenderer* renderer, int mode, const std::vector<glm::vec2>& path);
+	void Path(GradientTriangleRenderer* renderer, int mode, const std::vector<glm::vec2>& path);
 };
 
 

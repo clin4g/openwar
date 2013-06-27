@@ -60,7 +60,7 @@ public:
 
 	void RenderTrackingFighters(ColorBillboardRenderer* renderer);
 	void RenderTrackingShadow(TextureBillboardRenderer* renderer);
-	void RenderTrackingPath(GradientLineRenderer* renderer);
+	void RenderTrackingPath(GradientTriangleRenderer* renderer);
 };
 
 

@@ -48,6 +48,14 @@ public:
 };
 
 
+class GradientTriangleRenderer : public GradientRenderer
+{
+public:
+	virtual void Reset();
+	void AddVertex(const glm::vec3& p, const glm::vec4& c);
+};
+
+
 class GradientTriangleStripRenderer : public GradientRenderer
 {
 public:

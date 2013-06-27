@@ -18,6 +18,7 @@
 class CasualtyMarker;
 class ColorBillboardRenderer;
 class GradientLineRenderer;
+class GradientTriangleRenderer;
 class GradientTriangleStripRenderer;
 class UnitMovementMarker;
 class PlainLineRenderer;
@@ -49,6 +50,7 @@ class BattleView : public TerrainView, public SimulationListener
 	PlainLineRenderer* _plainLineRenderer;
 	PlainTriangleRenderer* _plainTriangleRenderer;
 	GradientLineRenderer* _gradientLineRenderer;
+	GradientTriangleRenderer* _gradientTriangleRenderer;
 	GradientTriangleStripRenderer* _gradientTriangleStripRenderer;
 	ColorBillboardRenderer* _colorBillboardRenderer;
 	TextureTriangleRenderer* _textureTriangleRenderer;

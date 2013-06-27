@@ -73,7 +73,7 @@ void UnitTrackingMarker::RenderTrackingShadow(TextureBillboardRenderer* renderer
 
 
 
-void UnitTrackingMarker::RenderTrackingPath(GradientLineRenderer* renderer)
+void UnitTrackingMarker::RenderTrackingPath(GradientTriangleRenderer* renderer)
 {
 	if (_path.size() != 0)
 	{

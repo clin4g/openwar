@@ -56,8 +56,7 @@ void UnitMovementMarker::RenderMovementFighters(ColorBillboardRenderer* renderer
 }
 
 
-
-void UnitMovementMarker::RenderMovementPath(GradientLineRenderer* renderer)
+void UnitMovementMarker::RenderMovementPath(GradientTriangleRenderer* renderer)
 {
 	if (_unit->movement.path.size() != 0)
 	{
