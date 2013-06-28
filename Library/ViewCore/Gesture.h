@@ -23,7 +23,7 @@ public:
 	bool IsEnabled() const { return _enabled; }
 	void SetEnabled(bool value) { _enabled = value; }
 
-	virtual void Update(double secondsSinceLastUpdate) = 0;
+	virtual void Update(Surface* surface, double secondsSinceLastUpdate) = 0;
 	virtual void RenderHints();
 
 	virtual void KeyDown(Surface* surface, char key);

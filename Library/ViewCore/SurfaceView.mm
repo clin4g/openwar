@@ -2,6 +2,8 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
+#if !TARGET_OS_IPHONE
+
 #import "SurfaceView.h"
 
 #include "Surface.h"
@@ -150,7 +152,7 @@
 		_surface->Update(secondsSinceLastUpdate);
 		if (Gesture::_gestures != nullptr)
 			for (Gesture* gesture : *Gesture::_gestures)
-				gesture->Update(secondsSinceLastUpdate);
+				gesture->Update(_surface, secondsSinceLastUpdate);
 
 		_timestamp = timestamp;
 
@@ -441,3 +443,5 @@ static char TranslateKeyCode(unsigned short keyCode)
 
 
 @end
+
+#endif

@@ -19,7 +19,7 @@ public:
 	View(Surface* surface);
 	virtual ~View();
 
-	Surface* GetScreen() const { return _surface; }
+	Surface* GetSurface() const { return _surface; }
 
 	bounds2f GetViewportValue() const { return _viewport; }
 	bounds2f GetViewportBounds() const;

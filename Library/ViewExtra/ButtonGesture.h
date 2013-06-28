@@ -21,7 +21,7 @@ public:
 	ButtonGesture();
 	virtual ~ButtonGesture();
 
-	virtual void Update(double secondsSinceLastUpdate);
+	virtual void Update(Surface* surface, double secondsSinceLastUpdate);
 
 	virtual void KeyDown(Surface* surface, char key);
 

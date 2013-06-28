@@ -43,7 +43,7 @@ void View::UseViewport()
 	}
 	else
 	{
-		bounds2f viewport = _viewport * GetScreen()->GetPixelDensity();
+		bounds2f viewport = _viewport * GetSurface()->GetPixelDensity();
 		glViewport((GLint)viewport.min.x, (GLint)viewport.min.y, (GLsizei)viewport.size().x, (GLsizei)viewport.size().y);
 	}
 }

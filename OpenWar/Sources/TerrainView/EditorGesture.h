@@ -19,7 +19,7 @@ class EditorGesture : public Gesture
 public:
 	EditorGesture(BattleView* battleView, EditorModel* editorModel);
 
-	virtual void Update(double secondsSinceLastUpdate);
+	virtual void Update(Surface* surface, double secondsSinceLastUpdate);
 
 	virtual void TouchBegan(Touch* touch);
 	virtual void TouchMoved();

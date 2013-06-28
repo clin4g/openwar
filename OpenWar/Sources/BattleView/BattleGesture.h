@@ -37,7 +37,7 @@ public:
 
 	BattleGesture(BattleView* battleView);
 
-	virtual void Update(double secondsSinceLastUpdate);
+	virtual void Update(Surface* surface, double secondsSinceLastUpdate);
 	virtual void RenderHints();
 
 	virtual void TouchBegan(Touch* touch);

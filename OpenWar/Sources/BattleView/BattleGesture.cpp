@@ -33,7 +33,7 @@ _allowTargetEnemyUnit(false)
 }
 
 
-void BattleGesture::Update(double secondsSinceLastUpdate)
+void BattleGesture::Update(Surface* surface, double secondsSinceLastUpdate)
 {
 
 }
@@ -87,7 +87,7 @@ void BattleGesture::RenderHints()
 
 void BattleGesture::TouchBegan(Touch* touch)
 {
-	if (touch->GetSurface() != _battleView->GetScreen())
+	if (touch->GetSurface() != _battleView->GetSurface())
 		return;
 	if (touch->GetGesture() != nullptr)
 		return;

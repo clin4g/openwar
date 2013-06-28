@@ -38,7 +38,7 @@ public:
 	virtual ~TerrainGesture();
 
 	virtual void RenderHints();
-	virtual void Update(double secondsSinceLastUpdate);
+	virtual void Update(Surface* surface, double secondsSinceLastUpdate);
 
 	virtual void KeyDown(Surface* surface, char key);
 	virtual void KeyUp(Surface* surface, char key);

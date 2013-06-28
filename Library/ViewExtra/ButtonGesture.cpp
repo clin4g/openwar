@@ -22,7 +22,7 @@ ButtonGesture::~ButtonGesture()
 
 
 
-void ButtonGesture::Update(double secondsSinceLastUpdate)
+void ButtonGesture::Update(Surface* surface, double secondsSinceLastUpdate)
 {
 
 }
@@ -32,7 +32,7 @@ void ButtonGesture::Update(double secondsSinceLastUpdate)
 void ButtonGesture::KeyDown(Surface* surface, char key)
 {
 	for (ButtonView* buttonView : buttonViews)
-		if (buttonView->GetScreen() == surface)
+		if (buttonView->GetSurface() == surface)
 			for (ButtonArea* buttonArea : buttonView->GetButtonAreas())
 				for (ButtonItem* buttonItem : buttonArea->buttonItems)
 					if (buttonItem->HasAction()
@@ -51,7 +51,7 @@ void ButtonGesture::TouchBegan(Touch* touch)
 		return;
 
 	for (ButtonView* buttonView : buttonViews)
-		if (buttonView->GetScreen() == touch->GetSurface())
+		if (buttonView->GetSurface() == touch->GetSurface())
 			for (ButtonArea* buttonArea : buttonView->GetButtonAreas())
 				for (ButtonItem* buttonItem : buttonArea->buttonItems)
 					if (buttonItem->HasAction()
@@ -69,7 +69,7 @@ void ButtonGesture::TouchBegan(Touch* touch)
 	else
 	{
 		for (ButtonView* buttonView : buttonViews)
-			if (buttonView->GetScreen() == touch->GetSurface())
+			if (buttonView->GetSurface() == touch->GetSurface())
 				for (ButtonArea* buttonArea : buttonView->GetButtonAreas())
 				{
 					buttonArea->noaction();

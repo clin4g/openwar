@@ -16,7 +16,7 @@ _editorModel(editorModel)
 }
 
 
-void EditorGesture::Update(double secondsSinceLastUpdate)
+void EditorGesture::Update(Surface* surface, double secondsSinceLastUpdate)
 {
 
 }
@@ -24,7 +24,7 @@ void EditorGesture::Update(double secondsSinceLastUpdate)
 
 void EditorGesture::TouchBegan(Touch* touch)
 {
-	if (touch->GetSurface() != _battleView->GetScreen())
+	if (touch->GetSurface() != _battleView->GetSurface())
 		return;
 	if (touch->GetGesture() != nullptr || !_touches.empty())
 		return;

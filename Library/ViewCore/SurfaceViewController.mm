@@ -1,5 +1,7 @@
 /* This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt */
 
+#if TARGET_OS_IPHONE
+
 #import "SurfaceViewController.h"
 
 #include "renderer.h"
@@ -290,7 +292,7 @@ static bool IsPortrait(UIInterfaceOrientation orientation)
 
 	if (Gesture::_gestures != nullptr)
 		for (Gesture* gesture : *Gesture::_gestures)
-			gesture->Update(secondsSinceLastUpdate);
+			gesture->Update(_surface, secondsSinceLastUpdate);
 
 	bool moved = false;
 	double timestamp = [NSProcessInfo processInfo].systemUptime;
@@ -339,5 +341,7 @@ static bool IsPortrait(UIInterfaceOrientation orientation)
 
 
 @end
+
+#endif
 
 
