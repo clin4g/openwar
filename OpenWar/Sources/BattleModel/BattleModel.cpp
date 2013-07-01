@@ -13,7 +13,6 @@
 
 UnitCommand::UnitCommand() :
 path(),
-destination(),
 facing(0),
 running(false),
 meleeTarget(nullptr),
@@ -114,7 +113,7 @@ UnitUpdate Unit::GetUnitUpdate()
 	result.fightersCount = fightersCount;
 	result.morale = state.morale;
 
-	result.movementDestination = command.destination;
+	result.movementDestination = command.path.empty() ? state.center : command.path.back();
 	result.movementDirection = command.facing;
 	result.movementTargetUnitId = command.meleeTarget != nullptr ? command.meleeTarget->unitId : 0;
 	result.movementRunning = command.running;
@@ -143,7 +142,8 @@ void Unit::SetUnitUpdate(UnitUpdate unitUpdate, BattleModel* battleModel)
 
 	state.morale = unitUpdate.morale;
 
-	command.destination = unitUpdate.movementDestination;
+	command.path.clear();
+	command.path.push_back(unitUpdate.movementDestination);
 	command.facing = unitUpdate.movementDirection;
 	command.meleeTarget = battleModel->GetUnit(unitUpdate.movementTargetUnitId);
 	command.running = unitUpdate.movementRunning;
@@ -303,7 +303,7 @@ Unit* BattleModel::AddUnit(Player player, int numberOfFighters, UnitStats stats,
 		i->unit = unit;
 
 	unit->command.facing = player == Player1 ? (float)M_PI_2 : (float)M_PI_2 * 3;
-	unit->command.destination = position;
+	//unit->command.waypoint = position;
 
 	unit->state.unitMode = UnitModeInitializing;
 	unit->state.center = position;

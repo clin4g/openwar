@@ -150,8 +150,7 @@ void BattleSimulator::AssignNextState()
 
 		if (unit->state.IsRouting())
 		{
-			unit->command.path.clear();
-			unit->command.destination = unit->state.center;
+			unit->command.ClearPathAndSetDestination(unit->state.center);
 			unit->command.meleeTarget = nullptr;
 		}
 
@@ -451,6 +450,8 @@ UnitState BattleSimulator::NextUnitState(Unit* unit)
 	{
 		result.morale = -1;
 	}
+
+	result.waypoint = MovementRules::NextWaypoint(unit);
 
 	return result;
 }

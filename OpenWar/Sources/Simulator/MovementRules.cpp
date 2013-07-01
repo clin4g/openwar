@@ -96,34 +96,33 @@ void MovementRules::UpdateMovementPath(std::vector<glm::vec2>& path, glm::vec2 s
 }
 
 
-void MovementRules::AdvanceTime(Unit* unit, float timeStep)
+
+glm::vec2 MovementRules::NextWaypoint(Unit* unit)
 {
-	/*while (unit->movement.path.size() != 0 && glm::length(unit->state.center - unit->movement.path[0]) <= 10)
-	{
-		if (unit->movement.path.size() > 1)
-		{
-			glm::vec2 p1 = unit->movement.path[0];
-			glm::vec2 p2 = unit->movement.path[1];
-		}
-		unit->movement.path.erase(unit->movement.path.begin());
-	}*/
+	for (glm::vec2 p : unit->command.path)
+		if (glm::distance(p, unit->state.center) > 1.0f)
+			return p;
+
+	if (unit->command.meleeTarget != nullptr)
+		return unit->command.meleeTarget->state.center;
 
 	if (!unit->command.path.empty())
-	{
-		if (unit->command.meleeTarget)
-			unit->command.UpdatePath(unit->state.center, unit->command.meleeTarget->state.center);
-		else
-			unit->command.UpdatePath(unit->state.center, unit->command.GetDestination());
+		return unit->command.path.back();
 
-		if (unit->command.path.size() > 1)
-			unit->command.destination = unit->command.path[1];
-		else
-			unit->command.destination = unit->state.center;
-	}
-	else if (unit->command.meleeTarget != nullptr)
-	{
-		unit->command.destination = unit->command.meleeTarget->state.center;
-	}
+	return unit->state.center;
+}
+
+
+
+void MovementRules::AdvanceTime(Unit* unit, float timeStep)
+{
+	if (unit->command.meleeTarget != nullptr)
+		unit->command.UpdatePath(unit->state.center, unit->command.meleeTarget->state.center);
+	else if (unit->command.path.empty())
+		unit->command.ClearPathAndSetDestination(unit->state.center);
+	else
+		unit->command.UpdatePath(unit->state.center, unit->command.path.back());
+
 
 	float count = unit->fightersCount;
 	float ranks = unit->formation.numberOfRanks;
@@ -258,7 +257,7 @@ glm::vec2 MovementRules::NextFighterDestination(Fighter* fighter)
 		}
 		else
 		{
-			glm::vec2 frontLeft = unit->formation.GetFrontLeft(unit->command.destination);
+			glm::vec2 frontLeft = unit->formation.GetFrontLeft(unit->state.waypoint);
 			destination = frontLeft + unit->formation.towardRight * (float)file;
 		}
 	}

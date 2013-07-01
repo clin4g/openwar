@@ -105,7 +105,6 @@ void BattleScript::SetUnitMovement(int unitId, bool running, std::vector<glm::ve
 	if (unit != nullptr)
 	{
 		unit->command.path = path;
-		unit->command.destination = path.empty() ? unit->state.center : path.front();
 		unit->command.facing = heading;
 		unit->command.meleeTarget = _battleModel->GetUnit(chargeId);
 		unit->command.running = running;

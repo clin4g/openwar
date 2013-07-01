@@ -213,6 +213,8 @@ struct UnitState
 	// intermediate attributes
 	int recentCasualties;
 
+	glm::vec2 waypoint;
+
 
 	bool IsRouting() const
 	{
@@ -250,11 +252,10 @@ struct UnitUpdate
 struct UnitCommand
 {
 	std::vector<glm::vec2> path;
-	glm::vec2 destination;
 	float facing;
 	bool running;
 	Unit* meleeTarget;
-	Unit* missileTarget; // updated by TouchGesture()
+	Unit* missileTarget;
 
 	UnitCommand();
 
@@ -264,10 +265,16 @@ struct UnitCommand
 		MovementRules::UpdateMovementPath(path, curr, dest);
 	}
 
+	void ClearPathAndSetDestination(glm::vec2 p)
+	{
+		path.clear();
+		path.push_back(p);
+	}
+
 
 	glm::vec2 GetDestination()
 	{
-		return path.size() != 0 ? *(path.end() - 1) : destination;
+		return !path.empty() != 0 ? path.back() : glm::vec2();
 	}
 };
 

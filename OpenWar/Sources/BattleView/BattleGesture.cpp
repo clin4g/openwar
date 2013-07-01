@@ -117,7 +117,8 @@ void BattleGesture::TouchBegan(Touch* touch)
 				std::vector<glm::vec2>& path = _trackingMarker->_path;
 				path.clear();
 				path.insert(path.begin(), unit->command.path.begin(), unit->command.path.end());
-				_trackingMarker->SetDestination(&unit->command.destination);
+
+				//_trackingMarker->SetDestination(&unit->command.waypoint);
 
 				glm::vec2 orientation = unit->command.GetDestination() + 18.0f * vector2_from_angle(unit->command.facing);
 				_trackingMarker->SetOrientation(&orientation);
@@ -135,8 +136,7 @@ void BattleGesture::TouchBegan(Touch* touch)
 			if (touch->GetTapCount() > 1 && _tappedUnitCenter && !_tappedDestination)
 			{
 				unit->command.meleeTarget = nullptr;
-				unit->command.path.clear();
-				unit->command.destination = unit->state.center;
+				unit->command.ClearPathAndSetDestination(unit->state.center);
 				unit->command.missileTarget = nullptr;
 				unit->missileTargetLocked = false;
 			}
@@ -221,28 +221,28 @@ void BattleGesture::TouchEnded(Touch* touch)
 
 			Unit* destinationUnit = _trackingMarker->GetMeleeTarget();
 			Unit* orientationUnit = _trackingMarker->GetMissileTarget();
-			glm::vec2* destination = _trackingMarker->GetDestinationX();
+			//glm::vec2* destination = _trackingMarker->GetDestinationX();
 			glm::vec2* orientation = _trackingMarker->GetOrientationX();
 			std::vector<glm::vec2>& path = _trackingMarker->_path;
 
-			if (path.size() != 0)
+
+			unit->command.path.clear();
+			if (!path.empty())
 			{
-				unit->command.path.clear();
 				unit->command.path.insert(unit->command.path.begin(), path.begin(), path.end());
 			}
 
-			if (destinationUnit)
+			unit->command.meleeTarget = destinationUnit;
+			unit->command.running = _trackingMarker->GetRunning();
+
+			/*if (destinationUnit != nullptr)
 			{
-				unit->command.meleeTarget = destinationUnit;
-				unit->command.destination = destinationUnit->state.center;
-				unit->command.running = false;
+				unit->command.waypoint = destinationUnit->state.center;
 			}
 			else if (destination)
 			{
-				unit->command.meleeTarget = nullptr;
-				unit->command.destination = *destination;
-				unit->command.running = _trackingMarker->GetRunning();
-			}
+				unit->command.waypoint = *destination;
+			}*/
 
 			if (orientationUnit)
 			{
@@ -260,8 +260,7 @@ void BattleGesture::TouchEnded(Touch* touch)
 				if (_tappedUnitCenter && touch->GetTapCount() > 1)
 				{
 					unit->command.meleeTarget = nullptr;
-					unit->command.path.clear();
-					unit->command.destination = unit->state.center;
+					unit->command.ClearPathAndSetDestination(unit->state.center);
 					unit->command.missileTarget = nullptr;
 					unit->missileTargetLocked = false;
 				}

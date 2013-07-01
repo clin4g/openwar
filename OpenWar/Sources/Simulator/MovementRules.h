@@ -32,6 +32,7 @@ public:
 	static void AdvanceTime(Unit* unit, float timeStep);
 	static void SwapFighters(Unit* unit);
 	static glm::vec2 NextFighterDestination(Fighter* fighter);
+	static glm::vec2 NextWaypoint(Unit* unit);
 };
 
 
