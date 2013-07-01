@@ -25,23 +25,23 @@ bool UnitMovementMarker::Animate(float seconds)
 		return false;
 
 	glm::vec2 position = _unit->state.center;
-	glm::vec2 finalDestination = _unit->movement.GetFinalDestination();
+	glm::vec2 finalDestination = _unit->command.GetDestination();
 
-	return _unit->movement.path.size() > 1 || glm::length(position - finalDestination) > 8;
+	return _unit->command.path.size() > 1 || glm::length(position - finalDestination) > 8;
 }
 
 
 void UnitMovementMarker::RenderMovementFighters(ColorBillboardRenderer* renderer)
 {
-	if (!_unit->movement.target)
+	if (!_unit->command.meleeTarget)
 	{
 		bool isBlue = _unit->player == _battleModel->bluePlayer;
 		glm::vec4 color = isBlue ? glm::vec4(0, 0, 255, 32) / 255.0f : glm::vec4(255, 0, 0, 32) / 255.0f;
 
-		glm::vec2 finalDestination = _unit->movement.GetFinalDestination();
+		glm::vec2 finalDestination = _unit->command.GetDestination();
 
 		Formation formation = _unit->formation;
-		formation.SetDirection(_unit->movement.direction);
+		formation.SetDirection(_unit->command.facing);
 
 		glm::vec2 frontLeft = formation.GetFrontLeft(finalDestination);
 
@@ -58,21 +58,15 @@ void UnitMovementMarker::RenderMovementFighters(ColorBillboardRenderer* renderer
 
 void UnitMovementMarker::RenderMovementPath(GradientTriangleRenderer* renderer)
 {
-	if (_unit->movement.path.size() != 0)
+	if (!_unit->command.path.empty())
 	{
 		int mode = 0;
-		if (_unit->movement.target)
+		if (_unit->command.meleeTarget)
 			mode = 2;
-		else if (_unit->movement.running)
+		else if (_unit->command.running)
 			mode = 1;
 
-		std::vector<glm::vec2> path(_unit->movement.path);
-		if (path.empty() || glm::distance(_unit->state.center, path[0]) > 0.1f)
-			path.insert(path.begin(), _unit->state.center);
-		if (_unit->movement.target != 0)
-			path.insert(path.end(), _unit->movement.target->state.center);
-
-		Path(renderer, mode, path);
+		Path(renderer, mode, _unit->command.path);
 	}
 }
 

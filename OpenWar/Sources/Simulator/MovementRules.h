@@ -28,7 +28,7 @@ struct Formation
 class MovementRules
 {
 public:
-	static void UpdateMovementPath(std::vector<glm::vec2>& path, glm::vec2 position, glm::vec2 destination, float velocity);
+	static void UpdateMovementPath(std::vector<glm::vec2>& path, glm::vec2 startPosition, glm::vec2 endPosition);
 	static void AdvanceTime(Unit* unit, float timeStep);
 	static void SwapFighters(Unit* unit);
 	static glm::vec2 NextFighterDestination(Fighter* fighter);

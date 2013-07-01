@@ -91,7 +91,7 @@ int BattleScript::NewUnit(Player player, UnitPlatform platform, UnitWeapon weapo
 	UnitStats unitStats = BattleModel::GetDefaultUnitStats(platform, weapon);
 
 	Unit* unit = _battleModel->AddUnit(player, strength, unitStats, position);
-	unit->movement.direction = glm::radians(90 - bearing);
+	unit->command.facing = glm::radians(90 - bearing);
 
 	_battleModel->AddUnitMarker(unit);
 
@@ -104,12 +104,11 @@ void BattleScript::SetUnitMovement(int unitId, bool running, std::vector<glm::ve
 	Unit* unit = _battleModel->GetUnit(unitId);
 	if (unit != nullptr)
 	{
-		unit->movement.path = path;
-		//unit->movement.path_t0 = 0;
-		unit->movement.destination = path.empty() ? unit->state.center : path.front();
-		unit->movement.direction = heading;
-		unit->movement.target = _battleModel->GetUnit(chargeId);
-		unit->movement.running = running;
+		unit->command.path = path;
+		unit->command.destination = path.empty() ? unit->state.center : path.front();
+		unit->command.facing = heading;
+		unit->command.meleeTarget = _battleModel->GetUnit(chargeId);
+		unit->command.running = running;
 
 		//if (_battleModel->GetMovementMarker(unit) == nullptr)
 		//	_battleModel->AddMovementMarker(unit);
@@ -379,13 +378,13 @@ BattleScript::UnitStatus::UnitStatus(Unit* unit)
 	{
 		state = 3;
 	}
-	else if (unit->movement.target != nullptr)
+	else if (unit->command.meleeTarget != nullptr)
 	{
 		state = 4;
 	}
-	else if (!unit->movement.path.empty())
+	else if (!unit->command.path.empty())
 	{
-		if (unit->movement.running)
+		if (unit->command.running)
 			state = 2;
 		else
 			state = 1;

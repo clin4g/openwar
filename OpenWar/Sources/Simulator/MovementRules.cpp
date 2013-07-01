@@ -58,79 +58,71 @@ static bool IsForwardMotion(const std::vector<glm::vec2>& path, glm::vec2 positi
 }
 
 
-/*static float path_length(const std::vector<vector2>& path)
+
+void MovementRules::UpdateMovementPath(std::vector<glm::vec2>& path, glm::vec2 startPosition, glm::vec2 endPosition)
 {
-	float result = 0;
-	for (int i = 1; i < (int)path.size(); ++i)
-		result += path[i - 1].distance_to(path[i]);
-	return result;
-}*/
+	const float spacing = 10;
 
+	while (!path.empty() && glm::distance(path.front(), startPosition) < spacing)
+		path.erase(path.begin());
 
+	while (!path.empty() && glm::distance(path.back(), endPosition) < spacing)
+		path.erase(path.end() - 1);
 
-void MovementRules::UpdateMovementPath(std::vector<glm::vec2>& path, glm::vec2 position, glm::vec2 destination, float velocity)
-{
-	float spacing = 10; //fminf(25, 2.5f + velocity / 15.0f); // length of each segment
-	float leading = 10; //fminf(15, spacing + velocity / 10.0f); // length of first segment
-
-	if (path.size() == 0)
-		path.push_back(position);
-
-	if (path.size() >= 2)
-	{
-		glm::vec2 veryLast = *(path.end() - 1);
-		glm::vec2 nextLast = *(path.end() - 2);
-		if (glm::length(veryLast - nextLast) <= leading)
-		{
-			path.pop_back();
-		}
-	}
-
-	while (!IsForwardMotion(path, destination))
+	while (!IsForwardMotion(path, endPosition))
 		path.pop_back();
 
-	if (path.size() != 0 && glm::length(destination - *(path.end() - 1)) <= leading)
+
+	/*if (!path.empty() && glm::length(path.front() - startPosition) > spacing)
 	{
-		path.pop_back();
-	}
+		path.insert(path.begin(), 0.5f * (path.front() + startPosition));
+	}*/
+
+	path.insert(path.begin(), startPosition);
 
 	int n = 20;
-	glm::vec2 p = path.size() != 0 ? *(path.end() - 1) : position;
-	while (n-- != 0 && glm::length(p - destination) > leading)
+	glm::vec2 p = path.back();
+	while (n-- != 0 && glm::length(p - endPosition) > 2 * spacing)
 	{
-		p += spacing * glm::normalize(destination - p);
+		p += spacing * glm::normalize(endPosition - p);
 		path.push_back(p);
 	}
+	if (glm::length(p - endPosition) > spacing)
+	{
+		path.push_back(0.5f * (p + endPosition));
+	}
 
-	path.push_back(destination);
+	path.push_back(endPosition);
 }
 
 
 void MovementRules::AdvanceTime(Unit* unit, float timeStep)
 {
-	while (unit->movement.path.size() != 0 && glm::length(unit->state.center - unit->movement.path[0]) <= 10)
+	/*while (unit->movement.path.size() != 0 && glm::length(unit->state.center - unit->movement.path[0]) <= 10)
 	{
 		if (unit->movement.path.size() > 1)
 		{
 			glm::vec2 p1 = unit->movement.path[0];
 			glm::vec2 p2 = unit->movement.path[1];
-			unit->movement.path_t0 += glm::length(p1 - p2);
 		}
 		unit->movement.path.erase(unit->movement.path.begin());
-	}
+	}*/
 
-	if (unit->movement.path.size() != 0)
+	if (!unit->command.path.empty())
 	{
-		if (unit->movement.target)
-		{
-			UpdateMovementPath(unit->movement.path, unit->state.center, unit->movement.target->state.center, 200);
-		}
+		if (unit->command.meleeTarget)
+			unit->command.UpdatePath(unit->state.center, unit->command.meleeTarget->state.center);
+		else
+			unit->command.UpdatePath(unit->state.center, unit->command.GetDestination());
 
-		unit->movement.destination = unit->movement.path[0];
+		if (unit->command.path.size() > 1)
+			unit->command.destination = unit->command.path[1];
+		else
+			unit->command.destination = unit->state.center;
 	}
-	else if (unit->movement.target)
+	else if (unit->command.meleeTarget != nullptr)
 	{
-		unit->movement.destination = unit->movement.target->state.center;
+		unit->command.destination = unit->command.meleeTarget->state.center;
 	}
 
 	float count = unit->fightersCount;
@@ -139,11 +131,17 @@ void MovementRules::AdvanceTime(Unit* unit, float timeStep)
 	unit->formation.numberOfRanks = (int)fminf(GetMaxNumberOfRanks(unit), count);
 	unit->formation.numberOfFiles = (int)ceilf(count / ranks);
 
-	glm::vec2 diff = unit->movement.destination - unit->state.center;
-	float direction = glm::length(diff) < 5 ? unit->movement.direction : angle(diff);
+	float direction = unit->command.facing;
 
-	if (unit->movement.target && glm::length(unit->state.center - unit->movement.target->state.center) <= 15)
-		direction = angle(unit->movement.target->state.center - unit->state.center);
+	if (unit->command.path.size() > 1)
+	{
+		glm::vec2 diff = unit->command.path[1] - unit->command.path[0];
+		if (glm::length(diff) > 5)
+			direction = angle(diff);
+	}
+
+	if (unit->command.meleeTarget && glm::length(unit->state.center - unit->command.meleeTarget->state.center) <= 15)
+		direction = angle(unit->command.meleeTarget->state.center - unit->state.center);
 
 	if (fabsf(direction - unit->formation._direction) > 0.1f)
 	{
@@ -260,7 +258,7 @@ glm::vec2 MovementRules::NextFighterDestination(Fighter* fighter)
 		}
 		else
 		{
-			glm::vec2 frontLeft = unit->formation.GetFrontLeft(unit->movement.destination);
+			glm::vec2 frontLeft = unit->formation.GetFrontLeft(unit->command.destination);
 			destination = frontLeft + unit->formation.towardRight * (float)file;
 		}
 	}

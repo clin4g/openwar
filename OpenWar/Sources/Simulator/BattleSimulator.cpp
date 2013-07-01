@@ -150,9 +150,9 @@ void BattleSimulator::AssignNextState()
 
 		if (unit->state.IsRouting())
 		{
-			unit->movement.path.clear();
-			unit->movement.destination = unit->state.center;
-			unit->movement.target = 0;
+			unit->command.path.clear();
+			unit->command.destination = unit->state.center;
+			unit->command.meleeTarget = nullptr;
 		}
 
 		for (Fighter* fighter = unit->fighters, * end = fighter + unit->fightersCount; fighter != end; ++fighter)
@@ -352,11 +352,11 @@ void BattleSimulator::RemoveDeadUnits()
 	{
 		Unit* unit = (*i).second;
 
-		if (unit->missileTarget != 0 && _battleModel->GetUnit(unit->missileTarget->unitId) == 0)
-			unit->missileTarget = 0;
+		if (unit->command.missileTarget != 0 && _battleModel->GetUnit(unit->command.missileTarget->unitId) == 0)
+			unit->command.missileTarget = 0;
 
-		if (unit->movement.target != 0 && _battleModel->GetUnit(unit->movement.target->unitId) == 0)
-			unit->movement.target = 0;
+		if (unit->command.meleeTarget != nullptr && _battleModel->GetUnit(unit->command.meleeTarget->unitId) == 0)
+			unit->command.meleeTarget = nullptr;
 	}
 }
 
@@ -380,21 +380,21 @@ UnitState BattleSimulator::NextUnitState(Unit* unit)
 	{
 		if (unit->missileTargetLocked)
 		{
-			if (unit->missileTarget != 0 && !IsWithinLineOfFire(unit, unit->missileTarget->state.center))
+			if (unit->command.missileTarget != 0 && !IsWithinLineOfFire(unit, unit->command.missileTarget->state.center))
 			{
 				unit->missileTargetLocked = false;
-				unit->missileTarget = 0;
+				unit->command.missileTarget = 0;
 			}
 		}
 
 		if (!unit->missileTargetLocked)
 		{
-			unit->missileTarget = ClosestEnemyWithinLineOfFire(unit);
+			unit->command.missileTarget = ClosestEnemyWithinLineOfFire(unit);
 		}
 
-		if (unit->missileTarget)
+		if (unit->command.missileTarget)
 		{
-			if (IsWithinLineOfFire(unit, unit->missileTarget->state.center))
+			if (IsWithinLineOfFire(unit, unit->command.missileTarget->state.center))
 			{
 				++result.shootingCounter;
 			}
@@ -499,12 +499,12 @@ UnitMode BattleSimulator::NextUnitMode(Unit* unit)
 			return UnitModeStanding;
 
 		case UnitModeStanding:
-			if (glm::length(unit->state.center - unit->movement.GetFinalDestination()) > 25)
+			if (glm::length(unit->state.center - unit->command.GetDestination()) > 25)
 				return UnitModeMoving;
 			break;
 
 		case UnitModeMoving:
-			if (glm::length(unit->state.center - unit->movement.GetFinalDestination()) <= 25)
+			if (glm::length(unit->state.center - unit->command.GetDestination()) <= 25)
 				return UnitModeStanding;
 			break;
 
@@ -518,7 +518,7 @@ UnitMode BattleSimulator::NextUnitMode(Unit* unit)
 float BattleSimulator::NextUnitDirection(Unit* unit)
 {
 	if (true) // unit->movement
-		return unit->movement.direction;
+		return unit->command.facing;
 	else
 		return unit->state.direction;
 }
@@ -589,7 +589,7 @@ FighterState BattleSimulator::NextFighterState(Fighter* fighter)
 	switch (original.readyState)
 	{
 		case ReadyStateUnready:
-			if (fighter->unit->movement.target != 0)
+			if (fighter->unit->command.meleeTarget != nullptr)
 			{
 				result.readyState = ReadyStatePrepared;
 			}
@@ -613,7 +613,7 @@ FighterState BattleSimulator::NextFighterState(Fighter* fighter)
 			break;
 
 		case ReadyStatePrepared:
-			if (fighter->unit->state.unitMode == UnitModeMoving && fighter->unit->movement.target == 0)
+			if (fighter->unit->state.unitMode == UnitModeMoving && fighter->unit->command.meleeTarget == nullptr)
 			{
 				result.readyState = ReadyStateUnready;
 			}
@@ -791,11 +791,11 @@ glm::vec2 BattleSimulator::CalculateFighterMissileTarget(Fighter* fighter)
 {
 	Unit* unit = fighter->unit;
 
-	if (unit->missileTarget)
+	if (unit->command.missileTarget)
 	{
 		float dx = 10.0f * ((rand() & 255) / 128.0f - 1.0f);
 		float dy = 10.0f * ((rand() & 255) / 127.0f - 1.0f);
-		return unit->missileTarget->state.center + glm::vec2(dx, dy);
+		return unit->command.missileTarget->state.center + glm::vec2(dx, dy);
 	}
 
 	return glm::vec2();

@@ -83,29 +83,6 @@ enum UnitMode
 };
 
 
-struct Movement
-{
-	std::vector<glm::vec2> path;
-	float path_t0;
-	glm::vec2 destination;
-	float direction;
-	Unit* target;
-	bool running;
-
-	Movement();
-
-	glm::vec2 GetCurrentDestination()
-	{
-		return destination;
-	}
-
-	glm::vec2 GetFinalDestination()
-	{
-		return path.size() != 0 ? *(path.end() - 1) : destination;
-	}
-};
-
-
 struct Projectile
 {
 	glm::vec2 position1;
@@ -270,6 +247,31 @@ struct UnitUpdate
 };
 
 
+struct UnitCommand
+{
+	std::vector<glm::vec2> path;
+	glm::vec2 destination;
+	float facing;
+	bool running;
+	Unit* meleeTarget;
+	Unit* missileTarget; // updated by TouchGesture()
+
+	UnitCommand();
+
+
+	void UpdatePath(glm::vec2 curr, glm::vec2 dest)
+	{
+		MovementRules::UpdateMovementPath(path, curr, dest);
+	}
+
+
+	glm::vec2 GetDestination()
+	{
+		return path.size() != 0 ? *(path.end() - 1) : destination;
+	}
+};
+
+
 struct Unit
 {
 	// static attributes
@@ -290,8 +292,7 @@ struct Unit
 	UnitState nextState; // updated by ComputeNextState()
 
 	// control attributes
-	Movement movement; // updated by TouchGesture()
-	Unit* missileTarget; // updated by TouchGesture()
+	UnitCommand command; // updated by TouchGesture()
 	bool missileTargetLocked; // updated by TouchGesture()
 
 	Unit();
@@ -359,7 +360,7 @@ public:
 	SmokeCounter* AddSmokeMarker(UnitWeapon unitWeapon);
 	void RemoveAllSmokeMarkers();
 
-	UnitCounter* GetNearestUnitMarker(glm::vec2 position, Player player);
+	UnitCounter* GetNearestUnitCounter(glm::vec2 position, Player player);
 };
 
 

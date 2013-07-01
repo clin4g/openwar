@@ -14,23 +14,35 @@ class TextureBillboardRenderer;
 
 class UnitTrackingMarker : public UnitMarker
 {
-public:
-	Unit* _destinationUnit;
+	Unit* _meleeTarget;
 	glm::vec2 _destination;
 	bool _hasDestination;
 
-	Unit* _orientationUnit;
+	Unit* _missileTarget;
 	glm::vec2 _orientation;
 	bool _hasOrientation;
 
-	std::vector<glm::vec2> _path;
 	bool _running;
+
+public:
+	std::vector<glm::vec2> _path;
 
 public:
 	UnitTrackingMarker(BattleModel* battleModel, Unit* unit);
 	~UnitTrackingMarker();
 
-	//glm::vec2* GetDestination() { return _hasDestination ? &_destination : 0; }
+	void SetRunning(bool value) { _running = value; }
+	bool GetRunning() const { return _running; }
+
+	void SetMeleeTarget(Unit* value) { _meleeTarget = value; }
+	Unit* GetMeleeTarget() const { return _meleeTarget; }
+
+	void SetMissileTarget(Unit* value) { _missileTarget = value; }
+	Unit* GetMissileTarget() const { return _missileTarget; }
+
+	/***/
+
+
 	void SetDestination(glm::vec2* value)
 	{
 		if (value != nullptr) _destination = *value;
@@ -39,12 +51,11 @@ public:
 
 	glm::vec2* GetDestinationX()
 	{
-		if (_destinationUnit) return &_destinationUnit->state.center;
+		if (_meleeTarget) return &_meleeTarget->state.center;
 		else if (_hasDestination) return &_destination;
 		else return nullptr;
 	}
 
-	//glm::vec2* GetOrientation() { return _hasOrientation ? &_orientation : 0; }
 	void SetOrientation(glm::vec2* value)
 	{
 		if (value != nullptr) _orientation = *value;
@@ -53,10 +64,21 @@ public:
 
 	glm::vec2* GetOrientationX()
 	{
-		if (_orientationUnit) return &_orientationUnit->state.center;
+		if (_missileTarget) return &_missileTarget->state.center;
 		else if (_hasOrientation) return &_orientation;
 		else return 0;
 	}
+
+	glm::vec2 DestinationXXX() const
+	{
+		return GetMeleeTarget() != nullptr ? GetMeleeTarget()->state.center
+			: _path.size() != 0 ? *(_path.end() - 1)
+			: _hasDestination ? _destination
+			: GetUnit()->state.center;
+	}
+
+
+
 
 	void RenderTrackingFighters(ColorBillboardRenderer* renderer);
 	void RenderTrackingShadow(TextureBillboardRenderer* renderer);

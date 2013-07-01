@@ -11,13 +11,13 @@
 
 
 
-Movement::Movement() :
+UnitCommand::UnitCommand() :
 path(),
-path_t0(0),
 destination(),
-direction(0),
-target(0),
-running(false)
+facing(0),
+running(false),
+meleeTarget(nullptr),
+missileTarget(nullptr)
 {
 }
 
@@ -114,10 +114,10 @@ UnitUpdate Unit::GetUnitUpdate()
 	result.fightersCount = fightersCount;
 	result.morale = state.morale;
 
-	result.movementDestination = movement.destination;
-	result.movementDirection = movement.direction;
-	result.movementTargetUnitId = movement.target != 0 ? movement.target->unitId : 0;
-	result.movementRunning = movement.running;
+	result.movementDestination = command.destination;
+	result.movementDirection = command.facing;
+	result.movementTargetUnitId = command.meleeTarget != nullptr ? command.meleeTarget->unitId : 0;
+	result.movementRunning = command.running;
 
 	result.minX = 20000;
 	result.maxX = -20000;
@@ -143,10 +143,10 @@ void Unit::SetUnitUpdate(UnitUpdate unitUpdate, BattleModel* battleModel)
 
 	state.morale = unitUpdate.morale;
 
-	movement.destination = unitUpdate.movementDestination;
-	movement.direction = unitUpdate.movementDirection;
-	movement.target = battleModel->GetUnit(unitUpdate.movementTargetUnitId);
-	movement.running = unitUpdate.movementRunning;
+	command.destination = unitUpdate.movementDestination;
+	command.facing = unitUpdate.movementDirection;
+	command.meleeTarget = battleModel->GetUnit(unitUpdate.movementTargetUnitId);
+	command.running = unitUpdate.movementRunning;
 }
 
 
@@ -174,11 +174,10 @@ stats(),
 state(),
 nextState(),
 formation(),
-movement(),
-fighters(0),
+command(),
+fighters(nullptr),
 fightersCount(0),
 timeUntilSwapFighters(0),
-missileTarget(0),
 missileTargetLocked(false),
 shootingCounter(0)
 {
@@ -208,7 +207,7 @@ float Unit::GetSpeed()
 	if (state.IsRouting())
 		return stats.runningSpeed * 1.2f;
 	else
-		return movement.running || movement.target ? stats.runningSpeed : stats.walkingSpeed;
+		return command.running || (command.meleeTarget != nullptr) ? stats.runningSpeed : stats.walkingSpeed;
 }
 
 
@@ -303,14 +302,14 @@ Unit* BattleModel::AddUnit(Player player, int numberOfFighters, UnitStats stats,
 	for (Fighter* i = unit->fighters, * end = i + numberOfFighters; i != end; ++i)
 		i->unit = unit;
 
-	unit->movement.direction = player == Player1 ? (float)M_PI_2 : (float)M_PI_2 * 3;
-	unit->movement.destination = position;
+	unit->command.facing = player == Player1 ? (float)M_PI_2 : (float)M_PI_2 * 3;
+	unit->command.destination = position;
 
 	unit->state.unitMode = UnitModeInitializing;
 	unit->state.center = position;
-	unit->state.direction = unit->movement.direction;
+	unit->state.direction = unit->command.facing;
 
-	unit->missileTarget = 0;
+	unit->command.missileTarget = nullptr;
 
 	unit->formation.rankDistance = stats.fighterSize.y + stats.spacing.y;
 	unit->formation.fileDistance = stats.fighterSize.x + stats.spacing.x;
@@ -508,7 +507,7 @@ void BattleModel::RemoveAllSmokeMarkers()
 }
 
 
-UnitCounter* BattleModel::GetNearestUnitMarker(glm::vec2 position, Player player)
+UnitCounter* BattleModel::GetNearestUnitCounter(glm::vec2 position, Player player)
 {
 	UnitCounter* result = 0;
 	float nearest = INFINITY;

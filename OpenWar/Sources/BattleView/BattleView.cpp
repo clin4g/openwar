@@ -503,7 +503,7 @@ UnitMovementMarker* BattleView::GetMovementMarker(Unit* unit)
 		if (marker->GetUnit() == unit)
 			return marker;
 
-	return 0;
+	return nullptr;
 }
 
 
@@ -518,7 +518,7 @@ UnitMovementMarker* BattleView::GetNearestMovementMarker(glm::vec2 position, Pla
 		if (player != PlayerNone && unit->player != player)
 			continue;
 
-		glm::vec2 p = unit->movement.GetFinalDestination();
+		glm::vec2 p = unit->command.GetDestination();
 		float dx = p.x - position.x;
 		float dy = p.y - position.y;
 		float d = dx * dx + dy * dy;

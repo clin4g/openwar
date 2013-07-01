@@ -154,6 +154,9 @@ void OpenWarSurface::Render()
 	if (_battleView != nullptr)
 		_battleView->Render();
 
+	if (_battleGesture == nullptr)
+		_battleGesture->RenderHints();
+
 	_buttonsTopLeft->Render();
 	_buttonsTopRight->Render();
 }
@@ -170,25 +173,25 @@ void OpenWarSurface::UpdateSoundPlayer()
 	for (UnitCounter* unitMarker : _battleView->GetBattleModel()->_unitMarkers)
 	{
 		Unit* unit = unitMarker->_unit;
-		if (_battleSimulator->GetBattleModel()->GetUnit(unit->unitId) != 0 && glm::length(unit->movement.GetFinalDestination() - unit->state.center) > 4.0f)
+		if (_battleSimulator->GetBattleModel()->GetUnit(unit->unitId) != 0 && glm::length(unit->command.GetDestination() - unit->state.center) > 4.0f)
 		{
 			if (unit->stats.unitPlatform == UnitPlatformCav || unit->stats.unitPlatform == UnitPlatformGen)
 			{
-				if (unit->movement.running)
+				if (unit->command.running)
 					++horseGallop;
 				else
 					++horseTrot;
 			}
 			else
 			{
-				if (unit->movement.running)
+				if (unit->command.running)
 					++infantryRunning;
 				else
 					++infantryMarching;
 			}
 		}
 
-		if (unit->movement.target)
+		if (unit->command.meleeTarget != nullptr)
 			++fighting;
 	}
 

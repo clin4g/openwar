@@ -224,6 +224,26 @@ void UnitMarker::Path(GradientTriangleRenderer* renderer, int mode, const std::v
 	if (path.size() == 0)
 		return;
 
+
+	for (glm::vec2 p : path)
+	{
+		glm::vec4 c(0, 0, 0, 0.75f);
+		float d = 0.4f;
+		glm::vec3 p1 = _battleModel->terrainSurface->GetPosition(glm::vec2(p.x - d, p.y - d), 1);
+		glm::vec3 p2 = _battleModel->terrainSurface->GetPosition(glm::vec2(p.x - d, p.y + d), 1);
+		glm::vec3 p3 = _battleModel->terrainSurface->GetPosition(glm::vec2(p.x + d, p.y + d), 1);
+		glm::vec3 p4 = _battleModel->terrainSurface->GetPosition(glm::vec2(p.x + d, p.y - d), 1);
+
+		renderer->AddVertex(p1, c);
+		renderer->AddVertex(p2, c);
+		renderer->AddVertex(p3, c);
+
+		renderer->AddVertex(p3, c);
+		renderer->AddVertex(p4, c);
+		renderer->AddVertex(p1, c);
+	}
+
+
 	std::vector<glm::vec2> control_points = path;
 	bspline_join(control_points, 0.1f);
 	bspline_split(control_points, 0.1f);

@@ -49,18 +49,18 @@ public:
 	//void UpdateTouchMarkers();
 
 private:
+	void UpdateTrackingMarker();
+
 	int GetFlipSign() const { return _battleView->GetFlip() ? -1 : 1; }
 
-	Unit* FindNearestTouchUnit(glm::vec2 screenPosition, glm::vec2 terrainPosition);
+	Unit* FindFriendlyUnit(glm::vec2 screenPosition, glm::vec2 terrainPosition);
+	Unit* FindFriendlyUnitByCurrentPosition(glm::vec2 screenPosition, glm::vec2 terrainPosition);
+	Unit* FindFriendlyUnitByFuturePosition(glm::vec2 screenPosition, glm::vec2 terrainPosition);
+
+	Unit* FindEnemyUnit(glm::vec2 touchPosition, glm::vec2 markerPosition);
 
 	bounds2f GetUnitCurrentScreenBounds(Unit* unit);
 	bounds2f GetUnitFutureScreenBounds(Unit* unit);
-
-	Unit* GetTouchedUnitMarker(glm::vec2 screenPosition, glm::vec2 terrainPosition);
-	Unit* GetTouchedMovementMarker(glm::vec2 screenPosition, glm::vec2 terrainPosition);
-
-	void UpdateTrackingMarker();
-	Unit* FindUnit(glm::vec2 touchPosition, glm::vec2 markerPosition, Player player);
 };
 
 
