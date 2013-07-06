@@ -25,6 +25,7 @@ _battleView(battleView),
 _trackingMarker(0),
 _trackingTouch(0),
 _modifierTouch(0),
+_isModifierMode(false),
 _tappedUnitCenter(false),
 _tappedDestination(false),
 _offsetToMarker(0),
@@ -150,6 +151,7 @@ void BattleGesture::TouchBegan(Touch* touch)
 		{
 			CaptureTouch(touch);
 			_modifierTouch = touch;
+			_isModifierMode = true;
 		}
 		else
 		{
@@ -177,6 +179,7 @@ void BattleGesture::TouchBegan(Touch* touch)
 
 		CaptureTouch(touch);
 		_modifierTouch = touch;
+		_isModifierMode = true;
 	}
 }
 
@@ -203,6 +206,9 @@ void BattleGesture::TouchMoved()
 			_offsetToMarker = *_icon_size / 2;
 #endif
 
+		if (_trackingTouch->GetCurrentButtons() != _trackingTouch->GetPreviousButtons())
+			_trackingTouch->ResetHasMoved();
+
 		if (_trackingTouch->HasMoved())
 		{
 			UpdateTrackingMarker();
@@ -218,21 +224,15 @@ void BattleGesture::TouchEnded(Touch* touch)
 		if (_trackingMarker != nullptr)
 		{
 			Unit* unit = _trackingMarker->GetUnit();
-
-			Unit* destinationUnit = _trackingMarker->GetMeleeTarget();
-			Unit* orientationUnit = _trackingMarker->GetMissileTarget();
-			//glm::vec2* destination = _trackingMarker->GetDestinationX();
-			glm::vec2* orientation = _trackingMarker->GetOrientationX();
-			std::vector<glm::vec2>& path = _trackingMarker->_path;
-
-
 			unit->command.path.clear();
+
+			std::vector<glm::vec2>& path = _trackingMarker->_path;
 			if (!path.empty())
 			{
 				unit->command.path.insert(unit->command.path.begin(), path.begin(), path.end());
 			}
 
-			unit->command.meleeTarget = destinationUnit;
+			unit->command.meleeTarget = _trackingMarker->GetMeleeTarget();
 			unit->command.running = _trackingMarker->GetRunning();
 
 			/*if (destinationUnit != nullptr)
@@ -244,7 +244,10 @@ void BattleGesture::TouchEnded(Touch* touch)
 				unit->command.waypoint = *destination;
 			}*/
 
-			if (orientationUnit)
+			Unit* orientationUnit = _trackingMarker->GetMissileTarget();
+			glm::vec2* orientation = _trackingMarker->GetOrientationX();
+
+			if (orientationUnit != nullptr)
 			{
 				unit->command.missileTarget = orientationUnit;
 				unit->missileTargetLocked = true;
@@ -329,9 +332,14 @@ void BattleGesture::TouchEnded(Touch* touch)
 
 
 	if (touch == _trackingTouch)
+	{
 		_trackingTouch = nullptr;
+	}
 	else if (touch == _modifierTouch)
+	{
 		_modifierTouch = nullptr;
+		_isModifierMode = false;
+	}
 }
 
 
@@ -352,6 +360,11 @@ void BattleGesture::TouchWasCancelled(Touch* touch)
 
 void BattleGesture::UpdateTrackingMarker()
 {
+	if (!_trackingTouch->GetCurrentButtons().right)
+		NSLog(@"!right");
+
+	_isModifierMode = _modifierTouch != nullptr || _trackingTouch->GetCurrentButtons().right;
+
 	Unit* unit = _trackingMarker->GetUnit();
 
 	glm::vec2 screenTouchPosition = _trackingTouch->GetPosition();
@@ -363,7 +376,7 @@ void BattleGesture::UpdateTrackingMarker()
 
 	glm::vec2 unitCenter = unit->state.center;
 
-	if (_modifierTouch == nullptr)
+	if (!_isModifierMode)
 	{
 		if (enemyUnit && !_trackingMarker->GetMeleeTarget())
 			SoundPlayer::singleton->Play(SoundBufferCommandMod);

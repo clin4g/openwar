@@ -242,7 +242,7 @@ static MouseButtons CurrentMouseButtons()
 		glm::vec2 position = [self toVector:[self convertPoint:event.locationInWindow fromView:nil]];
 		_touch->Update(position, event.timestamp, CurrentMouseButtons());
 
-		if (_touch->GetGesture() != nullptr)
+		if (_touch->GetGesture() != nullptr && _touch->GetCurrentButtons().Any())
 			_touch->GetGesture()->TouchMoved();
 	}
 

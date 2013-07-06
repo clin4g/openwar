@@ -18,6 +18,9 @@ struct MouseButtons
 	bool Any() const { return left || right || other; }
 };
 
+inline bool operator==(MouseButtons v1, MouseButtons v2) { return v1.left == v2.left && v1.right == v2.right && v1.other == v2.other; }
+inline bool operator!=(MouseButtons v1, MouseButtons v2) { return v1.left != v2.left || v1.right != v2.right || v1.other != v2.other; }
+
 
 enum class Motion { Unknown, Stationary, Moving };
 
