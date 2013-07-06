@@ -457,6 +457,14 @@ void BattleView::Render()
 		shootingCounter->Render(_gradientLineRenderer);
 	_gradientLineRenderer->Draw(GetTransform());
 
+
+	// Mouse Hint
+
+	_plainLineRenderer->Reset();
+	RenderMouseHint(_plainLineRenderer);
+	_plainLineRenderer->Draw(GetTransform(), glm::vec4(0, 0, 0, 0.5f));
+
+
 	glDepthMask(true);
 	glDisable(GL_DEPTH_TEST);
 }

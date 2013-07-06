@@ -9,6 +9,8 @@
 #include "geometry.h"
 #include "TerrainSurface.h"
 
+class PlainLineRenderer;
+
 
 class TerrainView : public View
 {
@@ -16,6 +18,8 @@ class TerrainView : public View
 	glm::vec3 _cameraPosition;
 	float _cameraTilt;
 	float _cameraFacing;
+	bool _mouseHintVisible;
+	glm::vec2 _mouseHintPosition;
 
 protected:
 	TerrainSurface* _terrainSurface;
@@ -23,6 +27,10 @@ protected:
 public:
 	TerrainView(Surface* screen, TerrainSurface* terrainSurfaceModel);
 	virtual ~TerrainView();
+
+	void ShowMouseHint(glm::vec2 position);
+	void HideMouseHint();
+	void RenderMouseHint(PlainLineRenderer* renderer);
 
 	bounds2f GetContentBounds() const { return _contentBounds; }
 	void SetContentBounds(bounds2f value);

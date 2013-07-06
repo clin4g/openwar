@@ -3,13 +3,15 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "TerrainView.h"
+#import "PlainRenderer.h"
 
 
 
 TerrainView::TerrainView(Surface* screen, TerrainSurface* terrainSurfaceModel) : View(screen),
 _terrainSurface(terrainSurfaceModel),
 _cameraTilt((float)M_PI_4),
-_cameraFacing(0)
+_cameraFacing(0),
+_mouseHintVisible(false)
 {
 }
 
@@ -17,6 +19,37 @@ _cameraFacing(0)
 TerrainView::~TerrainView()
 {
 
+}
+
+
+void TerrainView::ShowMouseHint(glm::vec2 position)
+{
+	_mouseHintPosition = position;
+	_mouseHintVisible = true;
+}
+
+
+void TerrainView::HideMouseHint()
+{
+	_mouseHintVisible = false;
+}
+
+
+void TerrainView::RenderMouseHint(PlainLineRenderer* renderer)
+{
+	if (_mouseHintVisible)
+	{
+		glm::vec3 p = GetTerrainPosition3(_mouseHintPosition);
+		if (p.z < 0)
+			p.z = 0;
+		float d = 5;
+
+		renderer->AddLine(p + glm::vec3(0, 0, -d), p + glm::vec3(0, 0, d));
+		renderer->AddLine(p + glm::vec3(-d, 0, -d), p + glm::vec3(d, 0, d));
+		renderer->AddLine(p + glm::vec3(d, 0, -d), p + glm::vec3(-d, 0, d));
+		renderer->AddLine(p + glm::vec3(0, d, -d), p + glm::vec3(0, -d, d));
+		renderer->AddLine(p + glm::vec3(0, -d, -d), p + glm::vec3(0, d, d));
+	}
 }
 
 
@@ -152,14 +185,15 @@ ray TerrainView::GetCameraRay(glm::vec2 screenPosition) const
 {
 	glm::vec2 viewPosition = ScreenToView(screenPosition);
 	glm::mat4x4 inverse = glm::inverse(GetTransform());
-	glm::vec4 origin = inverse * glm::vec4(viewPosition, 0.1f, 1.0f);
-	glm::vec4 target = inverse * glm::vec4(viewPosition, 0.5f, 1.0f);
+	glm::vec4 p1 = inverse * glm::vec4(viewPosition, 0, 1.0f);
+	glm::vec4 p2 = inverse * glm::vec4(viewPosition, 0.5f, 1.0f);
 
-	target /= target.w;
-	origin /= origin.w;
+	glm::vec3 q1 = (glm::vec3)p1.xyz() / p1.w;
+	glm::vec3 q2 = (glm::vec3)p2.xyz() / p2.w;
 
-	glm::vec3 direction = (glm::vec3)target.xyz() - (glm::vec3)origin.xyz();
-	return ray((glm::vec3)target.xyz(), glm::normalize(direction));
+	glm::vec3 direction =  glm::normalize(q2 - q1);
+	glm::vec3 origin = q1 - 200.0f * direction;
+	return ray(origin, direction);
 }
 
 

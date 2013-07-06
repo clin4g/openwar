@@ -162,6 +162,24 @@ void OpenWarSurface::Render()
 }
 
 
+void OpenWarSurface::MouseEnter(glm::vec2 position)
+{
+	//_battleView->ShowMouseHint(position);
+}
+
+
+void OpenWarSurface::MouseHover(glm::vec2 position)
+{
+	//_battleView->ShowMouseHint(position);
+}
+
+
+void OpenWarSurface::MouseLeave(glm::vec2 position)
+{
+	//_battleView->HideMouseHint();
+}
+
+
 void OpenWarSurface::UpdateSoundPlayer()
 {
 	int horseGallop = 0;

@@ -63,6 +63,10 @@ public:
 	virtual void Update(double secondsSinceLastUpdate);
 	virtual void Render();
 
+	virtual void MouseEnter(glm::vec2 position);
+	virtual void MouseHover(glm::vec2 position);
+	virtual void MouseLeave(glm::vec2 position);
+
 private:
 	void UpdateSoundPlayer();
 

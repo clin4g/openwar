@@ -51,10 +51,10 @@ void UnitMarker::RenderPath(GradientTriangleRenderer* renderer, const std::vecto
 
 	TerrainSurface* terrainSurface = _battleModel->terrainSurface;
 
-	float width = 4;
+	float width = 2.5f;
 
-	glm::vec4 cleft = glm::vec4(0, 0, 0.9f, 0.08f);
-	glm::vec4 cright = glm::vec4(0, 0, 1, 0);
+	glm::vec4 cleft = glm::vec4(0, 0, 0, 0.15f);
+	glm::vec4 cright = glm::vec4(0, 0, 0, 0);
 
 
 	glm::vec2 lastL = path[0];
