@@ -23,6 +23,7 @@ public:
 private:
 	void RenderMeleeReach(GradientTriangleStripRenderer* renderer);
 	void RenderMissileRange(GradientTriangleStripRenderer* renderer, glm::vec2 position, float direction, float minimumRange, float maximumRange);
+	void RenderMissileTarget(GradientTriangleStripRenderer* renderer, glm::vec2 target);
 
 	glm::vec3 GetPosition(glm::vec2 p) const;
 };

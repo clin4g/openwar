@@ -15,7 +15,11 @@ _unit(unit)
 
 void KillZoneMarker::Render(GradientTriangleStripRenderer* renderer)
 {
-	if (_unit->stats.maximumRange > 0 && _unit->state.unitMode != UnitModeMoving && !_unit->state.IsRouting())
+	if (_unit->command.missileTarget != nullptr)
+	{
+		RenderMissileTarget(renderer, _unit->command.missileTarget->state.center);
+	}
+	else if (_unit->stats.maximumRange > 0 && _unit->state.unitMode != UnitModeMoving && !_unit->state.IsRouting())
 	{
 		RenderMissileRange(renderer, _unit->state.center, _unit->state.direction, 20, _unit->stats.maximumRange);
 	}
@@ -100,6 +104,82 @@ void KillZoneMarker::RenderMissileRange(GradientTriangleStripRenderer* renderer,
 		renderer->AddVertex(GetPosition(position + glm::mix(p2, p1, t)), c1);
 		renderer->AddVertex(GetPosition(position + glm::mix(p5, p3, t)), c0);
 	}
+}
+
+
+
+void KillZoneMarker::RenderMissileTarget(GradientTriangleStripRenderer* renderer, glm::vec2 target)
+{
+	glm::vec4 c0 = glm::vec4(255, 64, 64, 0) / 255.0f;
+	glm::vec4 c1 = glm::vec4(255, 64, 64, 24) / 255.0f;
+
+	glm::vec2 left = _unit->formation.GetFrontLeft(_unit->state.center);
+	glm::vec2 right = left + _unit->formation.towardRight * (float)_unit->formation.numberOfFiles;
+	glm::vec2 p;
+
+	const float thickness = 4;
+	const float radius_outer = 16;
+	const float radius_inner = radius_outer - thickness;
+	float radius_left = glm::distance(left, target);
+	float radius_right = glm::distance(right, target);
+
+	float angle_left = angle(left - target);
+	float angle_right = angle(right - target);
+	if (angle_left < angle_right)
+		angle_left += 2 * glm::pi<float>();
+
+	glm::vec2 delta = thickness * vector2_from_angle(angle_left + glm::half_pi<float>());
+	renderer->AddVertex(GetPosition(left + delta), c0, true);
+	renderer->AddVertex(GetPosition(left), c1);
+
+	for (int i = 7; i >= 1; --i)
+	{
+		float r = i / 8.0f * radius_left;
+		if (r > radius_outer)
+		{
+			p = target + r * vector2_from_angle(angle_left);
+			renderer->AddVertex(GetPosition(p + delta), c0);
+			renderer->AddVertex(GetPosition(p), c1);
+		}
+	}
+
+	p = target + radius_outer * vector2_from_angle(angle_left);
+	renderer->AddVertex(GetPosition(p + delta), c0);
+	renderer->AddVertex(GetPosition(p), c1);
+
+	p = target + radius_inner * vector2_from_angle(angle_left);
+	renderer->AddVertex(GetPosition(p + delta), c0);
+	renderer->AddVertex(GetPosition(p), c0);
+
+	for (int i = 0; i <= 24; ++i)
+	{
+		float a = angle_left - i * (angle_left - angle_right) / 24;
+		renderer->AddVertex(GetPosition(target + radius_outer * vector2_from_angle(a)), c1, i == 0);
+		renderer->AddVertex(GetPosition(target + radius_inner * vector2_from_angle(a)), c0);
+	}
+
+	delta = thickness * vector2_from_angle(angle_right - glm::half_pi<float>());
+	p = target + radius_inner * vector2_from_angle(angle_right);
+	renderer->AddVertex(GetPosition(p + delta), c0);
+	renderer->AddVertex(GetPosition(p + delta), c0);
+
+	p = target + radius_outer * vector2_from_angle(angle_right);
+	renderer->AddVertex(GetPosition(p), c1);
+	renderer->AddVertex(GetPosition(p + delta), c0);
+
+	for (int i = 1; i <= 7; ++i)
+	{
+		float r = i / 8.0f * radius_right;
+		if (r > radius_outer)
+		{
+			p = target + r * vector2_from_angle(angle_right);
+			renderer->AddVertex(GetPosition(p), c1);
+			renderer->AddVertex(GetPosition(p + delta), c0);
+		}
+	}
+
+	renderer->AddVertex(GetPosition(right), c1);
+	renderer->AddVertex(GetPosition(right + delta), c0);
 }
 
 
