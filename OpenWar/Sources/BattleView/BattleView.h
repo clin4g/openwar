@@ -23,7 +23,7 @@ class GradientTriangleStripRenderer;
 class UnitMovementMarker;
 class PlainLineRenderer;
 class PlainTriangleRenderer;
-class RangeMarker;
+class KillZoneMarker;
 class ShootingCounter;
 class TextureTriangleRenderer;
 class UnitTrackingMarker;

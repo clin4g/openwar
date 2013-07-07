@@ -102,7 +102,13 @@ void GradientTriangleStripRenderer::Reset()
 }
 
 
-void GradientTriangleStripRenderer::AddVertex(const glm::vec3& p, const glm::vec4& c)
+void GradientTriangleStripRenderer::AddVertex(const glm::vec3& p, const glm::vec4& c, bool separator)
 {
+	if (separator && !_vbo._vertices.empty())
+	{
+		_vbo._vertices.push_back(_vbo._vertices.back());
+		_vbo._vertices.push_back(vertex(p, c));
+	}
+
 	_vbo._vertices.push_back(vertex(p, c));
 }

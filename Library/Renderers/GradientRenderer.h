@@ -60,7 +60,7 @@ class GradientTriangleStripRenderer : public GradientRenderer
 {
 public:
 	virtual void Reset();
-	void AddVertex(const glm::vec3& p, const glm::vec4& c);
+	void AddVertex(const glm::vec3& p, const glm::vec4& c, bool separator = false);
 };
 
 
