@@ -25,7 +25,6 @@ _battleView(battleView),
 _trackingMarker(0),
 _trackingTouch(0),
 _modifierTouch(0),
-_isModifierMode(false),
 _tappedUnitCenter(false),
 _tappedDestination(false),
 _offsetToMarker(0),
@@ -151,7 +150,6 @@ void BattleGesture::TouchBegan(Touch* touch)
 		{
 			CaptureTouch(touch);
 			_modifierTouch = touch;
-			_isModifierMode = true;
 		}
 		else
 		{
@@ -179,7 +177,6 @@ void BattleGesture::TouchBegan(Touch* touch)
 
 		CaptureTouch(touch);
 		_modifierTouch = touch;
-		_isModifierMode = true;
 	}
 }
 
@@ -338,7 +335,6 @@ void BattleGesture::TouchEnded(Touch* touch)
 	else if (touch == _modifierTouch)
 	{
 		_modifierTouch = nullptr;
-		_isModifierMode = false;
 	}
 }
 
@@ -360,11 +356,6 @@ void BattleGesture::TouchWasCancelled(Touch* touch)
 
 void BattleGesture::UpdateTrackingMarker()
 {
-	if (!_trackingTouch->GetCurrentButtons().right)
-		NSLog(@"!right");
-
-	_isModifierMode = _modifierTouch != nullptr || _trackingTouch->GetCurrentButtons().right;
-
 	Unit* unit = _trackingMarker->GetUnit();
 
 	glm::vec2 screenTouchPosition = _trackingTouch->GetPosition();
@@ -376,7 +367,8 @@ void BattleGesture::UpdateTrackingMarker()
 
 	glm::vec2 unitCenter = unit->state.center;
 
-	if (!_isModifierMode)
+	bool isModifierMode = _modifierTouch != nullptr || _trackingTouch->GetCurrentButtons().right;
+	if (!isModifierMode)
 	{
 		if (enemyUnit && !_trackingMarker->GetMeleeTarget())
 			SoundPlayer::singleton->Play(SoundBufferCommandMod);

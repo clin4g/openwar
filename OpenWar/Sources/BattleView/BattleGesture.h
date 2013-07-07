@@ -28,7 +28,6 @@ class BattleGesture : public Gesture
 
 	Touch* _trackingTouch;
 	Touch* _modifierTouch;
-	bool _isModifierMode;
 
 	float _offsetToMarker;
 	bool _allowTargetEnemyUnit;
