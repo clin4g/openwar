@@ -378,17 +378,20 @@ void BattleView::Render()
 		marker->AppendFighterBillboards(_billboardModel);
 	for (SmokeCounter* marker : _battleModel->_smokeMarkers)
 		marker->AppendSmokeBillboards(_billboardModel);
-	_textureBillboardRenderer->Render(_billboardModel, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()));
+	_textureBillboardRenderer->Render(_billboardModel, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), GetViewportBounds().height());
 
 
 	// Range Markers
 
 	for (std::pair<int, Unit*> item : _battleModel->units)
 	{
-		KillZoneMarker marker(_battleModel, item.second);
-		_gradientTriangleStripRenderer->Reset();
-		marker.Render(_gradientTriangleStripRenderer);
-		_gradientTriangleStripRenderer->Draw(GetTransform());
+		if (item.second->player == _player)
+		{
+			KillZoneMarker marker(_battleModel, item.second);
+			_gradientTriangleStripRenderer->Reset();
+			marker.Render(_gradientTriangleStripRenderer);
+			_gradientTriangleStripRenderer->Draw(GetTransform());
+		}
 	}
 
 
@@ -400,8 +403,8 @@ void BattleView::Render()
 	for (UnitCounter* marker : _battleModel->_unitMarkers)
 		marker->AppendUnitMarker(_textureBillboardRenderer1, _textureBillboardRenderer2, GetFlip());
 	bounds1f sizeLimit = GetUnitIconSizeLimit();
-	_textureBillboardRenderer1->Draw(_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), sizeLimit);
-	_textureBillboardRenderer2->Draw(_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), sizeLimit);
+	_textureBillboardRenderer1->Draw(_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), GetViewportBounds().height(), sizeLimit);
+	_textureBillboardRenderer2->Draw(_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), GetViewportBounds().height(), sizeLimit);
 
 
 	// Tracking Markers
@@ -411,7 +414,7 @@ void BattleView::Render()
 	{
 		_textureBillboardRenderer1->Reset();
 		marker->RenderTrackingShadow(_textureBillboardRenderer1);
-		_textureBillboardRenderer1->Draw(_textureTouchMarker, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), bounds1f(64, 64));
+		_textureBillboardRenderer1->Draw(_textureTouchMarker, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), GetViewportBounds().height(), bounds1f(64, 64));
 	}
 
 

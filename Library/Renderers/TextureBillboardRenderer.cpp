@@ -34,8 +34,7 @@ TextureBillboardRenderer::TextureBillboardRenderer()
 
 		void main()
 		{
-			float scale = 0.5 * height * viewport_height;
-			vec3 position2 = position + scale * upvector;
+			vec3 position2 = position + height * 0.5 * viewport_height * upvector;
 			vec4 p = transform * vec4(position, 1);
 			vec4 q = transform * vec4(position2, 1);
 			float s = clamp(abs(q.y / q.w - p.y / p.w), min_point_size, max_point_size);
@@ -86,7 +85,7 @@ void TextureBillboardRenderer::AddBillboard(glm::vec3 position, float height, af
 }
 
 
-void TextureBillboardRenderer::Draw(texture* tex, const glm::mat4x4& transform, const glm::vec3& cameraUp, float cameraFacingDegrees, bounds1f sizeLimit)
+void TextureBillboardRenderer::Draw(texture* tex, const glm::mat4x4& transform, const glm::vec3& cameraUp, float cameraFacingDegrees, float viewportHeight, bounds1f sizeLimit)
 {
 	float a = -glm::radians(cameraFacingDegrees);
 	float cos_a = cosf(a);
@@ -103,7 +102,7 @@ void TextureBillboardRenderer::Draw(texture* tex, const glm::mat4x4& transform, 
 	uniforms._transform = transform;
 	uniforms._texture = tex;
 	uniforms._upvector = cameraUp;
-	uniforms._viewport_height = 768;///*0.25 **/ renderer_base::pixels_per_point() * GetViewportBounds().height();
+	uniforms._viewport_height = renderer_base::pixels_per_point() * viewportHeight;
 	uniforms._min_point_size = sizeLimit.min;
 	uniforms._max_point_size = sizeLimit.max;
 
@@ -111,7 +110,7 @@ void TextureBillboardRenderer::Draw(texture* tex, const glm::mat4x4& transform, 
 }
 
 
-void TextureBillboardRenderer::Render(BillboardModel* billboardModel, glm::mat4x4 const & transform, const glm::vec3& cameraUp, float cameraFacingDegrees)
+void TextureBillboardRenderer::Render(BillboardModel* billboardModel, glm::mat4x4 const & transform, const glm::vec3& cameraUp, float cameraFacingDegrees, float viewportHeight)
 {
 	Reset();
 
@@ -121,5 +120,5 @@ void TextureBillboardRenderer::Render(BillboardModel* billboardModel, glm::mat4x
 	for (const Billboard& billboard : billboardModel->dynamicBillboards)
 		AddBillboard(billboard.position, billboard.height, billboardModel->texture->GetTexCoords(billboard.shape, billboard.facing - cameraFacingDegrees));
 
-	Draw(billboardModel->texture->GetTexture(), transform, cameraUp, cameraFacingDegrees);
+	Draw(billboardModel->texture->GetTexture(), transform, cameraUp, cameraFacingDegrees, viewportHeight);
 }
