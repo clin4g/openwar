@@ -23,6 +23,7 @@ class BattleGesture : public Gesture
 
 	bool _tappedUnitCenter;
 	bool _tappedDestination;
+	bool _tappedModiferArea;
 
 	UnitTrackingMarker* _trackingMarker;
 
@@ -56,11 +57,13 @@ private:
 	Unit* FindFriendlyUnit(glm::vec2 screenPosition, glm::vec2 terrainPosition);
 	Unit* FindFriendlyUnitByCurrentPosition(glm::vec2 screenPosition, glm::vec2 terrainPosition);
 	Unit* FindFriendlyUnitByFuturePosition(glm::vec2 screenPosition, glm::vec2 terrainPosition);
+	Unit* FindFriendlyUnitByModifierArea(glm::vec2 screenPosition, glm::vec2 terrainPosition);
 
 	Unit* FindEnemyUnit(glm::vec2 touchPosition, glm::vec2 markerPosition);
 
 	bounds2f GetUnitCurrentScreenBounds(Unit* unit);
 	bounds2f GetUnitFutureScreenBounds(Unit* unit);
+	bool IsInsideUnitModifierArea(Unit* unit, glm::vec2 position);
 };
 
 

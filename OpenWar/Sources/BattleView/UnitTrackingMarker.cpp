@@ -5,6 +5,7 @@
 #include "UnitTrackingMarker.h"
 #import "ColorBillboardRenderer.h"
 #import "TextureBillboardRenderer.h"
+#import "GradientRenderer.h"
 
 
 UnitTrackingMarker::UnitTrackingMarker(BattleModel* battleModel, Unit* unit) : UnitMarker(battleModel, unit),
@@ -14,6 +15,7 @@ _hasDestination(false),
 _missileTarget(0),
 _orientation(),
 _hasOrientation(false),
+_renderOrientation(false),
 _running(false)
 {
 
@@ -74,5 +76,20 @@ void UnitTrackingMarker::RenderTrackingPath(GradientTriangleRenderer* renderer)
 			mode = 1;
 
 		Path(renderer, mode, _path);
+	}
+}
+
+
+void UnitTrackingMarker::RenderOrientation(GradientTriangleRenderer* renderer)
+{
+	if (_renderOrientation && _hasOrientation && !_path.empty())
+	{
+		glm::vec2 center = _path.back();
+		glm::vec2 dir = glm::normalize(_orientation - center);
+		glm::vec2 left = glm::vec2(dir.y, -dir.x);
+
+		renderer->AddVertex(_battleModel->terrainSurface->GetPosition(center + 10.0f * left, 0), glm::vec4(0, 0, 0, 0));
+		renderer->AddVertex(_battleModel->terrainSurface->GetPosition(_orientation, 0), glm::vec4(0, 0, 0, 0.1f));
+		renderer->AddVertex(_battleModel->terrainSurface->GetPosition(center - 10.0f * left, 0), glm::vec4(0, 0, 0, 0));
 	}
 }

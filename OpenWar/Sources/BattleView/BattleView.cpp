@@ -426,16 +426,19 @@ void BattleView::Render()
 
 	// Tracking Path
 
+	glDisable(GL_DEPTH_TEST);
 	for (UnitTrackingMarker* marker : _trackingMarkers)
 	{
 		_gradientTriangleRenderer->Reset();
 		marker->RenderTrackingPath(_gradientTriangleRenderer);
-		_gradientTriangleRenderer->Draw(GetTransform());//, glm::vec4(0.5, 0.5, 0.5, 0.5));
+		marker->RenderOrientation(_gradientTriangleRenderer);
+		_gradientTriangleRenderer->Draw(GetTransform());
 	}
 
 
 	// Tracking Fighters
 
+	glEnable(GL_DEPTH_TEST);
 	_colorBillboardRenderer->Reset();
 	for (UnitTrackingMarker* marker : _trackingMarkers)
 		marker->RenderTrackingFighters(_colorBillboardRenderer);

@@ -11,10 +11,13 @@
 #include "UnitMovementMarker.h"
 
 #include "sprite.h"
+#import "PlainRenderer.h"
 
 
 #define SNAP_TO_UNIT_TRESHOLD 22 // meters
 #define KEEP_ORIENTATION_TRESHHOLD 40 // meters
+#define MODIFIER_AREA_RADIUS_MIN 5.0f // meters
+#define MODIFIER_AREA_RADIUS_MAX 25.0f // meters
 
 
 bool BattleGesture::disableUnitTracking = false;
@@ -27,6 +30,7 @@ _trackingTouch(0),
 _modifierTouch(0),
 _tappedUnitCenter(false),
 _tappedDestination(false),
+_tappedModiferArea(false),
 _offsetToMarker(0),
 _allowTargetEnemyUnit(false)
 {
@@ -79,6 +83,36 @@ void BattleGesture::RenderHints()
 	}
 
 	sprite.render();
+
+
+	PlainLineRenderer renderer;
+	renderer.Reset();
+	for (UnitCounter* unitMarker : _battleView->GetBattleModel()->_unitMarkers)
+	{
+		glm::vec2 center = !unitMarker->_unit->command.path.empty() ? unitMarker->_unit->command.path.back() : unitMarker->_unit->state.center;
+		float facing = unitMarker->_unit->command.facing;
+
+		glm::vec2 p1 = center + MODIFIER_AREA_RADIUS_MAX * vector2_from_angle(facing - 0.5f * glm::half_pi<float>());
+		glm::vec2 p2 = center + MODIFIER_AREA_RADIUS_MAX * vector2_from_angle(facing + 0.5f * glm::half_pi<float>());
+
+		renderer.AddLine(_battleView->GetPosition(center), _battleView->GetPosition(p1));
+		renderer.AddLine(_battleView->GetPosition(center), _battleView->GetPosition(p2));
+
+		for (int i = 1; i <= 10; ++i)
+		{
+			float a1 = facing + ((i - 1) / 10.0f - 0.5f) * glm::half_pi<float>();
+			float a2 = facing + (i / 10.0f - 0.5f) * glm::half_pi<float>();
+
+			p1 = center + MODIFIER_AREA_RADIUS_MIN * vector2_from_angle(a1);
+			p2 = center + MODIFIER_AREA_RADIUS_MIN * vector2_from_angle(a2);
+			renderer.AddLine(_battleView->GetPosition(p1), _battleView->GetPosition(p2));
+
+			p1 = center + MODIFIER_AREA_RADIUS_MAX * vector2_from_angle(a1);
+			p2 = center + MODIFIER_AREA_RADIUS_MAX * vector2_from_angle(a2);
+			renderer.AddLine(_battleView->GetPosition(p1), _battleView->GetPosition(p2));
+		}
+	}
+	renderer.Draw(_battleView->GetTransform(), glm::vec4(0, 0, 0, 0.2f));
 }
 
 
@@ -100,15 +134,16 @@ void BattleGesture::TouchBegan(Touch* touch)
 		if (unit == nullptr)
 			return;
 
-		if (unit != nullptr && !_battleView->GetTrackingMarker(unit))
+		if (unit != nullptr && _battleView->GetTrackingMarker(unit) == nullptr)
 		{
 			_allowTargetEnemyUnit = unit->stats.unitWeapon == UnitWeaponBow || unit->stats.unitWeapon == UnitWeaponArq;
 			_trackingMarker = _battleView->AddTrackingMarker(unit);
 
 			_tappedUnitCenter = GetUnitCurrentScreenBounds(unit).contains(screenPosition);
 			_tappedDestination = GetUnitFutureScreenBounds(unit).contains(screenPosition);
+			_tappedModiferArea = IsInsideUnitModifierArea(unit, terrainPosition);
 
-			if (_tappedDestination)
+			if (_tappedDestination || _tappedModiferArea)
 			{
 				_offsetToMarker = 0;//(_boardView->ContentToScreen(vector3(unit->movement.GetFinalDestination(), 0)).y - _boardView->ContentToScreen(vector3(terrainPosition, 0)).y) * GetFlipSign();
 				if (_offsetToMarker < 0)
@@ -367,7 +402,9 @@ void BattleGesture::UpdateTrackingMarker()
 
 	glm::vec2 unitCenter = unit->state.center;
 
-	bool isModifierMode = _modifierTouch != nullptr || _trackingTouch->GetCurrentButtons().right;
+	bool isModifierMode = _tappedModiferArea || _modifierTouch != nullptr || _trackingTouch->GetCurrentButtons().right;
+	_trackingMarker->SetRenderOrientation(isModifierMode);
+
 	if (!isModifierMode)
 	{
 		if (enemyUnit && !_trackingMarker->GetMeleeTarget())
@@ -406,17 +443,18 @@ void BattleGesture::UpdateTrackingMarker()
 		_trackingMarker->SetMeleeTarget(enemyUnit);
 		_trackingMarker->SetDestination(&markerPosition);
 
+		if (enemyUnit != nullptr)
+			MovementRules::UpdateMovementPath(_trackingMarker->_path, unitCenter, enemyUnit->state.center);
+		else
+			MovementRules::UpdateMovementPath(_trackingMarker->_path, unitCenter, markerPosition);
 
-		MovementRules::UpdateMovementPath(_trackingMarker->_path, unitCenter, markerPosition);
-
-
-		if (enemyUnit)
+		if (enemyUnit != nullptr)
 		{
 			glm::vec2 destination = enemyUnit->state.center;
 			glm::vec2 orientation = destination + glm::normalize(destination - unitCenter) * 18.0f;
 			_trackingMarker->SetOrientation(&orientation);
 		}
-		else if (glm::length(unitCenter - markerPosition) > KEEP_ORIENTATION_TRESHHOLD)
+		else if (MovementRules::Length(_trackingMarker->_path) > KEEP_ORIENTATION_TRESHHOLD)
 		{
 			glm::vec2 dir = glm::normalize(markerPosition - unitCenter);
 			if (path.size() >= 2)
@@ -432,8 +470,8 @@ void BattleGesture::UpdateTrackingMarker()
 	}
 	else
 	{
-		if (!_tappedUnitCenter)
-			enemyUnit = nullptr;
+		//if (!_tappedUnitCenter)
+		//	enemyUnit = nullptr;
 		if (!_allowTargetEnemyUnit)
 			enemyUnit = nullptr;
 
@@ -453,6 +491,7 @@ Unit* BattleGesture::FindFriendlyUnit(glm::vec2 screenPosition, glm::vec2 terrai
 
 	Unit* unitByPosition = FindFriendlyUnitByCurrentPosition(screenPosition, terrainPosition);
 	Unit* unitByDestination = FindFriendlyUnitByFuturePosition(screenPosition, terrainPosition);
+	Unit* unitByModifier = FindFriendlyUnitByModifierArea(screenPosition, terrainPosition);
 
 	if (unitByPosition != nullptr && unitByDestination == nullptr)
 	{
@@ -472,6 +511,9 @@ Unit* BattleGesture::FindFriendlyUnit(glm::vec2 screenPosition, glm::vec2 terrai
 				? unitByPosition
 				: unitByDestination;
 	}
+
+	if (unitByModifier != nullptr)
+		return unitByModifier;
 
 	return nullptr;
 }
@@ -505,6 +547,30 @@ Unit* BattleGesture::FindFriendlyUnitByFuturePosition(glm::vec2 screenPosition, 
 			result = unit;
 		}
 	}
+	return result;
+}
+
+
+Unit* BattleGesture::FindFriendlyUnitByModifierArea(glm::vec2 screenPosition, glm::vec2 terrainPosition)
+{
+	Unit* result = nullptr;
+	float distance = 10000;
+
+	for (std::pair<int, Unit*> i : _battleView->GetBattleModel()->units)
+	{
+		Unit* unit = i.second;
+		if (unit->player == _battleView->_player)
+		{
+			glm::vec2 center = !unit->command.path.empty() ? unit->command.path.back() : unit->state.center;
+			float d = glm::distance(center, terrainPosition);
+			if (d < distance && !unit->state.IsRouting() && IsInsideUnitModifierArea(unit, terrainPosition))
+			{
+				result = unit;
+				distance = d;
+			}
+		}
+	}
+
 	return result;
 }
 
@@ -554,3 +620,14 @@ bounds2f BattleGesture::GetUnitFutureScreenBounds(Unit* unit)
 }
 
 
+bool BattleGesture::IsInsideUnitModifierArea(Unit* unit, glm::vec2 position)
+{
+	glm::vec2 center = !unit->command.path.empty() ? unit->command.path.back() : unit->state.center;
+	float direction = angle(position - center);
+	float facing = unit->command.facing;
+	float radius = glm::distance(position, center);
+
+	return glm::abs(glm::degrees(diff_radians(direction, facing))) < 45.0f
+		&& radius > MODIFIER_AREA_RADIUS_MIN
+		&& radius < MODIFIER_AREA_RADIUS_MAX;
+}

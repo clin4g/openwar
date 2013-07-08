@@ -96,6 +96,16 @@ void MovementRules::UpdateMovementPath(std::vector<glm::vec2>& path, glm::vec2 s
 }
 
 
+float MovementRules::Length(const std::vector<glm::vec2>& path)
+{
+	float result = 0;
+
+	for (std::vector<glm::vec2>::const_iterator i = path.begin() + 1; i < path.end(); ++i)
+		result += glm::distance(*(i - 1), *i);
+
+	return result;
+}
+
 
 glm::vec2 MovementRules::NextWaypoint(Unit* unit)
 {

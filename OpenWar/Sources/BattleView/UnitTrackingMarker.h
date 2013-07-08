@@ -21,6 +21,7 @@ class UnitTrackingMarker : public UnitMarker
 	Unit* _missileTarget;
 	glm::vec2 _orientation;
 	bool _hasOrientation;
+	bool _renderOrientation;
 
 	bool _running;
 
@@ -49,18 +50,13 @@ public:
 		_hasDestination = value !=  nullptr;
 	}
 
-	glm::vec2* GetDestinationX()
-	{
-		if (_meleeTarget) return &_meleeTarget->state.center;
-		else if (_hasDestination) return &_destination;
-		else return nullptr;
-	}
-
 	void SetOrientation(glm::vec2* value)
 	{
 		if (value != nullptr) _orientation = *value;
 		_hasOrientation = value != nullptr;
 	}
+
+	void SetRenderOrientation(bool value) { _renderOrientation = value; }
 
 	glm::vec2* GetOrientationX()
 	{
@@ -78,11 +74,10 @@ public:
 	}
 
 
-
-
 	void RenderTrackingFighters(ColorBillboardRenderer* renderer);
 	void RenderTrackingShadow(TextureBillboardRenderer* renderer);
 	void RenderTrackingPath(GradientTriangleRenderer* renderer);
+	void RenderOrientation(GradientTriangleRenderer* renderer);
 };
 
 

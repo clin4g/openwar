@@ -21,13 +21,9 @@ UnitMovementMarker::~UnitMovementMarker()
 
 bool UnitMovementMarker::Animate(float seconds)
 {
-	if (_battleModel->GetUnit(_unit->unitId) == 0 || _unit->state.IsRouting())
-		return false;
-
-	glm::vec2 position = _unit->state.center;
-	glm::vec2 finalDestination = _unit->command.GetDestination();
-
-	return _unit->command.path.size() > 1 || glm::length(position - finalDestination) > 8;
+	return _battleModel->GetUnit(_unit->unitId) != nullptr
+		&& !_unit->state.IsRouting()
+		&& MovementRules::Length(_unit->command.path) > 8;
 }
 
 
@@ -69,5 +65,3 @@ void UnitMovementMarker::RenderMovementPath(GradientTriangleRenderer* renderer)
 		Path(renderer, mode, _unit->command.path);
 	}
 }
-
-

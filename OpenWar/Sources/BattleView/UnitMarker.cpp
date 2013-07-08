@@ -225,7 +225,7 @@ void UnitMarker::Path(GradientTriangleRenderer* renderer, int mode, const std::v
 		return;
 
 
-	for (glm::vec2 p : path)
+	/*for (glm::vec2 p : path)
 	{
 		glm::vec4 c(0, 0, 0, 0.75f);
 		float d = 0.4f;
@@ -241,7 +241,7 @@ void UnitMarker::Path(GradientTriangleRenderer* renderer, int mode, const std::v
 		renderer->AddVertex(p3, c);
 		renderer->AddVertex(p4, c);
 		renderer->AddVertex(p1, c);
-	}
+	}*/
 
 
 	std::vector<glm::vec2> control_points = path;

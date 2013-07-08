@@ -24,7 +24,10 @@ void KillZoneMarker::Render(GradientTriangleStripRenderer* renderer)
 		RenderMissileRange(renderer, _unit->state.center, _unit->state.direction, 20, _unit->stats.maximumRange);
 	}
 
-	RenderMeleeReach(renderer);
+	if (!_unit->state.IsRouting())
+	{
+		RenderMeleeReach(renderer);
+	}
 }
 
 
@@ -33,7 +36,7 @@ void KillZoneMarker::RenderMeleeReach(GradientTriangleStripRenderer* renderer)
 	glm::vec4 c1 = glm::vec4(0.9f, 0, 0, 0.15f);
 	glm::vec4 c2 = glm::vec4(1, 0.25f, 0.25f, 0);
 
-	float kfront = glm::max(2.4f, _unit->stats.weaponReach);
+	float kfront = 0.5f + glm::max(2.2f, _unit->stats.weaponReach);
 	float kbase = -0.6f;
 	float kleft = 1.5f;
 
