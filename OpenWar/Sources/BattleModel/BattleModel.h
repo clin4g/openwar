@@ -13,7 +13,7 @@ class BattleModel;
 class CasualtyMarker;
 class UnitMovementMarker;
 class UnitCounter;
-class KillZoneMarker;
+class RangeMarker;
 class SmokeCounter;
 class ShootingCounter;
 class UnitTrackingMarker;

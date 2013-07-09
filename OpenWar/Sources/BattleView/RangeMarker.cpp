@@ -2,18 +2,18 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "KillZoneMarker.h"
+#include "RangeMarker.h"
 #include "GradientRenderer.h"
 
 
-KillZoneMarker::KillZoneMarker(BattleModel* battleModel, Unit* unit) :
+RangeMarker::RangeMarker(BattleModel* battleModel, Unit* unit) :
 _battleModel(battleModel),
 _unit(unit)
 {
 }
 
 
-void KillZoneMarker::Render(GradientTriangleStripRenderer* renderer)
+void RangeMarker::Render(GradientTriangleStripRenderer* renderer)
 {
 	if (_unit->command.missileTarget != nullptr)
 	{
@@ -23,43 +23,10 @@ void KillZoneMarker::Render(GradientTriangleStripRenderer* renderer)
 	{
 		RenderMissileRange(renderer, _unit->state.center, _unit->state.direction, 20, _unit->stats.maximumRange);
 	}
-
-	if (!_unit->state.IsRouting())
-	{
-		RenderMeleeReach(renderer);
-	}
 }
 
 
-void KillZoneMarker::RenderMeleeReach(GradientTriangleStripRenderer* renderer)
-{
-	glm::vec4 c1 = glm::vec4(0.9f, 0, 0, 0.15f);
-	glm::vec4 c2 = glm::vec4(1, 0.25f, 0.25f, 0);
-
-	float kfront = 0.5f + glm::max(2.2f, _unit->stats.weaponReach);
-	float kbase = -0.6f;
-	float kleft = 1.5f;
-
-	for (int i = 0; i < _unit->fightersCount; i += _unit->formation.numberOfRanks)
-	{
-		glm::vec2 p = _unit->fighters[i].state.position;
-		glm::vec2 dir = vector2_from_angle(_unit->fighters[i].state.direction);
-		glm::vec2 left = kleft * glm::vec2(-dir.y, dir.x);
-		glm::vec2 front = kfront * dir;
-		glm::vec2 base = kbase * dir;
-
-		glm::vec3 p1 = GetPosition(p + base + left);
-		glm::vec3 p2 = GetPosition(p + front);
-		glm::vec3 p3 = GetPosition(p + base - left);
-
-		renderer->AddVertex(p1, c2, true);
-		renderer->AddVertex(p2, c1);
-		renderer->AddVertex(p3, c2);
-	}
-}
-
-
-void KillZoneMarker::RenderMissileRange(GradientTriangleStripRenderer* renderer, glm::vec2 position, float direction, float minimumRange, float maximumRange)
+void RangeMarker::RenderMissileRange(GradientTriangleStripRenderer* renderer, glm::vec2 position, float direction, float minimumRange, float maximumRange)
 {
 	const float thickness = 8;
 	const float two_pi = 2 * (float)M_PI;
@@ -111,7 +78,7 @@ void KillZoneMarker::RenderMissileRange(GradientTriangleStripRenderer* renderer,
 
 
 
-void KillZoneMarker::RenderMissileTarget(GradientTriangleStripRenderer* renderer, glm::vec2 target)
+void RangeMarker::RenderMissileTarget(GradientTriangleStripRenderer* renderer, glm::vec2 target)
 {
 	glm::vec4 c0 = glm::vec4(255, 64, 64, 0) / 255.0f;
 	glm::vec4 c1 = glm::vec4(255, 64, 64, 24) / 255.0f;
@@ -187,7 +154,7 @@ void KillZoneMarker::RenderMissileTarget(GradientTriangleStripRenderer* renderer
 
 
 
-glm::vec3 KillZoneMarker::GetPosition(glm::vec2 p) const
+glm::vec3 RangeMarker::GetPosition(glm::vec2 p) const
 {
 	glm::vec3 result = _battleModel->terrainSurface->GetPosition(p, 1);
 	if (result.z < 0.5f)

@@ -6,7 +6,7 @@
 #include "UnitCounter.h"
 #include "CasualtyMarker.h"
 #include "SmokeCounter.h"
-#include "KillZoneMarker.h"
+#include "RangeMarker.h"
 #include "UnitTrackingMarker.h"
 #include "UnitMovementMarker.h"
 #include "ShootingCounter.h"
@@ -387,7 +387,7 @@ void BattleView::Render()
 	{
 		if (item.second->player == _player)
 		{
-			KillZoneMarker marker(_battleModel, item.second);
+			RangeMarker marker(_battleModel, item.second);
 			_gradientTriangleStripRenderer->Reset();
 			marker.Render(_gradientTriangleStripRenderer);
 			_gradientTriangleStripRenderer->Draw(GetTransform());
