@@ -55,6 +55,20 @@ void UnitTrackingMarker::RenderTrackingFighters(ColorBillboardRenderer* renderer
 
 
 
+void UnitTrackingMarker::RenderTrackingMarker(TextureBillboardRenderer* renderer)
+{
+	if (_meleeTarget == nullptr)
+	{
+		glm::vec2 destination = DestinationXXX();
+		glm::vec3 position = _battleModel->terrainSurface->GetPosition(destination, 0);
+		glm::vec2 texsize(0.1875, 0.1875); // 48 / 256
+		glm::vec2 texcoord = texsize * glm::vec2(_unit->player != _battleModel->bluePlayer ? 4 : 3, 0);
+
+		renderer->AddBillboard(position, 32, affine2(texcoord, texcoord + texsize));
+	}
+}
+
+
 void UnitTrackingMarker::RenderTrackingShadow(TextureBillboardRenderer* renderer)
 {
 	glm::vec2 destination = DestinationXXX();

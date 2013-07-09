@@ -400,8 +400,14 @@ void BattleView::Render()
 	glDisable(GL_DEPTH_TEST);
 	_textureBillboardRenderer1->Reset();
 	_textureBillboardRenderer2->Reset();
+
 	for (UnitCounter* marker : _battleModel->_unitMarkers)
 		marker->AppendUnitMarker(_textureBillboardRenderer1, _textureBillboardRenderer2, GetFlip());
+	for (UnitMovementMarker* marker : _movementMarkers)
+		marker->RenderMovementMarker(_textureBillboardRenderer1);
+	for (UnitTrackingMarker* marker : _trackingMarkers)
+		marker->RenderTrackingMarker(_textureBillboardRenderer1);
+
 	bounds1f sizeLimit = GetUnitIconSizeLimit();
 	_textureBillboardRenderer1->Draw(_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), GetViewportBounds().height(), sizeLimit);
 	_textureBillboardRenderer2->Draw(_textureUnitMarkers, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), GetViewportBounds().height(), sizeLimit);

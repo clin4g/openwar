@@ -20,6 +20,7 @@ public:
 
 	bool Animate(float seconds);
 
+	void RenderMovementMarker(TextureBillboardRenderer* renderer);
 	void RenderMovementFighters(ColorBillboardRenderer* renderer);
 	void RenderMovementPath(GradientTriangleRenderer* renderer);
 };
