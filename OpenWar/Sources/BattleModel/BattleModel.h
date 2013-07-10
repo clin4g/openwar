@@ -257,6 +257,7 @@ struct UnitCommand
 	Unit* meleeTarget;
 	Unit* missileTarget;
 	bool missileTargetLocked; // updated by TouchGesture()
+	bool holdFire;
 
 	UnitCommand();
 

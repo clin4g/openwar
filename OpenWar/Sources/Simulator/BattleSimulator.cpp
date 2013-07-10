@@ -379,7 +379,7 @@ UnitState BattleSimulator::NextUnitState(Unit* unit)
 		}
 	}
 
-	if (!unit->command.missileTargetLocked)
+	if (!unit->command.missileTargetLocked && !unit->command.holdFire)
 	{
 		unit->command.missileTarget = ClosestEnemyWithinLineOfFire(unit);
 	}

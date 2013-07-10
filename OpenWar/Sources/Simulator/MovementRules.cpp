@@ -58,6 +58,16 @@ static bool IsForwardMotion(const std::vector<glm::vec2>& path, glm::vec2 positi
 }
 
 
+void MovementRules::UpdateMovementPathStart(std::vector<glm::vec2>& path, glm::vec2 startPosition)
+{
+	const float spacing = 10;
+
+	while (!path.empty() && glm::distance(path.front(), startPosition) < spacing)
+		path.erase(path.begin());
+
+	path.insert(path.begin(), startPosition);
+}
+
 
 void MovementRules::UpdateMovementPath(std::vector<glm::vec2>& path, glm::vec2 startPosition, glm::vec2 endPosition)
 {
@@ -71,12 +81,6 @@ void MovementRules::UpdateMovementPath(std::vector<glm::vec2>& path, glm::vec2 s
 
 	while (!IsForwardMotion(path, endPosition))
 		path.pop_back();
-
-
-	/*if (!path.empty() && glm::length(path.front() - startPosition) > spacing)
-	{
-		path.insert(path.begin(), 0.5f * (path.front() + startPosition));
-	}*/
 
 	path.insert(path.begin(), startPosition);
 

@@ -17,7 +17,8 @@ facing(0),
 running(false),
 meleeTarget(nullptr),
 missileTarget(nullptr),
-missileTargetLocked(false)
+missileTargetLocked(false),
+holdFire(false)
 {
 }
 

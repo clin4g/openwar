@@ -138,11 +138,15 @@ void UnitTrackingMarker::RenderOrientation(GradientTriangleRenderer* renderer)
 	if (_renderOrientation && _hasOrientation && !_path.empty())
 	{
 		glm::vec2 center = _path.back();
-		glm::vec2 dir = glm::normalize(_orientation - center);
+		glm::vec2 diff = _orientation - center;
+		if (glm::length(diff) < 0.1)
+			return;
+
+		glm::vec2 dir = glm::normalize(diff);
 		glm::vec2 left = glm::vec2(dir.y, -dir.x);
 
 		renderer->AddVertex(_battleModel->terrainSurface->GetPosition(center + 10.0f * left, 0), glm::vec4(0, 0, 0, 0));
-		renderer->AddVertex(_battleModel->terrainSurface->GetPosition(_orientation, 0), glm::vec4(0, 0, 0, 0.1f));
+		renderer->AddVertex(_battleModel->terrainSurface->GetPosition(_orientation + 20.0f * dir, 0), glm::vec4(0, 0, 0, 0.1f));
 		renderer->AddVertex(_battleModel->terrainSurface->GetPosition(center - 10.0f * left, 0), glm::vec4(0, 0, 0, 0));
 	}
 }

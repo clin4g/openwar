@@ -28,6 +28,8 @@ struct Formation
 class MovementRules
 {
 public:
+	static void UpdateMovementPathStart(std::vector<glm::vec2>& path, glm::vec2 startPosition);
+
 	static void UpdateMovementPath(std::vector<glm::vec2>& path, glm::vec2 startPosition, glm::vec2 endPosition);
 	static float Length(const std::vector<glm::vec2>& path);
 

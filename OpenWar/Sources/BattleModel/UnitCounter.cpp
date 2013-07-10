@@ -84,7 +84,11 @@ void UnitCounter::AppendFacingMarker(TextureTriangleRenderer* renderer, BattleVi
 		return;
 
 	int index = 0;
-	if (_unit->state.loadingDuration != 0)
+	if (_unit->command.holdFire)
+	{
+		index = 11;
+	}
+	else if (_unit->state.loadingDuration != 0)
 	{
 		index = 2 + (int)glm::round(9 * _unit->state.loadingTimer / _unit->state.loadingDuration);
 		index = glm::min(10, index);

@@ -64,7 +64,7 @@ public:
 	{
 		if (_missileTarget) return &_missileTarget->state.center;
 		else if (_hasOrientation) return &_orientation;
-		else return 0;
+		else return nullptr;
 	}
 
 	glm::vec2 DestinationXXX() const
