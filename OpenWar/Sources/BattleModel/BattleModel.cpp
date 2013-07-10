@@ -43,8 +43,8 @@ destination(),
 position(),
 velocity(),
 direction(0),
-opponent(0),
-meleeTarget(0),
+opponent(nullptr),
+meleeTarget(nullptr),
 readyingTimer(0),
 strikingTimer(0),
 stunnedTimer(0)
@@ -53,7 +53,7 @@ stunnedTimer(0)
 
 
 Fighter::Fighter() :
-unit(0),
+unit(nullptr),
 state(),
 nextState(),
 casualty(false),
@@ -278,7 +278,7 @@ bool BattleModel::IsMelee() const
 		const Unit* unit = (*i).second;
 		for (Fighter* fighter = unit->fighters, * end = fighter + unit->fightersCount; fighter != end; ++fighter)
 		{
-			if (fighter->state.opponent)
+			if (fighter->state.opponent != nullptr)
 			{
 				return true;
 			}

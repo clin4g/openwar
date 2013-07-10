@@ -140,7 +140,6 @@ struct FighterState
 	float direction;
 	Fighter* meleeTarget;
 
-
 	FighterState();
 };
 
@@ -293,7 +292,6 @@ struct Unit
 	int shootingCounter; // updated by ResolveMissileCombat()
 	Formation formation; // updated by UpdateFormation()
 	float timeUntilSwapFighters;
-
 
 	// intermediate attributes
 	UnitState nextState; // updated by ComputeNextState()

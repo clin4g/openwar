@@ -77,7 +77,7 @@ void UnitMovementMarker::AppendFacingMarker(TextureTriangleRenderer* renderer, B
 
 void UnitMovementMarker::RenderMovementFighters(ColorBillboardRenderer* renderer)
 {
-	if (!_unit->command.meleeTarget)
+	if (_unit->command.meleeTarget == nullptr)
 	{
 		bool isBlue = _unit->player == _battleModel->bluePlayer;
 		glm::vec4 color = isBlue ? glm::vec4(0, 0, 255, 32) / 255.0f : glm::vec4(255, 0, 0, 32) / 255.0f;
@@ -105,7 +105,7 @@ void UnitMovementMarker::RenderMovementPath(GradientTriangleRenderer* renderer)
 	if (!_unit->command.path.empty())
 	{
 		int mode = 0;
-		if (_unit->command.meleeTarget)
+		if (_unit->command.meleeTarget != nullptr)
 			mode = 2;
 		else if (_unit->command.running)
 			mode = 1;

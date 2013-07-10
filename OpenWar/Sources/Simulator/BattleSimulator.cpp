@@ -171,7 +171,7 @@ void BattleSimulator::ResolveMeleeCombat()
 		for (Fighter* fighter = unit->fighters, * end = fighter + unit->fightersCount; fighter != end; ++fighter)
 		{
 			Fighter* meleeTarget = fighter->state.meleeTarget;
-			if (meleeTarget != 0)
+			if (meleeTarget != nullptr)
 			{
 				Unit* enemyUnit = meleeTarget->unit;
 				float killProbability = 0.5f;
@@ -291,8 +291,8 @@ void BattleSimulator::RemoveCasualties()
 		Unit* unit = (*i).second;
 		for (Fighter* fighter = unit->fighters, * end = fighter + unit->fightersCount; fighter != end; ++fighter)
 		{
-			if (fighter->state.opponent != 0 && fighter->state.opponent->casualty)
-				fighter->state.opponent = 0;
+			if (fighter->state.opponent != nullptr && fighter->state.opponent->casualty)
+				fighter->state.opponent = nullptr;
 		}
 	}
 
@@ -351,8 +351,8 @@ void BattleSimulator::RemoveDeadUnits()
 	{
 		Unit* unit = (*i).second;
 
-		if (unit->command.missileTarget != 0 && _battleModel->GetUnit(unit->command.missileTarget->unitId) == 0)
-			unit->command.missileTarget = 0;
+		if (unit->command.missileTarget != nullptr && _battleModel->GetUnit(unit->command.missileTarget->unitId) == 0)
+			unit->command.missileTarget = nullptr;
 
 		if (unit->command.meleeTarget != nullptr && _battleModel->GetUnit(unit->command.meleeTarget->unitId) == 0)
 			unit->command.meleeTarget = nullptr;
@@ -379,10 +379,10 @@ UnitState BattleSimulator::NextUnitState(Unit* unit)
 	{
 		if (unit->missileTargetLocked)
 		{
-			if (unit->command.missileTarget != 0 && !IsWithinLineOfFire(unit, unit->command.missileTarget->state.center))
+			if (unit->command.missileTarget != nullptr && !IsWithinLineOfFire(unit, unit->command.missileTarget->state.center))
 			{
 				unit->missileTargetLocked = false;
-				unit->command.missileTarget = 0;
+				unit->command.missileTarget = nullptr;
 			}
 		}
 
@@ -391,7 +391,7 @@ UnitState BattleSimulator::NextUnitState(Unit* unit)
 			unit->command.missileTarget = ClosestEnemyWithinLineOfFire(unit);
 		}
 
-		if (unit->command.missileTarget)
+		if (unit->command.missileTarget != nullptr)
 		{
 			if (IsWithinLineOfFire(unit, unit->command.missileTarget->state.center))
 			{
@@ -541,7 +541,7 @@ FighterState BattleSimulator::NextFighterState(Fighter* fighter)
 	{
 		result.direction = angle(original.velocity);
 	}
-	else if (original.opponent != 0)
+	else if (original.opponent != nullptr)
 	{
 		result.direction = angle(original.opponent->state.position - original.position);
 	}
@@ -564,7 +564,7 @@ FighterState BattleSimulator::NextFighterState(Fighter* fighter)
 
 	// DESTINATION
 
-	if (original.opponent != 0)
+	if (original.opponent != nullptr)
 	{
 		result.destination = original.opponent->state.position
 				- fighter->unit->stats.weaponReach * vector2_from_angle(original.direction);
@@ -618,7 +618,7 @@ FighterState BattleSimulator::NextFighterState(Fighter* fighter)
 			{
 				result.readyState = ReadyStateUnready;
 			}
-			else if (result.opponent != 0)
+			else if (result.opponent != nullptr)
 			{
 				result.readyState = ReadyStateStriking;
 				result.strikingTimer = fighter->unit->stats.strikingDuration;
@@ -792,7 +792,7 @@ glm::vec2 BattleSimulator::CalculateFighterMissileTarget(Fighter* fighter)
 {
 	Unit* unit = fighter->unit;
 
-	if (unit->command.missileTarget)
+	if (unit->command.missileTarget != nullptr)
 	{
 		float dx = 10.0f * ((rand() & 255) / 128.0f - 1.0f);
 		float dy = 10.0f * ((rand() & 255) / 127.0f - 1.0f);

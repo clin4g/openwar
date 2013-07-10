@@ -63,7 +63,6 @@ private:
 
 	UnitState NextUnitState(Unit* unit);
 	UnitMode NextUnitMode(Unit* unit);
-	//glm::vec2 CalculateUnitCenter(Unit* unit);
 	float NextUnitDirection(Unit* unit);
 
 	FighterState NextFighterState(Fighter* fighter);
