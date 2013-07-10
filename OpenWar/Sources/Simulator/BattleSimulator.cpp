@@ -370,40 +370,41 @@ UnitState BattleSimulator::NextUnitState(Unit* unit)
 
 	result.shootingCounter = unit->state.shootingCounter;
 
-
-	if (unit->state.unitMode != UnitModeStanding)
+	if (unit->command.missileTargetLocked)
 	{
-		result.shootingTimer = 4;
+		if (unit->command.missileTarget != nullptr && !IsWithinLineOfFire(unit, unit->command.missileTarget->state.center))
+		{
+			unit->command.missileTargetLocked = false;
+			unit->command.missileTarget = nullptr;
+		}
 	}
-	else if (unit->state.shootingTimer < _battleModel->timeStep)
+
+	if (!unit->command.missileTargetLocked)
 	{
-		if (unit->missileTargetLocked)
-		{
-			if (unit->command.missileTarget != nullptr && !IsWithinLineOfFire(unit, unit->command.missileTarget->state.center))
-			{
-				unit->missileTargetLocked = false;
-				unit->command.missileTarget = nullptr;
-			}
-		}
+		unit->command.missileTarget = ClosestEnemyWithinLineOfFire(unit);
+	}
 
-		if (!unit->missileTargetLocked)
-		{
-			unit->command.missileTarget = ClosestEnemyWithinLineOfFire(unit);
-		}
-
-		if (unit->command.missileTarget != nullptr)
-		{
-			if (IsWithinLineOfFire(unit, unit->command.missileTarget->state.center))
-			{
-				++result.shootingCounter;
-			}
-
-			result.shootingTimer = 4 + (rand() % 100) / 200.0f;
-		}
+	if (unit->state.unitMode != UnitModeStanding || unit->command.missileTarget == nullptr)
+	{
+		result.loadingTimer = 0;
+		result.loadingDuration = 0;
+	}
+	else if (unit->state.loadingTimer + _battleModel->timeStep < unit->state.loadingDuration)
+	{
+		result.loadingTimer = unit->state.loadingTimer + _battleModel->timeStep;
+		result.loadingDuration = unit->state.loadingDuration;
 	}
 	else
 	{
-		result.shootingTimer = unit->state.shootingTimer - _battleModel->timeStep;
+		if (unit->state.loadingDuration != 0
+			&& unit->command.missileTarget != nullptr
+			&& IsWithinLineOfFire(unit, unit->command.missileTarget->state.center))
+		{
+			++result.shootingCounter;
+		}
+
+		result.loadingTimer = 0;
+		result.loadingDuration = 4 + (rand() % 100) / 200.0f;
 	}
 
 	result.morale = unit->state.morale;
@@ -500,12 +501,12 @@ UnitMode BattleSimulator::NextUnitMode(Unit* unit)
 			return UnitModeStanding;
 
 		case UnitModeStanding:
-			if (glm::length(unit->state.center - unit->command.GetDestination()) > 25)
+			if (glm::length(unit->state.center - unit->command.GetDestination()) > 8)
 				return UnitModeMoving;
 			break;
 
 		case UnitModeMoving:
-			if (glm::length(unit->state.center - unit->command.GetDestination()) <= 25)
+			if (glm::length(unit->state.center - unit->command.GetDestination()) <= 8)
 				return UnitModeStanding;
 			break;
 

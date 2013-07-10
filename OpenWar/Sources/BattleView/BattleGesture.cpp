@@ -187,7 +187,7 @@ void BattleGesture::TouchBegan(Touch* touch)
 				unit->command.meleeTarget = nullptr;
 				unit->command.ClearPathAndSetDestination(unit->state.center);
 				unit->command.missileTarget = nullptr;
-				unit->missileTargetLocked = false;
+				unit->command.missileTargetLocked = false;
 			}
 
 			_trackingMarker->SetRunning(touch->GetTapCount() > 1 || (!_tappedUnitCenter && unit->command.running));
@@ -296,7 +296,7 @@ void BattleGesture::TouchEnded(Touch* touch)
 			if (orientationUnit != nullptr)
 			{
 				unit->command.missileTarget = orientationUnit;
-				unit->missileTargetLocked = true;
+				unit->command.missileTargetLocked = true;
 				unit->command.facing = angle(orientationUnit->state.center - unit->command.GetDestination());
 			}
 			else if (orientation)
@@ -311,7 +311,7 @@ void BattleGesture::TouchEnded(Touch* touch)
 					unit->command.meleeTarget = nullptr;
 					unit->command.ClearPathAndSetDestination(unit->state.center);
 					unit->command.missileTarget = nullptr;
-					unit->missileTargetLocked = false;
+					unit->command.missileTargetLocked = false;
 				}
 				else if (_tappedDestination && !_tappedUnitCenter)
 				{

@@ -199,7 +199,8 @@ struct UnitStats
 struct UnitState
 {
 	// dynamic attributes
-	float shootingTimer;
+	float loadingTimer;
+	float loadingDuration;
 	int shootingCounter;
 	float morale;
 
@@ -255,6 +256,7 @@ struct UnitCommand
 	bool running;
 	Unit* meleeTarget;
 	Unit* missileTarget;
+	bool missileTargetLocked; // updated by TouchGesture()
 
 	UnitCommand();
 
@@ -298,7 +300,6 @@ struct Unit
 
 	// control attributes
 	UnitCommand command; // updated by TouchGesture()
-	bool missileTargetLocked; // updated by TouchGesture()
 
 	Unit();
 

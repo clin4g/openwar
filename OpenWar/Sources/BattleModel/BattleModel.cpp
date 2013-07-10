@@ -16,7 +16,8 @@ path(),
 facing(0),
 running(false),
 meleeTarget(nullptr),
-missileTarget(nullptr)
+missileTarget(nullptr),
+missileTargetLocked(false)
 {
 }
 
@@ -91,7 +92,8 @@ UnitState::UnitState() :
 unitMode(UnitModeInitializing),
 center(),
 direction(0),
-shootingTimer(0),
+loadingTimer(0),
+loadingDuration(0),
 shootingCounter(0),
 recentCasualties(0),
 morale(1),
@@ -178,7 +180,6 @@ command(),
 fighters(nullptr),
 fightersCount(0),
 timeUntilSwapFighters(0),
-missileTargetLocked(false),
 shootingCounter(0)
 {
 }
