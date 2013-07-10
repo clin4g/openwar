@@ -16,6 +16,7 @@
 #include "SmoothTerrainSky.h"
 #include "PlainRenderer.h"
 #include "TextureRenderer.h"
+#import "sprite.h"
 
 
 
@@ -50,10 +51,12 @@ _gradientLineRenderer(nullptr),
 _gradientTriangleRenderer(nullptr),
 _gradientTriangleStripRenderer(nullptr),
 _colorBillboardRenderer(nullptr),
-_textureTriangleRenderer(nullptr)
+_textureTriangleRenderer(nullptr),
+_textureFacing(nullptr)
 {
 	_textureUnitMarkers = new texture(@"Texture256x256.png");
 	_textureTouchMarker = new texture(@"TouchMarker.png");
+	_textureFacing = new texture(@"Facing.png");
 
 	SetContentBounds(bounds2f(0, 0, 1024, 1024));
 
@@ -395,9 +398,27 @@ void BattleView::Render()
 	}
 
 
-	// Unit Markers
+	// Unit Facing Markers
 
 	glDisable(GL_DEPTH_TEST);
+	_textureTriangleRenderer->Reset();
+
+	for (UnitCounter* marker : _battleModel->_unitMarkers)
+		if (marker->GetUnit()->player == _player)
+			marker->AppendFacingMarker(_textureTriangleRenderer, this);
+	for (UnitMovementMarker* marker : _movementMarkers)
+		if (marker->GetUnit()->player == _player)
+			marker->AppendFacingMarker(_textureTriangleRenderer, this);
+	for (UnitTrackingMarker* marker : _trackingMarkers)
+		if (marker->GetUnit()->player == _player)
+			marker->AppendFacingMarker(_textureTriangleRenderer, this);
+
+	_textureTriangleRenderer->Draw(sprite_transform(GetViewportBounds()).transform(), _textureFacing);
+
+
+
+	// Unit Markers
+
 	_textureBillboardRenderer1->Reset();
 	_textureBillboardRenderer2->Reset();
 
@@ -597,6 +618,62 @@ static bool is_iphone()
 	return *_is_iphone;
 }
 
+
+bounds2f BattleView::GetBillboardBounds(glm::vec3 position, float height)
+{
+	glm::mat4x4 transform = GetTransform();
+	glm::vec3 upvector = GetCameraUpVector();
+	float viewport_height = GetViewportBounds().height();
+	bounds1f sizeLimit = GetUnitIconSizeLimit() / renderer_base::pixels_per_point();
+
+	glm::vec3 position2 = position + height * 0.5f * viewport_height * upvector;
+	glm::vec4 p = transform * glm::vec4(position, 1);
+	glm::vec4 q = transform * glm::vec4(position2, 1);
+	float s = glm::clamp(glm::abs(q.y / q.w - p.y / p.w), sizeLimit.min, sizeLimit.max);
+
+	return bounds2_from_center(ViewToScreen((glm::vec2)p.xy() / p.w), s / 2);
+}
+
+
+bounds2f BattleView::GetUnitCurrentIconViewportBounds(Unit* unit)
+{
+	glm::vec3 position = GetPosition(unit->state.center, 0);
+	return GetBillboardBounds(position, 32);
+}
+
+
+bounds2f BattleView::GetUnitFutureIconViewportBounds(Unit* unit)
+{
+	glm::vec3 position = GetPosition(!unit->command.path.empty() ? unit->command.path.back() : unit->state.center, 0);
+	return GetBillboardBounds(position, 32);
+}
+
+
+bounds2f BattleView::GetUnitFacingMarkerBounds(glm::vec2 center, float direction)
+{
+	bounds2f iconBounds = GetBillboardBounds(GetPosition(center, 0), 32);
+
+	glm::vec2 position = iconBounds.center();
+	float size = iconBounds.height();
+
+	position += 0.7f * size * vector2_from_angle(direction - GetCameraFacing() + glm::half_pi<float>());
+
+	return bounds2_from_center(position, 0.2f * size);
+}
+
+
+bounds2f BattleView::GetUnitCurrentFacingMarkerBounds(Unit* unit)
+{
+	return GetUnitFacingMarkerBounds(unit->state.center, unit->state.direction);
+}
+
+
+bounds2f BattleView::GetUnitFutureFacingMarkerBounds(Unit* unit)
+{
+	glm::vec2 center = !unit->command.path.empty() ? unit->command.path.back() : unit->state.center;
+
+	return GetUnitFacingMarkerBounds(center, unit->command.facing);
+}
 
 
 bounds1f BattleView::GetUnitIconSizeLimit() const

@@ -6,6 +6,8 @@
 #import "ColorBillboardRenderer.h"
 #import "TextureBillboardRenderer.h"
 #import "GradientRenderer.h"
+#import "TextureRenderer.h"
+#import "BattleView.h"
 
 
 UnitTrackingMarker::UnitTrackingMarker(BattleModel* battleModel, Unit* unit) : UnitMarker(battleModel, unit),
@@ -27,6 +29,12 @@ UnitTrackingMarker::~UnitTrackingMarker()
 }
 
 
+float UnitTrackingMarker::GetFacing() const
+{
+	glm::vec2 orientation = _missileTarget ? _missileTarget->state.center : _orientation;
+	return angle(orientation - DestinationXXX());
+}
+
 
 void UnitTrackingMarker::RenderTrackingFighters(ColorBillboardRenderer* renderer)
 {
@@ -36,10 +44,10 @@ void UnitTrackingMarker::RenderTrackingFighters(ColorBillboardRenderer* renderer
 		glm::vec4 color = isBlue ? glm::vec4(0, 0, 255, 16) / 255.0f : glm::vec4(255, 0, 0, 16) / 255.0f;
 
 		glm::vec2 destination = DestinationXXX();
-		glm::vec2 orientation = _missileTarget ? _missileTarget->state.center : _orientation;
+		//glm::vec2 orientation = _missileTarget ? _missileTarget->state.center : _orientation;
 
 		Formation formation = _unit->formation;
-		formation.SetDirection(angle(orientation - destination));
+		formation.SetDirection(GetFacing());
 
 		glm::vec2 frontLeft = formation.GetFrontLeft(destination);
 
@@ -66,6 +74,37 @@ void UnitTrackingMarker::RenderTrackingMarker(TextureBillboardRenderer* renderer
 
 		renderer->AddBillboard(position, 32, affine2(texcoord, texcoord + texsize));
 	}
+}
+
+
+void UnitTrackingMarker::AppendFacingMarker(TextureTriangleRenderer* renderer, BattleView* battleView)
+{
+	if (_path.empty())
+		return;
+
+	float facing = GetFacing();
+
+	bounds2f b = battleView->GetUnitFacingMarkerBounds(_path.back(), facing);
+	glm::vec2 p = b.center();
+	float size = b.height();
+	float direction = facing - battleView->GetCameraFacing();
+
+	glm::vec2 d1 = size * vector2_from_angle(direction - glm::half_pi<float>() / 2.0f);
+	glm::vec2 d2 = glm::vec2(d1.y, -d1.x);
+	glm::vec2 d3 = glm::vec2(d2.y, -d2.x);
+	glm::vec2 d4 = glm::vec2(d3.y, -d3.x);
+
+	float txs = 0.0625f;
+	float tx1 = 1 * txs;
+	float tx2 = tx1 + txs;
+
+	renderer->AddVertex(glm::vec3(p + d1, 0), glm::vec2(tx1, 0));
+	renderer->AddVertex(glm::vec3(p + d2, 0), glm::vec2(tx1, 1));
+	renderer->AddVertex(glm::vec3(p + d3, 0), glm::vec2(tx2, 1));
+
+	renderer->AddVertex(glm::vec3(p + d3, 0), glm::vec2(tx2, 1));
+	renderer->AddVertex(glm::vec3(p + d4, 0), glm::vec2(tx2, 0));
+	renderer->AddVertex(glm::vec3(p + d1, 0), glm::vec2(tx1, 0));
 }
 
 

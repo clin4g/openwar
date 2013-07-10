@@ -8,8 +8,10 @@
 #include "UnitMarker.h"
 #include "BattleModel.h"
 
+class BattleView;
 class ColorBillboardRenderer;
 class TextureBillboardRenderer;
+class TextureTriangleRenderer;
 
 
 class UnitTrackingMarker : public UnitMarker
@@ -74,8 +76,11 @@ public:
 	}
 
 
+	float GetFacing() const;
+
 	void RenderTrackingFighters(ColorBillboardRenderer* renderer);
 	void RenderTrackingMarker(TextureBillboardRenderer* renderer);
+	void AppendFacingMarker(TextureTriangleRenderer* renderer, BattleView* battleView);
 	void RenderTrackingShadow(TextureBillboardRenderer* renderer);
 	void RenderTrackingPath(GradientTriangleRenderer* renderer);
 	void RenderOrientation(GradientTriangleRenderer* renderer);

@@ -57,6 +57,7 @@ class BattleView : public TerrainView, public SimulationListener
 
 	texture* _textureUnitMarkers;
 	texture* _textureTouchMarker;
+	texture* _textureFacing;
 
 public:
 	SmoothTerrainSurfaceRenderer* _terrainSurfaceRendererSmooth;
@@ -90,6 +91,15 @@ public:
 
 	virtual void Render();
 	virtual void Update(double secondsSinceLastUpdate);
+
+	bounds2f GetBillboardBounds(glm::vec3 position, float height);
+
+	bounds2f GetUnitCurrentIconViewportBounds(Unit* unit);
+	bounds2f GetUnitFutureIconViewportBounds(Unit* unit);
+
+	bounds2f GetUnitFacingMarkerBounds(glm::vec2 center, float direction);
+	bounds2f GetUnitCurrentFacingMarkerBounds(Unit* unit);
+	bounds2f GetUnitFutureFacingMarkerBounds(Unit* unit);
 
 	bounds1f GetUnitIconSizeLimit() const;
 };

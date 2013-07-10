@@ -6,6 +6,8 @@
 #include "BattleModel.h"
 #include "PlainRenderer.h"
 #include "TextureBillboardRenderer.h"
+#include "TextureRenderer.h"
+#include "BattleView.h"
 
 
 UnitCounter::UnitCounter(BattleModel* battleModel, Unit* unit) :
@@ -75,6 +77,34 @@ void UnitCounter::AppendUnitMarker(TextureBillboardRenderer* renderer1, TextureB
 	renderer2->AddBillboard(position, 32, affine2(texcoord2, texcoord2 + texsize));
 }
 
+
+void UnitCounter::AppendFacingMarker(TextureTriangleRenderer* renderer, BattleView* battleView)
+{
+	if (_unit->state.unitMode != UnitModeStanding)
+		return;
+
+	bounds2f bounds = battleView->GetUnitCurrentFacingMarkerBounds(_unit);
+	glm::vec2 p = bounds.center();
+	float size = bounds.height();
+	float direction = _unit->state.direction - battleView->GetCameraFacing();
+
+	glm::vec2 d1 = size * vector2_from_angle(direction - glm::half_pi<float>() / 2.0f);
+	glm::vec2 d2 = glm::vec2(d1.y, -d1.x);
+	glm::vec2 d3 = glm::vec2(d2.y, -d2.x);
+	glm::vec2 d4 = glm::vec2(d3.y, -d3.x);
+
+	float txs = 0.0625f;
+	float tx1 = 0 * txs;
+	float tx2 = tx1 + txs;
+
+	renderer->AddVertex(glm::vec3(p + d1, 0), glm::vec2(tx1, 0));
+	renderer->AddVertex(glm::vec3(p + d2, 0), glm::vec2(tx1, 1));
+	renderer->AddVertex(glm::vec3(p + d3, 0), glm::vec2(tx2, 1));
+
+	renderer->AddVertex(glm::vec3(p + d3, 0), glm::vec2(tx2, 1));
+	renderer->AddVertex(glm::vec3(p + d4, 0), glm::vec2(tx2, 0));
+	renderer->AddVertex(glm::vec3(p + d1, 0), glm::vec2(tx1, 0));
+}
 
 
 void UnitCounter::AppendFighterWeapons(PlainLineRenderer* renderer)

@@ -7,9 +7,10 @@
 
 #include "UnitMarker.h"
 
+class BattleView;
 class ColorBillboardRenderer;
 class TextureBillboardRenderer;
-
+class TextureTriangleRenderer;
 
 
 class UnitMovementMarker : public UnitMarker
@@ -21,6 +22,7 @@ public:
 	bool Animate(float seconds);
 
 	void RenderMovementMarker(TextureBillboardRenderer* renderer);
+	void AppendFacingMarker(TextureTriangleRenderer* renderer, BattleView* battleView);
 	void RenderMovementFighters(ColorBillboardRenderer* renderer);
 	void RenderMovementPath(GradientTriangleRenderer* renderer);
 };

@@ -63,6 +63,7 @@ private:
 
 	bounds2f GetUnitCurrentScreenBounds(Unit* unit);
 	bounds2f GetUnitFutureScreenBounds(Unit* unit);
+
 	bool IsInsideUnitModifierArea(Unit* unit, glm::vec2 position);
 };
 

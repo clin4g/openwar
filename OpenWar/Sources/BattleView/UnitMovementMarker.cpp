@@ -6,6 +6,8 @@
 #include "BattleModel.h"
 #include "ColorBillboardRenderer.h"
 #include "TextureBillboardRenderer.h"
+#import "TextureRenderer.h"
+#import "BattleView.h"
 
 
 
@@ -43,6 +45,34 @@ void UnitMovementMarker::RenderMovementMarker(TextureBillboardRenderer* renderer
 	}
 }
 
+
+void UnitMovementMarker::AppendFacingMarker(TextureTriangleRenderer* renderer, BattleView* battleView)
+{
+	if (_unit->state.unitMode != UnitModeMoving)
+		return;
+
+	bounds2f b = battleView->GetUnitFutureFacingMarkerBounds(_unit);
+	glm::vec2 p = b.center();
+	float size = b.height();
+	float direction = _unit->command.facing - battleView->GetCameraFacing();
+
+	glm::vec2 d1 = size * vector2_from_angle(direction - glm::half_pi<float>() / 2.0f);
+	glm::vec2 d2 = glm::vec2(d1.y, -d1.x);
+	glm::vec2 d3 = glm::vec2(d2.y, -d2.x);
+	glm::vec2 d4 = glm::vec2(d3.y, -d3.x);
+
+	float txs = 0.0625f;
+	float tx1 = 1 * txs;
+	float tx2 = tx1 + txs;
+
+	renderer->AddVertex(glm::vec3(p + d1, 0), glm::vec2(tx1, 0));
+	renderer->AddVertex(glm::vec3(p + d2, 0), glm::vec2(tx1, 1));
+	renderer->AddVertex(glm::vec3(p + d3, 0), glm::vec2(tx2, 1));
+
+	renderer->AddVertex(glm::vec3(p + d3, 0), glm::vec2(tx2, 1));
+	renderer->AddVertex(glm::vec3(p + d4, 0), glm::vec2(tx2, 0));
+	renderer->AddVertex(glm::vec3(p + d1, 0), glm::vec2(tx1, 0));
+}
 
 
 void UnitMovementMarker::RenderMovementFighters(ColorBillboardRenderer* renderer)
