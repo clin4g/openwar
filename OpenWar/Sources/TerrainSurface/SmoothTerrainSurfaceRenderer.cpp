@@ -545,10 +545,13 @@ _mapTexture(nullptr)
 
 		UpdateDepthTextureSize();
 
-		_colorbuffer = new renderbuffer(GL_RGBA, _framebuffer_width, _framebuffer_height);
-
 		_framebuffer = new framebuffer();
+
+#if !TARGET_OS_IPHONE
+		_colorbuffer = new renderbuffer(GL_RGBA, _framebuffer_width, _framebuffer_height);
 		_framebuffer->attach_color(_colorbuffer);
+#endif
+
 		_framebuffer->attach_depth(_depth);
 		{
 			bind_framebuffer binding(*_framebuffer);
