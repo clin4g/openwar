@@ -80,7 +80,7 @@ void UnitCounter::AppendUnitMarker(TextureBillboardRenderer* renderer1, TextureB
 
 void UnitCounter::AppendFacingMarker(TextureTriangleRenderer* renderer, BattleView* battleView)
 {
-	if (_unit->state.unitMode != UnitModeStanding)
+	if (_unit->state.unitMode != UnitModeStanding || _unit->state.IsRouting())
 		return;
 
 	int index = 0;
