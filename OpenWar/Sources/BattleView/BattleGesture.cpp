@@ -57,7 +57,7 @@ void BattleGesture::RenderHints()
 
 	for (UnitCounter* unitMarker : _battleView->GetBattleModel()->_unitMarkers)
 	{
-		bounds2f bounds = GetUnitCurrentScreenBounds(unitMarker->_unit);
+		bounds2f bounds = GetUnitCurrentBounds(unitMarker->_unit);
 
 		shape._vertices.push_back(plain_vertex(bounds.p11()));
 		shape._vertices.push_back(plain_vertex(bounds.p12()));
@@ -68,7 +68,7 @@ void BattleGesture::RenderHints()
 		shape._vertices.push_back(plain_vertex(bounds.p21()));
 		shape._vertices.push_back(plain_vertex(bounds.p11()));
 
-		/*bounds = GetUnitFutureScreenBounds(unitMarker->_unit);
+		bounds = GetUnitFutureBounds(unitMarker->_unit);
 		if (!bounds.is_empty())
 		{
 			shape._vertices.push_back(plain_vertex(bounds.p11()));
@@ -79,10 +79,9 @@ void BattleGesture::RenderHints()
 			shape._vertices.push_back(plain_vertex(bounds.p21()));
 			shape._vertices.push_back(plain_vertex(bounds.p21()));
 			shape._vertices.push_back(plain_vertex(bounds.p11()));
-		}*/
+		}
 
-
-		bounds = _battleView->GetUnitCurrentFacingMarkerBounds(unitMarker->_unit);
+		bounds = GetUnitModifierBounds(unitMarker->_unit);
 		if (!bounds.is_empty())
 		{
 			shape._vertices.push_back(plain_vertex(bounds.p11()));
@@ -153,9 +152,14 @@ void BattleGesture::TouchBegan(Touch* touch)
 			_allowTargetEnemyUnit = unit->stats.unitWeapon == UnitWeaponBow || unit->stats.unitWeapon == UnitWeaponArq;
 			_trackingMarker = _battleView->AddTrackingMarker(unit);
 
-			_tappedUnitCenter = GetUnitCurrentScreenBounds(unit).contains(screenPosition);
-			_tappedDestination = GetUnitFutureScreenBounds(unit).contains(screenPosition);
-			_tappedModiferArea = !_tappedUnitCenter && IsInsideUnitModifierArea(unit, screenPosition);
+			float distanceToUnitCenter = glm::distance(GetUnitCurrentBounds(unit).center(), screenPosition);
+			float distanceToDestination = glm::distance(GetUnitFutureBounds(unit).center(), screenPosition);
+			float distanceToModifierArea = glm::distance(GetUnitModifierBounds(unit).center(), screenPosition);
+			float distanceMinimum = glm::min(distanceToUnitCenter, glm::min(distanceToDestination, distanceToModifierArea));
+
+			_tappedUnitCenter = distanceToUnitCenter == distanceMinimum;
+			_tappedDestination = distanceToDestination == distanceMinimum && !_tappedUnitCenter;
+			_tappedModiferArea = distanceToModifierArea == distanceMinimum && !_tappedUnitCenter && !_tappedDestination;
 
 			if (_tappedDestination || _tappedModiferArea)
 			{
@@ -495,7 +499,7 @@ void BattleGesture::UpdateTrackingMarker()
 		bool holdFire = false;
 		if (_trackingMarker->GetUnit()->state.unitMode == UnitModeStanding && _trackingMarker->GetUnit()->stats.maximumRange > 0)
 		{
-			bounds2f unitCurrentBounds = GetUnitCurrentScreenBounds(_trackingMarker->GetUnit());
+			bounds2f unitCurrentBounds = GetUnitCurrentBounds(_trackingMarker->GetUnit());
 			holdFire = glm::distance(screenMarkerPosition, unitCurrentBounds.center()) <= unitCurrentBounds.x().radius();
 		}
 
@@ -565,7 +569,7 @@ Unit* BattleGesture::FindFriendlyUnitByCurrentPosition(glm::vec2 screenPosition,
 	if (unitMarker != nullptr)
 	{
 		Unit* unit = unitMarker->_unit;
-		if (!unit->state.IsRouting() && GetUnitCurrentScreenBounds(unit).contains(screenPosition))
+		if (!unit->state.IsRouting() && GetUnitCurrentBounds(unit).contains(screenPosition))
 		{
 			result = unit;
 		}
@@ -581,7 +585,7 @@ Unit* BattleGesture::FindFriendlyUnitByFuturePosition(glm::vec2 screenPosition, 
 	if (movementMarker != nullptr)
 	{
 		Unit* unit = movementMarker->GetUnit();
-		if (!unit->state.IsRouting() && GetUnitFutureScreenBounds(unit).contains(screenPosition))
+		if (!unit->state.IsRouting() && GetUnitFutureBounds(unit).contains(screenPosition))
 		{
 			result = unit;
 		}
@@ -602,7 +606,7 @@ Unit* BattleGesture::FindFriendlyUnitByModifierArea(glm::vec2 screenPosition, gl
 		{
 			glm::vec2 center = !unit->command.path.empty() ? unit->command.path.back() : unit->state.center;
 			float d = glm::distance(center, terrainPosition);
-			if (d < distance && !unit->state.IsRouting() && IsInsideUnitModifierArea(unit, screenPosition))
+			if (d < distance && !unit->state.IsRouting() && GetUnitModifierBounds(unit).contains(screenPosition))
 			{
 				result = unit;
 				distance = d;
@@ -640,30 +644,24 @@ Unit* BattleGesture::FindEnemyUnit(glm::vec2 touchPosition, glm::vec2 markerPosi
 }
 
 
-bounds2f BattleGesture::GetUnitCurrentScreenBounds(Unit* unit)
+bounds2f BattleGesture::GetUnitCurrentBounds(Unit* unit)
 {
-	return _battleView->GetUnitCurrentIconViewportBounds(unit);
+	return _battleView->GetUnitCurrentIconViewportBounds(unit).grow(12);
 }
 
 
-bounds2f BattleGesture::GetUnitFutureScreenBounds(Unit* unit)
+bounds2f BattleGesture::GetUnitFutureBounds(Unit* unit)
 {
-	if (unit->command.path.empty())
-		return bounds2f();
-
-	glm::mat4x4 transform = _battleView->GetTransform();
-	glm::vec4 position = transform * glm::vec4(_battleView->GetPosition(unit->command.path.back(), 0), 1.0f);
-	return bounds2_from_center(_battleView->ViewToScreen((glm::vec2)position.xy() / position.w), 32);
+	return _battleView->GetUnitFutureIconViewportBounds(unit).grow(12);
 }
 
 
-bool BattleGesture::IsInsideUnitModifierArea(Unit* unit, glm::vec2 position)
+bounds2f BattleGesture::GetUnitModifierBounds(Unit* unit)
 {
-	if (unit->state.unitMode == UnitModeStanding)
-		return _battleView->GetUnitCurrentFacingMarkerBounds(unit).contains(position);
-
-	if (unit->state.unitMode == UnitModeMoving)
-		return _battleView->GetUnitFutureFacingMarkerBounds(unit).contains(position);
-
-	return false;
+	switch (unit->state.unitMode)
+	{
+		case UnitModeStanding: return _battleView->GetUnitCurrentFacingMarkerBounds(unit).grow(12);
+		case UnitModeMoving: return _battleView->GetUnitFutureFacingMarkerBounds(unit).grow(12);
+		default: return bounds2f();
+	}
 }

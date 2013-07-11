@@ -61,8 +61,9 @@ private:
 
 	Unit* FindEnemyUnit(glm::vec2 touchPosition, glm::vec2 markerPosition);
 
-	bounds2f GetUnitCurrentScreenBounds(Unit* unit);
-	bounds2f GetUnitFutureScreenBounds(Unit* unit);
+	bounds2f GetUnitCurrentBounds(Unit* unit);
+	bounds2f GetUnitFutureBounds(Unit* unit);
+	bounds2f GetUnitModifierBounds(Unit* unit);
 
 	bool IsInsideUnitModifierArea(Unit* unit, glm::vec2 position);
 };
