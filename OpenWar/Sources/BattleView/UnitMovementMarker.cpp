@@ -55,6 +55,8 @@ void UnitMovementMarker::AppendFacingMarker(TextureTriangleRenderer* renderer, B
 	glm::vec2 p = b.center();
 	float size = b.height();
 	float direction = _unit->command.facing - battleView->GetCameraFacing();
+	if (battleView->GetFlip())
+		direction += glm::pi<float>();
 
 	glm::vec2 d1 = size * vector2_from_angle(direction - glm::half_pi<float>() / 2.0f);
 	glm::vec2 d2 = glm::vec2(d1.y, -d1.x);
@@ -65,13 +67,16 @@ void UnitMovementMarker::AppendFacingMarker(TextureTriangleRenderer* renderer, B
 	float tx1 = 1 * txs;
 	float tx2 = tx1 + txs;
 
-	renderer->AddVertex(glm::vec3(p + d1, 0), glm::vec2(tx1, 0));
-	renderer->AddVertex(glm::vec3(p + d2, 0), glm::vec2(tx1, 1));
-	renderer->AddVertex(glm::vec3(p + d3, 0), glm::vec2(tx2, 1));
+	float ty1 = _unit->player == battleView->GetBattleModel()->bluePlayer ? 0.0f : 0.5f;
+	float ty2 = _unit->player == battleView->GetBattleModel()->bluePlayer ? 0.5f : 1.0f;
 
-	renderer->AddVertex(glm::vec3(p + d3, 0), glm::vec2(tx2, 1));
-	renderer->AddVertex(glm::vec3(p + d4, 0), glm::vec2(tx2, 0));
-	renderer->AddVertex(glm::vec3(p + d1, 0), glm::vec2(tx1, 0));
+	renderer->AddVertex(glm::vec3(p + d1, 0), glm::vec2(tx1, ty1));
+	renderer->AddVertex(glm::vec3(p + d2, 0), glm::vec2(tx1, ty2));
+	renderer->AddVertex(glm::vec3(p + d3, 0), glm::vec2(tx2, ty2));
+
+	renderer->AddVertex(glm::vec3(p + d3, 0), glm::vec2(tx2, ty2));
+	renderer->AddVertex(glm::vec3(p + d4, 0), glm::vec2(tx2, ty1));
+	renderer->AddVertex(glm::vec3(p + d1, 0), glm::vec2(tx1, ty1));
 }
 
 

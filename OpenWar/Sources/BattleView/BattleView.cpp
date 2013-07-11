@@ -655,8 +655,9 @@ bounds2f BattleView::GetUnitFacingMarkerBounds(glm::vec2 center, float direction
 
 	glm::vec2 position = iconBounds.center();
 	float size = iconBounds.height();
+	float adjust = GetFlip() ? 3 * glm::half_pi<float>() : glm::half_pi<float>();
 
-	position += 0.7f * size * vector2_from_angle(direction - GetCameraFacing() + glm::half_pi<float>());
+	position += 0.7f * size * vector2_from_angle(direction - GetCameraFacing() + adjust);
 
 	return bounds2_from_center(position, 0.2f * size);
 }
