@@ -80,8 +80,12 @@ void UnitCounter::AppendUnitMarker(TextureBillboardRenderer* renderer1, TextureB
 
 void UnitCounter::AppendFacingMarker(TextureTriangleRenderer* renderer, BattleView* battleView)
 {
-	if (_unit->state.unitMode != UnitModeStanding || _unit->state.IsRouting())
+	if (_unit->state.unitMode != UnitModeStanding
+		|| _unit->command.meleeTarget != nullptr
+		|| _unit->state.IsRouting())
+	{
 		return;
+	}
 
 	int index = 0;
 	if (_unit->command.holdFire)

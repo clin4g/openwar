@@ -780,10 +780,13 @@ void SmoothTerrainSurfaceRenderer::InitializeEdge()
 
 void SmoothTerrainSurfaceRenderer::Render(const glm::mat4x4& transform, const glm::vec3& lightNormal)
 {
+	glDepthMask(false);
+
 	plain_uniforms shadow_uniforms;
 	shadow_uniforms._transform = transform;
 	_ground_shadow_renderer->render(_vboTerrainShadow, shadow_uniforms);
 
+	glDepthMask(true);
 
 	terrain_uniforms uniforms;
 	uniforms._transform = transform;
