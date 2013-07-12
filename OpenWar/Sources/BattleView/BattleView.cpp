@@ -381,7 +381,7 @@ void BattleView::Render()
 		marker->AppendFighterBillboards(_billboardModel);
 	for (SmokeCounter* marker : _battleModel->_smokeMarkers)
 		marker->AppendSmokeBillboards(_billboardModel);
-	_textureBillboardRenderer->Render(_billboardModel, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), GetViewportBounds().height());
+	_textureBillboardRenderer->Render(_billboardModel, GetTransform(), GetCameraUpVector(), glm::degrees(GetCameraFacing()), GetViewportBounds().height(), GetFlip());
 
 
 	// Range Markers

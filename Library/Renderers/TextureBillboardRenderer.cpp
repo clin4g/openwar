@@ -110,15 +110,35 @@ void TextureBillboardRenderer::Draw(texture* tex, const glm::mat4x4& transform, 
 }
 
 
-void TextureBillboardRenderer::Render(BillboardModel* billboardModel, glm::mat4x4 const & transform, const glm::vec3& cameraUp, float cameraFacingDegrees, float viewportHeight)
+static affine2 FlipY(const affine2& texcoords)
+{
+	glm::vec2 v0 = texcoords.transform(glm::vec2(0, 0));
+	glm::vec2 v1 = texcoords.transform(glm::vec2(1, 1));
+	return affine2(glm::vec2(v0.x, v1.y), glm::vec2(v1.x, v0.y));
+}
+
+
+void TextureBillboardRenderer::Render(BillboardModel* billboardModel, glm::mat4x4 const & transform, const glm::vec3& cameraUp, float cameraFacingDegrees, float viewportHeight, bool flip)
 {
 	Reset();
 
 	for (const Billboard& billboard : billboardModel->staticBillboards)
-		AddBillboard(billboard.position, billboard.height, billboardModel->texture->GetTexCoords(billboard.shape, billboard.facing - cameraFacingDegrees));
+	{
+		float facing = billboard.facing - cameraFacingDegrees + 180;
+		affine2 texcoords = billboardModel->texture->GetTexCoords(billboard.shape, flip ? -facing : facing);
+		if (flip)
+			texcoords = FlipY(texcoords);
+		AddBillboard(billboard.position, billboard.height, texcoords);
+	}
 
 	for (const Billboard& billboard : billboardModel->dynamicBillboards)
-		AddBillboard(billboard.position, billboard.height, billboardModel->texture->GetTexCoords(billboard.shape, billboard.facing - cameraFacingDegrees));
+	{
+		float facing = billboard.facing - cameraFacingDegrees + 180;
+		affine2 texcoords = billboardModel->texture->GetTexCoords(billboard.shape, flip ? -facing : facing);
+		if (flip)
+			texcoords = FlipY(texcoords);
+		AddBillboard(billboard.position, billboard.height, texcoords);
+	}
 
 	Draw(billboardModel->texture->GetTexture(), transform, cameraUp, cameraFacingDegrees, viewportHeight);
 }

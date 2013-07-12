@@ -48,7 +48,7 @@ affine2 BillboardTexture::GetTexCoords(int shape, float facing)
 	{
 		if (i.shape == shape)
 		{
-			float d = diff_degrees(i.facing, facing);
+			float d = glm::abs(diff_degrees(i.facing, facing));
 			if (d < diff)
 			{
 				diff = d;
