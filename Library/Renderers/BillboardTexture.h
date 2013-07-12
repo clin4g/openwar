@@ -21,7 +21,7 @@ class BillboardTexture
 	};
 
 	texture* _texture;
-	std::vector<item> _items;
+    std::map<int, std::vector<item>> _items;
 	int _shapeCount;
 
 public:

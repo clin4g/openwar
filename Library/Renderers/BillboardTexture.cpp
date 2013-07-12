@@ -35,7 +35,10 @@ int BillboardTexture::AddShape(int sheet)
 
 void BillboardTexture::SetTexCoords(int shape, float facing, affine2 const & texcoords)
 {
-	_items.push_back(item(shape, facing, texcoords));
+    if (_items.find(shape) != _items.end())
+        _items[shape].push_back(item(shape, facing, texcoords));
+    else
+        _items[shape] = std::vector<item>(1, item(shape, facing, texcoords));
 }
 
 
@@ -44,18 +47,23 @@ affine2 BillboardTexture::GetTexCoords(int shape, float facing)
 	affine2 result;
 	float diff = 360;
 
-	for (const item& i : _items)
-	{
-		if (i.shape == shape)
-		{
-			float d = glm::abs(diff_degrees(i.facing, facing));
-			if (d < diff)
-			{
-				diff = d;
-				result = i.texcoords;
-			}
-		}
-	}
+    auto i = _items.find(shape);
+    if (i != _items.end())
+    {
+        const std::vector<item>& items = (*i).second;
+        for (auto j = items.begin(); j != items.end(); ++j)
+        {
+            if ((*j).shape == shape)
+            {
+                float d = glm::abs(diff_degrees((*j).facing, facing));
+                if (d < diff)
+                {
+                    diff = d;
+                    result = (*j).texcoords;
+                }
+            }
+        }
+    }
 
 	return result;
 }
