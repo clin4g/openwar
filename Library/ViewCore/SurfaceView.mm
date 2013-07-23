@@ -165,7 +165,8 @@
 				_touch->GetGesture()->TouchMoved();
 		}
 
-		[self setNeedsDisplay:YES];
+		if (_surface->NeedsRender())
+			[self setNeedsDisplay:YES];
 	}
 }
 
@@ -255,7 +256,8 @@ static MouseButtons CurrentMouseButtons()
 		_touch = nullptr;
 	}
 
-	[self setNeedsDisplay:true];
+	if (_surface->NeedsRender())
+		[self setNeedsDisplay:YES];
 }
 
 

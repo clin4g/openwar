@@ -143,6 +143,12 @@ void OpenWarSurface::Update(double secondsSinceLastUpdate)
 }
 
 
+bool OpenWarSurface::NeedsRender() const
+{
+	return true;
+}
+
+
 void OpenWarSurface::Render()
 {
 	glClearColor(0.9137f, 0.8666f, 0.7647f, 1.0f);
