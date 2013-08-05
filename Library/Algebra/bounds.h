@@ -36,6 +36,7 @@ struct bounds1
 	bounds1<T, P> shrink(T d) const {return bounds1<T, P>(min + d, max - d);}
 
 	T unlerp(T v) const {return (v - min) / (max - min);}
+	T lerp(T v) const {return min + v * (max - min);}
 	T clamp(T v) const
 	{
 		if (min > max) return (min + max) / 2;
