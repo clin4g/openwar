@@ -44,6 +44,13 @@ static float gap_radians(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
 
 
 
+static glm::vec2 safe_normalize(glm::vec2 v)
+{
+	if (v.x * v.x + v.y * v.y < 0.01) return glm::vec2(1, 0);
+	return glm::normalize(v);
+}
+
+
 void UnitMarker::RenderPath(GradientTriangleRenderer* renderer, const std::vector<glm::vec2>& path)
 {
 	if (path.size() < 2)
@@ -60,7 +67,7 @@ void UnitMarker::RenderPath(GradientTriangleRenderer* renderer, const std::vecto
 	glm::vec2 lastL = path[0];
 	glm::vec2 currL = path[1];
 	glm::vec2 nextL;
-	glm::vec2 dir = glm::normalize(currL - lastL);
+	glm::vec2 dir = safe_normalize(currL - lastL);
 	glm::vec2 lastR = lastL - width * rotate90(dir);
 	glm::vec2 currR;
 
@@ -68,7 +75,7 @@ void UnitMarker::RenderPath(GradientTriangleRenderer* renderer, const std::vecto
 	{
 		currL = *i;
 		nextL = *(i + 1);
-		dir = glm::normalize(currL - lastL);
+		dir = safe_normalize(currL - lastL);
 		float gap = gap_radians(lastL, currL, nextL) / 2;
 		currR = currL - width * vector2_from_angle(angle(dir) + glm::half_pi<float>() - gap);
 
@@ -90,7 +97,7 @@ void UnitMarker::RenderPath(GradientTriangleRenderer* renderer, const std::vecto
 	}
 
 	currL = path.back();
-	dir = glm::normalize(currL - lastL);
+	dir = safe_normalize(currL - lastL);
 	currR = currL - width * rotate90(dir);
 
 	glm::vec3 p1 = terrainSurface->GetPosition(lastL, 1);
