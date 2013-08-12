@@ -198,7 +198,7 @@ NSData* ConvertImageToTiff(image* map)
 image* ConvertTiffToImage(NSData* data)
 {
 #if TARGET_OS_IPHONE
-	return nullptr;
+	return new image([[UIImage imageWithData:data] CGImage]);
 #else
 	NSImage* img = [[NSImage alloc] initWithData:data];
 	NSSize size = img.size;
