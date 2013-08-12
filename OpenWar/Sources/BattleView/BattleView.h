@@ -82,7 +82,7 @@ public:
 	UnitTrackingMarker* GetTrackingMarker(Unit* unit);
 	void RemoveTrackingMarker(UnitTrackingMarker* trackingMarker);
 
-	void Initialize(bool editor = false);
+	void Initialize();
 
 	void InitializeTerrainTrees();
 	void UpdateTerrainTrees(bounds2f bounds);

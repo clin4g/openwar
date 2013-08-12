@@ -100,7 +100,7 @@ void OpenWarSurface::Reset(BattleModel* battleModel)
 	if (terrainSurfaceModelTiled != nullptr)
 		_battleView->_terrainSurfaceRendererTiled = new TiledTerrainSurfaceRenderer(terrainSurfaceModelTiled);
 
-	_battleView->Initialize(true);
+	_battleView->Initialize();
 
 	_editorModel = new EditorModel(_battleView, _battleView->_terrainSurfaceRendererSmooth);
 	_editorGesture = new EditorGesture(_battleView, _editorModel);

@@ -189,7 +189,7 @@ static float random_float()
 }
 
 
-void BattleView::Initialize(bool editor)
+void BattleView::Initialize()
 {
 	if (_terrainSurfaceRendererSmooth != nullptr)
 		_terrainSurfaceRendererSmooth->InitializeTerrainShadow(GetContentBounds());
