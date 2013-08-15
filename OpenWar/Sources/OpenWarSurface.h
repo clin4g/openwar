@@ -29,8 +29,8 @@ public: // TODO: just testing
 	enum class Mode { None, Editing, Playing };
 	Mode _mode;
 
+	BattleScript* _battleScript;
 	BattleView* _battleView;
-	BattleSimulator* _battleSimulator;
 
 	renderers* _renderers;
 	ButtonRendering* _buttonRendering;
@@ -57,7 +57,7 @@ public:
 	OpenWarSurface(glm::vec2 size, float pixelDensity);
 	virtual ~OpenWarSurface();
 
-	void Reset(BattleModel* battleModel);
+	void Reset(BattleScript* battleScript);
 
 	virtual void ScreenSizeChanged();
 	virtual void Update(double secondsSinceLastUpdate);
@@ -74,7 +74,6 @@ private:
 
 	void ClickedPlay();
 	void ClickedPause();
-	void ClickedRewind();
 
 	void SetEditorMode(EditorMode editorMode);
 	void SetEditorFeature(EditorFeature editorFeature);

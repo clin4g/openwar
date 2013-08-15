@@ -18,8 +18,8 @@
 
 OpenWarSurface::OpenWarSurface(glm::vec2 size, float pixelDensity) : Surface(size, pixelDensity),
 _mode(Mode::None),
+_battleScript(nullptr),
 _battleView(nullptr),
-_battleSimulator(nullptr),
 _renderers(nullptr),
 _buttonRendering(nullptr),
 _editorModel(nullptr),
@@ -86,17 +86,48 @@ OpenWarSurface::~OpenWarSurface()
 }
 
 
-void OpenWarSurface::Reset(BattleModel* battleModel)
+void OpenWarSurface::Reset(BattleScript* battleScript)
 {
-	battleModel->bluePlayer = Player1;
-	_battleView = new BattleView(this, battleModel, _renderers);
+	delete _terrainGesture;
+	_terrainGesture = nullptr;
+
+	delete _battleGesture;
+	_battleGesture = nullptr;
+
+	delete _editorGesture;
+	_editorGesture = nullptr;
+
+	delete _editorModel;
+	_editorModel = nullptr;
+
+	if (_battleView != nullptr)
+	{
+		delete _battleView->_terrainSurfaceRendererSmooth;
+		_battleView->_terrainSurfaceRendererSmooth = nullptr;
+
+		delete _battleView->_terrainSurfaceRendererTiled;
+		_battleView->_terrainSurfaceRendererTiled = nullptr;
+	}
+
+	delete _battleView;
+	_battleView = nullptr;
+
+	delete _battleScript;
+	_battleScript = nullptr;
+
+	/***/
+
+	_battleScript = battleScript;
+
+	battleScript->GetBattleModel()->bluePlayer = Player1;
+	_battleView = new BattleView(this, battleScript->GetBattleModel(), _renderers);
 	_battleView->_player = Player1;
 
-	SmoothTerrainSurface* terrainSurfaceModelSmooth = dynamic_cast<SmoothTerrainSurface*>(battleModel->terrainSurface);
+	SmoothTerrainSurface* terrainSurfaceModelSmooth = dynamic_cast<SmoothTerrainSurface*>(battleScript->GetBattleModel()->terrainSurface);
 	if (terrainSurfaceModelSmooth != nullptr)
 		_battleView->_terrainSurfaceRendererSmooth = new SmoothTerrainSurfaceRenderer(terrainSurfaceModelSmooth, true);
 
-	TiledTerrainSurface* terrainSurfaceModelTiled = dynamic_cast<TiledTerrainSurface*>(battleModel->terrainSurface);
+	TiledTerrainSurface* terrainSurfaceModelTiled = dynamic_cast<TiledTerrainSurface*>(battleScript->GetBattleModel()->terrainSurface);
 	if (terrainSurfaceModelTiled != nullptr)
 		_battleView->_terrainSurfaceRendererTiled = new TiledTerrainSurfaceRenderer(terrainSurfaceModelTiled);
 
@@ -112,9 +143,9 @@ void OpenWarSurface::Reset(BattleModel* battleModel)
 	_mode = Mode::Playing;
 	UpdateButtonsAndGestures();
 
-	_battleSimulator = new BattleSimulator(battleModel);
-	_battleSimulator->listener = _battleView;
-	_battleSimulator->currentPlayer = Player1;
+	//_battleSimulator = new BattleSimulator(battleModel);
+	battleScript->GetBattleSimulator()->listener = _battleView;
+	battleScript->GetBattleSimulator()->currentPlayer = Player1;
 }
 
 
@@ -132,7 +163,7 @@ void OpenWarSurface::Update(double secondsSinceLastUpdate)
 {
 	if (_mode == Mode::Playing)
 	{
-		_battleSimulator->AdvanceTime((float)secondsSinceLastUpdate);
+		_battleScript->GetBattleSimulator()->AdvanceTime((float)secondsSinceLastUpdate);
 		UpdateSoundPlayer();
 	}
 	if (_battleView != nullptr)
@@ -197,7 +228,7 @@ void OpenWarSurface::UpdateSoundPlayer()
 	for (UnitCounter* unitMarker : _battleView->GetBattleModel()->_unitMarkers)
 	{
 		Unit* unit = unitMarker->_unit;
-		if (_battleSimulator->GetBattleModel()->GetUnit(unit->unitId) != 0 && glm::length(unit->command.GetDestination() - unit->state.center) > 4.0f)
+		if (_battleScript->GetBattleModel()->GetUnit(unit->unitId) != 0 && glm::length(unit->command.GetDestination() - unit->state.center) > 4.0f)
 		{
 			if (unit->stats.unitPlatform == UnitPlatformCav || unit->stats.unitPlatform == UnitPlatformGen)
 			{
@@ -225,7 +256,7 @@ void OpenWarSurface::UpdateSoundPlayer()
 	SoundPlayer::singleton->UpdateCavalryWalking(horseTrot != 0);
 	SoundPlayer::singleton->UpdateCavalryRunning(horseGallop != 0);
 
-	SoundPlayer::singleton->UpdateFighting(_battleSimulator->GetBattleModel()->IsMelee());
+	SoundPlayer::singleton->UpdateFighting(_battleScript->GetBattleModel()->IsMelee());
 }
 
 
@@ -238,14 +269,6 @@ void OpenWarSurface::ClickedPlay()
 
 void OpenWarSurface::ClickedPause()
 {
-	_mode = Mode::Editing;
-	UpdateButtonsAndGestures();
-}
-
-
-void OpenWarSurface::ClickedRewind()
-{
-	_battleSimulator->GetBattleModel()->time = 0; // TODO: reload & reset simlation state
 	_mode = Mode::Editing;
 	UpdateButtonsAndGestures();
 }
@@ -302,8 +325,6 @@ void OpenWarSurface::UpdateButtonsAndGestures()
 			break;
 
 		case Mode::Editing:
-			if (_battleSimulator != nullptr && _battleSimulator->GetBattleModel()->time != 0)
-				_buttonsTopRight->AddButtonArea()->AddButtonItem(_buttonRendering->buttonIconRewind)->SetAction([this](){ ClickedRewind(); });
 			_buttonsTopRight->AddButtonArea()->AddButtonItem(_buttonRendering->buttonIconPlay)->SetAction([this](){ ClickedPlay(); });
 			break;
 

@@ -18,10 +18,13 @@
 static BattleScript* _battlescript = nullptr;
 
 
-BattleScript::BattleScript(BattleModel* battleModel, const char* directory, const char* script, size_t length) :
-_battleModel(battleModel),
+BattleScript::BattleScript(const char* directory, const char* script, size_t length) :
+_battleModel(nullptr),
+_battleSimulator(nullptr),
 _L(nullptr)
 {
+	_battleModel = new BattleModel();
+	_battleSimulator = new BattleSimulator(_battleModel);
 	_battlescript = this;
 
 	_L = luaL_newstate();
@@ -35,7 +38,6 @@ _L(nullptr)
 
 	lua_pushcfunction(_L, openwar_simulator_init);
 	lua_setglobal(_L, "openwar_simulator_init");
-
 
 
 	lua_pushcfunction(_L, battle_message);
@@ -62,14 +64,16 @@ _L(nullptr)
 	lua_pushcfunction(_L, battle_add_terrain_tree);
 	lua_setglobal(_L, "battle_add_terrain_tree");
 
-
-	int error = luaL_loadbuffer(_L, script, length, "line");
-	if (!error) lua_pcall(_L, 0, 0, 0);
-
-	if (error)
+	if (script != nullptr)
 	{
-		NSLog(@"BattleScript ERROR: %s", lua_tostring(_L, -1));
-		lua_pop(_L, 1);  /* pop error message from the stack */
+		int error = luaL_loadbuffer(_L, script, length, "line");
+		if (!error) lua_pcall(_L, 0, 0, 0);
+
+		if (error)
+		{
+			NSLog(@"BattleScript ERROR: %s", lua_tostring(_L, -1));
+			lua_pop(_L, 1);  /* pop error message from the stack */
+		}
 	}
 }
 
@@ -77,6 +81,13 @@ _L(nullptr)
 BattleScript::~BattleScript()
 {
 	lua_close(_L);
+
+	delete _battleSimulator;
+
+	delete _battleModel->terrainSurface;
+	delete _battleModel->terrainWater;
+	delete _battleModel->terrainSky;
+	delete _battleModel;
 }
 
 

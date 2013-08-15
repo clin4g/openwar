@@ -210,5 +210,4 @@ void SmoothTerrainWater::Render(const glm::mat4x4& transform)
 
 	_water_inside_renderer->render(_shape_water_inside, uniforms);
 	_water_border_renderer->render(_shape_water_border, uniforms);
-
 }

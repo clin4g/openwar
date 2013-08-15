@@ -17,6 +17,7 @@
 	OpenWarSurface* _surface;
 	NSString* _sourceTypeName;
 	NSData* _sourceData;
+	NSURL* _sourceURL;
 	NSURL* _sourceDirectory;
 }
 
@@ -44,6 +45,7 @@
 {
 	//NSLog(@"OpenWarDocument initWithContentsOfURL:\"%@\" ofType:\"%@\" error:<outError>", url, typeName);
 
+	_sourceURL = [url retain];
 	_sourceDirectory = [[url URLByDeletingLastPathComponent] retain];
 
 	return [super initWithContentsOfURL:url ofType:typeName error:outError];
@@ -55,6 +57,7 @@
 {
 	//NSLog(@"OpenWarDocument initForURL:\"%@\" withContentsOfURL:\"%@\" ofType:\"%@\" error:<outError>", urlOrNil, contentsURL, typeName);
 
+	_sourceURL = [contentsURL retain];
 	_sourceDirectory = [[contentsURL URLByDeletingLastPathComponent] retain];
 
 	return [super initForURL:urlOrNil withContentsOfURL:contentsURL ofType:typeName error:outError];
@@ -98,7 +101,7 @@
 
 	if (_surface != nullptr)
 	{
-		SmoothTerrainSurface* terrainSurfaceModelSmooth = dynamic_cast<SmoothTerrainSurface*>(_surface->_battleSimulator->GetBattleModel()->terrainSurface);
+		SmoothTerrainSurface* terrainSurfaceModelSmooth = dynamic_cast<SmoothTerrainSurface*>(_surface->_battleScript->GetBattleModel()->terrainSurface);
 		if ([typeName isEqualToString:@"SmoothMap"] && terrainSurfaceModelSmooth != nullptr)
 		{
 			terrainSurfaceModelSmooth->SaveHeightmapToImage();
@@ -121,6 +124,23 @@
 }
 
 
+#pragma mark -
+
+
+- (void)reload:(id)sender
+{
+	if ([_sourceTypeName isEqualToString:@"Script"])
+	{
+		[_sourceData release];
+		_sourceData = [[NSData dataWithContentsOfURL:_sourceURL] retain];
+
+		BattleScript* battlescript = [self createBattleScriptFromScript:_sourceData];
+		_surface->Reset(battlescript);
+	}
+}
+
+
+
 #pragma mark SurfaceFactory
 
 
@@ -130,7 +150,7 @@
 
 	_surface = new OpenWarSurface(size, pixelDensity);
 
-	BattleModel* battleModel = nullptr;
+	BattleScript* battlescript = nullptr;
 
 	if (_sourceData == nil)
 	{
@@ -141,26 +161,28 @@
 		NSString* path = [[NSBundle mainBundle] pathForResource:@"DefaultMap" ofType:@"lua" inDirectory:@"Maps"];
 		_sourceDirectory = [[[NSURL fileURLWithPath:path] URLByDeletingLastPathComponent] retain];
 		NSData* data = [NSData dataWithContentsOfFile:path];
-		battleModel = [self createBattleModelFromScript:data];
+		battlescript = [self createBattleScriptFromScript:data];
 	}
 	else if ([_sourceTypeName isEqualToString:@"SmoothMap"])
 	{
-		battleModel = [self createBattleModelFromSmoothMap:_sourceData];
+		battlescript = [self createBattleScriptFromSmoothMap:_sourceData];
 	}
 	else if ([_sourceTypeName isEqualToString:@"Script"])
 	{
-		battleModel = [self createBattleModelFromScript:_sourceData];
+		battlescript = [self createBattleScriptFromScript:_sourceData];
 	}
 
-	_surface->Reset(battleModel);
+	_surface->Reset(battlescript);
 
 	return _surface;
 }
 
 
-- (BattleModel*)createBattleModelFromSmoothMap:(NSData*)smoothMap
+- (BattleScript*)createBattleScriptFromSmoothMap:(NSData*)smoothMap
 {
-	BattleModel* battleModel = new BattleModel();
+	BattleScript* battleScript = new BattleScript(nullptr, nullptr, 0);
+
+	BattleModel* battleModel = battleScript->GetBattleModel();
 
 	image* map = ConvertTiffToImage(smoothMap);
 
@@ -169,24 +191,20 @@
 	battleModel->terrainWater = new SmoothTerrainWater(map, false);
 	battleModel->terrainSky = new SmoothTerrainSky();
 
-	return battleModel;
+	return battleScript;
 }
 
 
-- (BattleModel*)createBattleModelFromScript:(NSData*)script
+- (BattleScript*)createBattleScriptFromScript:(NSData*)script
 {
-	BattleModel* battleModel = new BattleModel();
+	BattleScript* battleScript = new BattleScript(_sourceDirectory.filePathURL.path.UTF8String, (const char*)script.bytes, script.length);
 
-	BattleScript* battleScript = new BattleScript(battleModel, _sourceDirectory.filePathURL.path.UTF8String, (const char*)script.bytes, script.length);
-
-	if (battleModel->terrainForest == nullptr)
+	if (battleScript->GetBattleModel()->terrainForest == nullptr)
 	{
-		battleModel->terrainForest = new BillboardTerrainForest();
+		battleScript->GetBattleModel()->terrainForest = new BillboardTerrainForest();
 	}
 
-	delete battleScript;
-
-	return battleModel;
+	return battleScript;
 }
 
 

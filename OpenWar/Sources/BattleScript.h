@@ -8,8 +8,8 @@
 #include "BattleModel.h"
 #include "lua.h"
 
-class BattleView;
 class BattleModel;
+class BattleSimulator;
 class TiledTerrainSurfaceRenderer;
 
 
@@ -27,11 +27,15 @@ class BattleScript
 	};
 
 	BattleModel* _battleModel;
+	BattleSimulator* _battleSimulator;
 	lua_State* _L;
 
 public:
-	BattleScript(BattleModel* battleModel, const char* directory, const char* script, size_t length);
+	BattleScript(const char* directory, const char* script, size_t length);
 	~BattleScript();
+
+	BattleModel* GetBattleModel() const { return _battleModel; }
+	BattleSimulator* GetBattleSimulator() const { return _battleSimulator; }
 
 	void Tick();
 
