@@ -194,6 +194,7 @@ typedef bounds3<int, glm::highp> bounds3i;
 
 inline bounds2f bounds2_from_center(float x, float y, float r) {return bounds2f(x - r, y - r, x + r, y + r);}
 inline bounds2f bounds2_from_center(glm::vec2 p, float r) {return bounds2f(p.x - r, p.y - r, p.x + r, p.y + r);}
+inline bounds2f bounds2_from_center(glm::vec2 p, glm::vec2 r) {return bounds2f(p.x - r.x, p.y - r.y, p.x + r.x, p.y + r.y);}
 inline bounds2f bounds2_from_center(float x, float y, float rx, float ry) {return bounds2f(x - rx, y - ry, x + rx, y + ry);}
 inline bounds2f bounds2_from_center(glm::vec2 p, float rx, float ry) {return bounds2f(p.x - rx, p.y - ry, p.x + rx, p.y + ry);}
 inline bounds2f bounds2_from_corner(float x, float y, float sx, float sy) {return bounds2f(x, y, x + sx, y + sy);}
