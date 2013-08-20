@@ -148,8 +148,9 @@ static bool IsPortrait(UIInterfaceOrientation orientation)
 	_currentTouches.clear();
 	_currentGestures.clear();
 
-	for (UITouch* touch in touches)
-		[self appendCurrentTouchesAndGestures:_touches[touch]];
+	for (UITouch* original in touches)
+		if (original.view == self.view)
+			[self appendCurrentTouchesAndGestures:_touches[original]];
 }
 
 
@@ -194,7 +195,8 @@ static bool IsPortrait(UIInterfaceOrientation orientation)
 		return;
 
 	for (UITouch* original in touches)
-		[self createTouch:original];
+		if (original.view == self.view)
+			[self createTouch:original];
 
 	[self resetCurrentTouchesAndGestures:touches];
 
@@ -214,7 +216,8 @@ static bool IsPortrait(UIInterfaceOrientation orientation)
 		return;
 
 	for (UITouch* original in touches)
-		[self updateTouch:original];
+		if (original.view == self.view)
+			[self updateTouch:original];
 
 	[self resetCurrentTouchesAndGestures:touches];
 
@@ -231,7 +234,8 @@ static bool IsPortrait(UIInterfaceOrientation orientation)
 		return;
 
 	for (UITouch* original in touches)
-		[self updateTouch:original];
+		if (original.view == self.view)
+			[self updateTouch:original];
 
 	[self touchesEnded:touches cancelled:false];
 }
@@ -243,7 +247,8 @@ static bool IsPortrait(UIInterfaceOrientation orientation)
 		return;
 
 	for (UITouch* original in touches)
-		[self updateTouch:original];
+		if (original.view == self.view)
+			[self updateTouch:original];
 
 	[self touchesEnded:touches cancelled:true];
 }
@@ -268,9 +273,8 @@ static bool IsPortrait(UIInterfaceOrientation orientation)
 	}
 
 	for (UITouch* original in touches)
-	{
-		[self deleteTouch:original];
-	}
+		if (original.view == self.view)
+			[self deleteTouch:original];
 }
 
 
