@@ -3,11 +3,12 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "UnitTrackingMarker.h"
-#import "ColorBillboardRenderer.h"
-#import "TextureBillboardRenderer.h"
-#import "GradientRenderer.h"
-#import "TextureRenderer.h"
-#import "BattleView.h"
+#include "ColorBillboardRenderer.h"
+#include "TextureBillboardRenderer.h"
+#include "GradientRenderer.h"
+#include "TextureRenderer.h"
+#include "BattleView.h"
+#include "PathRenderer.h"
 
 
 UnitTrackingMarker::UnitTrackingMarker(BattleModel* battleModel, Unit* unit) : UnitMarker(battleModel, unit),
@@ -133,7 +134,9 @@ void UnitTrackingMarker::RenderTrackingPath(GradientTriangleRenderer* renderer)
 		else if (_running)
 			mode = 1;
 
-		Path(renderer, mode, _path);
+		TerrainSurface* terrainSurface = _battleModel->terrainSurface;
+		std::function<glm::vec3(glm::vec2)> getPosition = [terrainSurface](glm::vec2 p) { return terrainSurface->GetPosition(p, 1); };
+		PathRenderer::Path(renderer, _path, getPosition, mode);
 	}
 }
 

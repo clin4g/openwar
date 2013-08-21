@@ -10,6 +10,7 @@
 
 class BattleView;
 class ColorBillboardRenderer;
+class GradientTriangleRenderer;
 class TextureBillboardRenderer;
 class TextureTriangleRenderer;
 

@@ -6,8 +6,9 @@
 #include "BattleModel.h"
 #include "ColorBillboardRenderer.h"
 #include "TextureBillboardRenderer.h"
-#import "TextureRenderer.h"
-#import "BattleView.h"
+#include "TextureRenderer.h"
+#include "BattleView.h"
+#include "PathRenderer.h"
 
 
 
@@ -115,6 +116,8 @@ void UnitMovementMarker::RenderMovementPath(GradientTriangleRenderer* renderer)
 		else if (_unit->command.running)
 			mode = 1;
 
-		Path(renderer, mode, _unit->command.path);
+		TerrainSurface* terrainSurface = _battleModel->terrainSurface;
+		std::function<glm::vec3(glm::vec2)> getPosition = [terrainSurface](glm::vec2 p) { return terrainSurface->GetPosition(p, 1); };
+		PathRenderer::Path(renderer, _unit->command.path, getPosition, mode);
 	}
 }
