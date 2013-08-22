@@ -117,7 +117,7 @@ void UnitMovementMarker::RenderMovementPath(GradientTriangleRenderer* renderer)
 			mode = 1;
 
 		TerrainSurface* terrainSurface = _battleModel->terrainSurface;
-		std::function<glm::vec3(glm::vec2)> getPosition = [terrainSurface](glm::vec2 p) { return terrainSurface->GetPosition(p, 1); };
-		PathRenderer::Path(renderer, _unit->command.path, getPosition, mode);
+		PathRenderer pathRenderer([terrainSurface](glm::vec2 p) { return terrainSurface->GetPosition(p, 1); });
+		pathRenderer.Path(renderer, _unit->command.path, mode);
 	}
 }

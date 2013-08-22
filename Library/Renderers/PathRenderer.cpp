@@ -7,7 +7,10 @@
 
 
 
-PathRenderer::PathRenderer()
+PathRenderer::PathRenderer(std::function<glm::vec3(glm::vec2)> getPosition) :
+_getPosition(getPosition),
+_color(0, 0, 0, 0.15f),
+_offset(7)
 {
 }
 
@@ -40,7 +43,7 @@ static glm::vec2 safe_normalize(glm::vec2 v)
 }
 
 
-void PathRenderer::RenderPath(GradientTriangleRenderer* renderer, const std::vector<glm::vec2>& path, std::function<glm::vec3(glm::vec2)> getPosition)
+void PathRenderer::RenderPath(GradientTriangleRenderer* renderer, const std::vector<glm::vec2>& path)
 {
 	if (path.size() < 2)
 		return;
@@ -49,8 +52,8 @@ void PathRenderer::RenderPath(GradientTriangleRenderer* renderer, const std::vec
 
 	float width = 2.5f;
 
-	glm::vec4 cleft = glm::vec4(0, 0, 0, 0.15f);
-	glm::vec4 cright = glm::vec4(0, 0, 0, 0);
+	glm::vec4 cleft = _color;
+	glm::vec4 cright = glm::vec4(_color.r, _color.g, _color.b, 0);
 
 
 	glm::vec2 lastL = path[0];
@@ -68,10 +71,10 @@ void PathRenderer::RenderPath(GradientTriangleRenderer* renderer, const std::vec
 		float gap = gap_radians(lastL, currL, nextL) / 2;
 		currR = currL - width * vector2_from_angle(angle(dir) + glm::half_pi<float>() - gap);
 
-		glm::vec3 p1 = getPosition(lastL);
-		glm::vec3 p2 = getPosition(currL);
-		glm::vec3 p3 = getPosition(currR);
-		glm::vec3 p4 = getPosition(lastR);
+		glm::vec3 p1 = _getPosition(lastL);
+		glm::vec3 p2 = _getPosition(currL);
+		glm::vec3 p3 = _getPosition(currR);
+		glm::vec3 p4 = _getPosition(lastR);
 
 		renderer->AddVertex(p1, cleft);
 		renderer->AddVertex(p2, cleft);
@@ -89,10 +92,10 @@ void PathRenderer::RenderPath(GradientTriangleRenderer* renderer, const std::vec
 	dir = safe_normalize(currL - lastL);
 	currR = currL - width * rotate90(dir);
 
-	glm::vec3 p1 = getPosition(lastL);
-	glm::vec3 p2 = getPosition(currL);
-	glm::vec3 p3 = getPosition(currR);
-	glm::vec3 p4 = getPosition(lastR);
+	glm::vec3 p1 = _getPosition(lastL);
+	glm::vec3 p2 = _getPosition(currL);
+	glm::vec3 p3 = _getPosition(currR);
+	glm::vec3 p4 = _getPosition(lastR);
 
 	renderer->AddVertex(p1, cleft);
 	renderer->AddVertex(p2, cleft);
@@ -215,7 +218,7 @@ static void bspline_split_segments(std::vector<std::vector<glm::vec2>>& segments
 }
 
 
-void PathRenderer::Path(GradientTriangleRenderer* renderer, const std::vector<glm::vec2>& path, std::function<glm::vec3(glm::vec2)> getPosition, int mode)
+void PathRenderer::Path(GradientTriangleRenderer* renderer, const std::vector<glm::vec2>& path, int mode)
 {
 	if (path.size() == 0)
 		return;
@@ -247,7 +250,7 @@ void PathRenderer::Path(GradientTriangleRenderer* renderer, const std::vector<gl
 	std::vector<std::vector<glm::vec2>> segments;
 
 	std::vector<std::pair<glm::vec2, glm::vec2>> strip = spline_line_strip(control_points);
-	std::vector<glm::vec2> pathL = bspline_offset(strip, 7);
+	std::vector<glm::vec2> pathL = bspline_offset(strip, _offset);
 	bspline_split_segments(segments, strip, pathL, false);
 
 	if (segments.empty())
@@ -256,7 +259,7 @@ void PathRenderer::Path(GradientTriangleRenderer* renderer, const std::vector<gl
 	int segmentIndex = (int)segments.size() - 1;
 	int vertexIndex = (int)segments.back().size();
 
-	std::vector<glm::vec2> pathR = bspline_offset(strip, -7);
+	std::vector<glm::vec2> pathR = bspline_offset(strip, -_offset);
 	std::reverse(strip.begin(), strip.end());
 	std::reverse(pathR.begin(), pathR.end());
 	bspline_split_segments(segments, strip, pathR, true);
@@ -279,6 +282,6 @@ void PathRenderer::Path(GradientTriangleRenderer* renderer, const std::vector<gl
 	//std::function<glm::vec3(glm::vec2)> getPosition = [terrainSurface](glm::vec2 p) { return terrainSurface->GetPosition(p, 1); };
 	for (const std::vector<glm::vec2>& segment : segments)
 	{
-		RenderPath(renderer, segment, getPosition);
+		RenderPath(renderer, segment);
 	}
 }
