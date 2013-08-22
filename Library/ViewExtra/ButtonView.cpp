@@ -169,7 +169,7 @@ void ButtonArea::UpdateColumnsAndRows()
 
 void ButtonArea::UpdateBounds(bounds2f bounds)
 {
-	_bounds = bounds;
+	_bounds = bounds.grow(_margin);
 
 	float y = 0;
 	for (size_t i = 0; i < rows.size(); ++i)
@@ -211,6 +211,11 @@ void ButtonView::SetViewport(bounds2f value)
 	UpdateLayout();
 }
 
+
+void ButtonView::ScreenSizeChanged()
+{
+	UpdateLayout();
+}
 
 
 bool ButtonView::HasButtons() const
@@ -329,23 +334,16 @@ void ButtonView::Render()
 		for (ButtonItem* buttonItem : buttonArea->buttonItems)
 		{
 			if (buttonItem->IsSelected())
-			{
 				_buttonRendering->RenderSelected(viewport, buttonItem->GetBounds());
-			}
+
+			if (buttonItem->GetButtonIcon() != nullptr)
+				_buttonRendering->RenderButtonIcon(viewport, buttonItem->GetBounds().center(), buttonItem->GetButtonIcon(), buttonItem->IsDisabled());
 
 			if (buttonItem->IsHighlight())
-			{
 				_buttonRendering->RenderHighlight(viewport, buttonItem->GetBounds());
-			}
 
 			if (buttonItem->GetButtonText() != nil)
-			{
 				_buttonRendering->RenderButtonText(viewport, buttonItem->GetBounds().center(), buttonItem->GetButtonText());
-			}
-			else if (buttonItem->GetButtonIcon() != nullptr)
-			{
-				_buttonRendering->RenderButtonIcon(viewport, buttonItem->GetBounds().center(), buttonItem->GetButtonIcon(), buttonItem->IsDisabled());
-			}
 		}
 	}
 }

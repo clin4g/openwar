@@ -113,9 +113,13 @@ public:
 	std::vector<float> rows;
 	bounds2f _bounds;
 	std::function<void()> noaction;
+	glm::vec2 _margin;
 
 	ButtonArea(ButtonView* buttonView, int numberOfColumns);
 	~ButtonArea();
+
+	glm::vec2 GetMargin() const { return _margin; }
+	void SetMargin(glm::vec2 value) { _margin = value; }
 
 	ButtonView* GetButtonView() const { return _buttonView; }
 
@@ -142,6 +146,8 @@ public:
 	ButtonView(Surface* screen, ButtonRendering* buttonRendering, ButtonAlignment alignment);
 
 	virtual void SetViewport(bounds2f value);
+
+	virtual void ScreenSizeChanged();
 
 	const std::vector<ButtonArea*>& GetButtonAreas() const {  return _buttonAreas; }
 
