@@ -192,8 +192,8 @@ bounds2f SmoothTerrainSurface::Paint(TerrainFeature feature, glm::vec2 position,
 	float value = pressure > 0 ? 1 : 0;
 	float delta = pressure > 0 ? 0.015f : -0.015f;
 
-	for (int x = -5; x <= 5; ++x)
-		for (int y = -5; y <= 5; ++y)
+	for (int x = -10; x <= 10; ++x)
+		for (int y = -10; y <= 10; ++y)
 		{
 			glm::ivec2 p = center + glm::ivec2(x, y);
 			float d = glm::distance(position, _scaleImageToWorld * glm::vec2(p)) /  radius;

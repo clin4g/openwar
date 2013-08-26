@@ -53,7 +53,6 @@ _data(nullptr),
 _context(nil)
 {
 	init_data_context();
-
 }
 
 
@@ -153,10 +152,10 @@ void image::set_pixel(int x, int y, glm::vec4 c)
 	{
 		bounds1f bounds(0, 255);
 		GLubyte* p = _data + 4 * (x + _width * y);
-		p[0] = (GLubyte) bounds.clamp(c.r * 255);
-		p[1] = (GLubyte) bounds.clamp(c.g * 255);
-		p[2] = (GLubyte) bounds.clamp(c.b * 255);
-		p[3] = (GLubyte) bounds.clamp(c.a * 255);
+		p[0] = (GLubyte)glm::round(bounds.clamp(c.r * 255));
+		p[1] = (GLubyte)glm::round(bounds.clamp(c.g * 255));
+		p[2] = (GLubyte)glm::round(bounds.clamp(c.b * 255));
+		p[3] = (GLubyte)glm::round(bounds.clamp(c.a * 255));
 	}
 }
 

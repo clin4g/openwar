@@ -89,8 +89,9 @@ void EditorModel::ToolEnded(glm::vec2 position)
 
 void EditorModel::Paint(TerrainFeature feature, glm::vec2 position, bool value)
 {
+	float radius = feature == TerrainFeature::Hills ? 48 : 16;
 	SmoothTerrainSurface* terrainSurface = _terrainSurfaceRenderer->GetTerrainSurfaceModel();
-	bounds2f bounds = terrainSurface->Paint(feature, position, 25, value ? 0.5f : -0.5f);
+	bounds2f bounds = terrainSurface->Paint(feature, position, radius, value ? 0.4f : -0.4f);
 
 	_terrainSurfaceRenderer->UpdateHeights(bounds);
 	_terrainSurfaceRenderer->UpdateMapTexture();
@@ -103,6 +104,8 @@ void EditorModel::SmearReset(TerrainFeature feature, glm::vec2 position)
 {
 	SmoothTerrainSurface* terrainSurface = _terrainSurfaceRenderer->GetTerrainSurfaceModel();
 	terrainSurface->Extract(position, _brush);
+	_brushPosition = position;
+	_brushDistance = 0;
 }
 
 
@@ -110,16 +113,24 @@ void EditorModel::SmearPaint(TerrainFeature feature, glm::vec2 position)
 {
 	SmoothTerrainSurface* terrainSurface = _terrainSurfaceRenderer->GetTerrainSurfaceModel();
 
-	glm::ivec2 size = _brush->size();
-	terrainSurface->Extract(position, _mixer);
-	for (int x = 0; x < size.x; ++x)
-		for (int y = 0; y < size.y; ++y)
-		{
-			glm::vec4 c = _brush->get_pixel(x, y);
-			glm::vec4 m = _mixer->get_pixel(x, y);
-			c = glm::mix(c, m, 0.15f * m.a);
-			_brush->set_pixel(x, y, c);
-		}
+	_brushDistance += glm::distance(_brushPosition, position);
+	_brushPosition = position;
+	while (_brushDistance > 2.0f)
+	{
+		terrainSurface->Extract(position, _mixer);
+
+		glm::ivec2 size = _brush->size();
+		for (int x = 0; x < size.x; ++x)
+			for (int y = 0; y < size.y; ++y)
+			{
+				glm::vec4 c = _brush->get_pixel(x, y);
+				glm::vec4 m = _mixer->get_pixel(x, y);
+				c = glm::mix(c, m, 0.1f);
+				_brush->set_pixel(x, y, c);
+			}
+
+		_brushDistance -= 2.0f;
+	}
 
 	bounds2f bounds = terrainSurface->Paint(feature, position, _brush, 0.5f);
 

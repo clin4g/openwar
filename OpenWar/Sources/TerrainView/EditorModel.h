@@ -20,6 +20,8 @@ class EditorModel
 	TerrainFeature _terrainFeature;
 	image* _brush;
 	image* _mixer;
+	glm::vec2 _brushPosition;
+	float _brushDistance;
 
 public:
 	EditorModel(BattleView* battleView, SmoothTerrainSurfaceRenderer* terrainSurfaceRenderer);
