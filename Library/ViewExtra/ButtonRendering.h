@@ -35,8 +35,9 @@ struct ButtonRendering
 	ButtonIcon* buttonEditorToolErase;
 	ButtonIcon* buttonEditorToolSmear;
 	ButtonIcon* buttonEditorToolHills;
-	ButtonIcon* buttonEditorToolWater;
 	ButtonIcon* buttonEditorToolTrees;
+	ButtonIcon* buttonEditorToolWater;
+	ButtonIcon* buttonEditorToolFords;
 
 	ButtonRendering(renderers* r, float pixelDensity);
 

@@ -403,6 +403,8 @@ static char TranslateKeyCode(unsigned short keyCode)
 		case 23: return '5';
 		case 22: return '6';
 		case 26: return '7';
+		case 28: return '8';
+		case 25: return '9';
 		default: return '\0';
 	}
 }

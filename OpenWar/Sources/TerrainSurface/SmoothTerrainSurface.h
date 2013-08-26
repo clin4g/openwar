@@ -46,8 +46,9 @@ public:
 	float GetHeight(int x, int y) const;
 
 	bounds2f EditHills(glm::vec2 position, float radius, float pressure);
-	bounds2f EditWater(glm::vec2 position, float radius, float pressure);
 	bounds2f EditTrees(glm::vec2 position, float radius, float pressure);
+	bounds2f EditWater(glm::vec2 position, float radius, float pressure);
+	bounds2f EditFords(glm::vec2 position, float radius, float pressure);
 };
 
 

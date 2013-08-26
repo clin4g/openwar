@@ -493,12 +493,16 @@ static texture* create_colors()
 		{
 			float brightness = x / 63.0f;
 			float h = -2.5f + 0.5f * y;
-			glm::vec3 c = adjust_brightness(heightcolor(h), brightness);
+			glm::vec3 c = heightcolor(h);
+			c = adjust_brightness(c, brightness);
 			if (h > 0)
 				c = glm::mix(c, r[y], 0.015f);
 
 			img.set_pixel(x, 255 - y, glm::vec4(c, 1));
 		}
+
+	//NSData* data = ConvertImageToTiff(&img);
+	//[data writeToFile:@"/Users/nicke/Desktop/height.tiff" atomically:YES];
 
 	return new texture(img);
 }

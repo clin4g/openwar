@@ -50,8 +50,9 @@ public: // TODO: just testing
 	ButtonItem* _buttonItemErase;
 	ButtonItem* _buttonItemSmear;
 	ButtonItem* _buttonItemHills;
-	ButtonItem* _buttonItemWater;
 	ButtonItem* _buttonItemTrees;
+	ButtonItem* _buttonItemWater;
+	ButtonItem* _buttonItemFords;
 
 public:
 	OpenWarSurface(glm::vec2 size, float pixelDensity);

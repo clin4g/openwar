@@ -34,8 +34,9 @@ _buttonItemPaint(nullptr),
 _buttonItemErase(nullptr),
 _buttonItemSmear(nullptr),
 _buttonItemHills(nullptr),
+_buttonItemTrees(nullptr),
 _buttonItemWater(nullptr),
-_buttonItemTrees(nullptr)
+_buttonItemFords(nullptr)
 {
 	SoundPlayer::Initialize();
 
@@ -55,26 +56,29 @@ _buttonItemTrees(nullptr)
 	_buttonItemPaint = toolButtonArea->AddButtonItem(_buttonRendering->buttonEditorToolPaint);
 	_buttonItemErase = toolButtonArea->AddButtonItem(_buttonRendering->buttonEditorToolErase);
 
-	ButtonArea* featureButtonArea = _buttonsTopLeft->AddButtonArea(3);
+	ButtonArea* featureButtonArea = _buttonsTopLeft->AddButtonArea(4);
 	_buttonItemHills = featureButtonArea->AddButtonItem(_buttonRendering->buttonEditorToolHills);
-	_buttonItemWater = featureButtonArea->AddButtonItem(_buttonRendering->buttonEditorToolWater);
 	_buttonItemTrees = featureButtonArea->AddButtonItem(_buttonRendering->buttonEditorToolTrees);
+	_buttonItemWater = featureButtonArea->AddButtonItem(_buttonRendering->buttonEditorToolWater);
+	_buttonItemFords = featureButtonArea->AddButtonItem(_buttonRendering->buttonEditorToolFords);
 
 	_buttonItemHand->SetAction([this](){ SetEditorMode(EditorMode::Hand); });
 	_buttonItemPaint->SetAction([this](){ SetEditorMode(EditorMode::Paint); });
 	_buttonItemErase->SetAction([this](){ SetEditorMode(EditorMode::Erase); });
 	_buttonItemSmear->SetAction([this](){ SetEditorMode(EditorMode::Smear); });
 	_buttonItemHills->SetAction([this](){ SetEditorFeature(EditorFeature::Hills); });
-	_buttonItemWater->SetAction([this](){ SetEditorFeature(EditorFeature::Water); });
 	_buttonItemTrees->SetAction([this](){ SetEditorFeature(EditorFeature::Trees); });
+	_buttonItemWater->SetAction([this](){ SetEditorFeature(EditorFeature::Water); });
+	_buttonItemFords->SetAction([this](){ SetEditorFeature(EditorFeature::Fords); });
 
 	_buttonItemHand->SetKeyboardShortcut('1');
 	_buttonItemSmear->SetKeyboardShortcut('2');
 	_buttonItemPaint->SetKeyboardShortcut('3');
 	_buttonItemErase->SetKeyboardShortcut('4');
 	_buttonItemHills->SetKeyboardShortcut('5');
-	_buttonItemWater->SetKeyboardShortcut('6');
-	_buttonItemTrees->SetKeyboardShortcut('7');
+	_buttonItemTrees->SetKeyboardShortcut('6');
+	_buttonItemWater->SetKeyboardShortcut('7');
+	_buttonItemFords->SetKeyboardShortcut('8');
 
 	UpdateButtonsAndGestures();
 }
@@ -139,8 +143,8 @@ void OpenWarSurface::Reset(BattleScript* battleScript)
 	_battleGesture = new BattleGesture(_battleView);
 	_terrainGesture = new TerrainGesture(_battleView);
 
-	//_mode = Mode::Editing;
-	_mode = Mode::Playing;
+	_mode = Mode::Editing;
+	//_mode = Mode::Playing;
 	UpdateButtonsAndGestures();
 
 	//_battleSimulator = new BattleSimulator(battleModel);
@@ -301,8 +305,9 @@ void OpenWarSurface::UpdateButtonsAndGestures()
 	_buttonItemErase->SetDisabled(_mode != Mode::Editing);
 	_buttonItemSmear->SetDisabled(_mode != Mode::Editing);
 	_buttonItemHills->SetDisabled(_mode != Mode::Editing);
-	_buttonItemWater->SetDisabled(_mode != Mode::Editing);
 	_buttonItemTrees->SetDisabled(_mode != Mode::Editing);
+	_buttonItemWater->SetDisabled(_mode != Mode::Editing);
+	_buttonItemFords->SetDisabled(_mode != Mode::Editing);
 
 	if (_mode == Mode::None)
 		return;
@@ -312,8 +317,9 @@ void OpenWarSurface::UpdateButtonsAndGestures()
 	_buttonItemErase->SetSelected(_editorModel->editorMode == EditorMode::Erase);
 	_buttonItemSmear->SetSelected(_editorModel->editorMode == EditorMode::Smear);
 	_buttonItemHills->SetSelected(_editorModel->editorFeature == EditorFeature::Hills);
-	_buttonItemWater->SetSelected(_editorModel->editorFeature == EditorFeature::Water);
 	_buttonItemTrees->SetSelected(_editorModel->editorFeature == EditorFeature::Trees);
+	_buttonItemWater->SetSelected(_editorModel->editorFeature == EditorFeature::Water);
+	_buttonItemFords->SetSelected(_editorModel->editorFeature == EditorFeature::Fords);
 
 	_battleGesture->SetEnabled(_mode == Mode::Playing);
 	_editorGesture->SetEnabled(_mode == Mode::Editing && _editorModel->editorMode != EditorMode::Hand);

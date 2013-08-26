@@ -26,12 +26,16 @@ void EditorModel::ToolBegan(glm::vec2 position)
 			EditHills(position, editorMode == EditorMode::Paint);
 			break;
 
+		case EditorFeature::Trees:
+			EditTrees(position, editorMode == EditorMode::Paint);
+			break;
+
 		case EditorFeature::Water:
 			EditWater(position, editorMode == EditorMode::Paint);
 			break;
 
-		case EditorFeature::Trees:
-			EditTrees(position, editorMode == EditorMode::Paint);
+		case EditorFeature::Fords:
+			EditFords(position, editorMode == EditorMode::Paint);
 			break;
 	}
 }
@@ -45,13 +49,18 @@ void EditorModel::ToolMoved(glm::vec2 position)
 			EditHills(position, editorMode == EditorMode::Paint);
 			break;
 
+		case EditorFeature::Trees:
+			EditTrees(position, editorMode == EditorMode::Paint);
+			break;
+
 		case EditorFeature::Water:
 			EditWater(position, editorMode == EditorMode::Paint);
 			break;
 
-		case EditorFeature::Trees:
-			EditTrees(position, editorMode == EditorMode::Paint);
+		case EditorFeature::Fords:
+			EditFords(position, editorMode == EditorMode::Paint);
 			break;
+
 	}
 }
 
@@ -64,12 +73,16 @@ void EditorModel::ToolEnded(glm::vec2 position)
 			EditHills(position, editorMode == EditorMode::Paint);
 			break;
 
+		case EditorFeature::Trees:
+			EditTrees(position, editorMode == EditorMode::Paint);
+			break;
+
 		case EditorFeature::Water:
 			EditWater(position, editorMode == EditorMode::Paint);
 			break;
 
-		case EditorFeature::Trees:
-			EditTrees(position, editorMode == EditorMode::Paint);
+		case EditorFeature::Fords:
+			EditFords(position, editorMode == EditorMode::Paint);
 			break;
 	}
 }
@@ -83,6 +96,14 @@ void EditorModel::EditHills(glm::vec2 position, bool value)
 }
 
 
+void EditorModel::EditTrees(glm::vec2 position, bool value)
+{
+	bounds2f bounds = _terrainSurfaceRenderer->GetTerrainSurfaceModel()->EditTrees(position, 15, value ? 0.5 : -0.5);
+	_terrainSurfaceRenderer->UpdateMapTexture();
+	_battleView->UpdateTerrainTrees(bounds);
+}
+
+
 void EditorModel::EditWater(glm::vec2 position, bool value)
 {
 	bounds2f bounds = _terrainSurfaceRenderer->GetTerrainSurfaceModel()->EditWater(position, 15, value ? 0.5 : -0.5);
@@ -92,9 +113,10 @@ void EditorModel::EditWater(glm::vec2 position, bool value)
 }
 
 
-void EditorModel::EditTrees(glm::vec2 position, bool value)
+void EditorModel::EditFords(glm::vec2 position, bool value)
 {
-	bounds2f bounds = _terrainSurfaceRenderer->GetTerrainSurfaceModel()->EditTrees(position, 15, value ? 0.5 : -0.5);
-	_terrainSurfaceRenderer->UpdateMapTexture();
+	bounds2f bounds = _terrainSurfaceRenderer->GetTerrainSurfaceModel()->EditFords(position, 15, value ? 0.5 : -0.5);
+	_terrainSurfaceRenderer->UpdateHeights(bounds);
 	_battleView->UpdateTerrainTrees(bounds);
+	_battleView->GetBattleModel()->terrainWater->Update();
 }

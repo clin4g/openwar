@@ -9,7 +9,7 @@
 
 class BattleView;
 
-enum class EditorFeature { Hills, Water, Trees };
+enum class EditorFeature { Hills, Water, Trees, Fords };
 enum class EditorMode { Hand, Paint, Erase, Smear };
 
 
@@ -30,8 +30,9 @@ public:
 
 private:
 	void EditHills(glm::vec2 position, bool value);
-	void EditWater(glm::vec2 position, bool value);
 	void EditTrees(glm::vec2 position, bool value);
+	void EditWater(glm::vec2 position, bool value);
+	void EditFords(glm::vec2 position, bool value);
 };
 
 

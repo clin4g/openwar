@@ -161,6 +161,30 @@ bounds2f SmoothTerrainSurface::EditHills(glm::vec2 position, float radius, float
 }
 
 
+bounds2f SmoothTerrainSurface::EditTrees(glm::vec2 position, float radius, float pressure)
+{
+	glm::ivec2 p0 = glm::ivec2(_scaleWorldToImage * position);
+
+	float value = pressure > 0 ? 1 : 0;
+	float abs_pressure = glm::abs(pressure);
+
+	for (int x = -5; x <= 5; ++x)
+		for (int y = -5; y <= 5; ++y)
+		{
+			glm::ivec2 pi = p0 + glm::ivec2(x, y);
+			float k = 1.0f - glm::distance(position, _scaleImageToWorld * glm::vec2(pi)) / radius;
+			if (k > 0)
+			{
+				glm::vec4 c = _map->get_pixel(pi.x, pi.y);
+				c.g = glm::mix(c.g, value, k * abs_pressure);
+				_map->set_pixel(pi.x, pi.y, c);
+			}
+		}
+
+	return bounds2_from_center(position, radius + 1);
+}
+
+
 bounds2f SmoothTerrainSurface::EditWater(glm::vec2 position, float radius, float pressure)
 {
 	glm::ivec2 p0 = glm::ivec2(_scaleWorldToImage * position);
@@ -185,7 +209,7 @@ bounds2f SmoothTerrainSurface::EditWater(glm::vec2 position, float radius, float
 }
 
 
-bounds2f SmoothTerrainSurface::EditTrees(glm::vec2 position, float radius, float pressure)
+bounds2f SmoothTerrainSurface::EditFords(glm::vec2 position, float radius, float pressure)
 {
 	glm::ivec2 p0 = glm::ivec2(_scaleWorldToImage * position);
 
@@ -200,7 +224,7 @@ bounds2f SmoothTerrainSurface::EditTrees(glm::vec2 position, float radius, float
 			if (k > 0)
 			{
 				glm::vec4 c = _map->get_pixel(pi.x, pi.y);
-				c.g = glm::mix(c.g, value, k * abs_pressure);
+				c.r = glm::mix(c.r, value, k * abs_pressure);
 				_map->set_pixel(pi.x, pi.y, c);
 			}
 		}

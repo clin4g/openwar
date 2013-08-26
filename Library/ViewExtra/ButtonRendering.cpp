@@ -33,8 +33,9 @@ _renderers(r)
 	buttonEditorToolErase = new ButtonIcon(_textureEditorTools, glm::vec2(32, 32), bounds2f(0.50, 0.0, 0.75, 0.5));
 	buttonEditorToolSmear = new ButtonIcon(_textureEditorTools, glm::vec2(32, 32), bounds2f(0.75, 0.0, 1.00, 0.5));
 	buttonEditorToolHills = new ButtonIcon(_textureEditorTools, glm::vec2(32, 32), bounds2f(0.00, 0.5, 0.25, 1.0));
-	buttonEditorToolWater = new ButtonIcon(_textureEditorTools, glm::vec2(32, 32), bounds2f(0.25, 0.5, 0.50, 1.0));
-	buttonEditorToolTrees = new ButtonIcon(_textureEditorTools, glm::vec2(32, 32), bounds2f(0.50, 0.5, 0.75, 1.0));
+	buttonEditorToolTrees = new ButtonIcon(_textureEditorTools, glm::vec2(32, 32), bounds2f(0.25, 0.5, 0.50, 1.0));
+	buttonEditorToolWater = new ButtonIcon(_textureEditorTools, glm::vec2(32, 32), bounds2f(0.50, 0.5, 0.75, 1.0));
+	buttonEditorToolFords = new ButtonIcon(_textureEditorTools, glm::vec2(32, 32), bounds2f(0.75, 0.5, 1.00, 1.0));
 }
 
 
