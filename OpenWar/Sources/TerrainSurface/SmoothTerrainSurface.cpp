@@ -137,54 +137,83 @@ float SmoothTerrainSurface::GetHeight(int x, int y) const
 }
 
 
+void SmoothTerrainSurface::Extract(glm::vec2 position, image* brush)
+{
+	glm::ivec2 size = brush->size();
+	glm::ivec2 origin = glm::ivec2(_scaleWorldToImage * position) - size / 2;
+
+	for (int x = 0; x < size.x; ++x)
+		for (int y = 0; y < size.y; ++y)
+			brush->set_pixel(x, y, _map->get_pixel(origin.x + x, origin.y + y));
+}
+
+
+bounds2f SmoothTerrainSurface::Paint(TerrainFeature feature, glm::vec2 position, image* brush, float pressure)
+{
+	glm::ivec2 size = brush->size();
+	glm::ivec2 center = glm::ivec2(_scaleWorldToImage * position);
+	glm::ivec2 origin = center - size / 2;
+	float radius = size.x / 2.0f;
+
+	for (int x = 0; x < size.x; ++x)
+		for (int y = 0; y < size.y; ++y)
+		{
+			glm::ivec2 p = origin + glm::ivec2(x, y);
+			float d = glm::distance(position, _scaleImageToWorld * glm::vec2(p)) /  radius;
+			float k = 1.0f - d * d;
+			if (k > 0)
+			{
+				glm::vec4 b = brush->get_pixel(x, y);
+				glm::vec4 c = _map->get_pixel(p.x, p.y);
+				switch (feature)
+				{
+					case TerrainFeature::Hills: c.a = glm::mix(c.a, b.a, k * pressure); break;
+					case TerrainFeature::Trees: c.g = glm::mix(c.g, b.g, k * pressure); break;
+					case TerrainFeature::Water: c.b = glm::mix(c.b, b.b, k * pressure); break;
+					case TerrainFeature::Fords: c.r = glm::mix(c.r, b.r, k * pressure); break;
+				}
+				_map->set_pixel(p.x, p.y, c);
+			}
+		}
+
+	if (feature == TerrainFeature::Hills)
+		LoadHeightmapFromImage();
+
+	return bounds2_from_center(position, radius + 1);
+}
+
+
 bounds2f SmoothTerrainSurface::Paint(TerrainFeature feature, glm::vec2 position, float radius, float pressure)
 {
 	float abs_pressure = glm::abs(pressure);
 
+	glm::ivec2 center = glm::ivec2(_scaleWorldToImage * position);
+
+	float value = pressure > 0 ? 1 : 0;
+	float delta = pressure > 0 ? 0.015f : -0.015f;
+
+	for (int x = -5; x <= 5; ++x)
+		for (int y = -5; y <= 5; ++y)
+		{
+			glm::ivec2 p = center + glm::ivec2(x, y);
+			float d = glm::distance(position, _scaleImageToWorld * glm::vec2(p)) /  radius;
+			float k = 1.0f - d * d;
+			if (k > 0)
+			{
+				glm::vec4 c = _map->get_pixel(p.x, p.y);
+				switch (feature)
+				{
+					case TerrainFeature::Hills: c.a = glm::mix(c.a, c.a + delta, k * abs_pressure); break;
+					case TerrainFeature::Trees: c.g = glm::mix(c.g, value, k * abs_pressure); break;
+					case TerrainFeature::Water: c.b = glm::mix(c.b, value, k * abs_pressure); break;
+					case TerrainFeature::Fords: c.r = glm::mix(c.r, value, k * abs_pressure); break;
+				}
+				_map->set_pixel(p.x, p.y, c);
+			}
+		}
+
 	if (feature == TerrainFeature::Hills)
-	{
-		float delta = pressure > 0 ? 0.5f : -0.5f;
-
-		glm::ivec2 p0 = glm::ivec2(128.0f / 1024.0f * position);
-
-		for (int x = -5; x <= 5; ++x)
-			for (int y = -5; y <= 5; ++y)
-			{
-				glm::ivec2 pi = p0 + glm::ivec2(x, y);
-				float k = 1.0f - glm::distance(position, 1024.0f / 128.0f * glm::vec2(pi)) / radius;
-				if (k > 0)
-				{
-					float h = GetHeight(pi.x, pi.y);
-					h = glm::mix(h, h + delta, k * abs_pressure);
-					_heightmap.set_height(pi.x, pi.y, fmaxf(0.1f, h));
-				}
-			}
-	}
-	else
-	{
-		glm::ivec2 p0 = glm::ivec2(_scaleWorldToImage * position);
-
-		float value = pressure > 0 ? 1 : 0;
-
-		for (int x = -5; x <= 5; ++x)
-			for (int y = -5; y <= 5; ++y)
-			{
-				glm::ivec2 pi = p0 + glm::ivec2(x, y);
-				float k = 1.0f - glm::distance(position, _scaleImageToWorld * glm::vec2(pi)) / radius;
-				if (k > 0)
-				{
-					glm::vec4 c = _map->get_pixel(pi.x, pi.y);
-					switch (feature)
-					{
-						case TerrainFeature::Hills: c.a = glm::mix(c.a, value, k * abs_pressure); break;
-						case TerrainFeature::Trees: c.g = glm::mix(c.g, value, k * abs_pressure); break;
-						case TerrainFeature::Water: c.b = glm::mix(c.b, value, k * abs_pressure); break;
-						case TerrainFeature::Fords: c.r = glm::mix(c.r, value, k * abs_pressure); break;
-					}
-					_map->set_pixel(pi.x, pi.y, c);
-				}
-			}
-	}
+		LoadHeightmapFromImage();
 
 	return bounds2_from_center(position, radius + 1);
 }

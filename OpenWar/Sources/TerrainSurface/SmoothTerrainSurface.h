@@ -45,6 +45,8 @@ public:
 
 	float GetHeight(int x, int y) const;
 
+	void Extract(glm::vec2 position, image* brush);
+	bounds2f Paint(TerrainFeature feature, glm::vec2 position, image* img, float pressure);
 	bounds2f Paint(TerrainFeature feature, glm::vec2 position, float radius, float pressure);
 };
 

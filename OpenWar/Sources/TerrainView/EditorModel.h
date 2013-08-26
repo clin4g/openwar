@@ -18,9 +18,10 @@ class EditorModel
 	SmoothTerrainSurfaceRenderer* _terrainSurfaceRenderer;
 	EditorMode _editorMode;
 	TerrainFeature _terrainFeature;
+	image* _brush;
+	image* _mixer;
 
 public:
-
 	EditorModel(BattleView* battleView, SmoothTerrainSurfaceRenderer* terrainSurfaceRenderer);
 
 	EditorMode GetEditorMode() const { return _editorMode; }
@@ -35,6 +36,9 @@ public:
 
 private:
 	void Paint(TerrainFeature feature, glm::vec2 position, bool value);
+
+	void SmearReset(TerrainFeature feature, glm::vec2 position);
+	void SmearPaint(TerrainFeature feature, glm::vec2 position);
 };
 
 
