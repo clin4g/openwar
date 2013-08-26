@@ -77,7 +77,7 @@ private:
 	void ClickedPause();
 
 	void SetEditorMode(EditorMode editorMode);
-	void SetEditorFeature(EditorFeature editorFeature);
+	void SetEditorFeature(TerrainFeature editorFeature);
 
 	void UpdateButtonsAndGestures();
 };

@@ -66,10 +66,10 @@ _buttonItemFords(nullptr)
 	_buttonItemPaint->SetAction([this](){ SetEditorMode(EditorMode::Paint); });
 	_buttonItemErase->SetAction([this](){ SetEditorMode(EditorMode::Erase); });
 	_buttonItemSmear->SetAction([this](){ SetEditorMode(EditorMode::Smear); });
-	_buttonItemHills->SetAction([this](){ SetEditorFeature(EditorFeature::Hills); });
-	_buttonItemTrees->SetAction([this](){ SetEditorFeature(EditorFeature::Trees); });
-	_buttonItemWater->SetAction([this](){ SetEditorFeature(EditorFeature::Water); });
-	_buttonItemFords->SetAction([this](){ SetEditorFeature(EditorFeature::Fords); });
+	_buttonItemHills->SetAction([this](){ SetEditorFeature(TerrainFeature::Hills); });
+	_buttonItemTrees->SetAction([this](){ SetEditorFeature(TerrainFeature::Trees); });
+	_buttonItemWater->SetAction([this](){ SetEditorFeature(TerrainFeature::Water); });
+	_buttonItemFords->SetAction([this](){ SetEditorFeature(TerrainFeature::Fords); });
 
 	_buttonItemHand->SetKeyboardShortcut('1');
 	_buttonItemSmear->SetKeyboardShortcut('2');
@@ -282,17 +282,17 @@ void OpenWarSurface::SetEditorMode(EditorMode editorMode)
 {
 	if (_editorModel != nullptr)
 	{
-		_editorModel->editorMode = editorMode;
+		_editorModel->SetEditorMode(editorMode);
 		UpdateButtonsAndGestures();
 	}
 }
 
 
-void OpenWarSurface::SetEditorFeature(EditorFeature editorFeature)
+void OpenWarSurface::SetEditorFeature(TerrainFeature terrainFeature)
 {
 	if (_editorModel != nullptr)
 	{
-		_editorModel->editorFeature = editorFeature;
+		_editorModel->SetTerrainFeature(terrainFeature);
 		UpdateButtonsAndGestures();
 	}
 }
@@ -312,17 +312,17 @@ void OpenWarSurface::UpdateButtonsAndGestures()
 	if (_mode == Mode::None)
 		return;
 
-	_buttonItemHand->SetSelected(_editorModel->editorMode == EditorMode::Hand);
-	_buttonItemPaint->SetSelected(_editorModel->editorMode == EditorMode::Paint);
-	_buttonItemErase->SetSelected(_editorModel->editorMode == EditorMode::Erase);
-	_buttonItemSmear->SetSelected(_editorModel->editorMode == EditorMode::Smear);
-	_buttonItemHills->SetSelected(_editorModel->editorFeature == EditorFeature::Hills);
-	_buttonItemTrees->SetSelected(_editorModel->editorFeature == EditorFeature::Trees);
-	_buttonItemWater->SetSelected(_editorModel->editorFeature == EditorFeature::Water);
-	_buttonItemFords->SetSelected(_editorModel->editorFeature == EditorFeature::Fords);
+	_buttonItemHand->SetSelected(_editorModel->GetEditorMode() == EditorMode::Hand);
+	_buttonItemPaint->SetSelected(_editorModel->GetEditorMode() == EditorMode::Paint);
+	_buttonItemErase->SetSelected(_editorModel->GetEditorMode() == EditorMode::Erase);
+	_buttonItemSmear->SetSelected(_editorModel->GetEditorMode() == EditorMode::Smear);
+	_buttonItemHills->SetSelected(_editorModel->GetTerrainFeature() == TerrainFeature::Hills);
+	_buttonItemTrees->SetSelected(_editorModel->GetTerrainFeature() == TerrainFeature::Trees);
+	_buttonItemWater->SetSelected(_editorModel->GetTerrainFeature() == TerrainFeature::Water);
+	_buttonItemFords->SetSelected(_editorModel->GetTerrainFeature() == TerrainFeature::Fords);
 
 	_battleGesture->SetEnabled(_mode == Mode::Playing);
-	_editorGesture->SetEnabled(_mode == Mode::Editing && _editorModel->editorMode != EditorMode::Hand);
+	_editorGesture->SetEnabled(_mode == Mode::Editing && _editorModel->GetEditorMode() != EditorMode::Hand);
 
 	_buttonsTopRight->Reset();
 	switch (_mode)

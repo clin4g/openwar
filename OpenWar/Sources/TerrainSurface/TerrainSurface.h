@@ -8,6 +8,9 @@
 #include "geometry.h"
 
 
+enum class TerrainFeature { Hills, Water, Trees, Fords };
+
+
 class TerrainSurface
 {
 public:
