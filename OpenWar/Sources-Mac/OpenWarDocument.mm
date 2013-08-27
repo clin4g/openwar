@@ -180,7 +180,7 @@
 
 - (BattleScript*)createBattleScriptFromSmoothMap:(NSData*)smoothMap
 {
-	BattleScript* battleScript = new BattleScript(nullptr, nullptr, 0);
+	BattleScript* battleScript = new BattleScript(0, nullptr, nullptr, 0);
 
 	BattleModel* battleModel = battleScript->GetBattleModel();
 
@@ -197,7 +197,7 @@
 
 - (BattleScript*)createBattleScriptFromScript:(NSData*)script
 {
-	BattleScript* battleScript = new BattleScript(_sourceDirectory.filePathURL.path.UTF8String, (const char*)script.bytes, script.length);
+	BattleScript* battleScript = new BattleScript(0, _sourceDirectory.filePathURL.path.UTF8String, (const char*)script.bytes, script.length);
 
 	if (battleScript->GetBattleModel()->terrainForest == nullptr)
 	{

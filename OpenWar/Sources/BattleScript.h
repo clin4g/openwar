@@ -31,7 +31,7 @@ class BattleScript
 	lua_State* _L;
 
 public:
-	BattleScript(const char* directory, const char* script, size_t length);
+	BattleScript(int seed, const char* directory, const char* script, size_t length);
 	~BattleScript();
 
 	BattleModel* GetBattleModel() const { return _battleModel; }

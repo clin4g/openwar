@@ -18,7 +18,7 @@
 static BattleScript* _battlescript = nullptr;
 
 
-BattleScript::BattleScript(const char* directory, const char* script, size_t length) :
+BattleScript::BattleScript(int seed, const char* directory, const char* script, size_t length) :
 _battleModel(nullptr),
 _battleSimulator(nullptr),
 _L(nullptr)
@@ -29,6 +29,9 @@ _L(nullptr)
 
 	_L = luaL_newstate();
 	luaL_openlibs(_L);
+
+	lua_pushnumber(_L, seed);
+	lua_setglobal(_L, "openwar_seed");
 
 	lua_pushstring(_L, directory);
 	lua_setglobal(_L, "openwar_script_directory");
