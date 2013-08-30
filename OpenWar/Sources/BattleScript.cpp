@@ -24,6 +24,8 @@ _battleSimulator(nullptr),
 _L(nullptr)
 {
 	_battleModel = new BattleModel();
+	_battleModel->terrainForest = new BillboardTerrainForest();
+
 	_battleSimulator = new BattleSimulator(_battleModel);
 	_battlescript = this;
 
@@ -135,12 +137,6 @@ void BattleScript::SetUnitMovement(int unitId, bool running, std::vector<glm::ve
 
 int BattleScript::openwar_terrain_init(lua_State* L)
 {
-	if (_battlescript->_battleModel == nullptr)
-	{
-		_battlescript->_battleModel = new BattleModel();
-		_battlescript->_battleModel->terrainForest = new BillboardTerrainForest();
-	}
-
 	delete _battlescript->_battleModel->terrainSurface;
 	_battlescript->_battleModel->terrainSurface = nullptr;
 
@@ -156,7 +152,7 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 		image* map = ConvertTiffToImage(data);
 
 		_battlescript->_battleModel->terrainSurface = new SmoothTerrainSurface(bounds2f(0, 0, 1024, 1024), map);
-		_battlescript->_battleModel->terrainWater = new SmoothTerrainWater(map, false);
+		_battlescript->_battleModel->terrainWater = new SmoothTerrainWater(bounds2f(0, 0, 1024, 1024), map);
 		_battlescript->_battleModel->terrainSky = new SmoothTerrainSky();
 	}
 	else if (s != nullptr && std::strcmp(s, "tiled") == 0)
@@ -174,12 +170,6 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 
 int BattleScript::openwar_simulator_init(lua_State* L)
 {
-	if (_battlescript->_battleModel == nullptr)
-	{
-		_battlescript->_battleModel = new BattleModel();
-		_battlescript->_battleModel->terrainForest = new BillboardTerrainForest();
-	}
-
 	//battleContext->simulationRules = new BattleSimulator(_battlescript->_battleModel);
 	//battleContext->simulationRules->currentPlayer = Player1;
 

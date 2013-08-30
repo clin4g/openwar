@@ -4,6 +4,8 @@
 
 #include "BattleSimulator.h"
 #include "SmoothTerrainWater.h"
+#include "TerrainSurface.h"
+#include "geometry.h"
 
 
 

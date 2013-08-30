@@ -5,6 +5,7 @@
 #include "CasualtyMarker.h"
 #include "ColorBillboardRenderer.h"
 #include "TextureBillboardRenderer.h"
+#include "TerrainSurface.h"
 
 
 

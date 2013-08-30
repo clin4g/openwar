@@ -4,7 +4,7 @@
 
 #include "MovementRules.h"
 #include "BattleModel.h"
-
+#include "geometry.h"
 
 
 Formation::Formation() :
@@ -150,7 +150,7 @@ void MovementRules::AdvanceTime(Unit* unit, float timeStep)
 	{
 		glm::vec2 diff = unit->command.path[1] - unit->command.path[0];
 		if (glm::length(diff) > 5)
-			direction = angle(diff);
+			direction = ::angle(diff);
 	}
 
 	if (unit->command.meleeTarget && glm::length(unit->state.center - unit->command.meleeTarget->state.center) <= 15)

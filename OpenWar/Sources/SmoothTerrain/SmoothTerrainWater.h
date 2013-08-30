@@ -25,11 +25,10 @@ class SmoothTerrainWater : public TerrainWater
 	vertexbuffer<plain_vertex> _shape_water_border;
 
 	image* _map;
-	bool _editor;
 	bounds2f _bounds;
 
 public:
-	SmoothTerrainWater(image* map, bool editor);
+	SmoothTerrainWater(bounds2f bounds, image* map);
 	virtual ~SmoothTerrainWater();
 
 	virtual bool IsWater(glm::vec2 position) const;

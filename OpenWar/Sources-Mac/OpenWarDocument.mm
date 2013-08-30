@@ -188,7 +188,7 @@
 
 	battleModel->terrainSurface = new SmoothTerrainSurface(bounds2f(0, 0, 1024, 1024), map);
 	battleModel->terrainForest = new BillboardTerrainForest();
-	battleModel->terrainWater = new SmoothTerrainWater(map, false);
+	battleModel->terrainWater = new SmoothTerrainWater(bounds2f(0, 0, 1024, 1024), map);
 	battleModel->terrainSky = new SmoothTerrainSky();
 
 	return battleScript;

@@ -5,10 +5,9 @@
 #include "SmoothTerrainWater.h"
 
 
-SmoothTerrainWater::SmoothTerrainWater(image* map, bool editor) :
+SmoothTerrainWater::SmoothTerrainWater(bounds2f bounds, image* map) :
 _map(map),
-_editor(editor),
-_bounds(0, 0, 1024, 1024)
+_bounds(bounds)
 {
 	_water_inside_renderer = new renderer<plain_vertex, ground_texture_uniforms>((
 			VERTEX_ATTRIBUTE(plain_vertex, _position),
@@ -172,7 +171,7 @@ void SmoothTerrainWater::Update()
 		for (int y = 0; y < n; ++y)
 		{
 			glm::vec2 p = s * glm::vec2(x, y);
-			if (_editor || ContainsWater(bounds2f(p, p + s)))
+			if (ContainsWater(bounds2f(p, p + s)))
 			{
 				plain_vertex v11 = plain_vertex(p);
 				plain_vertex v12 = plain_vertex(p + glm::vec2(0, s.y));

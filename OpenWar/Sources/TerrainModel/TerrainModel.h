@@ -5,11 +5,10 @@
 #ifndef TerrainModel_H
 #define TerrainModel_H
 
-
-#include "TerrainSurface.h"
 class BillboardTerrainForest;
-class SmoothTerrainWater;
 class SmoothTerrainSky;
+class SmoothTerrainWater;
+class TerrainSurface;
 
 
 class TerrainModel
