@@ -37,7 +37,7 @@ public:
 	BattleModel* GetBattleModel() const { return _battleModel; }
 	BattleSimulator* GetBattleSimulator() const { return _battleSimulator; }
 
-	void Tick();
+	void Tick(double secondsSinceLastTick);
 
 private:
 	int NewUnit(Player player, UnitPlatform platform, UnitWeapon weapon, int strength, glm::vec2 position, float bearing);

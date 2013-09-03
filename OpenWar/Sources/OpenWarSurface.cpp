@@ -167,7 +167,7 @@ void OpenWarSurface::Update(double secondsSinceLastUpdate)
 {
 	if (_mode == Mode::Playing)
 	{
-		_battleScript->GetBattleSimulator()->AdvanceTime((float)secondsSinceLastUpdate);
+		_battleScript->Tick(secondsSinceLastUpdate);
 		UpdateSoundPlayer();
 	}
 	if (_battleView != nullptr)
