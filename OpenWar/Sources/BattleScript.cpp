@@ -99,12 +99,20 @@ BattleScript::~BattleScript()
 void BattleScript::Tick(double secondsSinceLastUpdate)
 {
 	lua_getglobal(_L, "openwar_battle_tick");
-	lua_pushnumber(_L, secondsSinceLastUpdate);
-	int error = lua_pcall(_L, 1, 0, 0);
-	if (error)
+
+	if (lua_isnil(_L, -1))
 	{
-		NSLog(@"BattleScript ERROR: %s", lua_tostring(_L, -1));
-		lua_pop(_L, 1);  /* pop error message from the stack */
+		lua_pop(_L, 1);
+	}
+	else
+	{
+		lua_pushnumber(_L, secondsSinceLastUpdate);
+		int error = lua_pcall(_L, 1, 0, 0);
+		if (error)
+		{
+			NSLog(@"BattleScript ERROR: %s", lua_tostring(_L, -1));
+			lua_pop(_L, 1);  /* pop error message from the stack */
+		}
 	}
 
 	_battleSimulator->AdvanceTime(secondsSinceLastUpdate);
@@ -327,6 +335,9 @@ UnitPlatform BattleScript::ToUnitPlatform(lua_State* L, int index)
 		if (std::strcmp(s, "ASH") == 0) return UnitPlatformAsh;
 		if (std::strcmp(s, "SAM") == 0) return UnitPlatformSam;
 	}
+
+	NSLog(@"BattleScript::ToUnitPlatform, unknown: <%s>", s);
+
 	return UnitPlatformCav;
 }
 
@@ -342,6 +353,9 @@ UnitWeapon BattleScript::ToUnitUnitWeapon(lua_State* L, int index)
 		if (std::strcmp(s, "BOW") == 0) return UnitWeaponBow;
 		if (std::strcmp(s, "ARQ") == 0) return UnitWeaponArq;
 	}
+
+	NSLog(@"BattleScript::ToUnitUnitWeapon, unknown: <%s>", s);
+
 	return UnitWeaponYari;
 }
 
