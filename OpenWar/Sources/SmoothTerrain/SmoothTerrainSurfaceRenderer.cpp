@@ -693,6 +693,9 @@ SmoothTerrainSurfaceRenderer::~SmoothTerrainSurfaceRenderer()
 	delete _framebuffer;
 	delete _colorbuffer;
 	delete _depth;
+
+	delete _renderers;
+	delete _ground_shadow_renderer;
 }
 
 

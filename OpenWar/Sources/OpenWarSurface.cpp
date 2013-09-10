@@ -322,7 +322,7 @@ void OpenWarSurface::UpdateButtonsAndGestures()
 	_buttonItemFords->SetSelected(_editorModel->GetTerrainFeature() == TerrainFeature::Fords);
 
 	_battleGesture->SetEnabled(_mode == Mode::Playing);
-	_editorGesture->SetEnabled(_mode == Mode::Editing && _editorModel->GetEditorMode() != EditorMode::Hand);
+	_editorGesture->SetEnabled(_mode == Mode::Editing);
 
 	_buttonsTopRight->Reset();
 	switch (_mode)

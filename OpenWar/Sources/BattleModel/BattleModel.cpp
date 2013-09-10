@@ -246,7 +246,6 @@ bluePlayer(Player1),
 winner(PlayerNone),
 time(0),
 timeStep(1.0f / 15.0f),
-_mapSize(1024, 1024),
 _unitMarkers()
 {
 }

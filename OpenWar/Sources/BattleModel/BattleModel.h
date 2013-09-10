@@ -329,8 +329,6 @@ public:
 	std::map<int, Unit*> units;
 	std::vector<Shooting> shootings;
 
-	glm::vec2 _mapSize;
-
 	std::vector<UnitCounter*> _unitMarkers;
 	std::vector<ShootingCounter*> _shootingCounters;
 	std::vector<SmokeCounter*> _smokeMarkers;

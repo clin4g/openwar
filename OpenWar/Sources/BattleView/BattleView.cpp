@@ -253,7 +253,7 @@ void BattleView::UpdateTerrainTrees(bounds2f bounds)
 		glm::vec2 center = mapbounds.center();
 		float radius = mapbounds.width() / 2;
 
-		float d = 5;
+		float d = 5 * mapbounds.width() / 1024;
 		for (float x = mapbounds.min.x; x < mapbounds.max.x; x += d)
 			for (float y = mapbounds.min.y; y < mapbounds.max.y; y += d)
 			{

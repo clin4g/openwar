@@ -26,7 +26,6 @@ _L(nullptr)
 	_battleModel = new BattleModel();
 	_battleModel->terrainForest = new BillboardTerrainForest();
 
-	_battleSimulator = new BattleSimulator(_battleModel);
 	_battlescript = this;
 
 	_L = luaL_newstate();
@@ -189,8 +188,7 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 
 int BattleScript::openwar_simulator_init(lua_State* L)
 {
-	//battleContext->simulationRules = new BattleSimulator(_battlescript->_battleModel);
-	//battleContext->simulationRules->currentPlayer = Player1;
+	_battlescript->_battleSimulator = new BattleSimulator(_battlescript->_battleModel);
 
 	return 0;
 }

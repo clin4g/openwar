@@ -26,12 +26,20 @@ void EditorGesture::TouchBegan(Touch* touch)
 {
 	if (touch->GetSurface() != _battleView->GetSurface())
 		return;
+
+	if (_editorModel->GetEditorMode() == EditorMode::Hand)
+	{
+		bounds2f b = _battleView->GetContentBounds();
+		glm::vec2 p = (TerrainPosition(touch) - b.min) / b.size();
+		NSLog(@"Position: %g, %g", p.x, p.y);
+		return;
+	}
+
 	if (touch->GetGesture() != nullptr || !_touches.empty())
 		return;
 
-	CaptureTouch(touch);
-
 	_editorModel->ToolBegan(TerrainPosition(touch));
+	CaptureTouch(touch);
 }
 
 

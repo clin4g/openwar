@@ -16,8 +16,16 @@ SimulationListener::~SimulationListener()
 
 BattleSimulator::BattleSimulator(BattleModel* battleModel) :
 _battleModel(battleModel),
-_fighterQuadTree(0, 0, 1024, 1024),
-_weaponQuadTree(0, 0, 1024, 1024),
+_fighterQuadTree(
+	battleModel->terrainSurface->GetBounds().min.x,
+	battleModel->terrainSurface->GetBounds().min.y,
+	battleModel->terrainSurface->GetBounds().max.x,
+	battleModel->terrainSurface->GetBounds().max.y),
+_weaponQuadTree(
+	battleModel->terrainSurface->GetBounds().min.x,
+	battleModel->terrainSurface->GetBounds().min.y,
+	battleModel->terrainSurface->GetBounds().max.x,
+	battleModel->terrainSurface->GetBounds().max.y),
 _secondsSinceLastTimeStep(0),
 listener(0),
 currentPlayer(PlayerNone),
@@ -298,6 +306,12 @@ void BattleSimulator::RemoveCasualties()
 		}
 	}
 
+	bounds2f bounds = _battleModel->terrainSurface->GetBounds();
+	glm::vec2 center = bounds.center();
+	float radius = bounds.width() / 2;
+	float radius_squared = radius * radius;
+
+
 	for (std::map<int, Unit*>::iterator i = _battleModel->units.begin(); i != _battleModel->units.end(); ++i)
 	{
 		Unit* unit = (*i).second;
@@ -315,8 +329,8 @@ void BattleSimulator::RemoveCasualties()
 			}
 			else
 			{
-				glm::vec2 diff = unit->fighters[j].state.position - glm::vec2(512, 512);
-				if (glm::dot(diff, diff) < 512 * 512)
+				glm::vec2 diff = unit->fighters[j].state.position - center;
+				if (glm::dot(diff, diff) < radius_squared)
 				{
 					if (index < j)
 						unit->fighters[index].state = unit->fighters[j].state;
@@ -444,12 +458,6 @@ UnitState BattleSimulator::NextUnitState(Unit* unit)
 	}
 
 	if (practice && unit->player == Player2 && unit->state.IsRouting())
-	{
-		result.morale = -1;
-	}
-
-	if (result.center.x < 8 || result.center.x > 1024 - 8
-			|| result.center.y < 8 || result.center.y > 1024 - 8)
 	{
 		result.morale = -1;
 	}
