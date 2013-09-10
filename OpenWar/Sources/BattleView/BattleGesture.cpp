@@ -438,11 +438,15 @@ void BattleGesture::UpdateTrackingMarker()
 
 		glm::vec2 currentDestination = path.size() != 0 ? *(path.end() - 1) : unit->state.center;
 
-		glm::vec2 differenceToCenter = glm::vec2(512, 512) - markerPosition;
+		bounds2f contentBounds = _battleView->GetContentBounds();
+		glm::vec2 contentCenter = contentBounds.center();
+		float contentRadius = contentBounds.width() / 2;
+
+		glm::vec2 differenceToCenter = contentCenter - markerPosition;
 		float distanceToCenter = glm::length(differenceToCenter);
-		if (distanceToCenter > 512)
+		if (distanceToCenter > contentRadius)
 		{
-			markerPosition += differenceToCenter * (distanceToCenter - 512) / distanceToCenter;
+			markerPosition += differenceToCenter * (distanceToCenter - contentRadius) / distanceToCenter;
 		}
 
 		float waterEdgeFactor = -1;

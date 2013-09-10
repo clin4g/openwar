@@ -38,6 +38,9 @@ public:
 	TiledTerrainSurface(bounds2f bounds, glm::ivec2 size);
 	~TiledTerrainSurface();
 
+	virtual bounds2f GetBounds() const { return _bounds; }
+	glm::ivec2 GetSize() const { return _size; }
+
 	virtual float GetHeight(glm::vec2 position) const;
 	virtual glm::vec3 GetNormal(glm::vec2 position) const;
 	virtual const float* Intersect(ray r);
@@ -51,8 +54,6 @@ public:
 	void SetHeight(int x, int y, float h);
 	void SetTile(int x, int y, const std::string& texture, int rotate, bool mirror);
 
-	bounds2f GetBounds() const { return _bounds; }
-	glm::ivec2 GetSize() const { return _size; }
 
 	Tile* GetTile(int x, int y);
 };

@@ -2,14 +2,14 @@
 --
 -- This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-openwar_terrain_init("smooth", openwar_script_directory .. "/DefaultMap.tiff")
+openwar_terrain_init("smooth", openwar_script_directory .. "/DefaultMap.tiff", 1024)
 openwar_simulator_init()
 
 
 battle_message("Hello World")
 
 
-battle_new_unit(1, "GEN", "KAT",  40, 479, 318, 0)
+battle_new_unit(1, "GEN", "KATA",  40, 479, 318, 0)
 battle_new_unit(1, "ASH", "YARI", 80, 481, 364, 0)
 battle_new_unit(1, "SAM", "BOW",  80, 360, 399, 0)
 battle_new_unit(1, "SAM", "BOW",  80, 422, 397, 0)

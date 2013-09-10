@@ -25,6 +25,9 @@ public:
 	SmoothTerrainSurface(bounds2f bounds, image* map);
 	virtual ~SmoothTerrainSurface();
 
+	virtual bounds2f GetBounds() const { return _bounds; }
+	float GetMaxHeight() const { return _height; }
+
 	virtual float GetHeight(glm::vec2 position) const;
 	virtual glm::vec3 GetNormal(glm::vec2 position) const;
 	virtual const float* Intersect(ray r);
@@ -36,9 +39,6 @@ public:
 
 	void LoadHeightmapFromImage();
 	void SaveHeightmapToImage();
-
-	const bounds2f& GetBounds() const { return _bounds; }
-	float GetMaxHeight() const { return _height; }
 
 	float GetHeight(int x, int y) const;
 

@@ -302,13 +302,14 @@ void TerrainView::ClampCameraPosition()
 	glm::vec2 centerScreen = GetViewportBounds().center();
 	glm::vec2 contentCamera = GetTerrainPosition2(centerScreen).xy();
 	glm::vec2 contentCenter = GetContentBounds().center();
+	float contentRadius = _terrainSurface->GetBounds().width() / 2;
 
 	glm::vec2 offset = contentCamera - contentCenter;
 	float distance = glm::length(offset);
-	if (distance > 512)
+	if (distance > contentRadius)
 	{
 		glm::vec2 direction = offset / distance;
-		_cameraPosition -= glm::vec3(direction * (distance - 512), 0);
+		_cameraPosition -= glm::vec3(direction * (distance - contentRadius), 0);
 	}
 }
 

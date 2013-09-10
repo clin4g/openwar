@@ -63,6 +63,7 @@ struct terrain_uniforms
 {
 	glm::mat4x4 _transform;
 	glm::vec3 _light_normal;
+	glm::vec4 _map_bounds;
 	const texture* _colors;
 	const texture* _map;
 };
@@ -116,7 +117,7 @@ class SmoothTerrainSurfaceRenderer : public TerrainSurfaceRenderer
 	vertexbuffer<terrain_edge_vertex> _shape_terrain_edge;
 	terrain_renderers* _renderers;
 
-	renderer<plain_vertex, plain_uniforms>* _ground_shadow_renderer;
+	renderer<plain_vertex, terrain_uniforms>* _ground_shadow_renderer;
 	vertexbuffer<plain_vertex> _vboTerrainShadow;
 
 public:

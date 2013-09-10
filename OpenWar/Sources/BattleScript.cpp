@@ -163,13 +163,15 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 	if (s != nullptr && std::strcmp(s, "smooth") == 0)
 	{
 		const char* p = n < 2 ? nullptr : lua_tostring(L, 2);
+		const double size = n < 3 ? 1024 : lua_tonumber(L, 3);
 
 		NSString* path = [NSString stringWithCString:p encoding:NSASCIIStringEncoding];
 		NSData* data = [NSData dataWithContentsOfFile:path];
 		image* map = ConvertTiffToImage(data);
+		bounds2f bounds(0, 0, size, size);
 
-		_battlescript->_battleModel->terrainSurface = new SmoothTerrainSurface(bounds2f(0, 0, 1024, 1024), map);
-		_battlescript->_battleModel->terrainWater = new SmoothTerrainWater(bounds2f(0, 0, 1024, 1024), map);
+		_battlescript->_battleModel->terrainSurface = new SmoothTerrainSurface(bounds, map);
+		_battlescript->_battleModel->terrainWater = new SmoothTerrainWater(bounds, map);
 		_battlescript->_battleModel->terrainSky = new SmoothTerrainSky();
 	}
 	else if (s != nullptr && std::strcmp(s, "tiled") == 0)

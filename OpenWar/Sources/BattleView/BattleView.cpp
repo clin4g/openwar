@@ -58,7 +58,7 @@ _textureFacing(nullptr)
 	_textureTouchMarker = new texture(@"TouchMarker.png");
 	_textureFacing = new texture(@"Facing.png");
 
-	SetContentBounds(bounds2f(0, 0, 1024, 1024));
+	SetContentBounds(_terrainSurface->GetBounds());
 
 	_billboardTexture = new BillboardTexture();
 	_billboardTexture->AddSheet(image(@"Billboards.png"));
@@ -202,7 +202,7 @@ void BattleView::Initialize()
 
 void BattleView::InitializeTerrainTrees()
 {
-	UpdateTerrainTrees(bounds2f(0, 0, 1024, 1024));
+	UpdateTerrainTrees(_terrainSurface->GetBounds());
 }
 
 
@@ -237,9 +237,6 @@ void BattleView::UpdateTerrainTrees(bounds2f bounds)
 {
 	if (_terrainSurfaceRendererSmooth != nullptr)
 	{
-		image* map = _terrainSurfaceRendererSmooth->GetTerrainSurfaceModel()->GetMap();
-
-
 		auto pos2 = std::remove_if(_billboardModel->staticBillboards.begin(), _billboardModel->staticBillboards.end(), [bounds](const Billboard& billboard) {
 			return bounds.contains(billboard.position.xy());
 		});
@@ -252,22 +249,24 @@ void BattleView::UpdateTerrainTrees(bounds2f bounds)
 
 		int treeType = 0;
 		random_iterator random(*_randoms);
+		bounds2f mapbounds = _terrainSurface->GetBounds();
+		glm::vec2 center = mapbounds.center();
+		float radius = mapbounds.width() / 2;
 
 		float d = 5;
-		for (float x = 0; x < 1024; x += d)
-			for (float y = 0; y < 1024; y += d)
+		for (float x = mapbounds.min.x; x < mapbounds.max.x; x += d)
+			for (float y = mapbounds.min.y; y < mapbounds.max.y; y += d)
 			{
 				float dx = d * (random.next() - 0.5f);
 				float dy = d * (random.next() - 0.5f);
 				int shape = (int)(15 * random.next()) & 15;
 
 				glm::vec2 position = glm::vec2(x + dx, y + dy);
-				if (bounds.contains(position) && glm::length(position - 512.0f) < 512.0f)
+				if (bounds.contains(position) && glm::distance(position, center) < radius)
 				{
-					float z = _terrainSurface->GetHeight(position);
-					if (z > 0
-							&& map->get_pixel((int)(position.x / 2), (int)(position.y / 2)).g > 0.5
-							&& _terrainSurface->GetNormal(position).z >= 0.84)
+					if (_terrainSurface->GetHeight(position) > 0
+						&& _terrainSurface->IsForest(position)
+						&& _terrainSurface->GetNormal(position).z >= 0.84)
 					{
 						const float adjust = 0.5 - 2.0 / 64.0; // place texture 2 texels below ground
 						_billboardModel->staticBillboards.push_back(Billboard(GetPosition(position, adjust * 5), 0, 5, _billboardModel->_billboardTreeShapes[shape]));

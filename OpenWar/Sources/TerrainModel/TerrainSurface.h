@@ -17,6 +17,8 @@ public:
 	TerrainSurface();
 	virtual ~TerrainSurface();
 
+	virtual bounds2f GetBounds() const = 0;
+
 	virtual float GetHeight(glm::vec2 position) const = 0;
 	virtual glm::vec3 GetNormal(glm::vec2 position) const = 0;
 	virtual const float* Intersect(ray r) = 0;

@@ -46,12 +46,14 @@ void terrain_renderers::render_terrain_inside(vertexbuffer<terrain_vertex>& shap
 			VERTEX_ATTRIBUTE(terrain_vertex, _position),
 			VERTEX_ATTRIBUTE(terrain_vertex, _normal),
 			SHADER_UNIFORM(terrain_uniforms, _transform),
+			SHADER_UNIFORM(terrain_uniforms, _map_bounds),
 			SHADER_UNIFORM(terrain_uniforms, _light_normal),
 			SHADER_UNIFORM(terrain_uniforms, _colors),
 			SHADER_UNIFORM(terrain_uniforms, _map),
 			VERTEX_SHADER
 			({
 				uniform mat4 transform;
+				uniform vec4 map_bounds;
 				uniform vec3 light_normal;
 
 				attribute vec3 position;
@@ -69,7 +71,7 @@ void terrain_renderers::render_terrain_inside(vertexbuffer<terrain_vertex>& shap
 					float brightness = -dot(light_normal, normal);
 
 					_position = position;
-					_terraincoord = position.xy / 1024.0;
+					_terraincoord = (position.xy - map_bounds.xy) / map_bounds.zw;
 					_colorcoord = vec2(brightness, 1.0 - (2.5 + position.z) / 128.0);
 					_brightness = brightness;
 
@@ -117,11 +119,13 @@ void terrain_renderers::render_terrain_border(vertexbuffer<terrain_vertex>& shap
 			VERTEX_ATTRIBUTE(terrain_vertex, _normal),
 			SHADER_UNIFORM(terrain_uniforms, _transform),
 			SHADER_UNIFORM(terrain_uniforms, _light_normal),
+			SHADER_UNIFORM(terrain_uniforms, _map_bounds),
 			SHADER_UNIFORM(terrain_uniforms, _colors),
 			SHADER_UNIFORM(terrain_uniforms, _map),
 			VERTEX_SHADER
 			({
 				uniform mat4 transform;
+				uniform vec4 map_bounds;
 				uniform vec3 light_normal;
 
 				attribute vec3 position;
@@ -139,10 +143,9 @@ void terrain_renderers::render_terrain_border(vertexbuffer<terrain_vertex>& shap
 					float brightness = -dot(light_normal, normal);
 
 					_position = position;
-					_terraincoord = position.xy / 1024.0;
+					_terraincoord = (position.xy - map_bounds.xy) / map_bounds.zw;
 					_colorcoord = vec2(brightness, 1.0 - (2.5 + position.z) / 128.0);
 					_brightness = brightness;
-
 
 				    gl_Position = p;
 					gl_PointSize = 1.0;
@@ -275,16 +278,18 @@ void terrain_renderers::render_depth_border(vertexbuffer<terrain_vertex>& shape,
 			VERTEX_ATTRIBUTE(terrain_vertex, _position),
 			VERTEX_ATTRIBUTE(terrain_vertex, _normal),
 			SHADER_UNIFORM(terrain_uniforms, _transform),
+			SHADER_UNIFORM(terrain_uniforms, _map_bounds),
 			VERTEX_SHADER
 			({
 				uniform mat4 transform;
+				uniform vec4 map_bounds;
 				attribute vec3 position;
 				attribute vec3 normal;
 				varying vec2 _terraincoord;
 
 				void main()
 				{
-					_terraincoord = position.xy / 1024.0;
+					_terraincoord = (position.xy - map_bounds.xy) / map_bounds.zw;
 					vec4 p = transform * vec4(position, 1);
 				    gl_Position = p;
 				}
@@ -320,9 +325,9 @@ void terrain_renderers::render_depth_edge(vertexbuffer<terrain_edge_vertex>& sha
 			SHADER_UNIFORM(plain_uniforms, _transform),
 			VERTEX_SHADER
 			({
+				uniform mat4 transform;
 				attribute vec3 position;
 				attribute float height;
-				uniform mat4 transform;
 
 				void main()
 				{
@@ -619,41 +624,39 @@ _mapTexture(nullptr)
 
 	_mapTexture = new texture(*terrainSurfaceModel->GetMap());
 
-	_ground_shadow_renderer = new renderer<plain_vertex, plain_uniforms>((
-			VERTEX_ATTRIBUTE(plain_vertex, _position),
-					SHADER_UNIFORM(plain_uniforms, _transform),
-					VERTEX_SHADER
+	_ground_shadow_renderer = new renderer<plain_vertex, terrain_uniforms>((
+		VERTEX_ATTRIBUTE(plain_vertex, _position),
+		SHADER_UNIFORM(terrain_uniforms, _transform),
+		SHADER_UNIFORM(terrain_uniforms, _map_bounds),
+		VERTEX_SHADER
 		({
-						attribute
-						vec2 position;
-						uniform
-						mat4 transform;
-						varying
-						vec2 _groundpos;
+			uniform mat4 transform;
+			uniform vec4 map_bounds;
+			attribute vec2 position;
+			varying vec2 _groundpos;
 
-						void main()
-						{
-							vec4 p = transform * vec4(position, -2.5, 1);
+			void main()
+			{
+				vec4 p = transform * vec4(position, -2.5, 1);
 
-							_groundpos = position;
+				_groundpos = (position - map_bounds.xy) / map_bounds.zw;
 
-							gl_Position = p;
-							gl_PointSize = 1.0;
-						}
-					}),
-					FRAGMENT_SHADER
+				gl_Position = p;
+				gl_PointSize = 1.0;
+			}
+		}),
+		FRAGMENT_SHADER
 		({
-						varying
-						vec2 _groundpos;
+			varying vec2 _groundpos;
 
-						void main()
-						{
-							float d = distance(_groundpos, vec2(512.0, 512.0)) - 512.0;
-							float a = clamp(0.3 - d / 20.0, 0.0, 0.3);
+			void main()
+			{
+				float d = distance(_groundpos, vec2(0.5, 0.5)) - 0.5;
+				float a = clamp(0.3 - d * 24.0, 0.0, 0.3);
 
-							gl_FragColor = vec4(0, 0, 0, a);
-						}
-					}))
+				gl_FragColor = vec4(0, 0, 0, a);
+			}
+		}))
 	);
 	_ground_shadow_renderer->_blend_sfactor = GL_SRC_ALPHA;
 	_ground_shadow_renderer->_blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
@@ -698,8 +701,8 @@ void SmoothTerrainSurfaceRenderer::InitializeTerrainShadow(bounds2f bounds)
 {
 	//bounds2f bounds = GetContentBounds();
 	glm::vec2 center = bounds.center();
-	float radius1 = 512;
-	float radius2 = 550;
+	float radius1 = bounds.width() / 2;
+	float radius2 = radius1 * 1.075f;
 
 	_vboTerrainShadow._mode = GL_TRIANGLES;
 	_vboTerrainShadow._vertices.clear();
@@ -802,6 +805,10 @@ void SmoothTerrainSurfaceRenderer::UpdateDepthTextureSize()
 
 void SmoothTerrainSurfaceRenderer::InitializeEdge()
 {
+	bounds2f bounds = _terrainSurfaceModel->GetBounds();
+	glm::vec2 center = bounds.center();
+	float radius = bounds.width() / 2;
+
 	_shape_terrain_edge._mode = GL_TRIANGLE_STRIP;
 	_shape_terrain_edge._vertices.clear();
 
@@ -810,7 +817,7 @@ void SmoothTerrainSurfaceRenderer::InitializeEdge()
 	for (int i = 0; i < n; ++i)
 	{
 		float a = d * i;
-		glm::vec2 p = 512.01f * vector2_from_angle(a) + 512.0f;
+		glm::vec2 p = center + radius * vector2_from_angle(a);
 		float h = fmaxf(0, _terrainSurfaceModel->GetHeight(p)) + 0.25f;
 
 		_shape_terrain_edge._vertices.push_back(terrain_edge_vertex(glm::vec3(p, h), h));
@@ -827,16 +834,20 @@ void SmoothTerrainSurfaceRenderer::InitializeEdge()
 
 void SmoothTerrainSurfaceRenderer::Render(const glm::mat4x4& transform, const glm::vec3& lightNormal)
 {
+	glm::vec4 map_bounds = glm::vec4(_terrainSurfaceModel->GetBounds().min, _terrainSurfaceModel->GetBounds().size());
+
 	glDepthMask(false);
 
-	plain_uniforms shadow_uniforms;
+	terrain_uniforms shadow_uniforms;
 	shadow_uniforms._transform = transform;
+	shadow_uniforms._map_bounds = map_bounds;
 	_ground_shadow_renderer->render(_vboTerrainShadow, shadow_uniforms);
 
 	glDepthMask(true);
 
 	terrain_uniforms uniforms;
 	uniforms._transform = transform;
+	uniforms._map_bounds = map_bounds;
 	uniforms._light_normal = lightNormal;
 	uniforms._colors = _colors;
 	uniforms._map = _mapTexture;
@@ -852,6 +863,7 @@ void SmoothTerrainSurfaceRenderer::Render(const glm::mat4x4& transform, const gl
 
 		terrain_uniforms du;
 		du._transform = uniforms._transform;
+		du._map_bounds = map_bounds;
 
 		ForEachLeaf(terrain_address(), [this, du](terrain_chunk& s) {
 			_renderers->render_depth_inside(s._inside, du);
@@ -1132,17 +1144,17 @@ void SmoothTerrainSurfaceRenderer::BuildLines(vertexbuffer<color_vertex3>& shape
 
 
 
-static int inside_circle(glm::vec2 p)
+static int inside_circle(bounds2f bounds, glm::vec2 p)
 {
-	return glm::length(p - glm::vec2(512, 512)) <= 512 ? 1 : 0;
+	return glm::length(p - bounds.center()) <= bounds.width() / 2 ? 1 : 0;
 }
 
 
-static int inside_circle(terrain_vertex v1, terrain_vertex v2, terrain_vertex v3)
+static int inside_circle(bounds2f bounds, terrain_vertex v1, terrain_vertex v2, terrain_vertex v3)
 {
-	return inside_circle(v1._position.xy())
-		+ inside_circle(v2._position.xy())
-		+ inside_circle(v3._position.xy());
+	return inside_circle(bounds, v1._position.xy())
+		+ inside_circle(bounds, v2._position.xy())
+		+ inside_circle(bounds, v3._position.xy());
 
 }
 
@@ -1150,6 +1162,7 @@ static int inside_circle(terrain_vertex v1, terrain_vertex v2, terrain_vertex v3
 
 void SmoothTerrainSurfaceRenderer::BuildTriangles(terrain_chunk* chunk)
 {
+	bounds2f mapBounds = _terrainSurfaceModel->GetBounds();
 	bounds2f bounds = GetBounds(chunk->_address).xy();
 	glm::vec2 corner = bounds.p11();
 	glm::vec2 size = bounds.size();
@@ -1176,7 +1189,7 @@ void SmoothTerrainSurfaceRenderer::BuildTriangles(terrain_chunk* chunk)
 			terrain_vertex v21 = MakeTerrainVertex(x2, y1);
 			terrain_vertex v22 = MakeTerrainVertex(x2, y2);
 
-			vertexbuffer<terrain_vertex>* s = chunk->triangle_shape(inside_circle(v11, v22, v12));
+			vertexbuffer<terrain_vertex>* s = chunk->triangle_shape(inside_circle(mapBounds, v11, v22, v12));
 			if (s != nullptr)
 			{
 				s->_vertices.push_back(v11);
@@ -1184,7 +1197,7 @@ void SmoothTerrainSurfaceRenderer::BuildTriangles(terrain_chunk* chunk)
 				s->_vertices.push_back(v12);
 			}
 
-			s = chunk->triangle_shape(inside_circle(v22, v11, v21));
+			s = chunk->triangle_shape(inside_circle(mapBounds, v22, v11, v21));
 			if (s != nullptr)
 			{
 				s->_vertices.push_back(v22);

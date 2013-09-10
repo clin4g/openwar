@@ -15,6 +15,7 @@ class SmoothTerrainWater : public TerrainWater
 	struct ground_texture_uniforms
 	{
 		glm::mat4x4 _transform;
+		glm::vec4 _map_bounds;
 		const texture* _texture;
 	};
 
