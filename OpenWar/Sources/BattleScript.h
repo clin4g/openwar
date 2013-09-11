@@ -10,6 +10,7 @@
 
 class BattleModel;
 class BattleSimulator;
+class GradientLineRenderer;
 class TiledTerrainSurfaceRenderer;
 
 
@@ -28,6 +29,7 @@ class BattleScript
 
 	BattleModel* _battleModel;
 	BattleSimulator* _battleSimulator;
+	GradientLineRenderer* _renderer;
 	lua_State* _L;
 
 public:
@@ -38,6 +40,7 @@ public:
 	BattleSimulator* GetBattleSimulator() const { return _battleSimulator; }
 
 	void Tick(double secondsSinceLastTick);
+	void RenderHints(GradientLineRenderer* renderer);
 
 private:
 	int NewUnit(Player player, UnitPlatform platform, UnitWeapon weapon, int strength, glm::vec2 position, float bearing);
@@ -46,6 +49,8 @@ private:
 	static int openwar_terrain_init(lua_State* L);
 	static int openwar_simulator_init(lua_State* L);
 
+	static int openwar_render_hint_line(lua_State* L);
+	static int openwar_render_hint_circle(lua_State* L);
 
 	static int battle_message(lua_State* L);
 	static int battle_get_time(lua_State* L);

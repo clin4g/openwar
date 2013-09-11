@@ -16,8 +16,9 @@ class ButtonGesture;
 class ButtonItem;
 class ButtonRendering;
 class ButtonView;
-class EditorGesture;
 class BattleSimulator;
+class EditorGesture;
+class GradientLineRenderer;
 class SmoothTerrainSurfaceRenderer;
 class TerrainGesture;
 class TiledTerrainSurfaceRenderer;
@@ -53,6 +54,8 @@ public: // TODO: just testing
 	ButtonItem* _buttonItemTrees;
 	ButtonItem* _buttonItemWater;
 	ButtonItem* _buttonItemFords;
+
+	GradientLineRenderer* _scriptHintRenderer;
 
 public:
 	OpenWarSurface(glm::vec2 size, float pixelDensity);

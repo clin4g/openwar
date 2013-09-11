@@ -14,6 +14,8 @@
 #include "TerrainGesture.h"
 #include "TiledTerrainSurface.h"
 #include "UnitCounter.h"
+#include "GradientRenderer.h"
+
 
 
 OpenWarSurface::OpenWarSurface(glm::vec2 size, float pixelDensity) : Surface(size, pixelDensity),
@@ -36,7 +38,8 @@ _buttonItemSmear(nullptr),
 _buttonItemHills(nullptr),
 _buttonItemTrees(nullptr),
 _buttonItemWater(nullptr),
-_buttonItemFords(nullptr)
+_buttonItemFords(nullptr),
+_scriptHintRenderer(nullptr)
 {
 	SoundPlayer::Initialize();
 	SoundPlayer::singleton->Pause();
@@ -82,6 +85,8 @@ _buttonItemFords(nullptr)
 	_buttonItemFords->SetKeyboardShortcut('8');
 
 	UpdateButtonsAndGestures();
+
+	_scriptHintRenderer = new GradientLineRenderer();
 }
 
 
@@ -194,7 +199,16 @@ void OpenWarSurface::Render()
 	glEnable(GL_BLEND);
 
 	if (_battleView != nullptr)
+	{
 		_battleView->Render();
+
+		if (_battleScript != nullptr)
+		{
+			_scriptHintRenderer->Reset();
+			_battleScript->RenderHints(_scriptHintRenderer);
+			_scriptHintRenderer->Draw(_battleView->GetTransform());
+		}
+	}
 
 	if (_battleGesture == nullptr)
 		_battleGesture->RenderHints();

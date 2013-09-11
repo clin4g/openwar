@@ -10,6 +10,7 @@
 #include "TiledTerrainSurface.h"
 #include "SmoothTerrainWater.h"
 #include "SmoothTerrainSky.h"
+#include "GradientRenderer.h"
 
 #include "lauxlib.h"
 #include "lualib.h"
@@ -42,6 +43,13 @@ _L(nullptr)
 
 	lua_pushcfunction(_L, openwar_simulator_init);
 	lua_setglobal(_L, "openwar_simulator_init");
+
+
+	lua_pushcfunction(_L, openwar_render_hint_line);
+	lua_setglobal(_L, "openwar_render_hint_line");
+
+	lua_pushcfunction(_L, openwar_render_hint_circle);
+	lua_setglobal(_L, "openwar_render_hint_circle");
 
 
 	lua_pushcfunction(_L, battle_message);
@@ -119,6 +127,28 @@ void BattleScript::Tick(double secondsSinceLastUpdate)
 }
 
 
+void BattleScript::RenderHints(GradientLineRenderer* renderer)
+{
+	lua_getglobal(_L, "openwar_render_hints");
+
+	if (lua_isnil(_L, -1))
+	{
+		lua_pop(_L, 1);
+	}
+	else
+	{
+		_renderer = renderer;
+
+		int error = lua_pcall(_L, 0, 0, 0);
+		if (error)
+		{
+			NSLog(@"BattleScript ERROR: %s", lua_tostring(_L, -1));
+			lua_pop(_L, 1);  /* pop error message from the stack */
+		}
+	}
+}
+
+
 int BattleScript::NewUnit(Player player, UnitPlatform platform, UnitWeapon weapon, int strength, glm::vec2 position, float bearing)
 {
 	UnitStats unitStats = BattleModel::GetDefaultUnitStats(platform, weapon);
@@ -190,6 +220,56 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 int BattleScript::openwar_simulator_init(lua_State* L)
 {
 	_battlescript->_battleSimulator = new BattleSimulator(_battlescript->_battleModel);
+
+	return 0;
+}
+
+
+int BattleScript::openwar_render_hint_line(lua_State* L)
+{
+	int n = lua_gettop(L);
+
+	float x1 = n < 1 ? 0 : (float)lua_tonumber(L, 1);
+	float y1 = n < 2 ? 0 : (float)lua_tonumber(L, 2);
+	float x2 = n < 3 ? 0 : (float)lua_tonumber(L, 3);
+	float y2 = n < 4 ? 0 : (float)lua_tonumber(L, 4);
+
+	float z1 = _battlescript->_battleModel->terrainSurface->GetHeight(glm::vec2(x1, y1));
+	float z2 = _battlescript->_battleModel->terrainSurface->GetHeight(glm::vec2(x2, y2));
+
+	glm::vec4 c(0, 0, 0, 0.5f);
+
+	_battlescript->_renderer->AddLine(glm::vec3(x1, y1, z1), glm::vec3(x2, y2, z2), c, c);
+
+	return 0;
+}
+
+
+int BattleScript::openwar_render_hint_circle(lua_State* L)
+{
+	int n = lua_gettop(L);
+
+	float x = n < 1 ? 0 : (float)lua_tonumber(L, 1);
+	float y = n < 2 ? 0 : (float)lua_tonumber(L, 2);
+	float r = n < 3 ? 0 : (float)lua_tonumber(L, 3);
+
+	glm::vec4 c(0, 0, 0, 0.5f);
+
+	float da = 2 * glm::pi<float>() / 16;
+	for (int i = 0; i < 16; ++i)
+	{
+		float a1 = i * da;
+		float a2 = a1 + da;
+		float x1 = x + r * glm::cos(a1);
+		float y1 = y + r * glm::sin(a1);
+		float x2 = x + r * glm::cos(a2);
+		float y2 = y + r * glm::sin(a2);
+
+		float z1 = _battlescript->_battleModel->terrainSurface->GetHeight(glm::vec2(x1, y1));
+		float z2 = _battlescript->_battleModel->terrainSurface->GetHeight(glm::vec2(x2, y2));
+
+		_battlescript->_renderer->AddLine(glm::vec3(x1, y1, z1), glm::vec3(x2, y2, z2), c, c);
+	}
 
 	return 0;
 }
