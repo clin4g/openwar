@@ -33,8 +33,12 @@ class BattleScript
 	lua_State* _L;
 
 public:
-	BattleScript(int seed, const char* directory, const char* script, size_t length);
+	BattleScript();
 	~BattleScript();
+
+	void SetGlobalNumber(const char* name, double value);
+	void SetGlobalString(const char* name, const char* value);
+	void Execute(const char* script, size_t length);
 
 	BattleModel* GetBattleModel() const { return _battleModel; }
 	BattleSimulator* GetBattleSimulator() const { return _battleSimulator; }

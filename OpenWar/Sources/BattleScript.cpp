@@ -19,7 +19,7 @@
 static BattleScript* _battlescript = nullptr;
 
 
-BattleScript::BattleScript(int seed, const char* directory, const char* script, size_t length) :
+BattleScript::BattleScript() :
 _battleModel(nullptr),
 _battleSimulator(nullptr),
 _L(nullptr)
@@ -31,12 +31,6 @@ _L(nullptr)
 
 	_L = luaL_newstate();
 	luaL_openlibs(_L);
-
-	lua_pushnumber(_L, seed);
-	lua_setglobal(_L, "openwar_seed");
-
-	lua_pushstring(_L, directory);
-	lua_setglobal(_L, "openwar_script_directory");
 
 	lua_pushcfunction(_L, openwar_terrain_init);
 	lua_setglobal(_L, "openwar_terrain_init");
@@ -75,18 +69,6 @@ _L(nullptr)
 
 	lua_pushcfunction(_L, battle_add_terrain_tree);
 	lua_setglobal(_L, "battle_add_terrain_tree");
-
-	if (script != nullptr)
-	{
-		int error = luaL_loadbuffer(_L, script, length, "line");
-		if (!error) lua_pcall(_L, 0, 0, 0);
-
-		if (error)
-		{
-			NSLog(@"BattleScript ERROR: %s", lua_tostring(_L, -1));
-			lua_pop(_L, 1);  /* pop error message from the stack */
-		}
-	}
 }
 
 
@@ -101,6 +83,36 @@ BattleScript::~BattleScript()
 	delete _battleModel->terrainWater;
 	delete _battleModel->terrainSky;
 	delete _battleModel;
+}
+
+
+void BattleScript::SetGlobalNumber(const char* name, double value)
+{
+	lua_pushnumber(_L, value);
+	lua_setglobal(_L, name);
+}
+
+
+void BattleScript::SetGlobalString(const char* name, const char* value)
+{
+	lua_pushstring(_L, value);
+	lua_setglobal(_L, name);
+}
+
+
+void BattleScript::Execute(const char* script, size_t length)
+{
+	if (script != nullptr)
+	{
+		int error = luaL_loadbuffer(_L, script, length, "line");
+		if (!error) lua_pcall(_L, 0, 0, 0);
+
+		if (error)
+		{
+			NSLog(@"BattleScript ERROR: %s", lua_tostring(_L, -1));
+			lua_pop(_L, 1);  /* pop error message from the stack */
+		}
+	}
 }
 
 

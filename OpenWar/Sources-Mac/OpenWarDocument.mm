@@ -180,7 +180,7 @@
 
 - (BattleScript*)createBattleScriptFromSmoothMap:(NSData*)smoothMap
 {
-	BattleScript* battleScript = new BattleScript(0, nullptr, nullptr, 0);
+	BattleScript* battleScript = new BattleScript();
 
 	BattleModel* battleModel = battleScript->GetBattleModel();
 
@@ -197,7 +197,11 @@
 
 - (BattleScript*)createBattleScriptFromScript:(NSData*)script
 {
-	BattleScript* battleScript = new BattleScript(0, _sourceDirectory.filePathURL.path.UTF8String, (const char*)script.bytes, script.length);
+	BattleScript* battleScript = new BattleScript();
+
+	battleScript->SetGlobalNumber("openwar_seed", 0);
+	battleScript->SetGlobalString("openwar_script_directory", _sourceDirectory.filePathURL.path.UTF8String);
+	battleScript->Execute((const char*)script.bytes, script.length);
 
 	if (battleScript->GetBattleModel()->terrainForest == nullptr)
 	{
