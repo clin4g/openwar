@@ -161,6 +161,26 @@ BattleView::~BattleView()
 
 	for (UnitTrackingMarker* marker : _trackingMarkers)
 		delete marker;
+
+
+	delete _textureUnitMarkers;
+	delete _textureTouchMarker;
+	delete _textureFacing;
+
+	delete _billboardTexture;
+	delete _billboardModel;
+
+	delete _textureBillboardRenderer;
+	delete _textureBillboardRenderer1;
+	delete _textureBillboardRenderer2;
+
+	delete _plainLineRenderer;
+	delete _plainTriangleRenderer;
+	delete _gradientLineRenderer;
+	delete _gradientTriangleRenderer ;
+	delete _gradientTriangleStripRenderer;
+	delete _colorBillboardRenderer;
+	delete _textureTriangleRenderer;
 }
 
 

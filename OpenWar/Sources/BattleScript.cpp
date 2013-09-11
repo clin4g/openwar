@@ -89,6 +89,7 @@ BattleScript::~BattleScript()
 	delete _battleSimulator;
 
 	delete _battleModel->terrainSurface;
+	delete _battleModel->terrainForest;
 	delete _battleModel->terrainWater;
 	delete _battleModel->terrainSky;
 	delete _battleModel;
