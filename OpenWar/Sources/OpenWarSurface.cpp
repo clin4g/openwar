@@ -39,6 +39,7 @@ _buttonItemWater(nullptr),
 _buttonItemFords(nullptr)
 {
 	SoundPlayer::Initialize();
+	SoundPlayer::singleton->Pause();
 
 	_renderers = renderers::singleton = new renderers();
 	_buttonRendering = new ButtonRendering(_renderers, pixelDensity);
@@ -223,50 +224,54 @@ void OpenWarSurface::MouseLeave(glm::vec2 position)
 
 void OpenWarSurface::UpdateSoundPlayer()
 {
-	int horseGallop = 0;
-	int horseTrot = 0;
-	int fighting = 0;
-	int infantryMarching = 0;
-	int infantryRunning = 0;
-
-	for (UnitCounter* unitMarker : _battleView->GetBattleModel()->_unitMarkers)
+	if (_mode == Mode::Playing)
 	{
-		Unit* unit = unitMarker->_unit;
-		if (_battleScript->GetBattleModel()->GetUnit(unit->unitId) != 0 && glm::length(unit->command.GetDestination() - unit->state.center) > 4.0f)
+		int horseGallop = 0;
+		int horseTrot = 0;
+		int fighting = 0;
+		int infantryMarching = 0;
+		int infantryRunning = 0;
+
+		for (UnitCounter* unitMarker : _battleView->GetBattleModel()->_unitMarkers)
 		{
-			if (unit->stats.unitPlatform == UnitPlatformCav || unit->stats.unitPlatform == UnitPlatformGen)
+			Unit* unit = unitMarker->_unit;
+			if (_battleScript->GetBattleModel()->GetUnit(unit->unitId) != 0 && glm::length(unit->command.GetDestination() - unit->state.center) > 4.0f)
 			{
-				if (unit->command.running)
-					++horseGallop;
+				if (unit->stats.unitPlatform == UnitPlatformCav || unit->stats.unitPlatform == UnitPlatformGen)
+				{
+					if (unit->command.running)
+						++horseGallop;
+					else
+						++horseTrot;
+				}
 				else
-					++horseTrot;
+				{
+					if (unit->command.running)
+						++infantryRunning;
+					else
+						++infantryMarching;
+				}
 			}
-			else
-			{
-				if (unit->command.running)
-					++infantryRunning;
-				else
-					++infantryMarching;
-			}
+
+			if (unit->command.meleeTarget != nullptr)
+				++fighting;
 		}
 
-		if (unit->command.meleeTarget != nullptr)
-			++fighting;
+		SoundPlayer::singleton->UpdateInfantryWalking(infantryMarching != 0);
+		SoundPlayer::singleton->UpdateInfantryRunning(infantryRunning != 0);
+
+		SoundPlayer::singleton->UpdateCavalryWalking(horseTrot != 0);
+		SoundPlayer::singleton->UpdateCavalryRunning(horseGallop != 0);
+
+		SoundPlayer::singleton->UpdateFighting(_battleScript->GetBattleModel()->IsMelee());
 	}
-
-	SoundPlayer::singleton->UpdateInfantryWalking(infantryMarching != 0);
-	SoundPlayer::singleton->UpdateInfantryRunning(infantryRunning != 0);
-
-	SoundPlayer::singleton->UpdateCavalryWalking(horseTrot != 0);
-	SoundPlayer::singleton->UpdateCavalryRunning(horseGallop != 0);
-
-	SoundPlayer::singleton->UpdateFighting(_battleScript->GetBattleModel()->IsMelee());
 }
 
 
 void OpenWarSurface::ClickedPlay()
 {
 	_mode = Mode::Playing;
+	SoundPlayer::singleton->Resume();
 	UpdateButtonsAndGestures();
 }
 
@@ -274,6 +279,7 @@ void OpenWarSurface::ClickedPlay()
 void OpenWarSurface::ClickedPause()
 {
 	_mode = Mode::Editing;
+	SoundPlayer::singleton->Pause();
 	UpdateButtonsAndGestures();
 }
 
