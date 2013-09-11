@@ -100,6 +100,46 @@ void BattleScript::SetGlobalString(const char* name, const char* value)
 }
 
 
+void BattleScript::AddStandardPath()
+{
+	NSString* path = [NSBundle mainBundle].resourcePath;
+	path = [path stringByAppendingPathComponent:@"Scripts"];
+	path = [path stringByAppendingPathComponent:@"?.lua"];
+	AddPackagePath(path.UTF8String);
+}
+
+
+void BattleScript::AddPackagePath(const char* path)
+{
+	lua_getglobal(_L, "package");
+	if (lua_isnil(_L, -1))
+	{
+		lua_pop(_L, 1);
+		return;
+	}
+
+	lua_pushstring(_L, "path");
+	lua_gettable(_L, -2);
+	if (lua_isnil(_L, -1))
+	{
+		lua_pop(_L, 2); // package & path
+		return;
+	}
+
+	std::string s(lua_tostring(_L, -1));
+	lua_pop(_L, 1);
+
+	s.append(";");
+	s.append(path);
+
+	lua_pushstring(_L, "path");
+	lua_pushstring(_L, s.c_str());
+	lua_settable(_L, -3);
+
+	lua_pop(_L, 1); // package
+}
+
+
 void BattleScript::Execute(const char* script, size_t length)
 {
 	if (script != nullptr)

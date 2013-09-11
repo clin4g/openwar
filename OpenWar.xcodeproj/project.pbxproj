@@ -64,6 +64,7 @@
 		413B7023175DFEA900AABF10 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B7022175DFEA900AABF10 /* OpenAL.framework */; };
 		413B7027175DFEC800AABF10 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B7026175DFEC800AABF10 /* AudioToolbox.framework */; };
 		4169B57817676F9B00C2F34E /* liblua-mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4169B54917676D8C00C2F34E /* liblua-mac.a */; };
+		419D24A517E0AFD5007340F2 /* Scripts in Resources */ = {isa = PBXBuildFile; fileRef = 419D24A417E0AFD5007340F2 /* Scripts */; };
 		63F5505275AE78B664DE6F1A /* UnitMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55487FC264D05169F3F76 /* UnitMarker.cpp */; };
 		63F55059A1B76F29DB55BB7F /* heightmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5540A8AF3B3D853FA7D3F /* heightmap.cpp */; };
 		63F5508772C1D63A283143FB /* UnitMovementMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55977615093630BED9E6F /* UnitMovementMarker.cpp */; };
@@ -217,6 +218,7 @@
 		413B7026175DFEC800AABF10 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		4169B54317676D3D00C2F34E /* luaconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = luaconf.h; sourceTree = "<group>"; };
 		4169B54417676D8B00C2F34E /* lua.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = lua.xcodeproj; sourceTree = "<group>"; };
+		419D24A417E0AFD5007340F2 /* Scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Scripts; sourceTree = "<group>"; };
 		63F5502514299A67F121A4B1 /* MovementRules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovementRules.h; sourceTree = "<group>"; };
 		63F55026F1B1D4FA3ED86125 /* BattleScript.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BattleScript.cpp; sourceTree = "<group>"; };
 		63F550908F1A0475E52D6E91 /* PathRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathRenderer.h; sourceTree = "<group>"; };
@@ -344,6 +346,7 @@
 			isa = PBXGroup;
 			children = (
 				41158357175E15B4004F58D1 /* Media */,
+				419D24A417E0AFD5007340F2 /* Scripts */,
 				41158299175E07A1004F58D1 /* Sources */,
 				413B6E00175CE70B00AABF10 /* Sources-Mac */,
 			);
@@ -852,6 +855,7 @@
 				4115838D175E15CC004F58D1 /* InfantryRunning.wav in Resources */,
 				4115838E175E15CC004F58D1 /* MatchlockFire1.wav in Resources */,
 				4115838F175E15CC004F58D1 /* MatchlockFire2.wav in Resources */,
+				419D24A517E0AFD5007340F2 /* Scripts in Resources */,
 				41158390175E15CC004F58D1 /* MatchlockFire3.wav in Resources */,
 				41158391175E15CC004F58D1 /* MatchlockFire4.wav in Resources */,
 				41158392175E15CC004F58D1 /* Billboards.png in Resources */,

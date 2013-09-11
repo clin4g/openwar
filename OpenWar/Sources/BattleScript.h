@@ -38,6 +38,8 @@ public:
 
 	void SetGlobalNumber(const char* name, double value);
 	void SetGlobalString(const char* name, const char* value);
+	void AddStandardPath();
+	void AddPackagePath(const char* path);
 	void Execute(const char* script, size_t length);
 
 	BattleModel* GetBattleModel() const { return _battleModel; }

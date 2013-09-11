@@ -197,10 +197,14 @@
 
 - (BattleScript*)createBattleScriptFromScript:(NSData*)script
 {
-	BattleScript* battleScript = new BattleScript();
+	const char* directory = _sourceDirectory.filePathURL.path.UTF8String;
 
+	BattleScript* battleScript = new BattleScript();
 	battleScript->SetGlobalNumber("openwar_seed", 0);
-	battleScript->SetGlobalString("openwar_script_directory", _sourceDirectory.filePathURL.path.UTF8String);
+	battleScript->SetGlobalString("openwar_script_directory", directory);
+	battleScript->AddStandardPath();
+	battleScript->AddPackagePath((std::string(directory) + "/?.lua").c_str());
+
 	battleScript->Execute((const char*)script.bytes, script.length);
 
 	if (battleScript->GetBattleModel()->terrainForest == nullptr)
