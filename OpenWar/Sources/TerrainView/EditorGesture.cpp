@@ -31,6 +31,20 @@ void EditorGesture::TouchBegan(Touch* touch)
 	{
 		bounds2f b = _battleView->GetContentBounds();
 		glm::vec2 p = (TerrainPosition(touch) - b.min) / b.size();
+
+		static glm::vec2 old;
+		if (old != glm::vec2())
+		{
+			glm::vec2 d = p - old;
+			float a = 90 - glm::round(glm::degrees(glm::atan(d.y, d.x)));
+			while (a > 360)
+				a -= 360;
+			while (a < 0)
+				a += 360;
+			NSLog(@"Angle: %g", a);
+		}
+		old = p;
+
 		NSLog(@"Position: %g, %g", p.x, p.y);
 		return;
 	}
