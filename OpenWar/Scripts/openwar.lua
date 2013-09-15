@@ -1,4 +1,4 @@
-openwar = {}
+local openwar = {}
 
 openwar.Unit = {}
 

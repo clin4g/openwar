@@ -65,6 +65,108 @@
 		413B7027175DFEC800AABF10 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B7026175DFEC800AABF10 /* AudioToolbox.framework */; };
 		4169B57817676F9B00C2F34E /* liblua-mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4169B54917676D8C00C2F34E /* liblua-mac.a */; };
 		419D24A517E0AFD5007340F2 /* Scripts in Resources */ = {isa = PBXBuildFile; fileRef = 419D24A417E0AFD5007340F2 /* Scripts */; };
+		41C0B52A17E63C1C00C52270 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 413B6E06175CE70B00AABF10 /* main.mm */; };
+		41C0B52B17E63C1C00C52270 /* OpenWarDocument.mm in Sources */ = {isa = PBXBuildFile; fileRef = 413B6E0D175CE70B00AABF10 /* OpenWarDocument.mm */; };
+		41C0B52C17E63C1C00C52270 /* quadtree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6E9E175DD20C00AABF10 /* quadtree.cpp */; };
+		41C0B52D17E63C1C00C52270 /* sampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EA0175DD20C00AABF10 /* sampler.cpp */; };
+		41C0B52E17E63C1C00C52270 /* geometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EA4175DD20C00AABF10 /* geometry.cpp */; };
+		41C0B52F17E63C1C00C52270 /* image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EA6175DD20C00AABF10 /* image.cpp */; };
+		41C0B53017E63C1C00C52270 /* framebuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EBA175DE03400AABF10 /* framebuffer.cpp */; };
+		41C0B53117E63C1C00C52270 /* renderbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EBC175DE03400AABF10 /* renderbuffer.cpp */; };
+		41C0B53217E63C1C00C52270 /* renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EBE175DE03400AABF10 /* renderer.cpp */; };
+		41C0B53317E63C1C00C52270 /* texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EC2175DE03400AABF10 /* texture.cpp */; };
+		41C0B53417E63C1C00C52270 /* vertexbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55841973B995647E88800 /* vertexbuffer.cpp */; };
+		41C0B53517E63C1C00C52270 /* animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6ED4175DE3CA00AABF10 /* animation.cpp */; };
+		41C0B53617E63C1C00C52270 /* sprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6ED6175DE3CA00AABF10 /* sprite.cpp */; };
+		41C0B53717E63C1C00C52270 /* string_shape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6ED8175DE3CA00AABF10 /* string_shape.cpp */; };
+		41C0B53817E63C1C00C52270 /* Gesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6F81175DF02F00AABF10 /* Gesture.cpp */; };
+		41C0B53917E63C1C00C52270 /* Surface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6F83175DF02F00AABF10 /* Surface.cpp */; };
+		41C0B53A17E63C1C00C52270 /* SurfaceView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 413B6F86175DF02F00AABF10 /* SurfaceView.mm */; };
+		41C0B53B17E63C1C00C52270 /* Touch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6F89175DF02F00AABF10 /* Touch.cpp */; };
+		41C0B53C17E63C1C00C52270 /* View.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6F8B175DF02F00AABF10 /* View.cpp */; };
+		41C0B53D17E63C1C00C52270 /* SoundLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B701C175DFE9200AABF10 /* SoundLoader.cpp */; };
+		41C0B53E17E63C1C00C52270 /* SoundPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B701E175DFE9200AABF10 /* SoundPlayer.cpp */; };
+		41C0B53F17E63C1C00C52270 /* OpenWarSurface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41158396175E1E9D004F58D1 /* OpenWarSurface.cpp */; };
+		41C0B54017E63C1C00C52270 /* ButtonGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41158399175E7B59004F58D1 /* ButtonGesture.cpp */; };
+		41C0B54117E63C1C00C52270 /* ButtonRendering.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4115839B175E7B59004F58D1 /* ButtonRendering.cpp */; };
+		41C0B54217E63C1C00C52270 /* ButtonView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4115839D175E7B59004F58D1 /* ButtonView.cpp */; };
+		41C0B54317E63C1C00C52270 /* bspline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55AF200D5648D23279089 /* bspline.cpp */; };
+		41C0B54417E63C1C00C52270 /* heightmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5540A8AF3B3D853FA7D3F /* heightmap.cpp */; };
+		41C0B54517E63C1C00C52270 /* BattleScript.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55026F1B1D4FA3ED86125 /* BattleScript.cpp */; };
+		41C0B54617E63C1C00C52270 /* TerrainView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5593B74478343E2A98FBF /* TerrainView.cpp */; };
+		41C0B54717E63C1C00C52270 /* TerrainGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55CC494AF7D66DEF9BF5F /* TerrainGesture.cpp */; };
+		41C0B54817E63C1C00C52270 /* BattleModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5539136BD1EC880B88D54 /* BattleModel.cpp */; };
+		41C0B54917E63C1C00C52270 /* BattleView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5536EC562EAF1ADA3D96C /* BattleView.cpp */; };
+		41C0B54A17E63C1C00C52270 /* EditorModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55A21CB78891343349B4F /* EditorModel.cpp */; };
+		41C0B54B17E63C1C00C52270 /* EditorGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55D5665CB9D3AF5C73979 /* EditorGesture.cpp */; };
+		41C0B54C17E63C1C00C52270 /* BattleGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55FEDBDF52613CDF0F16C /* BattleGesture.cpp */; };
+		41C0B54D17E63C1C00C52270 /* MovementRules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5556B5319C80728CAB1FB /* MovementRules.cpp */; };
+		41C0B54E17E63C1C00C52270 /* BattleSimulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5556B5E4B95C6046E29CB /* BattleSimulator.cpp */; };
+		41C0B54F17E63C1C00C52270 /* CasualtyMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55E589EB43FE093106219 /* CasualtyMarker.cpp */; };
+		41C0B55017E63C1C00C52270 /* UnitMovementMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55977615093630BED9E6F /* UnitMovementMarker.cpp */; };
+		41C0B55117E63C1C00C52270 /* RangeMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F552B223BCDEE835F81D43 /* RangeMarker.cpp */; };
+		41C0B55217E63C1C00C52270 /* UnitTrackingMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F551015746B4BAC3ADA148 /* UnitTrackingMarker.cpp */; };
+		41C0B55317E63C1C00C52270 /* ShootingCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55BDA157057D157E307C9 /* ShootingCounter.cpp */; };
+		41C0B55417E63C1C00C52270 /* SmokeCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55EAEF4835655F899B843 /* SmokeCounter.cpp */; };
+		41C0B55517E63C1C00C52270 /* UnitCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5557470DF86929CA211FA /* UnitCounter.cpp */; };
+		41C0B55617E63C1C00C52270 /* TerrainModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55A77C807E38F54D128BF /* TerrainModel.cpp */; };
+		41C0B55717E63C1C00C52270 /* BillboardTerrainForest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55F6090A4F942C1781504 /* BillboardTerrainForest.cpp */; };
+		41C0B55817E63C1C00C52270 /* TerrainForest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55C316CF9F03BB75E7959 /* TerrainForest.cpp */; };
+		41C0B55917E63C1C00C52270 /* TiledTerrainSurface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F550BC10AD74CCA2B4313B /* TiledTerrainSurface.cpp */; };
+		41C0B55A17E63C1C00C52270 /* TerrainSurfaceRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55A1C944D09E02843500A /* TerrainSurfaceRenderer.cpp */; };
+		41C0B55B17E63C1C00C52270 /* TiledTerrainSurfaceRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F550F23DA76C965C385802 /* TiledTerrainSurfaceRenderer.cpp */; };
+		41C0B55C17E63C1C00C52270 /* TerrainSky.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55F6233FACDB333EBADE7 /* TerrainSky.cpp */; };
+		41C0B55D17E63C1C00C52270 /* SmoothTerrainSky.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F556D44EE3D9C87A0F7FD6 /* SmoothTerrainSky.cpp */; };
+		41C0B55E17E63C1C00C52270 /* BillboardTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55CD32C6D71296CE115A2 /* BillboardTexture.cpp */; };
+		41C0B55F17E63C1C00C52270 /* TextureBillboardRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F557AFC44198858A135967 /* TextureBillboardRenderer.cpp */; };
+		41C0B56017E63C1C00C52270 /* PlainRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F558777A1DE00C6094836A /* PlainRenderer.cpp */; };
+		41C0B56117E63C1C00C52270 /* GradientRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5552ED784F80C5EEDBB07 /* GradientRenderer.cpp */; };
+		41C0B56217E63C1C00C52270 /* ColorBillboardRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55E29D3D783BD7DAC387E /* ColorBillboardRenderer.cpp */; };
+		41C0B56317E63C1C00C52270 /* TextureRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5524D8896EF7BF827950A /* TextureRenderer.cpp */; };
+		41C0B56417E63C1C00C52270 /* UnitMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55487FC264D05169F3F76 /* UnitMarker.cpp */; };
+		41C0B56517E63C1C00C52270 /* PathRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55C6AD8F51B653DB171E8 /* PathRenderer.cpp */; };
+		41C0B56617E63C1C00C52270 /* SmoothTerrainSurfaceRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55F0EFA394F6A1B3C0DBA /* SmoothTerrainSurfaceRenderer.cpp */; };
+		41C0B56717E63C1C00C52270 /* SmoothTerrainSurface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F559DE267108D9E6CD72E5 /* SmoothTerrainSurface.cpp */; };
+		41C0B56817E63C1C00C52270 /* SmoothTerrainWater.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5512DFD522FD698DFD400 /* SmoothTerrainWater.cpp */; };
+		41C0B56917E63C1C00C52270 /* TerrainSurface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5591DBD990EA953743873 /* TerrainSurface.cpp */; };
+		41C0B56A17E63C1C00C52270 /* TerrainWater.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55C4FFA50A6E3915273D0 /* TerrainWater.cpp */; };
+		41C0B56C17E63C1C00C52270 /* liblua-mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4169B54917676D8C00C2F34E /* liblua-mac.a */; };
+		41C0B56D17E63C1C00C52270 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B7026175DFEC800AABF10 /* AudioToolbox.framework */; };
+		41C0B56E17E63C1C00C52270 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B6DFA175CE70B00AABF10 /* Cocoa.framework */; };
+		41C0B56F17E63C1C00C52270 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B6ECF175DE18A00AABF10 /* GLKit.framework */; };
+		41C0B57017E63C1C00C52270 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B7022175DFEA900AABF10 /* OpenAL.framework */; };
+		41C0B57117E63C1C00C52270 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B6ED1175DE19200AABF10 /* OpenGL.framework */; };
+		41C0B57317E63C1C00C52270 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E03175CE70B00AABF10 /* InfoPlist.strings */; };
+		41C0B57417E63C1C00C52270 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E09175CE70B00AABF10 /* Credits.rtf */; };
+		41C0B57517E63C1C00C52270 /* OpenWarDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E0F175CE70B00AABF10 /* OpenWarDocument.xib */; };
+		41C0B57617E63C1C00C52270 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E12175CE70B00AABF10 /* MainMenu.xib */; };
+		41C0B57717E63C1C00C52270 /* CommandAck.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158359175E15B4004F58D1 /* CommandAck.wav */; };
+		41C0B57817E63C1C00C52270 /* CommandMod.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115835A175E15B4004F58D1 /* CommandMod.wav */; };
+		41C0B57917E63C1C00C52270 /* ButtonHighlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 4115835C175E15B4004F58D1 /* ButtonHighlight.png */; };
+		41C0B57A17E63C1C00C52270 /* ButtonNormal.png in Resources */ = {isa = PBXBuildFile; fileRef = 4115835D175E15B4004F58D1 /* ButtonNormal.png */; };
+		41C0B57B17E63C1C00C52270 /* ButtonSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 4115835E175E15B4004F58D1 /* ButtonSelected.png */; };
+		41C0B57C17E63C1C00C52270 /* EditorTools.png in Resources */ = {isa = PBXBuildFile; fileRef = 4115835F175E15B4004F58D1 /* EditorTools.png */; };
+		41C0B57D17E63C1C00C52270 /* Linen128x128.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158360175E15B4004F58D1 /* Linen128x128.png */; };
+		41C0B57E17E63C1C00C52270 /* TouchMarker.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158367175E15B4004F58D1 /* TouchMarker.png */; };
+		41C0B57F17E63C1C00C52270 /* ArrowsFlying.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158379175E15CC004F58D1 /* ArrowsFlying.wav */; };
+		41C0B58017E63C1C00C52270 /* CavalryMarching.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837A175E15CC004F58D1 /* CavalryMarching.wav */; };
+		41C0B58117E63C1C00C52270 /* CavalryRunning.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837B175E15CC004F58D1 /* CavalryRunning.wav */; };
+		41C0B58217E63C1C00C52270 /* InfantryFighting.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837C175E15CC004F58D1 /* InfantryFighting.wav */; };
+		41C0B58317E63C1C00C52270 /* InfantryGrunting.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837D175E15CC004F58D1 /* InfantryGrunting.wav */; };
+		41C0B58417E63C1C00C52270 /* InfantryMarching.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837E175E15CC004F58D1 /* InfantryMarching.wav */; };
+		41C0B58517E63C1C00C52270 /* InfantryRunning.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837F175E15CC004F58D1 /* InfantryRunning.wav */; };
+		41C0B58617E63C1C00C52270 /* MatchlockFire1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158380175E15CC004F58D1 /* MatchlockFire1.wav */; };
+		41C0B58717E63C1C00C52270 /* MatchlockFire2.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158381175E15CC004F58D1 /* MatchlockFire2.wav */; };
+		41C0B58817E63C1C00C52270 /* Scripts in Resources */ = {isa = PBXBuildFile; fileRef = 419D24A417E0AFD5007340F2 /* Scripts */; };
+		41C0B58917E63C1C00C52270 /* MatchlockFire3.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158382175E15CC004F58D1 /* MatchlockFire3.wav */; };
+		41C0B58A17E63C1C00C52270 /* MatchlockFire4.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158383175E15CC004F58D1 /* MatchlockFire4.wav */; };
+		41C0B58B17E63C1C00C52270 /* Billboards.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158385175E15CC004F58D1 /* Billboards.png */; };
+		41C0B58C17E63C1C00C52270 /* Texture256x256.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158386175E15CC004F58D1 /* Texture256x256.png */; };
+		41C0B58D17E63C1C00C52270 /* ButtonIcons.png in Resources */ = {isa = PBXBuildFile; fileRef = 411583B8175F2365004F58D1 /* ButtonIcons.png */; };
+		41C0B58E17E63C1C00C52270 /* Maps in Resources */ = {isa = PBXBuildFile; fileRef = 4129759C176A6BE500B9AC12 /* Maps */; };
+		41C0B58F17E63C1C00C52270 /* affine2.h in Resources */ = {isa = PBXBuildFile; fileRef = 63F5596F135A23A4AAAA5FB5 /* affine2.h */; };
+		41C0B59017E63C1C00C52270 /* Facing.png in Resources */ = {isa = PBXBuildFile; fileRef = 63F55518EEA26160B46E2202 /* Facing.png */; };
+		41C0B59917E63DA300C52270 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41C0B59817E63DA300C52270 /* SDL2.framework */; };
 		63F5505275AE78B664DE6F1A /* UnitMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55487FC264D05169F3F76 /* UnitMarker.cpp */; };
 		63F55059A1B76F29DB55BB7F /* heightmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5540A8AF3B3D853FA7D3F /* heightmap.cpp */; };
 		63F5508772C1D63A283143FB /* UnitMovementMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55977615093630BED9E6F /* UnitMovementMarker.cpp */; };
@@ -219,6 +321,9 @@
 		4169B54317676D3D00C2F34E /* luaconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = luaconf.h; sourceTree = "<group>"; };
 		4169B54417676D8B00C2F34E /* lua.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = lua.xcodeproj; sourceTree = "<group>"; };
 		419D24A417E0AFD5007340F2 /* Scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Scripts; sourceTree = "<group>"; };
+		41C0B59417E63C1C00C52270 /* Open War SDL.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open War SDL.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		41C0B59517E63C1C00C52270 /* OpenWar-SDL-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "OpenWar-SDL-Info.plist"; path = "/Users/nicke/openwar/OpenWar/Sources-Mac/OpenWar-SDL-Info.plist"; sourceTree = "<absolute>"; };
+		41C0B59817E63DA300C52270 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = /Users/nicke/openwar/../../../Library/Frameworks/SDL2.framework; sourceTree = "<absolute>"; };
 		63F5502514299A67F121A4B1 /* MovementRules.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovementRules.h; sourceTree = "<group>"; };
 		63F55026F1B1D4FA3ED86125 /* BattleScript.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BattleScript.cpp; sourceTree = "<group>"; };
 		63F550908F1A0475E52D6E91 /* PathRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PathRenderer.h; sourceTree = "<group>"; };
@@ -316,6 +421,20 @@
 				413B6ED0175DE18A00AABF10 /* GLKit.framework in Frameworks */,
 				413B7023175DFEA900AABF10 /* OpenAL.framework in Frameworks */,
 				413B6ED2175DE19200AABF10 /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		41C0B56B17E63C1C00C52270 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41C0B59917E63DA300C52270 /* SDL2.framework in Frameworks */,
+				41C0B56C17E63C1C00C52270 /* liblua-mac.a in Frameworks */,
+				41C0B56D17E63C1C00C52270 /* AudioToolbox.framework in Frameworks */,
+				41C0B56E17E63C1C00C52270 /* Cocoa.framework in Frameworks */,
+				41C0B56F17E63C1C00C52270 /* GLKit.framework in Frameworks */,
+				41C0B57017E63C1C00C52270 /* OpenAL.framework in Frameworks */,
+				41C0B57117E63C1C00C52270 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -447,6 +566,7 @@
 			isa = PBXGroup;
 			children = (
 				413B6DF7175CE70B00AABF10 /* Open War.app */,
+				41C0B59417E63C1C00C52270 /* Open War SDL.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -462,6 +582,7 @@
 				413B6ECF175DE18A00AABF10 /* GLKit.framework */,
 				413B7022175DFEA900AABF10 /* OpenAL.framework */,
 				413B6ED1175DE19200AABF10 /* OpenGL.framework */,
+				41C0B59817E63DA300C52270 /* SDL2.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -475,6 +596,7 @@
 				413B6E06175CE70B00AABF10 /* main.mm */,
 				413B6E12175CE70B00AABF10 /* MainMenu.xib */,
 				413B6E02175CE70B00AABF10 /* OpenWar-Info.plist */,
+				41C0B59517E63C1C00C52270 /* OpenWar-SDL-Info.plist */,
 				413B6E08175CE70B00AABF10 /* OpenWar-Prefix.pch */,
 				413B6E01175CE70B00AABF10 /* Supporting Files */,
 			);
@@ -780,6 +902,23 @@
 			productReference = 413B6DF7175CE70B00AABF10 /* Open War.app */;
 			productType = "com.apple.product-type.application";
 		};
+		41C0B52817E63C1C00C52270 /* Open War SDL */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 41C0B59117E63C1C00C52270 /* Build configuration list for PBXNativeTarget "Open War SDL" */;
+			buildPhases = (
+				41C0B52917E63C1C00C52270 /* Sources */,
+				41C0B56B17E63C1C00C52270 /* Frameworks */,
+				41C0B57217E63C1C00C52270 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Open War SDL";
+			productName = OpenWar;
+			productReference = 41C0B59417E63C1C00C52270 /* Open War SDL.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -808,6 +947,7 @@
 			projectRoot = "";
 			targets = (
 				413B6DF6175CE70B00AABF10 /* Open War */,
+				41C0B52817E63C1C00C52270 /* Open War SDL */,
 			);
 		};
 /* End PBXProject section */
@@ -864,6 +1004,43 @@
 				4129759D176A6BE500B9AC12 /* Maps in Resources */,
 				63F55CC86046CE9AEFFBE71D /* affine2.h in Resources */,
 				63F55A3AF52CC405D555DC19 /* Facing.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		41C0B57217E63C1C00C52270 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41C0B57317E63C1C00C52270 /* InfoPlist.strings in Resources */,
+				41C0B57417E63C1C00C52270 /* Credits.rtf in Resources */,
+				41C0B57517E63C1C00C52270 /* OpenWarDocument.xib in Resources */,
+				41C0B57617E63C1C00C52270 /* MainMenu.xib in Resources */,
+				41C0B57717E63C1C00C52270 /* CommandAck.wav in Resources */,
+				41C0B57817E63C1C00C52270 /* CommandMod.wav in Resources */,
+				41C0B57917E63C1C00C52270 /* ButtonHighlight.png in Resources */,
+				41C0B57A17E63C1C00C52270 /* ButtonNormal.png in Resources */,
+				41C0B57B17E63C1C00C52270 /* ButtonSelected.png in Resources */,
+				41C0B57C17E63C1C00C52270 /* EditorTools.png in Resources */,
+				41C0B57D17E63C1C00C52270 /* Linen128x128.png in Resources */,
+				41C0B57E17E63C1C00C52270 /* TouchMarker.png in Resources */,
+				41C0B57F17E63C1C00C52270 /* ArrowsFlying.wav in Resources */,
+				41C0B58017E63C1C00C52270 /* CavalryMarching.wav in Resources */,
+				41C0B58117E63C1C00C52270 /* CavalryRunning.wav in Resources */,
+				41C0B58217E63C1C00C52270 /* InfantryFighting.wav in Resources */,
+				41C0B58317E63C1C00C52270 /* InfantryGrunting.wav in Resources */,
+				41C0B58417E63C1C00C52270 /* InfantryMarching.wav in Resources */,
+				41C0B58517E63C1C00C52270 /* InfantryRunning.wav in Resources */,
+				41C0B58617E63C1C00C52270 /* MatchlockFire1.wav in Resources */,
+				41C0B58717E63C1C00C52270 /* MatchlockFire2.wav in Resources */,
+				41C0B58817E63C1C00C52270 /* Scripts in Resources */,
+				41C0B58917E63C1C00C52270 /* MatchlockFire3.wav in Resources */,
+				41C0B58A17E63C1C00C52270 /* MatchlockFire4.wav in Resources */,
+				41C0B58B17E63C1C00C52270 /* Billboards.png in Resources */,
+				41C0B58C17E63C1C00C52270 /* Texture256x256.png in Resources */,
+				41C0B58D17E63C1C00C52270 /* ButtonIcons.png in Resources */,
+				41C0B58E17E63C1C00C52270 /* Maps in Resources */,
+				41C0B58F17E63C1C00C52270 /* affine2.h in Resources */,
+				41C0B59017E63C1C00C52270 /* Facing.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -939,6 +1116,78 @@
 				63F554BF5513FBB37397DB14 /* SmoothTerrainWater.cpp in Sources */,
 				63F552B03CA647B77556B674 /* TerrainSurface.cpp in Sources */,
 				63F551BA4005CFC57F0DB80F /* TerrainWater.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		41C0B52917E63C1C00C52270 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41C0B52A17E63C1C00C52270 /* main.mm in Sources */,
+				41C0B52B17E63C1C00C52270 /* OpenWarDocument.mm in Sources */,
+				41C0B52C17E63C1C00C52270 /* quadtree.cpp in Sources */,
+				41C0B52D17E63C1C00C52270 /* sampler.cpp in Sources */,
+				41C0B52E17E63C1C00C52270 /* geometry.cpp in Sources */,
+				41C0B52F17E63C1C00C52270 /* image.cpp in Sources */,
+				41C0B53017E63C1C00C52270 /* framebuffer.cpp in Sources */,
+				41C0B53117E63C1C00C52270 /* renderbuffer.cpp in Sources */,
+				41C0B53217E63C1C00C52270 /* renderer.cpp in Sources */,
+				41C0B53317E63C1C00C52270 /* texture.cpp in Sources */,
+				41C0B53417E63C1C00C52270 /* vertexbuffer.cpp in Sources */,
+				41C0B53517E63C1C00C52270 /* animation.cpp in Sources */,
+				41C0B53617E63C1C00C52270 /* sprite.cpp in Sources */,
+				41C0B53717E63C1C00C52270 /* string_shape.cpp in Sources */,
+				41C0B53817E63C1C00C52270 /* Gesture.cpp in Sources */,
+				41C0B53917E63C1C00C52270 /* Surface.cpp in Sources */,
+				41C0B53A17E63C1C00C52270 /* SurfaceView.mm in Sources */,
+				41C0B53B17E63C1C00C52270 /* Touch.cpp in Sources */,
+				41C0B53C17E63C1C00C52270 /* View.cpp in Sources */,
+				41C0B53D17E63C1C00C52270 /* SoundLoader.cpp in Sources */,
+				41C0B53E17E63C1C00C52270 /* SoundPlayer.cpp in Sources */,
+				41C0B53F17E63C1C00C52270 /* OpenWarSurface.cpp in Sources */,
+				41C0B54017E63C1C00C52270 /* ButtonGesture.cpp in Sources */,
+				41C0B54117E63C1C00C52270 /* ButtonRendering.cpp in Sources */,
+				41C0B54217E63C1C00C52270 /* ButtonView.cpp in Sources */,
+				41C0B54317E63C1C00C52270 /* bspline.cpp in Sources */,
+				41C0B54417E63C1C00C52270 /* heightmap.cpp in Sources */,
+				41C0B54517E63C1C00C52270 /* BattleScript.cpp in Sources */,
+				41C0B54617E63C1C00C52270 /* TerrainView.cpp in Sources */,
+				41C0B54717E63C1C00C52270 /* TerrainGesture.cpp in Sources */,
+				41C0B54817E63C1C00C52270 /* BattleModel.cpp in Sources */,
+				41C0B54917E63C1C00C52270 /* BattleView.cpp in Sources */,
+				41C0B54A17E63C1C00C52270 /* EditorModel.cpp in Sources */,
+				41C0B54B17E63C1C00C52270 /* EditorGesture.cpp in Sources */,
+				41C0B54C17E63C1C00C52270 /* BattleGesture.cpp in Sources */,
+				41C0B54D17E63C1C00C52270 /* MovementRules.cpp in Sources */,
+				41C0B54E17E63C1C00C52270 /* BattleSimulator.cpp in Sources */,
+				41C0B54F17E63C1C00C52270 /* CasualtyMarker.cpp in Sources */,
+				41C0B55017E63C1C00C52270 /* UnitMovementMarker.cpp in Sources */,
+				41C0B55117E63C1C00C52270 /* RangeMarker.cpp in Sources */,
+				41C0B55217E63C1C00C52270 /* UnitTrackingMarker.cpp in Sources */,
+				41C0B55317E63C1C00C52270 /* ShootingCounter.cpp in Sources */,
+				41C0B55417E63C1C00C52270 /* SmokeCounter.cpp in Sources */,
+				41C0B55517E63C1C00C52270 /* UnitCounter.cpp in Sources */,
+				41C0B55617E63C1C00C52270 /* TerrainModel.cpp in Sources */,
+				41C0B55717E63C1C00C52270 /* BillboardTerrainForest.cpp in Sources */,
+				41C0B55817E63C1C00C52270 /* TerrainForest.cpp in Sources */,
+				41C0B55917E63C1C00C52270 /* TiledTerrainSurface.cpp in Sources */,
+				41C0B55A17E63C1C00C52270 /* TerrainSurfaceRenderer.cpp in Sources */,
+				41C0B55B17E63C1C00C52270 /* TiledTerrainSurfaceRenderer.cpp in Sources */,
+				41C0B55C17E63C1C00C52270 /* TerrainSky.cpp in Sources */,
+				41C0B55D17E63C1C00C52270 /* SmoothTerrainSky.cpp in Sources */,
+				41C0B55E17E63C1C00C52270 /* BillboardTexture.cpp in Sources */,
+				41C0B55F17E63C1C00C52270 /* TextureBillboardRenderer.cpp in Sources */,
+				41C0B56017E63C1C00C52270 /* PlainRenderer.cpp in Sources */,
+				41C0B56117E63C1C00C52270 /* GradientRenderer.cpp in Sources */,
+				41C0B56217E63C1C00C52270 /* ColorBillboardRenderer.cpp in Sources */,
+				41C0B56317E63C1C00C52270 /* TextureRenderer.cpp in Sources */,
+				41C0B56417E63C1C00C52270 /* UnitMarker.cpp in Sources */,
+				41C0B56517E63C1C00C52270 /* PathRenderer.cpp in Sources */,
+				41C0B56617E63C1C00C52270 /* SmoothTerrainSurfaceRenderer.cpp in Sources */,
+				41C0B56717E63C1C00C52270 /* SmoothTerrainSurface.cpp in Sources */,
+				41C0B56817E63C1C00C52270 /* SmoothTerrainWater.cpp in Sources */,
+				41C0B56917E63C1C00C52270 /* TerrainSurface.cpp in Sources */,
+				41C0B56A17E63C1C00C52270 /* TerrainWater.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1091,6 +1340,68 @@
 			};
 			name = Release;
 		};
+		41C0B59217E63C1C00C52270 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "OpenWar/Sources-Mac/OpenWar-Prefix.pch";
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/External/glm\"",
+					"\"$(SRCROOT)/External/lua/src\"",
+				);
+				INFOPLIST_FILE = "OpenWar/Sources-Mac/OpenWar-SDL-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = "Open War SDL";
+				SDKROOT = macosx10.8;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		41C0B59317E63C1C00C52270 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "OpenWar/Sources-Mac/OpenWar-Prefix.pch";
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/External/glm\"",
+					"\"$(SRCROOT)/External/lua/src\"",
+				);
+				INFOPLIST_FILE = "OpenWar/Sources-Mac/OpenWar-SDL-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = "Open War SDL";
+				SDKROOT = macosx10.8;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1108,6 +1419,15 @@
 			buildConfigurations = (
 				413B6E18175CE70B00AABF10 /* Debug */,
 				413B6E19175CE70B00AABF10 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		41C0B59117E63C1C00C52270 /* Build configuration list for PBXNativeTarget "Open War SDL" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				41C0B59217E63C1C00C52270 /* Debug */,
+				41C0B59317E63C1C00C52270 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
