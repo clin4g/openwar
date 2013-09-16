@@ -34,6 +34,45 @@
 		411583A1175E7B59004F58D1 /* ButtonView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4115839D175E7B59004F58D1 /* ButtonView.cpp */; };
 		411583B9175F2365004F58D1 /* ButtonIcons.png in Resources */ = {isa = PBXBuildFile; fileRef = 411583B8175F2365004F58D1 /* ButtonIcons.png */; };
 		4129759D176A6BE500B9AC12 /* Maps in Resources */ = {isa = PBXBuildFile; fileRef = 4129759C176A6BE500B9AC12 /* Maps */; };
+		41396E0617E7517F00EC1DA6 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55DCB0117555627DEB035 /* main.cpp */; };
+		41396E0817E7517F00EC1DA6 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41C0B59817E63DA300C52270 /* SDL2.framework */; };
+		41396E0917E7517F00EC1DA6 /* liblua-mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4169B54917676D8C00C2F34E /* liblua-mac.a */; };
+		41396E0A17E7517F00EC1DA6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B7026175DFEC800AABF10 /* AudioToolbox.framework */; };
+		41396E0B17E7517F00EC1DA6 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B6DFA175CE70B00AABF10 /* Cocoa.framework */; };
+		41396E0C17E7517F00EC1DA6 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B6ECF175DE18A00AABF10 /* GLKit.framework */; };
+		41396E0D17E7517F00EC1DA6 /* OpenAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B7022175DFEA900AABF10 /* OpenAL.framework */; };
+		41396E0E17E7517F00EC1DA6 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B6ED1175DE19200AABF10 /* OpenGL.framework */; };
+		41396E1017E7517F00EC1DA6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E03175CE70B00AABF10 /* InfoPlist.strings */; };
+		41396E1117E7517F00EC1DA6 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E09175CE70B00AABF10 /* Credits.rtf */; };
+		41396E1217E7517F00EC1DA6 /* OpenWarDocument.xib in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E0F175CE70B00AABF10 /* OpenWarDocument.xib */; };
+		41396E1317E7517F00EC1DA6 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E12175CE70B00AABF10 /* MainMenu.xib */; };
+		41396E1417E7517F00EC1DA6 /* CommandAck.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158359175E15B4004F58D1 /* CommandAck.wav */; };
+		41396E1517E7517F00EC1DA6 /* CommandMod.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115835A175E15B4004F58D1 /* CommandMod.wav */; };
+		41396E1617E7517F00EC1DA6 /* ButtonHighlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 4115835C175E15B4004F58D1 /* ButtonHighlight.png */; };
+		41396E1717E7517F00EC1DA6 /* ButtonNormal.png in Resources */ = {isa = PBXBuildFile; fileRef = 4115835D175E15B4004F58D1 /* ButtonNormal.png */; };
+		41396E1817E7517F00EC1DA6 /* ButtonSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = 4115835E175E15B4004F58D1 /* ButtonSelected.png */; };
+		41396E1917E7517F00EC1DA6 /* EditorTools.png in Resources */ = {isa = PBXBuildFile; fileRef = 4115835F175E15B4004F58D1 /* EditorTools.png */; };
+		41396E1A17E7517F00EC1DA6 /* Linen128x128.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158360175E15B4004F58D1 /* Linen128x128.png */; };
+		41396E1B17E7517F00EC1DA6 /* TouchMarker.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158367175E15B4004F58D1 /* TouchMarker.png */; };
+		41396E1C17E7517F00EC1DA6 /* ArrowsFlying.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158379175E15CC004F58D1 /* ArrowsFlying.wav */; };
+		41396E1D17E7517F00EC1DA6 /* CavalryMarching.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837A175E15CC004F58D1 /* CavalryMarching.wav */; };
+		41396E1E17E7517F00EC1DA6 /* CavalryRunning.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837B175E15CC004F58D1 /* CavalryRunning.wav */; };
+		41396E1F17E7517F00EC1DA6 /* InfantryFighting.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837C175E15CC004F58D1 /* InfantryFighting.wav */; };
+		41396E2017E7517F00EC1DA6 /* InfantryGrunting.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837D175E15CC004F58D1 /* InfantryGrunting.wav */; };
+		41396E2117E7517F00EC1DA6 /* InfantryMarching.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837E175E15CC004F58D1 /* InfantryMarching.wav */; };
+		41396E2217E7517F00EC1DA6 /* InfantryRunning.wav in Resources */ = {isa = PBXBuildFile; fileRef = 4115837F175E15CC004F58D1 /* InfantryRunning.wav */; };
+		41396E2317E7517F00EC1DA6 /* MatchlockFire1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158380175E15CC004F58D1 /* MatchlockFire1.wav */; };
+		41396E2417E7517F00EC1DA6 /* MatchlockFire2.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158381175E15CC004F58D1 /* MatchlockFire2.wav */; };
+		41396E2517E7517F00EC1DA6 /* Scripts in Resources */ = {isa = PBXBuildFile; fileRef = 419D24A417E0AFD5007340F2 /* Scripts */; };
+		41396E2617E7517F00EC1DA6 /* MatchlockFire3.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158382175E15CC004F58D1 /* MatchlockFire3.wav */; };
+		41396E2717E7517F00EC1DA6 /* MatchlockFire4.wav in Resources */ = {isa = PBXBuildFile; fileRef = 41158383175E15CC004F58D1 /* MatchlockFire4.wav */; };
+		41396E2817E7517F00EC1DA6 /* Billboards.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158385175E15CC004F58D1 /* Billboards.png */; };
+		41396E2917E7517F00EC1DA6 /* Texture256x256.png in Resources */ = {isa = PBXBuildFile; fileRef = 41158386175E15CC004F58D1 /* Texture256x256.png */; };
+		41396E2A17E7517F00EC1DA6 /* ButtonIcons.png in Resources */ = {isa = PBXBuildFile; fileRef = 411583B8175F2365004F58D1 /* ButtonIcons.png */; };
+		41396E2B17E7517F00EC1DA6 /* Maps in Resources */ = {isa = PBXBuildFile; fileRef = 4129759C176A6BE500B9AC12 /* Maps */; };
+		41396E2C17E7517F00EC1DA6 /* affine2.h in Resources */ = {isa = PBXBuildFile; fileRef = 63F5596F135A23A4AAAA5FB5 /* affine2.h */; };
+		41396E2D17E7517F00EC1DA6 /* Facing.png in Resources */ = {isa = PBXBuildFile; fileRef = 63F55518EEA26160B46E2202 /* Facing.png */; };
+		41396E3717E7522D00EC1DA6 /* OpenWar-Cpp-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 41396E3517E7522D00EC1DA6 /* OpenWar-Cpp-Info.plist */; };
 		413B6DFB175CE70B00AABF10 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B6DFA175CE70B00AABF10 /* Cocoa.framework */; };
 		413B6E05175CE70B00AABF10 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 413B6E03175CE70B00AABF10 /* InfoPlist.strings */; };
 		413B6E07175CE70B00AABF10 /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 413B6E06175CE70B00AABF10 /* main.mm */; };
@@ -262,6 +301,9 @@
 		4115839E175E7B59004F58D1 /* ButtonView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonView.h; sourceTree = "<group>"; };
 		411583B8175F2365004F58D1 /* ButtonIcons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ButtonIcons.png; sourceTree = "<group>"; };
 		4129759C176A6BE500B9AC12 /* Maps */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Maps; sourceTree = "<group>"; };
+		41396E3117E7517F00EC1DA6 /* Open War SDL copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open War SDL copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		41396E3517E7522D00EC1DA6 /* OpenWar-Cpp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "OpenWar-Cpp-Info.plist"; sourceTree = "<group>"; };
+		41396E3617E7522D00EC1DA6 /* OpenWar-Cpp-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OpenWar-Cpp-Prefix.pch"; sourceTree = "<group>"; };
 		413B6DF7175CE70B00AABF10 /* Open War.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Open War.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		413B6DFA175CE70B00AABF10 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		413B6DFD175CE70B00AABF10 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -415,6 +457,20 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		41396E0717E7517F00EC1DA6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41396E0817E7517F00EC1DA6 /* SDL2.framework in Frameworks */,
+				41396E0917E7517F00EC1DA6 /* liblua-mac.a in Frameworks */,
+				41396E0A17E7517F00EC1DA6 /* AudioToolbox.framework in Frameworks */,
+				41396E0B17E7517F00EC1DA6 /* Cocoa.framework in Frameworks */,
+				41396E0C17E7517F00EC1DA6 /* GLKit.framework in Frameworks */,
+				41396E0D17E7517F00EC1DA6 /* OpenAL.framework in Frameworks */,
+				41396E0E17E7517F00EC1DA6 /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		413B6DF4175CE70B00AABF10 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -571,6 +627,7 @@
 			children = (
 				413B6DF7175CE70B00AABF10 /* Open War.app */,
 				41C0B59417E63C1C00C52270 /* Open War SDL.app */,
+				41396E3117E7517F00EC1DA6 /* Open War SDL copy.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -594,16 +651,18 @@
 		413B6E00175CE70B00AABF10 /* Sources-Mac */ = {
 			isa = PBXGroup;
 			children = (
+				63F55DCB0117555627DEB035 /* main.cpp */,
+				413B6E06175CE70B00AABF10 /* main.mm */,
 				413B6E0C175CE70B00AABF10 /* OpenWarDocument.h */,
 				413B6E0D175CE70B00AABF10 /* OpenWarDocument.mm */,
 				413B6E0F175CE70B00AABF10 /* OpenWarDocument.xib */,
-				413B6E06175CE70B00AABF10 /* main.mm */,
+				41396E3517E7522D00EC1DA6 /* OpenWar-Cpp-Info.plist */,
+				41396E3617E7522D00EC1DA6 /* OpenWar-Cpp-Prefix.pch */,
 				413B6E12175CE70B00AABF10 /* MainMenu.xib */,
 				413B6E02175CE70B00AABF10 /* OpenWar-Info.plist */,
 				41C0B59517E63C1C00C52270 /* OpenWar-SDL-Info.plist */,
 				413B6E08175CE70B00AABF10 /* OpenWar-Prefix.pch */,
 				413B6E01175CE70B00AABF10 /* Supporting Files */,
-				63F55DCB0117555627DEB035 /* main.cpp */,
 			);
 			path = "Sources-Mac";
 			sourceTree = "<group>";
@@ -892,6 +951,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		41396DC317E7517F00EC1DA6 /* Open War Cpp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 41396E2E17E7517F00EC1DA6 /* Build configuration list for PBXNativeTarget "Open War Cpp" */;
+			buildPhases = (
+				41396DC417E7517F00EC1DA6 /* Sources */,
+				41396E0717E7517F00EC1DA6 /* Frameworks */,
+				41396E0F17E7517F00EC1DA6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Open War Cpp";
+			productName = OpenWar;
+			productReference = 41396E3117E7517F00EC1DA6 /* Open War SDL copy.app */;
+			productType = "com.apple.product-type.application";
+		};
 		413B6DF6175CE70B00AABF10 /* Open War */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 413B6E17175CE70B00AABF10 /* Build configuration list for PBXNativeTarget "Open War" */;
@@ -955,6 +1031,7 @@
 			targets = (
 				413B6DF6175CE70B00AABF10 /* Open War */,
 				41C0B52817E63C1C00C52270 /* Open War SDL */,
+				41396DC317E7517F00EC1DA6 /* Open War Cpp */,
 			);
 		};
 /* End PBXProject section */
@@ -977,6 +1054,43 @@
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
+		41396E0F17E7517F00EC1DA6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41396E1017E7517F00EC1DA6 /* InfoPlist.strings in Resources */,
+				41396E1117E7517F00EC1DA6 /* Credits.rtf in Resources */,
+				41396E1217E7517F00EC1DA6 /* OpenWarDocument.xib in Resources */,
+				41396E1317E7517F00EC1DA6 /* MainMenu.xib in Resources */,
+				41396E1417E7517F00EC1DA6 /* CommandAck.wav in Resources */,
+				41396E1517E7517F00EC1DA6 /* CommandMod.wav in Resources */,
+				41396E1617E7517F00EC1DA6 /* ButtonHighlight.png in Resources */,
+				41396E1717E7517F00EC1DA6 /* ButtonNormal.png in Resources */,
+				41396E1817E7517F00EC1DA6 /* ButtonSelected.png in Resources */,
+				41396E1917E7517F00EC1DA6 /* EditorTools.png in Resources */,
+				41396E1A17E7517F00EC1DA6 /* Linen128x128.png in Resources */,
+				41396E1B17E7517F00EC1DA6 /* TouchMarker.png in Resources */,
+				41396E1C17E7517F00EC1DA6 /* ArrowsFlying.wav in Resources */,
+				41396E1D17E7517F00EC1DA6 /* CavalryMarching.wav in Resources */,
+				41396E1E17E7517F00EC1DA6 /* CavalryRunning.wav in Resources */,
+				41396E1F17E7517F00EC1DA6 /* InfantryFighting.wav in Resources */,
+				41396E2017E7517F00EC1DA6 /* InfantryGrunting.wav in Resources */,
+				41396E2117E7517F00EC1DA6 /* InfantryMarching.wav in Resources */,
+				41396E2217E7517F00EC1DA6 /* InfantryRunning.wav in Resources */,
+				41396E2317E7517F00EC1DA6 /* MatchlockFire1.wav in Resources */,
+				41396E2417E7517F00EC1DA6 /* MatchlockFire2.wav in Resources */,
+				41396E2517E7517F00EC1DA6 /* Scripts in Resources */,
+				41396E2617E7517F00EC1DA6 /* MatchlockFire3.wav in Resources */,
+				41396E2717E7517F00EC1DA6 /* MatchlockFire4.wav in Resources */,
+				41396E2817E7517F00EC1DA6 /* Billboards.png in Resources */,
+				41396E2917E7517F00EC1DA6 /* Texture256x256.png in Resources */,
+				41396E2A17E7517F00EC1DA6 /* ButtonIcons.png in Resources */,
+				41396E2B17E7517F00EC1DA6 /* Maps in Resources */,
+				41396E2C17E7517F00EC1DA6 /* affine2.h in Resources */,
+				41396E2D17E7517F00EC1DA6 /* Facing.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		413B6DF5175CE70B00AABF10 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1010,6 +1124,7 @@
 				411583B9175F2365004F58D1 /* ButtonIcons.png in Resources */,
 				4129759D176A6BE500B9AC12 /* Maps in Resources */,
 				63F55CC86046CE9AEFFBE71D /* affine2.h in Resources */,
+				41396E3717E7522D00EC1DA6 /* OpenWar-Cpp-Info.plist in Resources */,
 				63F55A3AF52CC405D555DC19 /* Facing.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1054,6 +1169,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		41396DC417E7517F00EC1DA6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				41396E0617E7517F00EC1DA6 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		413B6DF3175CE70B00AABF10 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1237,6 +1360,68 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		41396E2F17E7517F00EC1DA6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_INPUT_FILETYPE = automatic;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "OpenWar/Sources-Mac/OpenWar-Cpp-Prefix.pch";
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/External/glm\"",
+					"\"$(SRCROOT)/External/lua/src\"",
+				);
+				INFOPLIST_FILE = "OpenWar/Sources-Mac/OpenWar-Cpp-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = "Open War SDL copy";
+				SDKROOT = macosx10.8;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		41396E3017E7517F00EC1DA6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_SUSPICIOUS_IMPLICIT_CONVERSION = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
+				GCC_INPUT_FILETYPE = automatic;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "OpenWar/Sources-Mac/OpenWar-Cpp-Prefix.pch";
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_HIDDEN_VIRTUAL_FUNCTIONS = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/External/glm\"",
+					"\"$(SRCROOT)/External/lua/src\"",
+				);
+				INFOPLIST_FILE = "OpenWar/Sources-Mac/OpenWar-Cpp-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_NAME = "Open War SDL copy";
+				SDKROOT = macosx10.8;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
 		413B6E15175CE70B00AABF10 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1413,6 +1598,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		41396E2E17E7517F00EC1DA6 /* Build configuration list for PBXNativeTarget "Open War Cpp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				41396E2F17E7517F00EC1DA6 /* Debug */,
+				41396E3017E7517F00EC1DA6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		413B6DF2175CE70B00AABF10 /* Build configuration list for PBXProject "OpenWar" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
