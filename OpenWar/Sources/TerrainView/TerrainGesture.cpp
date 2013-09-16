@@ -116,8 +116,8 @@ void TerrainGesture::KeyDown(Surface* surface, char key)
 		case 'A': _keyScrollLeft = true; break;
 		case 'S': _keyScrollBackward = true; break;
 		case 'D': _keyScrollRight = true; break;
-		case 'Q': _keyOrbitLeft = true; break;
-		case 'E': _keyOrbitRight = true; break;
+		case 'Q': _keyOrbitRight = true; break;
+		case 'E': _keyOrbitLeft = true; break;
 		default: break;
 	}
 }
@@ -134,8 +134,8 @@ void TerrainGesture::KeyUp(Surface* surface, char key)
 		case 'A': _keyScrollLeft = false; break;
 		case 'S': _keyScrollBackward = false; break;
 		case 'D': _keyScrollRight = false; break;
-		case 'Q': _keyOrbitLeft = false; break;
-		case 'E': _keyOrbitRight = false; break;
+		case 'Q': _keyOrbitRight = false; break;
+		case 'E': _keyOrbitLeft = false; break;
 		default: break;
 	}
 }
