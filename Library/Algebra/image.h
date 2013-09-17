@@ -16,7 +16,7 @@ public:
 	CGContextRef _context;
 
 	image(size_t width, size_t height, GLenum format = GL_RGBA);
-	image(NSString* name);
+	image(const char* name);
 	image(CGImageRef image);
 	~image();
 

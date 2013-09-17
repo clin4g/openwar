@@ -54,14 +54,14 @@ _colorBillboardRenderer(nullptr),
 _textureTriangleRenderer(nullptr),
 _textureFacing(nullptr)
 {
-	_textureUnitMarkers = new texture(@"Texture256x256.png");
-	_textureTouchMarker = new texture(@"TouchMarker.png");
-	_textureFacing = new texture(@"Facing.png");
+	_textureUnitMarkers = new texture("Texture256x256.png");
+	_textureTouchMarker = new texture("TouchMarker.png");
+	_textureFacing = new texture("Facing.png");
 
 	SetContentBounds(_terrainSurface->GetBounds());
 
 	_billboardTexture = new BillboardTexture();
-	_billboardTexture->AddSheet(image(@"Billboards.png"));
+	_billboardTexture->AddSheet(image("Billboards.png"));
 
 	_billboardModel = new BillboardModel();
 	_billboardModel->texture = _billboardTexture;

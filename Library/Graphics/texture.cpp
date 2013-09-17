@@ -17,7 +17,7 @@ texture::texture()
 
 
 
-texture::texture(NSString *name)
+texture::texture(const char* name)
 {
 	glGenTextures(1, &id);
 	CHECK_ERROR_GL();
@@ -68,8 +68,10 @@ static bool CheckForExtension(NSString *searchName)
 #endif
 
 
-void texture::load(NSString *name)
+void texture::load(const char* textureName)
 {
+	NSString* name = [NSString stringWithUTF8String:textureName];
+
 #if TARGET_OS_IPHONE
 	UIImage* image = nil;
 

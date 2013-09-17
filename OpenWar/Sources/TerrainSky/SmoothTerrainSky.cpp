@@ -7,7 +7,7 @@
 
 SmoothTerrainSky::SmoothTerrainSky()
 {
-	_textureBackgroundLinen = new texture(@"Linen128x128.png");
+	_textureBackgroundLinen = new texture("Linen128x128.png");
 }
 
 

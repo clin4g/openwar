@@ -56,13 +56,15 @@ _context(nil)
 }
 
 
-image::image(NSString* name) :
+image::image(const char* resourceName) :
 _format(GL_RGBA),
 _width(0),
 _height(0),
 _data(nullptr),
 _context(nil)
 {
+	NSString* name = [NSString stringWithUTF8String:resourceName];
+
 #if TARGET_OS_IPHONE
     
 	UIImage* img = nil;

@@ -89,11 +89,9 @@ void TiledTerrainSurface::SetHeight(int x, int y, float h)
 
 void TiledTerrainSurface::SetTile(int x, int y, const std::string& texture, int rotate, bool mirror)
 {
-	NSString* path = [NSString stringWithCString:texture.c_str() encoding:NSASCIIStringEncoding];
-
 	if (_textureNumber.find(texture) == _textureNumber.end())
 	{
-		::texture* t = new ::texture(image(path));
+		::texture* t = new ::texture(image(texture.c_str()));
 
 		glBindTexture(GL_TEXTURE_2D, t->id);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

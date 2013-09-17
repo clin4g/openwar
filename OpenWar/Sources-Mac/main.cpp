@@ -1,4 +1,3 @@
-/*
 #include <SDL2/SDL.h>
 
 #include "OpenWarSurface.h"
@@ -30,12 +29,11 @@ static BattleScript* CreateBattleScript()
 	}
 
 	return battleScript;
-}*/
+}
 
  
 int main(int argc, char *argv[])
 {
-    /*
 	SDL_Init(SDL_INIT_EVERYTHING);
 
 	Window* window = new Window();
@@ -48,7 +46,6 @@ int main(int argc, char *argv[])
 		Window::ProcessEvents();
 
 	SDL_Quit();
-     */
     
 	return 0;
 }

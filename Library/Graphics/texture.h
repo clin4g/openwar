@@ -13,13 +13,13 @@ struct texture
 	GLuint id;
 
 	texture();
-	texture(NSString *name);
+	texture(const char* name);
 	texture(const image& image);
 	~texture();
 
 	void init();
 
-	void load(NSString *name);
+	void load(const char* name);
 	void load(const image& image);
 
 private:
