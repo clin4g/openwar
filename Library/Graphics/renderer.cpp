@@ -191,7 +191,7 @@ renderer_base::renderer_base(const renderer_specification& specification) :
 	}
 
     if (!link_program(_program)) {
-        NSLog(@"Failed to link program: %d", _program);
+        //NSLog(@"Failed to link program: %d", _program);
         if (_program) {
             glDeleteProgram(_program);
 	        CHECK_ERROR_GL();
@@ -257,19 +257,18 @@ float renderer_base::pixels_per_point()
 
 GLuint renderer_base::compile_shader(GLenum type, const char* source)
 {
-	NSString* string = [NSString stringWithCString:source encoding:NSUTF8StringEncoding];
-
-	if ([string hasPrefix:@"{"] && [string hasSuffix:@"}"])
-		string = [string substringWithRange:NSMakeRange(1, string.length - 2)];
-
+    std::string str(source);
+    
+    if (str.size() >= 2 && str[0] == '{' && str[str.size() - 1] == '}')
+        str = str.substr(1, str.size() - 2);
+    
 #if TARGET_OS_IPHONE
-	string = [NSString stringWithFormat:@"precision highp float; precision lowp int; %@", string];//mediump
+    str.insert(0, "precision highp float; precision lowp int; ");
 #else
-	string = [NSString stringWithFormat:@"#version 120\n%@", string];
+    str.insert(0, "#version 120\n");
 #endif
 
-
-	const GLchar *src = [string UTF8String];
+	const GLchar *src = str.c_str();
 
 	GLuint result = glCreateShader(type);
 	CHECK_ERROR_GL();
@@ -287,7 +286,7 @@ GLuint renderer_base::compile_shader(GLenum type, const char* source)
 		GLchar *log = (GLchar *)malloc((size_t)logLength);
 		glGetShaderInfoLog(result, logLength, &logLength, log);
 		CHECK_ERROR_GL();
-		NSLog(@"Shader compile log:\n%s", log);
+		//NSLog(@"Shader compile log:\n%s", log);
 		free(log);
 	}
 	#endif
@@ -314,7 +313,7 @@ bool renderer_base::link_program(GLuint program)
         GLchar *log = (GLchar *)malloc((size_t)logLength);
         glGetProgramInfoLog(program, logLength, &logLength, log);
 	    CHECK_ERROR_GL();
-        NSLog(@"Program link log:\n%s", log);
+        //NSLog(@"Program link log:\n%s", log);
         free(log);
     }
 #endif
@@ -322,10 +321,10 @@ bool renderer_base::link_program(GLuint program)
     glGetProgramiv(program, GL_LINK_STATUS, &status);
 	CHECK_ERROR_GL();
     if (status == 0) {
-        return NO;
+        return false;
     }
 
-    return YES;
+    return true;
 }
 
 
@@ -341,7 +340,7 @@ bool renderer_base::validate_program(GLuint program)
 	{
 		GLchar *log = (GLchar *)malloc((size_t)logLength);
 		glGetProgramInfoLog(program, logLength, &logLength, log);
-		NSLog(@"Program validate log:\n%s", log);
+		//NSLog(@"Program validate log:\n%s", log);
 		free(log);
 	}
 

@@ -41,11 +41,11 @@ void EditorGesture::TouchBegan(Touch* touch)
 				a -= 360;
 			while (a < 0)
 				a += 360;
-			NSLog(@"Angle: %g", a);
+			//NSLog(@"Angle: %g", a);
 		}
 		old = p;
 
-		NSLog(@"Position: %g, %g", p.x, p.y);
+		//NSLog(@"Position: %g, %g", p.x, p.y);
 		return;
 	}
 

@@ -24,7 +24,7 @@ class image
 	GLenum _format;
 
 public:
-	image(size_t width, size_t height);
+	image(int width, int height);
 	image(const resource& r);
 
 #ifndef OPENWAR_SDL

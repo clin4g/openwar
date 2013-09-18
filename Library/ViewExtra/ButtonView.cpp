@@ -20,10 +20,10 @@ const ButtonAlignment ButtonAlignment::BottomRight(ButtonAlignment::Vertical::Bo
 /***/
 
 
-ButtonItem::ButtonItem(ButtonArea* buttonArea, NSString* text) :
+ButtonItem::ButtonItem(ButtonArea* buttonArea, const char* text) :
 _buttonArea(buttonArea),
 _buttonIcon(nullptr),
-_buttonText([text retain]),
+_buttonText(text),
 _hasAction(false),
 _action([](){}),
 _keyboardShortcut('\0'),
@@ -38,7 +38,7 @@ _disabled(false)
 ButtonItem::ButtonItem(ButtonArea* buttonArea, ButtonIcon* icon) :
 _buttonArea(buttonArea),
 _buttonIcon(icon),
-_buttonText(nil),
+_buttonText(),
 _hasAction(false),
 _action([](){}),
 _keyboardShortcut('\0'),
@@ -52,16 +52,15 @@ _disabled(false)
 
 ButtonItem::~ButtonItem()
 {
-	[_buttonText release];
 }
 
 
 
 glm::vec2 ButtonItem::CalculateSize() const
 {
-	if (_buttonText != nil)
+	if (!_buttonText.empty())
 	{
-		glm::vec2 size = _buttonArea->GetButtonView()->_buttonRendering->_string_font->measure(_buttonText);
+		glm::vec2 size = _buttonArea->GetButtonView()->_buttonRendering->_string_font->measure(_buttonText.c_str());
 		return glm::vec2(38 + size.x, fmaxf(44, size.y));
 	}
 
@@ -96,7 +95,7 @@ ButtonArea::~ButtonArea()
 
 
 
-ButtonItem* ButtonArea::AddButtonItem(NSString* buttonText)
+ButtonItem* ButtonArea::AddButtonItem(const char* buttonText)
 {
 	ButtonItem* buttonItem = new ButtonItem(this, buttonText);
 
@@ -342,7 +341,7 @@ void ButtonView::Render()
 			if (buttonItem->IsHighlight())
 				_buttonRendering->RenderHighlight(viewport, buttonItem->GetBounds());
 
-			if (buttonItem->GetButtonText() != nil)
+			if (buttonItem->GetButtonText() != nullptr)
 				_buttonRendering->RenderButtonText(viewport, buttonItem->GetBounds().center(), buttonItem->GetButtonText());
 		}
 	}

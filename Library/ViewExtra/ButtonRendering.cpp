@@ -138,7 +138,7 @@ void ButtonRendering::RenderSelected(bounds2f viewport, bounds2f bounds)
 }
 
 
-void ButtonRendering::RenderButtonText(bounds2f viewport, glm::vec2 position, NSString* text)
+void ButtonRendering::RenderButtonText(bounds2f viewport, glm::vec2 position, const char* text)
 {
 	_string_shape->clear();
 	_string_shape->add(text, glm::mat4x4());

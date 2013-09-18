@@ -103,6 +103,28 @@
 		413B7027175DFEC800AABF10 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 413B7026175DFEC800AABF10 /* AudioToolbox.framework */; };
 		4169B57817676F9B00C2F34E /* liblua-mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4169B54917676D8C00C2F34E /* liblua-mac.a */; };
 		419D24A517E0AFD5007340F2 /* Scripts in Resources */ = {isa = PBXBuildFile; fileRef = 419D24A417E0AFD5007340F2 /* Scripts */; };
+		419D448F17E9D2B4003B3FB3 /* geometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EA4175DD20C00AABF10 /* geometry.cpp */; };
+		419D449017E9D2BB003B3FB3 /* image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EA6175DD20C00AABF10 /* image.cpp */; };
+		419D449117E9D2FB003B3FB3 /* resource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F558482EDAD774FD59D9FE /* resource.cpp */; };
+		419D449217E9D37C003B3FB3 /* quadtree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6E9E175DD20C00AABF10 /* quadtree.cpp */; };
+		419D449317E9D37F003B3FB3 /* sampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EA0175DD20C00AABF10 /* sampler.cpp */; };
+		419D449417E9D381003B3FB3 /* bspline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55AF200D5648D23279089 /* bspline.cpp */; };
+		419D449517E9D383003B3FB3 /* heightmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5540A8AF3B3D853FA7D3F /* heightmap.cpp */; };
+		419D449617E9D393003B3FB3 /* framebuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EBA175DE03400AABF10 /* framebuffer.cpp */; };
+		419D449717E9D393003B3FB3 /* renderbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EBC175DE03400AABF10 /* renderbuffer.cpp */; };
+		419D449817E9D393003B3FB3 /* renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EBE175DE03400AABF10 /* renderer.cpp */; };
+		419D449917E9D393003B3FB3 /* texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EC2175DE03400AABF10 /* texture.cpp */; };
+		419D449A17E9D393003B3FB3 /* vertexbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55841973B995647E88800 /* vertexbuffer.cpp */; };
+		419D449B17E9D4D2003B3FB3 /* animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6ED4175DE3CA00AABF10 /* animation.cpp */; };
+		419D449C17E9D4D2003B3FB3 /* sprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6ED6175DE3CA00AABF10 /* sprite.cpp */; };
+		419D449D17E9D4D2003B3FB3 /* BillboardTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55CD32C6D71296CE115A2 /* BillboardTexture.cpp */; };
+		419D449E17E9D4D2003B3FB3 /* TextureBillboardRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F557AFC44198858A135967 /* TextureBillboardRenderer.cpp */; };
+		419D449F17E9D4D2003B3FB3 /* PlainRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F558777A1DE00C6094836A /* PlainRenderer.cpp */; };
+		419D44A017E9D4D2003B3FB3 /* GradientRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5552ED784F80C5EEDBB07 /* GradientRenderer.cpp */; };
+		419D44A117E9D4D2003B3FB3 /* ColorBillboardRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55E29D3D783BD7DAC387E /* ColorBillboardRenderer.cpp */; };
+		419D44A217E9D4D2003B3FB3 /* TextureRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5524D8896EF7BF827950A /* TextureRenderer.cpp */; };
+		419D44A317E9D4D2003B3FB3 /* PathRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55C6AD8F51B653DB171E8 /* PathRenderer.cpp */; };
+		419D44A417E9D502003B3FB3 /* string_shape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6ED8175DE3CA00AABF10 /* string_shape.cpp */; };
 		41C0B52C17E63C1C00C52270 /* quadtree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6E9E175DD20C00AABF10 /* quadtree.cpp */; };
 		41C0B52D17E63C1C00C52270 /* sampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EA0175DD20C00AABF10 /* sampler.cpp */; };
 		41C0B52E17E63C1C00C52270 /* geometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6EA4175DD20C00AABF10 /* geometry.cpp */; };
@@ -208,6 +230,49 @@
 		41EE144A17E8A4290085D3F2 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41EE144217E8A4020085D3F2 /* SDL2_image.framework */; };
 		41EE144B17E8A4290085D3F2 /* SDL2_net.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41EE144317E8A4020085D3F2 /* SDL2_net.framework */; };
 		41EE144C17E8A4290085D3F2 /* SDL2_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41EE144417E8A4020085D3F2 /* SDL2_ttf.framework */; };
+		41EE810317E9E041000A3D9A /* SoundLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B701C175DFE9200AABF10 /* SoundLoader.cpp */; };
+		41EE810417E9E041000A3D9A /* SoundPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B701E175DFE9200AABF10 /* SoundPlayer.cpp */; };
+		41EE810717E9E073000A3D9A /* Gesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6F81175DF02F00AABF10 /* Gesture.cpp */; };
+		41EE810817E9E073000A3D9A /* Surface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6F83175DF02F00AABF10 /* Surface.cpp */; };
+		41EE810917E9E073000A3D9A /* Touch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6F89175DF02F00AABF10 /* Touch.cpp */; };
+		41EE810A17E9E073000A3D9A /* View.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413B6F8B175DF02F00AABF10 /* View.cpp */; };
+		41EE810B17E9E073000A3D9A /* Window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F550133D9FD98F1D9B07D1 /* Window.cpp */; };
+		41EE810C17E9E0B2000A3D9A /* ButtonGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41158399175E7B59004F58D1 /* ButtonGesture.cpp */; };
+		41EE810D17E9E0B2000A3D9A /* ButtonRendering.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4115839B175E7B59004F58D1 /* ButtonRendering.cpp */; };
+		41EE810E17E9E0B2000A3D9A /* ButtonView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4115839D175E7B59004F58D1 /* ButtonView.cpp */; };
+		41EE810F17E9E123000A3D9A /* BattleModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5539136BD1EC880B88D54 /* BattleModel.cpp */; };
+		41EE811017E9E123000A3D9A /* ShootingCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55BDA157057D157E307C9 /* ShootingCounter.cpp */; };
+		41EE811117E9E123000A3D9A /* SmokeCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55EAEF4835655F899B843 /* SmokeCounter.cpp */; };
+		41EE811217E9E123000A3D9A /* UnitCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5557470DF86929CA211FA /* UnitCounter.cpp */; };
+		41EE811317E9E13F000A3D9A /* BattleView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5536EC562EAF1ADA3D96C /* BattleView.cpp */; };
+		41EE811417E9E13F000A3D9A /* BattleGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55FEDBDF52613CDF0F16C /* BattleGesture.cpp */; };
+		41EE811517E9E13F000A3D9A /* CasualtyMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55E589EB43FE093106219 /* CasualtyMarker.cpp */; };
+		41EE811617E9E13F000A3D9A /* UnitMovementMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55977615093630BED9E6F /* UnitMovementMarker.cpp */; };
+		41EE811717E9E13F000A3D9A /* RangeMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F552B223BCDEE835F81D43 /* RangeMarker.cpp */; };
+		41EE811817E9E13F000A3D9A /* UnitTrackingMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F551015746B4BAC3ADA148 /* UnitTrackingMarker.cpp */; };
+		41EE811917E9E13F000A3D9A /* UnitMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55487FC264D05169F3F76 /* UnitMarker.cpp */; };
+		41EE811A17E9E144000A3D9A /* MovementRules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5556B5319C80728CAB1FB /* MovementRules.cpp */; };
+		41EE811B17E9E144000A3D9A /* BattleSimulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5556B5E4B95C6046E29CB /* BattleSimulator.cpp */; };
+		41EE811C17E9E156000A3D9A /* SmoothTerrainSurface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F559DE267108D9E6CD72E5 /* SmoothTerrainSurface.cpp */; };
+		41EE811D17E9E156000A3D9A /* SmoothTerrainSurfaceRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55F0EFA394F6A1B3C0DBA /* SmoothTerrainSurfaceRenderer.cpp */; };
+		41EE811E17E9E156000A3D9A /* SmoothTerrainWater.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5512DFD522FD698DFD400 /* SmoothTerrainWater.cpp */; };
+		41EE811F17E9E15F000A3D9A /* BillboardTerrainForest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55F6090A4F942C1781504 /* BillboardTerrainForest.cpp */; };
+		41EE812017E9E15F000A3D9A /* TerrainForest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55C316CF9F03BB75E7959 /* TerrainForest.cpp */; };
+		41EE812117E9E165000A3D9A /* TerrainModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55A77C807E38F54D128BF /* TerrainModel.cpp */; };
+		41EE812217E9E165000A3D9A /* TerrainSurface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5591DBD990EA953743873 /* TerrainSurface.cpp */; };
+		41EE812317E9E165000A3D9A /* TerrainWater.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55C4FFA50A6E3915273D0 /* TerrainWater.cpp */; };
+		41EE812417E9E170000A3D9A /* TiledTerrainSurface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F550BC10AD74CCA2B4313B /* TiledTerrainSurface.cpp */; };
+		41EE812517E9E170000A3D9A /* TerrainSurfaceRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55A1C944D09E02843500A /* TerrainSurfaceRenderer.cpp */; };
+		41EE812617E9E170000A3D9A /* TiledTerrainSurfaceRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F550F23DA76C965C385802 /* TiledTerrainSurfaceRenderer.cpp */; };
+		41EE812717E9E177000A3D9A /* SmoothTerrainSky.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F556D44EE3D9C87A0F7FD6 /* SmoothTerrainSky.cpp */; };
+		41EE812817E9E177000A3D9A /* TerrainSky.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55F6233FACDB333EBADE7 /* TerrainSky.cpp */; };
+		41EE812917E9E186000A3D9A /* TerrainGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55CC494AF7D66DEF9BF5F /* TerrainGesture.cpp */; };
+		41EE812A17E9E186000A3D9A /* TerrainView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5593B74478343E2A98FBF /* TerrainView.cpp */; };
+		41EE812B17E9E186000A3D9A /* EditorModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55A21CB78891343349B4F /* EditorModel.cpp */; };
+		41EE812C17E9E186000A3D9A /* EditorGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55D5665CB9D3AF5C73979 /* EditorGesture.cpp */; };
+		41EE812D17E9E18E000A3D9A /* BattleScript.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55026F1B1D4FA3ED86125 /* BattleScript.cpp */; };
+		41EE812E17E9E191000A3D9A /* OpenWarSurface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41158396175E1E9D004F58D1 /* OpenWarSurface.cpp */; };
+		41EE812F17E9E235000A3D9A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55DCB0117555627DEB035 /* main.cpp */; };
 		63F5505275AE78B664DE6F1A /* UnitMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55487FC264D05169F3F76 /* UnitMarker.cpp */; };
 		63F55059A1B76F29DB55BB7F /* heightmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5540A8AF3B3D853FA7D3F /* heightmap.cpp */; };
 		63F5508772C1D63A283143FB /* UnitMovementMarker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55977615093630BED9E6F /* UnitMovementMarker.cpp */; };
@@ -235,7 +300,6 @@
 		63F5560C1BA9408C6F54EC89 /* resource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F558482EDAD774FD59D9FE /* resource.cpp */; };
 		63F5562DF06735D208DDCBC2 /* vertexbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55841973B995647E88800 /* vertexbuffer.cpp */; };
 		63F55637F7841E735E8AB1C3 /* BillboardTexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55CD32C6D71296CE115A2 /* BillboardTexture.cpp */; };
-		63F557291FA2E34954DED76F /* resource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F558482EDAD774FD59D9FE /* resource.cpp */; };
 		63F557597DC86BE4128B3EC1 /* PlainRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F558777A1DE00C6094836A /* PlainRenderer.cpp */; };
 		63F557CF71F1C893EE51497A /* BattleSimulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F5556B5E4B95C6046E29CB /* BattleSimulator.cpp */; };
 		63F558AA3FA5AB42B92EB1C7 /* EditorGesture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 63F55D5665CB9D3AF5C73979 /* EditorGesture.cpp */; };
@@ -754,8 +818,8 @@
 				413B6EC3175DE03400AABF10 /* texture.h */,
 				413B6EC5175DE03400AABF10 /* uniforms.h */,
 				413B6EC7175DE03400AABF10 /* vertex.h */,
-				63F551486360CFC73276A2D4 /* vertexbuffer.h */,
 				63F55841973B995647E88800 /* vertexbuffer.cpp */,
+				63F551486360CFC73276A2D4 /* vertexbuffer.h */,
 			);
 			path = Graphics;
 			sourceTree = "<group>";
@@ -765,24 +829,24 @@
 			children = (
 				413B6ED4175DE3CA00AABF10 /* animation.cpp */,
 				413B6ED5175DE3CA00AABF10 /* animation.h */,
+				63F55CD32C6D71296CE115A2 /* BillboardTexture.cpp */,
+				63F55B14E3A1EAFD78E28B0B /* BillboardTexture.h */,
+				63F55E29D3D783BD7DAC387E /* ColorBillboardRenderer.cpp */,
+				63F55F59F33BBB7B536D63A4 /* ColorBillboardRenderer.h */,
+				63F5552ED784F80C5EEDBB07 /* GradientRenderer.cpp */,
+				63F55E9FB07747AD64FD0109 /* GradientRenderer.h */,
+				63F55C6AD8F51B653DB171E8 /* PathRenderer.cpp */,
+				63F550908F1A0475E52D6E91 /* PathRenderer.h */,
+				63F558777A1DE00C6094836A /* PlainRenderer.cpp */,
+				63F55A723EB80B72DE84B0E9 /* PlainRenderer.h */,
 				413B6ED6175DE3CA00AABF10 /* sprite.cpp */,
 				413B6ED7175DE3CA00AABF10 /* sprite.h */,
 				413B6ED8175DE3CA00AABF10 /* string_shape.cpp */,
 				413B6ED9175DE3CA00AABF10 /* string_shape.h */,
-				63F55E9FB07747AD64FD0109 /* GradientRenderer.h */,
-				63F55CD32C6D71296CE115A2 /* BillboardTexture.cpp */,
 				63F557AFC44198858A135967 /* TextureBillboardRenderer.cpp */,
-				63F558777A1DE00C6094836A /* PlainRenderer.cpp */,
-				63F55B14E3A1EAFD78E28B0B /* BillboardTexture.h */,
 				63F55926386DA44A2A4D7C21 /* TextureBillboardRenderer.h */,
-				63F5552ED784F80C5EEDBB07 /* GradientRenderer.cpp */,
-				63F55A723EB80B72DE84B0E9 /* PlainRenderer.h */,
-				63F55F59F33BBB7B536D63A4 /* ColorBillboardRenderer.h */,
-				63F55E29D3D783BD7DAC387E /* ColorBillboardRenderer.cpp */,
 				63F5524D8896EF7BF827950A /* TextureRenderer.cpp */,
 				63F55F21DAC49C819E0C9603 /* TextureRenderer.h */,
-				63F55C6AD8F51B653DB171E8 /* PathRenderer.cpp */,
-				63F550908F1A0475E52D6E91 /* PathRenderer.h */,
 			);
 			path = Renderers;
 			sourceTree = "<group>";
@@ -862,12 +926,12 @@
 		63F5546099E745768E8405C7 /* SmoothTerrain */ = {
 			isa = PBXGroup;
 			children = (
-				63F55F0EFA394F6A1B3C0DBA /* SmoothTerrainSurfaceRenderer.cpp */,
 				63F559DE267108D9E6CD72E5 /* SmoothTerrainSurface.cpp */,
-				63F5526028192B936E0417FA /* SmoothTerrainSurfaceRenderer.h */,
 				63F55149DA57AC3CFFA49D8B /* SmoothTerrainSurface.h */,
-				63F55BE3ADF57554CC935989 /* SmoothTerrainWater.h */,
+				63F55F0EFA394F6A1B3C0DBA /* SmoothTerrainSurfaceRenderer.cpp */,
+				63F5526028192B936E0417FA /* SmoothTerrainSurfaceRenderer.h */,
 				63F5512DFD522FD698DFD400 /* SmoothTerrainWater.cpp */,
+				63F55BE3ADF57554CC935989 /* SmoothTerrainWater.h */,
 			);
 			path = SmoothTerrain;
 			sourceTree = "<group>";
@@ -886,14 +950,14 @@
 		63F55597B7C873EB4A594355 /* TerrainView */ = {
 			isa = PBXGroup;
 			children = (
-				63F5593B74478343E2A98FBF /* TerrainView.cpp */,
-				63F55FB1E41CCC9A1DE8BD28 /* TerrainGesture.h */,
-				63F55E6B18AF2217B015F065 /* TerrainView.h */,
 				63F55CC494AF7D66DEF9BF5F /* TerrainGesture.cpp */,
-				63F557F563691C3F1A8E1FA2 /* EditorGesture.h */,
+				63F55FB1E41CCC9A1DE8BD28 /* TerrainGesture.h */,
+				63F5593B74478343E2A98FBF /* TerrainView.cpp */,
+				63F55E6B18AF2217B015F065 /* TerrainView.h */,
 				63F55A21CB78891343349B4F /* EditorModel.cpp */,
-				63F55133DB45DA79353C065E /* EditorModel.h */,
+				63F557F563691C3F1A8E1FA2 /* EditorGesture.h */,
 				63F55D5665CB9D3AF5C73979 /* EditorGesture.cpp */,
+				63F55133DB45DA79353C065E /* EditorModel.h */,
 			);
 			path = TerrainView;
 			sourceTree = "<group>";
@@ -903,10 +967,10 @@
 			children = (
 				63F559A402ACECE728E3AB82 /* BattleModel.h */,
 				63F5539136BD1EC880B88D54 /* BattleModel.cpp */,
-				63F5591F1BBD00B0B5C49265 /* SmokeCounter.h */,
 				63F55BDA157057D157E307C9 /* ShootingCounter.cpp */,
 				63F5543DBC49F5BCD744028E /* ShootingCounter.h */,
 				63F55EAEF4835655F899B843 /* SmokeCounter.cpp */,
+				63F5591F1BBD00B0B5C49265 /* SmokeCounter.h */,
 				63F5557470DF86929CA211FA /* UnitCounter.cpp */,
 				63F55FD1F7CB58568215623F /* UnitCounter.h */,
 			);
@@ -916,8 +980,8 @@
 		63F558F239D3DE2A88057DF1 /* BattleView */ = {
 			isa = PBXGroup;
 			children = (
-				63F55396176B05C674B9DE7F /* BattleView.h */,
 				63F5536EC562EAF1ADA3D96C /* BattleView.cpp */,
+				63F55396176B05C674B9DE7F /* BattleView.h */,
 				63F55FEDBDF52613CDF0F16C /* BattleGesture.cpp */,
 				63F55EE56071A4A169967837 /* BattleGesture.h */,
 				63F55E589EB43FE093106219 /* CasualtyMarker.cpp */,
@@ -948,12 +1012,12 @@
 		63F55E13534AC3607A54AF3D /* TerrainSurface */ = {
 			isa = PBXGroup;
 			children = (
-				63F557CDB1BA76F05E76C6E8 /* TiledTerrainSurface.h */,
 				63F550BC10AD74CCA2B4313B /* TiledTerrainSurface.cpp */,
+				63F557CDB1BA76F05E76C6E8 /* TiledTerrainSurface.h */,
 				63F55A1C944D09E02843500A /* TerrainSurfaceRenderer.cpp */,
 				63F551C090421698FA53AC2E /* TerrainSurfaceRenderer.h */,
-				63F55CE2B11E776AB05B77EA /* TiledTerrainSurfaceRenderer.h */,
 				63F550F23DA76C965C385802 /* TiledTerrainSurfaceRenderer.cpp */,
+				63F55CE2B11E776AB05B77EA /* TiledTerrainSurfaceRenderer.h */,
 			);
 			path = TerrainSurface;
 			sourceTree = "<group>";
@@ -1193,8 +1257,71 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41EE810317E9E041000A3D9A /* SoundLoader.cpp in Sources */,
+				41EE811917E9E13F000A3D9A /* UnitMarker.cpp in Sources */,
+				41EE811C17E9E156000A3D9A /* SmoothTerrainSurface.cpp in Sources */,
+				41EE810B17E9E073000A3D9A /* Window.cpp in Sources */,
+				41EE812B17E9E186000A3D9A /* EditorModel.cpp in Sources */,
+				419D44A117E9D4D2003B3FB3 /* ColorBillboardRenderer.cpp in Sources */,
 				41396E0617E7517F00EC1DA6 /* main.cpp in Sources */,
-				63F557291FA2E34954DED76F /* resource.cpp in Sources */,
+				419D449D17E9D4D2003B3FB3 /* BillboardTexture.cpp in Sources */,
+				41EE812117E9E165000A3D9A /* TerrainModel.cpp in Sources */,
+				419D44A017E9D4D2003B3FB3 /* GradientRenderer.cpp in Sources */,
+				41EE810417E9E041000A3D9A /* SoundPlayer.cpp in Sources */,
+				419D449117E9D2FB003B3FB3 /* resource.cpp in Sources */,
+				41EE812217E9E165000A3D9A /* TerrainSurface.cpp in Sources */,
+				41EE811617E9E13F000A3D9A /* UnitMovementMarker.cpp in Sources */,
+				419D44A317E9D4D2003B3FB3 /* PathRenderer.cpp in Sources */,
+				41EE812C17E9E186000A3D9A /* EditorGesture.cpp in Sources */,
+				41EE811A17E9E144000A3D9A /* MovementRules.cpp in Sources */,
+				41EE812417E9E170000A3D9A /* TiledTerrainSurface.cpp in Sources */,
+				41EE812D17E9E18E000A3D9A /* BattleScript.cpp in Sources */,
+				41EE812817E9E177000A3D9A /* TerrainSky.cpp in Sources */,
+				41EE810817E9E073000A3D9A /* Surface.cpp in Sources */,
+				41EE811F17E9E15F000A3D9A /* BillboardTerrainForest.cpp in Sources */,
+				41EE811017E9E123000A3D9A /* ShootingCounter.cpp in Sources */,
+				419D449317E9D37F003B3FB3 /* sampler.cpp in Sources */,
+				419D44A217E9D4D2003B3FB3 /* TextureRenderer.cpp in Sources */,
+				419D449E17E9D4D2003B3FB3 /* TextureBillboardRenderer.cpp in Sources */,
+				419D449A17E9D393003B3FB3 /* vertexbuffer.cpp in Sources */,
+				41EE811B17E9E144000A3D9A /* BattleSimulator.cpp in Sources */,
+				41EE810917E9E073000A3D9A /* Touch.cpp in Sources */,
+				419D449B17E9D4D2003B3FB3 /* animation.cpp in Sources */,
+				41EE810E17E9E0B2000A3D9A /* ButtonView.cpp in Sources */,
+				41EE810717E9E073000A3D9A /* Gesture.cpp in Sources */,
+				41EE810A17E9E073000A3D9A /* View.cpp in Sources */,
+				41EE811417E9E13F000A3D9A /* BattleGesture.cpp in Sources */,
+				419D449817E9D393003B3FB3 /* renderer.cpp in Sources */,
+				41EE812A17E9E186000A3D9A /* TerrainView.cpp in Sources */,
+				419D448F17E9D2B4003B3FB3 /* geometry.cpp in Sources */,
+				419D449617E9D393003B3FB3 /* framebuffer.cpp in Sources */,
+				419D449717E9D393003B3FB3 /* renderbuffer.cpp in Sources */,
+				419D449417E9D381003B3FB3 /* bspline.cpp in Sources */,
+				419D449517E9D383003B3FB3 /* heightmap.cpp in Sources */,
+				41EE811D17E9E156000A3D9A /* SmoothTerrainSurfaceRenderer.cpp in Sources */,
+				419D449917E9D393003B3FB3 /* texture.cpp in Sources */,
+				41EE812917E9E186000A3D9A /* TerrainGesture.cpp in Sources */,
+				419D44A417E9D502003B3FB3 /* string_shape.cpp in Sources */,
+				41EE811E17E9E156000A3D9A /* SmoothTerrainWater.cpp in Sources */,
+				41EE812617E9E170000A3D9A /* TiledTerrainSurfaceRenderer.cpp in Sources */,
+				41EE810C17E9E0B2000A3D9A /* ButtonGesture.cpp in Sources */,
+				419D449217E9D37C003B3FB3 /* quadtree.cpp in Sources */,
+				41EE811317E9E13F000A3D9A /* BattleView.cpp in Sources */,
+				41EE811817E9E13F000A3D9A /* UnitTrackingMarker.cpp in Sources */,
+				419D449F17E9D4D2003B3FB3 /* PlainRenderer.cpp in Sources */,
+				419D449017E9D2BB003B3FB3 /* image.cpp in Sources */,
+				41EE811717E9E13F000A3D9A /* RangeMarker.cpp in Sources */,
+				41EE812017E9E15F000A3D9A /* TerrainForest.cpp in Sources */,
+				41EE812517E9E170000A3D9A /* TerrainSurfaceRenderer.cpp in Sources */,
+				41EE811217E9E123000A3D9A /* UnitCounter.cpp in Sources */,
+				41EE812E17E9E191000A3D9A /* OpenWarSurface.cpp in Sources */,
+				41EE812717E9E177000A3D9A /* SmoothTerrainSky.cpp in Sources */,
+				41EE811517E9E13F000A3D9A /* CasualtyMarker.cpp in Sources */,
+				41EE812317E9E165000A3D9A /* TerrainWater.cpp in Sources */,
+				41EE811117E9E123000A3D9A /* SmokeCounter.cpp in Sources */,
+				41EE810F17E9E123000A3D9A /* BattleModel.cpp in Sources */,
+				41EE810D17E9E0B2000A3D9A /* ButtonRendering.cpp in Sources */,
+				419D449C17E9D4D2003B3FB3 /* sprite.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1237,6 +1364,7 @@
 				63F555392A719212301644A1 /* EditorModel.cpp in Sources */,
 				63F558AA3FA5AB42B92EB1C7 /* EditorGesture.cpp in Sources */,
 				63F55C99EAB3B7172666EAFB /* BattleGesture.cpp in Sources */,
+				41EE812F17E9E235000A3D9A /* main.cpp in Sources */,
 				63F55F16A26D21892615988C /* MovementRules.cpp in Sources */,
 				63F557CF71F1C893EE51497A /* BattleSimulator.cpp in Sources */,
 				63F55A672EE972CC4D26DE6E /* CasualtyMarker.cpp in Sources */,

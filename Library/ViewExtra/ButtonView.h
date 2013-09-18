@@ -58,7 +58,7 @@ struct ButtonIcon
 class ButtonItem
 {
 	ButtonArea* _buttonArea;
-	NSString* _buttonText;
+	std::string _buttonText;
 	ButtonIcon* _buttonIcon;
 	bool _hasAction;
 	std::function<void()> _action;
@@ -69,13 +69,13 @@ class ButtonItem
 	bool _disabled;
 
 public:
-	ButtonItem(ButtonArea* buttonArea, NSString* text);
+	ButtonItem(ButtonArea* buttonArea, const char* text);
 	ButtonItem(ButtonArea* buttonArea, ButtonIcon* icon);
 	~ButtonItem();
 
 	ButtonArea* GetButtonArea() const { return _buttonArea; }
 
-	NSString* GetButtonText() const { return _buttonText; }
+	const char* GetButtonText() const { return _buttonText.empty() ? nullptr : _buttonText.c_str(); }
 
 	ButtonIcon* GetButtonIcon() const { return _buttonIcon; }
 	void SetButtonIcon(ButtonIcon* value) { _buttonIcon = value; }
@@ -123,7 +123,7 @@ public:
 
 	ButtonView* GetButtonView() const { return _buttonView; }
 
-	ButtonItem* AddButtonItem(NSString* buttonText);
+	ButtonItem* AddButtonItem(const char* buttonText);
 	ButtonItem* AddButtonItem(ButtonIcon* buttonIcon);
 
 	glm::vec2 CalculateSize() const;

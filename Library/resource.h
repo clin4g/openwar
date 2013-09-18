@@ -8,6 +8,9 @@
 
 class resource
 {
+	static std::string _app_path;
+	static std::string _resources_path;
+
 #if !defined(OPENWAR_SDL)
 	NSData* _nsdata;
 #endif
@@ -17,6 +20,8 @@ class resource
 	size_t _size;
 
 public:
+    static void init(const char* argv0);
+    
 	resource(const char* name);
 	resource(const char* name, const char* type);
 	~resource();

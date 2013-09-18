@@ -11,37 +11,44 @@ image* string_font::_image = nullptr;
 
 
 
-string_font::string_font(NSString* name, CGFloat size, float pixelDensity) :
+string_font::string_font(const char* name, float size, float pixelDensity) :
+#ifndef OPENWAR_SDL
 _font(nil),
+#endif
 _pixelDensity(pixelDensity),
 _items(),
-_next(CGPointZero),
+_next(),
 _dirty(false)
 {
 	initialize();
 
 	size *= _pixelDensity;
 
+#ifndef OPENWAR_SDL
 #if TARGET_OS_IPHONE
-	_font = [[UIFont fontWithName:name size:size] retain];
+	_font = [[UIFont fontWithName:[NSString stringWithUTF8String:name] size:size] retain];
 #else
-	_font = [[NSFont fontWithName:name size:size] retain];
+	_font = [[NSFont fontWithName:[NSString stringWithUTF8String:name] size:size] retain];
+#endif
 #endif
 }
 
 
 
-string_font::string_font(bool bold, CGFloat size, float pixelDensity) :
+string_font::string_font(bool bold, float size, float pixelDensity) :
+#ifndef OPENWAR_SDL
 _font(nil),
+#endif
 _pixelDensity(pixelDensity),
 _items(),
-_next(CGPointZero),
+_next(),
 _dirty(false)
 {
 	initialize();
 
 	size *= _pixelDensity;
 
+#ifndef OPENWAR_SDL
 #if TARGET_OS_IPHONE
 	if (bold)
 		_font = [[UIFont boldSystemFontOfSize:size] retain];
@@ -53,13 +60,16 @@ _dirty(false)
 	else
 		_font = [[NSFont systemFontOfSize:size] retain];
 #endif
+#endif
 }
 
 
 
 string_font::~string_font()
 {
+#ifndef OPENWAR_SDL
 	[_font release];
+#endif
 }
 
 
@@ -120,7 +130,15 @@ void string_font::initialize()
 
 float string_font::font_size() const
 {
+#ifdef OPENWAR_SDL
+
+	return 14;
+
+#else
+
 	return (float)_font.pointSize / _pixelDensity;
+
+#endif
 }
 
 
@@ -133,12 +151,16 @@ float string_font::shadow_offset() const
 
 
 
-void string_font::add_character(unichar character)
+void string_font::add_character(wchar_t character)
 {
 	if (_items.find(character) != _items.end())
 		return;
 
-	NSString* text = [NSString stringWithCharacters:&character length:1];
+#ifndef OPENWAR_SDL
+
+    unichar uc = (unichar)character;
+    
+	NSString* text = [NSString stringWithCharacters:&uc length:1];
 
 #if TARGET_OS_IPHONE
 	CGSize size = [text sizeWithFont:_font];
@@ -157,22 +179,24 @@ void string_font::add_character(unichar character)
 
 	item item;
 	item._character = character;
-	item._bounds.origin = _next;
-	item._bounds.size = size;
-	item._u0 = (float)item._bounds.origin.x / _image->width();
-	item._u1 = (float)(item._bounds.origin.x + item._bounds.size.width) / _image->width();
-	item._v0 = 1 - (float)(item._bounds.origin.y + item._bounds.size.height) / _image->height();
-	item._v1 = 1 - (float)item._bounds.origin.y / _image->height();
+	item._bounds_origin = _next;
+	item._bounds_size = glm::vec2(size.width, size.height);
+	item._u0 = (float)item._bounds_origin.x / _image->width();
+	item._u1 = (float)(item._bounds_origin.x + item._bounds_size.x) / _image->width();
+	item._v0 = 1 - (float)(item._bounds_origin.y + item._bounds_size.y) / _image->height();
+	item._v1 = 1 - (float)item._bounds_origin.y / _image->height();
 
 	_items[character] = item;
 
-	_next.x += floorf((float)item._bounds.size.width + 1) + 1;
+	_next.x += floorf((float)item._bounds_size.x + 1) + 1;
 	_dirty = true;
+
+#endif
 }
 
 
 
-string_font::item string_font::get_character(unichar character) const
+string_font::item string_font::get_character(wchar_t character) const
 {
 	auto i = _items.find(character);
 	if (i != _items.end())
@@ -202,19 +226,20 @@ void string_font::update_texture()
 
 	CGContextClearRect(_image->CGContext(), CGRectMake(0, 0, _image->width(), _image->height()));
 
-	for (std::map<unichar, item>::iterator i = _items.begin(); i != _items.end(); ++i)
+	for (std::map<wchar_t, item>::iterator i = _items.begin(); i != _items.end(); ++i)
 	{
 		item item = (*i).second;
 
-		NSString *text = [NSString stringWithCharacters:&item._character length:1];
+        unichar uc = (unichar)item._character;
+		NSString *text = [NSString stringWithCharacters:&uc length:1];
 
 		CGContextSetRGBFillColor(_image->CGContext(), 1, 1, 1, 1);
 
 #if TARGET_OS_IPHONE
-	    [text drawAtPoint:item._bounds.origin withFont:_font];
+	    [text drawAtPoint:CGPointMake(item._bounds_origin.x, item._bounds_origin.y) withFont:_font];
 #else
 		NSDictionary* attributes = [NSDictionary dictionaryWithObjectsAndKeys:_font, NSFontAttributeName, nil];
-		[text drawAtPoint:item._bounds.origin withAttributes:attributes];
+		[text drawAtPoint:CGPointMake(item._bounds_origin.x, item._bounds_origin.y) withAttributes:attributes];
 #endif
 	}
 
@@ -233,27 +258,33 @@ void string_font::update_texture()
 
 
 
-glm::vec2 string_font::measure(NSString* string)
+glm::vec2 string_font::measure(const char* s)
 {
+	float w = 0;
+	float h = 0;
+
+#ifndef OPENWAR_SDL
+
+	NSString* string = [NSString stringWithUTF8String:s];
+
 	//return vector2([string sizeWithFont:_font]) * size / _font.pointSize;
 
 	for (NSUInteger i = 0; i < string.length; ++i)
 	{
-		unichar character = [string characterAtIndex:i];
+		wchar_t character = [string characterAtIndex:i];
 		add_character(character);
 	}
 
-	float w = 0;
-	float h = 0;
-
 	for (NSUInteger i = 0; i < string.length; ++i)
 	{
-		unichar character = [string characterAtIndex:i];
+		wchar_t character = [string characterAtIndex:i];
 		item item = get_character(character);
 		glm::vec2 s = get_size(item);
 		w += s.x;
 		h = fmaxf(h, s.y);
 	}
+
+#endif
 
 	return glm::vec2(w, h);
 }
@@ -262,10 +293,10 @@ glm::vec2 string_font::measure(NSString* string)
 
 glm::vec2 string_font::get_size(const item& item) const
 {
-	return glm::vec2(item._bounds.size.width, item._bounds.size.height) / _pixelDensity;
+	return glm::vec2(item._bounds_size.x, item._bounds_size.y) / _pixelDensity;
 
 	/*float h = size;
-	float w = item._bounds.size.width * size / item._bounds.size.height;
+	float w = item._bounds_size.x * size / item._bounds_size.y;
 	return vector2(w, h) / pixel_scale();*/
 }
 
@@ -389,15 +420,19 @@ static NSString* ReorderToDisplayDirection(NSString* string)
 
 
 
-void string_shape::add(NSString* string, glm::mat4x4 transform, float alpha, float delta)
+void string_shape::add(const char* s, glm::mat4x4 transform, float alpha, float delta)
 {
-	#if ENABLE_BIDIRECTIONAL_TEXT
+#ifndef OPENWAR_SDL
+
+	NSString* string = [NSString stringWithUTF8String:s];
+
+#if ENABLE_BIDIRECTIONAL_TEXT
     string = ReorderToDisplayDirection(string);
     #endif
 
 	for (NSUInteger i = 0; i < string.length; ++i)
 	{
-		unichar character = [string characterAtIndex:i];
+		wchar_t character = [string characterAtIndex:i];
 		_font->add_character(character);
 	}
 
@@ -405,7 +440,7 @@ void string_shape::add(NSString* string, glm::mat4x4 transform, float alpha, flo
 
 	for (NSUInteger i = 0; i < string.length; ++i)
 	{
-		unichar character = [string characterAtIndex:i];
+		wchar_t character = [string characterAtIndex:i];
 		string_font::item item = _font->get_character(character);
 
 		glm::vec2 s = _font->get_size(item);
@@ -429,6 +464,8 @@ void string_shape::add(NSString* string, glm::mat4x4 transform, float alpha, flo
 		p.x += s.x;
 		alpha = next_alpha;
 	}
+
+#endif
 }
 
 

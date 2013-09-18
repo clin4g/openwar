@@ -44,7 +44,7 @@ struct ButtonRendering
 	void RenderBackground(bounds2f viewport, bounds2f bounds);
 	void RenderHighlight(bounds2f viewport, bounds2f bounds);
 	void RenderSelected(bounds2f viewport, bounds2f bounds);
-	void RenderButtonText(bounds2f viewport, glm::vec2 position, NSString* text);
+	void RenderButtonText(bounds2f viewport, glm::vec2 position, const char* text);
 
 	void RenderCornerButton(bounds2f viewport, texture* texture, bounds2f bounds, float radius);
 	void RenderButtonIcon(bounds2f viewport, glm::vec2 position, ButtonIcon* buttonIcon, bool disabled);

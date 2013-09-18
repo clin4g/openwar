@@ -7,6 +7,13 @@ bool Window::_done = false;
 std::map<Uint32, Window*> Window::_windows;
 
 
+static double current_timestamp()
+{
+	return (double)clock() / CLOCKS_PER_SEC;
+}
+
+
+
 Window::Window() :
 _surface(nullptr),
 _window(nullptr),
@@ -32,7 +39,7 @@ _timestamp(0)
 
 	_windows[windowID] = this;
 
-	_timestamp = [NSDate timeIntervalSinceReferenceDate];
+	_timestamp = current_timestamp();
 }
 
 
@@ -69,7 +76,8 @@ Window* Window::GetWindow(Uint32 windowID)
 }
 
 
-static NSString* EventTypeToString(Uint32 type)
+
+/*static NSString* EventTypeToString(Uint32 type)
 {
 	switch (type)
 	{
@@ -114,7 +122,9 @@ static NSString* EventTypeToString(Uint32 type)
 		case SDL_USEREVENT: return @"SDL_USEREVENT";
 		default: return @"[event?]";
 	}
-}
+}*/
+
+
 
 void Window::ProcessEvent(const SDL_Event& event)
 {
@@ -333,7 +343,7 @@ void Window::ProcessMouseWheel(const SDL_MouseWheelEvent& event)
 
 void Window::Update()
 {
-	double timestamp = [NSDate timeIntervalSinceReferenceDate];
+	double timestamp = current_timestamp();
 	double secondsSinceLastUpdate = timestamp - _timestamp;
 	_timestamp = timestamp;
 
@@ -346,7 +356,7 @@ void Window::Update()
 	if (_touch != nullptr)
 	{
 		double oldTimestamp = _touch->GetTimestamp();
-		_touch->Update([NSProcessInfo processInfo].systemUptime);
+		_touch->Update(timestamp);
 
 		if (_touch->GetTimestamp() != oldTimestamp && _touch->GetGesture() != nullptr)
 			_touch->GetGesture()->TouchMoved();

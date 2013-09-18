@@ -8,6 +8,7 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import <Cocoa/Cocoa.h>
 #import <GLKit/GLKit.h>
+*/
 
 #include <algorithm>
 #include <map>
@@ -19,10 +20,18 @@
 #include <OpenAL/al.h>
 #include <OpenAL/alc.h>
 
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+
 #define GLM_SWIZZLE
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 #define ENABLE_BIDIRECTIONAL_TEXT 0
-*/
+
+#include <SDL2/SDL.h>
+#include <SDL2_image/SDL_image.h>
+
+#define OPENWAR_SDL
+#define OPENWAR_CPP

@@ -556,6 +556,7 @@ static texture* create_colors()
 }
 
 
+#ifndef OPENWAR_CPP
 static NSString* FramebufferStatusString(GLenum status)
 {
 	switch (status)
@@ -570,6 +571,7 @@ static NSString* FramebufferStatusString(GLenum status)
 		default: return [NSString stringWithFormat:@"0x%04x", (unsigned int)status];
 	}
 }
+#endif
 
 
 
@@ -610,7 +612,9 @@ _mapTexture(nullptr)
 			GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 			if (status != GL_FRAMEBUFFER_COMPLETE)
 			{
+#ifndef OPENWAR_CPP
 				NSLog(@"CheckGLFramebuffer %@", FramebufferStatusString(status));
+#endif
 			}
 		}
 	}

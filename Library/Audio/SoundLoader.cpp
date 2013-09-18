@@ -8,6 +8,8 @@
 
 SoundLoader::SoundLoader(const char* name) : format(0), data(0), size(0), freq(0)
 {
+#ifndef OPENWAR_SDL
+    
 	NSString* fileString = [[NSBundle mainBundle] pathForResource:[NSString stringWithUTF8String:name] ofType:@"wav"];
 	CFURLRef fileUrl = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)fileString, kCFURLPOSIXPathStyle, false);
 
@@ -85,6 +87,8 @@ SoundLoader::SoundLoader(const char* name) : format(0), data(0), size(0), freq(0
 
 	// Dispose the ExtAudioFileRef, it is no longer needed
 	if (extRef) ExtAudioFileDispose(extRef);
+    
+#endif
 }
 
 

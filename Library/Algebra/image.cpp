@@ -14,7 +14,7 @@
 #endif
 
 
-image::image(size_t width, size_t height) :
+image::image(int width, int height) :
 #ifdef OPENWAR_SDL
 _surface(nullptr),
 #else
