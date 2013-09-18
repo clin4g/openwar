@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#import <SDL2_image/SDL_image.h>
 
 #include "OpenWarSurface.h"
 #include "Window.h"
@@ -35,6 +36,8 @@ static BattleScript* CreateBattleScript()
 int main(int argc, char *argv[])
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
+	int flags = IMG_INIT_JPG | IMG_INIT_PNG;
+	IMG_Init(flags);
 
 	Window* window = new Window();
 

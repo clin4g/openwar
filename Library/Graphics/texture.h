@@ -5,6 +5,8 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
+#include "resource.h"
+
 class image;
 
 
@@ -13,13 +15,13 @@ struct texture
 	GLuint id;
 
 	texture();
-	texture(const char* name);
+	texture(const resource& r);
 	texture(const image& image);
 	~texture();
 
 	void init();
 
-	void load(const char* name);
+	void load(const resource& r);
 	void load(const image& image);
 
 private:

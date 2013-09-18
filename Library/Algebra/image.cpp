@@ -5,65 +5,139 @@
 #include "image.h"
 #include "bounds.h"
 
+#ifdef OPENWAR_SDL
+#include <SDL2/SDL.h>
+#include <SDL2_image/SDL_image.h>
+#endif
 #if TARGET_OS_IPHONE
 #include "renderer.h"
 #endif
 
 
-static int count_components(GLenum format)
-{
-	switch (format)
-	{
-		case GL_ALPHA:
-			return 1;
-		case GL_RGB:
-			return 3;
-		case GL_RGBA:
-			return 4;
-		case GL_LUMINANCE:
-			return 1;
-		case GL_LUMINANCE_ALPHA:
-			return 2;
-		default:
-			return 0;
-	}
-}
-
-
-static CGImageAlphaInfo GetAlphaInfo(GLenum format)
-{
-	switch (format)
-	{
-		case GL_RGBA:
-		case GL_ALPHA:
-		case GL_LUMINANCE_ALPHA:
-			return kCGImageAlphaPremultipliedLast;
-
-		default:
-			return kCGImageAlphaNone;
-	}
-}
-
-
-image::image(size_t width, size_t height, GLenum format) :
-_format(format),
+image::image(size_t width, size_t height) :
+#ifdef OPENWAR_SDL
+_surface(nullptr),
+#else
+_context(nil),
 _width(width),
 _height(height),
 _data(nullptr),
-_context(nil)
+#endif
+_format(GL_RGBA)
 {
+#ifdef OPENWAR_SDL
+
+	_surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
+
+#else
+
 	init_data_context();
+
+#endif
 }
 
 
-image::image(const char* resourceName) :
-_format(GL_RGBA),
+#ifdef OPENWAR_SDL
+static GLenum sdl_to_gl_pixel_format(Uint32 sdl_pixel_format)
+{
+	switch (sdl_pixel_format)
+	{
+		case SDL_PIXELFORMAT_RGB24: return GL_BGR;
+		case SDL_PIXELFORMAT_RGB888: return GL_BGRA;
+
+		case SDL_PIXELFORMAT_ABGR8888: return GL_RGBA;
+		case SDL_PIXELFORMAT_ARGB8888: return GL_BGRA;
+		default: break;
+	}
+
+	switch (sdl_pixel_format)
+	{
+		case SDL_PIXELFORMAT_RGB24: return 0;
+
+		case SDL_PIXELFORMAT_RGBA8888: return 0;
+		case SDL_PIXELFORMAT_ABGR8888: return GL_RGBA;
+		case SDL_PIXELFORMAT_ARGB8888: return 0;
+
+		case SDL_PIXELFORMAT_RGB888: return 0;
+
+		case SDL_PIXELFORMAT_UNKNOWN: return 0;
+		case SDL_PIXELFORMAT_INDEX1LSB: return 0;
+		case SDL_PIXELFORMAT_INDEX1MSB: return 0;
+		case SDL_PIXELFORMAT_INDEX4LSB: return 0;
+		case SDL_PIXELFORMAT_INDEX4MSB: return 0;
+		case SDL_PIXELFORMAT_INDEX8: return 0;
+		case SDL_PIXELFORMAT_RGB332: return 0;
+		case SDL_PIXELFORMAT_RGB444: return 0;
+		case SDL_PIXELFORMAT_RGB555: return 0;
+		case SDL_PIXELFORMAT_BGR555: return 0;
+		case SDL_PIXELFORMAT_ARGB4444: return 0;
+		case SDL_PIXELFORMAT_RGBA4444: return 0;
+		case SDL_PIXELFORMAT_ABGR4444: return 0;
+		case SDL_PIXELFORMAT_BGRA4444: return 0;
+		case SDL_PIXELFORMAT_ARGB1555: return 0;
+		case SDL_PIXELFORMAT_RGBA5551: return 0;
+		case SDL_PIXELFORMAT_ABGR1555: return 0;
+		case SDL_PIXELFORMAT_BGRA5551: return 0;
+		case SDL_PIXELFORMAT_RGB565: return 0;
+		case SDL_PIXELFORMAT_BGR565: return 0;
+		case SDL_PIXELFORMAT_BGR24: return 0;
+		case SDL_PIXELFORMAT_RGBX8888: return 0;
+		case SDL_PIXELFORMAT_BGR888: return 0;
+		case SDL_PIXELFORMAT_BGRX8888: return 0;
+		case SDL_PIXELFORMAT_BGRA8888: return 0;
+
+		case SDL_PIXELFORMAT_ARGB2101010: return 0;
+		case SDL_PIXELFORMAT_YV12: return 0;
+		case SDL_PIXELFORMAT_IYUV: return 0;
+		case SDL_PIXELFORMAT_YUY2: return 0;
+		case SDL_PIXELFORMAT_UYVY: return 0;
+		case SDL_PIXELFORMAT_YVYU: return 0;
+
+		default: return 0;
+	}
+}
+#endif
+
+
+image::image(const resource& r) :
+#ifdef OPENWAR_SDL
+_surface(nullptr),
+#else
+_context(nil),
 _width(0),
 _height(0),
 _data(nullptr),
-_context(nil)
+#endif
+_format(GL_RGBA)
 {
-	NSString* name = [NSString stringWithUTF8String:resourceName];
+#ifdef OPENWAR_SDL
+
+	_surface = IMG_Load(r.path());
+
+	Uint32 format = _surface->format->format;
+	if (false) //format == SDL_PIXELFORMAT_RGB888)
+	{
+		format = SDL_PIXELFORMAT_BGR24;
+		_format = GL_RGB;
+	}
+	else
+	{
+		format = SDL_PIXELFORMAT_ABGR8888;
+		_format = GL_RGBA;
+	}
+
+	if (format != _surface->format->format)
+	{
+		SDL_Surface* surface = SDL_ConvertSurfaceFormat(_surface, format, 0);
+		SDL_FreeSurface(_surface);
+		_surface = surface;
+	}
+
+	_format = sdl_to_gl_pixel_format(_surface->format->format);
+
+#else
+
+	NSString* name = [NSString stringWithFormat:@"%@%@", [NSString stringWithUTF8String:r.name()], [NSString stringWithUTF8String:r.type()]];
 
 #if TARGET_OS_IPHONE
     
@@ -115,33 +189,43 @@ _context(nil)
 	}
 
 #endif
+#endif
 }
 
 
+#ifndef OPENWAR_SDL
 image::image(CGImageRef image) :
+_context(nil),
 _format(GL_RGBA),
 _width(CGImageGetWidth(image)),
 _height(CGImageGetHeight(image)),
-_data(nullptr),
-_context(nil)
+_data(nullptr)
 {
 	init_data_context();
 	CGContextDrawImage(_context, CGRectMake(0.0f, 0.0f, (CGFloat) _width, (CGFloat) _height), image);
 }
+#endif
 
 
 image::~image()
 {
-	free(_data);
+#ifdef OPENWAR_SDL
+
+#else
+
 	CGContextRelease(_context);
+	free(_data);
+
+#endif
 }
 
 
 glm::vec4 image::get_pixel(int x, int y) const
 {
-	if (0 <= x && x < (int) _width && 0 <= y && y < (int) _height)
+	if (0 <= x && x < (int) width() && 0 <= y && y < (int) height())
 	{
-		GLubyte* p = _data + 4 * (x + _width * y);
+		const GLubyte* data = reinterpret_cast<const GLubyte*>(pixels());
+		const GLubyte* p = data + 4 * (x + width() * y);
 		return glm::vec4(p[0], p[1], p[2], p[3]) / 255.0f;
 	}
 	return glm::vec4();
@@ -150,10 +234,11 @@ glm::vec4 image::get_pixel(int x, int y) const
 
 void image::set_pixel(int x, int y, glm::vec4 c)
 {
-	if (0 <= x && x < (int) _width && 0 <= y && y < (int) _height)
+	if (0 <= x && x < (int) width() && 0 <= y && y < (int) height())
 	{
 		bounds1f bounds(0, 255);
-		GLubyte* p = _data + 4 * (x + _width * y);
+		const GLubyte* data = reinterpret_cast<const GLubyte*>(pixels());
+		GLubyte* p = const_cast<GLubyte*>(data) + 4 * (x + width() * y);
 		p[0] = (GLubyte)glm::round(bounds.clamp(c.r * 255));
 		p[1] = (GLubyte)glm::round(bounds.clamp(c.g * 255));
 		p[2] = (GLubyte)glm::round(bounds.clamp(c.b * 255));
@@ -162,40 +247,102 @@ void image::set_pixel(int x, int y, glm::vec4 c)
 }
 
 
+void image::premultiply_alpha()
+{
+	glm::ivec2 s = size();
+	for (int x = 0; x < s.x; ++x)
+		for (int y = 0; y < s.y; ++y)
+		{
+			glm::vec4 c = get_pixel(x, y);
+			c.r *= c.a;
+			c.g *= c.a;
+			c.b *= c.a;
+			set_pixel(x, y, c);
+		}
+}
+
+
+
+
+
+#ifndef OPENWAR_SDL
+static CGImageAlphaInfo GetAlphaInfo(GLenum format)
+{
+	switch (format)
+	{
+		case GL_RGBA:
+		case GL_ALPHA:
+		case GL_LUMINANCE_ALPHA:
+			return kCGImageAlphaPremultipliedLast;
+
+		default:
+			return kCGImageAlphaNone;
+	}
+}
+#endif
+
+
+#ifndef OPENWAR_SDL
+static int count_components(GLenum format)
+{
+	switch (format)
+	{
+		case GL_ALPHA:
+			return 1;
+		case GL_RGB:
+			return 3;
+		case GL_RGBA:
+			return 4;
+		case GL_LUMINANCE:
+			return 1;
+		case GL_LUMINANCE_ALPHA:
+			return 2;
+		default:
+			return 0;
+	}
+}
+#endif
+
+
+#ifndef OPENWAR_SDL
 void image::init_data_context()
 {
 	int components = count_components(_format);
-
 	_data = (GLubyte*) calloc(_width * _height * components, sizeof(GLubyte));
 
 	CGColorSpaceRef colorSpace = components < 3 ? CGColorSpaceCreateDeviceGray() : CGColorSpaceCreateDeviceRGB();
 	_context = CGBitmapContextCreate(_data, _width, _height, 8, _width * components, colorSpace, GetAlphaInfo(_format));
 	CGColorSpaceRelease(colorSpace);
 }
+#endif
 
 
+#ifndef OPENWAR_SDL
 NSData* ConvertImageToTiff(image* map)
 {
 #if TARGET_OS_IPHONE
 	return nil;
 #else
-	NSBitmapImageRep* imageRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:&map->_data
-														   pixelsWide:map->_width
-														   pixelsHigh:map->_height
+	unsigned char* pixels = reinterpret_cast<unsigned char*>(const_cast<GLvoid*>(map->pixels()));
+	NSBitmapImageRep* imageRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:&pixels
+														   pixelsWide:map->width()
+														   pixelsHigh:map->height()
 														   bitsPerSample:8
 														   samplesPerPixel:4
 														   hasAlpha:YES
 														   isPlanar:NO
 														   colorSpaceName:NSDeviceRGBColorSpace
-														   bytesPerRow:4 * map->_width
+														   bytesPerRow:4 * map->width()
 														   bitsPerPixel:32];
 	NSData* result = [imageRep TIFFRepresentationUsingCompression:NSTIFFCompressionLZW factor:0.5];
 	[imageRep release];
 	return result;
 #endif
 }
+#endif
 
 
+#ifndef OPENWAR_SDL
 image* ConvertTiffToImage(NSData* data)
 {
 #if TARGET_OS_IPHONE
@@ -209,3 +356,4 @@ image* ConvertTiffToImage(NSData* data)
 	return result;
 #endif
 }
+#endif

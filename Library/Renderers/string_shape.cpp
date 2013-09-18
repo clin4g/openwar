@@ -67,7 +67,7 @@ string_font::~string_font()
 void string_font::initialize()
 {
 	if (_image == nullptr)
-		_image = new image(512, 512, GL_RGBA);
+		_image = new image(512, 512);
 
 	_renderer = new renderer<texture_alpha_vertex, string_uniforms>((
 		VERTEX_ATTRIBUTE(texture_alpha_vertex, _position),
@@ -147,11 +147,11 @@ void string_font::add_character(unichar character)
 	CGSize size = [text sizeWithAttributes:attributes];
 #endif
 
-	if (_next.x + size.width > _image->_width)
+	if (_next.x + size.width > _image->width())
 	{
 		_next.x = 0;
 		_next.y += size.height + 1;
-		if (_next.y + size.height > _image->_height)
+		if (_next.y + size.height > _image->height())
 			_next.y = 0; // TODO: handle texture resizing
 	}
 
@@ -159,10 +159,10 @@ void string_font::add_character(unichar character)
 	item._character = character;
 	item._bounds.origin = _next;
 	item._bounds.size = size;
-	item._u0 = (float)item._bounds.origin.x / _image->_width;
-	item._u1 = (float)(item._bounds.origin.x + item._bounds.size.width) / _image->_width;
-	item._v0 = 1 - (float)(item._bounds.origin.y + item._bounds.size.height) / _image->_height;
-	item._v1 = 1 - (float)item._bounds.origin.y / _image->_height;
+	item._u0 = (float)item._bounds.origin.x / _image->width();
+	item._u1 = (float)(item._bounds.origin.x + item._bounds.size.width) / _image->width();
+	item._v0 = 1 - (float)(item._bounds.origin.y + item._bounds.size.height) / _image->height();
+	item._v1 = 1 - (float)item._bounds.origin.y / _image->height();
 
 	_items[character] = item;
 
@@ -188,15 +188,19 @@ void string_font::update_texture()
 	if (!_dirty)
 		return;
 
-#if TARGET_OS_IPHONE
-	UIGraphicsPushContext(_image->_context);
+#ifdef OPENWAR_SDL
+
 #else
-	NSGraphicsContext *gc = [NSGraphicsContext graphicsContextWithGraphicsPort:_image->_context flipped:YES];
+
+#if TARGET_OS_IPHONE
+	UIGraphicsPushContext(_image->CGContext());
+#else
+	NSGraphicsContext *gc = [NSGraphicsContext graphicsContextWithGraphicsPort:_image->CGContext() flipped:YES];
 	[NSGraphicsContext saveGraphicsState];
 	[NSGraphicsContext setCurrentContext:gc];
 #endif
 
-	CGContextClearRect(_image->_context, CGRectMake(0, 0, _image->_width, _image->_height));
+	CGContextClearRect(_image->CGContext(), CGRectMake(0, 0, _image->width(), _image->height()));
 
 	for (std::map<unichar, item>::iterator i = _items.begin(); i != _items.end(); ++i)
 	{
@@ -204,7 +208,7 @@ void string_font::update_texture()
 
 		NSString *text = [NSString stringWithCharacters:&item._character length:1];
 
-		CGContextSetRGBFillColor(_image->_context, 1, 1, 1, 1);
+		CGContextSetRGBFillColor(_image->CGContext(), 1, 1, 1, 1);
 
 #if TARGET_OS_IPHONE
 	    [text drawAtPoint:item._bounds.origin withFont:_font];
@@ -220,6 +224,8 @@ void string_font::update_texture()
 	UIGraphicsPopContext();
 #else
 	[NSGraphicsContext restoreGraphicsState];
+#endif
+
 #endif
 
 	_dirty = false;

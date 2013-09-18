@@ -247,10 +247,19 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 		const char* p = n < 2 ? nullptr : lua_tostring(L, 2);
 		const double size = n < 3 ? 1024 : lua_tonumber(L, 3);
 
+#ifdef OPENWAR_SDL
+
+		image* map = new image("Maps/DefaultMap.tiff");
+		bounds2f bounds(0, 0, size, size);
+
+#else
+
 		NSString* path = [NSString stringWithCString:p encoding:NSASCIIStringEncoding];
 		NSData* data = [NSData dataWithContentsOfFile:path];
 		image* map = ConvertTiffToImage(data);
 		bounds2f bounds(0, 0, size, size);
+
+#endif
 
 		_battlescript->_battleModel->terrainSurface = new SmoothTerrainSurface(bounds, map);
 		_battlescript->_battleModel->terrainWater = new SmoothTerrainWater(bounds, map);

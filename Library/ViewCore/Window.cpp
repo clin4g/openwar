@@ -15,12 +15,12 @@ _touch(nullptr),
 _timestamp(0)
 {
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 32);
 
 	_window = SDL_CreateWindow("My Game Window",
 		SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
-		640, 480,
+		1024, 768,
 		/*SDL_WINDOW_FULLSCREEN |*/ SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 
 	_glcontext = SDL_GL_CreateContext(_window);

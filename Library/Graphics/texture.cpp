@@ -5,6 +5,7 @@
 #include "texture.h"
 #include "renderer.h"
 #include "image.h"
+#import "resource.h"
 
 
 
@@ -16,13 +17,12 @@ texture::texture()
 }
 
 
-
-texture::texture(const char* name)
+texture::texture(const resource& r)
 {
 	glGenTextures(1, &id);
 	CHECK_ERROR_GL();
 	init();
-	load(name);
+	load(r);
 }
 
 
@@ -68,9 +68,18 @@ static bool CheckForExtension(NSString *searchName)
 #endif
 
 
-void texture::load(const char* textureName)
+
+void texture::load(const resource& r)
 {
-	NSString* name = [NSString stringWithUTF8String:textureName];
+#ifdef OPENWAR_SDL
+
+	image img(r);
+	img.premultiply_alpha();
+	load(img);
+
+#else
+
+	NSString* name = [NSString stringWithFormat:@"%@%@", [NSString stringWithUTF8String:r.name()], [NSString stringWithUTF8String:r.type()]];
 
 #if TARGET_OS_IPHONE
 	UIImage* image = nil;
@@ -118,6 +127,8 @@ void texture::load(const char* textureName)
 
 	load(image::image([image CGImageForProposedRect:nil context:nil hints:nil]));
 #endif
+
+#endif
 }
 
 
@@ -126,7 +137,7 @@ void texture::load(const image& image)
 {
 	glBindTexture(GL_TEXTURE_2D, id);
 	CHECK_ERROR_GL();
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)image._width, (GLsizei)image._height, 0, image._format, GL_UNSIGNED_BYTE, image._data);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0, image.format(), GL_UNSIGNED_BYTE, image.pixels());
 	CHECK_ERROR_GL();
 	glGenerateMipmap(GL_TEXTURE_2D);
 	CHECK_ERROR_GL();
