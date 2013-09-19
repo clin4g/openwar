@@ -8,9 +8,9 @@
 #include <map>
 #include <vector>
 
-#include "affine2.h"
-#include "image.h"
-#include "texture.h"
+#include "../Algebra/affine2.h"
+#include "../Algebra/image.h"
+#include "../Graphics/texture.h"
 
 
 class BillboardTexture

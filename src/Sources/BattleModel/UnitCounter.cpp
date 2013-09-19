@@ -6,10 +6,10 @@
 
 #include "UnitCounter.h"
 #include "BattleModel.h"
-#include "PlainRenderer.h"
-#include "TextureBillboardRenderer.h"
-#include "TextureRenderer.h"
-#include "BattleView.h"
+#include "../../Library/Renderers/PlainRenderer.h"
+#include "../../Library/Renderers/TextureBillboardRenderer.h"
+#include "../../Library/Renderers/TextureRenderer.h"
+#include "../BattleView/BattleView.h"
 
 
 UnitCounter::UnitCounter(BattleModel* battleModel, Unit* unit) :

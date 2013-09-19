@@ -3,7 +3,7 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "BillboardTexture.h"
-#include "geometry.h"
+#include "../Algebra/geometry.h"
 
 
 BillboardTexture::BillboardTexture() :

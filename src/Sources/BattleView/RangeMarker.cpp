@@ -5,9 +5,9 @@
 #include <glm/gtc/constants.hpp>
 
 #include "RangeMarker.h"
-#include "GradientRenderer.h"
-#include "TerrainSurface.h"
-#include "geometry.h"
+#include "../../Library/Renderers/GradientRenderer.h"
+#include "../TerrainModel/TerrainSurface.h"
+#include "../../Library/Algebra/geometry.h"
 
 
 RangeMarker::RangeMarker(BattleModel* battleModel, Unit* unit) :

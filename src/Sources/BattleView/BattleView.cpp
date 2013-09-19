@@ -5,20 +5,20 @@
 #include <glm/gtc/constants.hpp>
 
 #include "BattleView.h"
-#include "UnitCounter.h"
+#include "../BattleModel/UnitCounter.h"
 #include "CasualtyMarker.h"
-#include "SmokeCounter.h"
+#include "../BattleModel/SmokeCounter.h"
 #include "RangeMarker.h"
 #include "UnitTrackingMarker.h"
 #include "UnitMovementMarker.h"
-#include "ShootingCounter.h"
-#include "GradientRenderer.h"
-#include "ColorBillboardRenderer.h"
-#include "SmoothTerrainWater.h"
-#include "SmoothTerrainSky.h"
-#include "PlainRenderer.h"
-#include "TextureRenderer.h"
-#include "sprite.h"
+#include "../BattleModel/ShootingCounter.h"
+#include "../../Library/Renderers/GradientRenderer.h"
+#include "../../Library/Renderers/ColorBillboardRenderer.h"
+#include "../SmoothTerrain/SmoothTerrainWater.h"
+#include "../TerrainSky/SmoothTerrainSky.h"
+#include "../../Library/Renderers/PlainRenderer.h"
+#include "../../Library/Renderers/TextureRenderer.h"
+#include "../../Library/Renderers/sprite.h"
 
 
 

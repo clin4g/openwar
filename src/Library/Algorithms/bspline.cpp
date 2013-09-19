@@ -3,7 +3,7 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "bspline.h"
-#include "geometry.h"
+#include "../Algebra/geometry.h"
 
 
 const glm::mat4x4 bspline_matrix(

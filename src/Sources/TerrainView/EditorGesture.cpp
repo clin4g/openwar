@@ -3,8 +3,8 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "EditorGesture.h"
-#include "BattleView.h"
-#include "Touch.h"
+#include "../BattleView/BattleView.h"
+#include "../../Library/ViewCore/Touch.h"
 #include "EditorModel.h"
 
 

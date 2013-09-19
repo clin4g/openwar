@@ -7,7 +7,7 @@
 
 #include <vector>
 
-#include "bounds.h"
+#include "../Algebra/bounds.h"
 
 
 template <class T> class animated;

@@ -5,10 +5,9 @@
 #ifndef ButtonsView_H
 #define ButtonsView_H
 
-#include "bounds.h"
-#include "texture.h"
-
-#include "View.h"
+#include "../Algebra/bounds.h"
+#include "../Graphics/texture.h"
+#include "../ViewCore/View.h"
 #include "ButtonRendering.h"
 
 

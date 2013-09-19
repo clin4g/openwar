@@ -4,7 +4,7 @@
 
 #include "ButtonGesture.h"
 #include "ButtonView.h"
-#include "Touch.h"
+#include "../ViewCore/Touch.h"
 
 
 

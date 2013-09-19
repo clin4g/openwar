@@ -3,15 +3,14 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "BattleGesture.h"
-#include "BattleModel.h"
+#include "../BattleModel/BattleModel.h"
 #include "BattleView.h"
-#include "SoundPlayer.h"
-#include "UnitCounter.h"
+#include "../../Library/Audio/SoundPlayer.h"
+#include "../BattleModel/UnitCounter.h"
 #include "UnitTrackingMarker.h"
 #include "UnitMovementMarker.h"
-
-#include "sprite.h"
-#include "PlainRenderer.h"
+#include "../../Library/Renderers/sprite.h"
+#include "../../Library/Renderers/PlainRenderer.h"
 
 
 #define SNAP_TO_UNIT_TRESHOLD 22 // meters

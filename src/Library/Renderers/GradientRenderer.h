@@ -5,7 +5,7 @@
 #ifndef ColorLineRenderer_H
 #define ColorLineRenderer_H
 
-#include "renderer.h"
+#include "../Graphics/renderer.h"
 
 
 class GradientRenderer

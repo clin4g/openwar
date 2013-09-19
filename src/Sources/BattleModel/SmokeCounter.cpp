@@ -3,8 +3,8 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "SmokeCounter.h"
-#include "SoundPlayer.h"
-#include "TextureBillboardRenderer.h"
+#include "../../Library/Audio/SoundPlayer.h"
+#include "../../Library/Renderers/TextureBillboardRenderer.h"
 
 
 

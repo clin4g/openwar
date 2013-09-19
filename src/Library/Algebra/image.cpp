@@ -6,11 +6,10 @@
 #include "bounds.h"
 
 #ifdef OPENWAR_SDL
-#include <SDL2/SDL.h>
 #include <SDL2_image/SDL_image.h>
 #endif
 #if TARGET_OS_IPHONE
-#include "renderer.h"
+#include "../Graphics/renderer.h"
 #endif
 
 

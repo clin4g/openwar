@@ -6,9 +6,9 @@
 #define SPRITE_H
 
 #include "animation.h"
-#include "bounds.h"
+#include "../Algebra/bounds.h"
 
-#include "renderer.h"
+#include "../Graphics/renderer.h"
 
 
 struct sprite_base

@@ -5,7 +5,7 @@
 #ifndef TerrainWater_H
 #define TerrainWater_H
 
-#include "bounds.h"
+#include "../../Library/Algebra/bounds.h"
 
 
 class TerrainWater

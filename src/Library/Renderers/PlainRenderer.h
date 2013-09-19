@@ -5,7 +5,7 @@
 #ifndef LineRenderer_H
 #define LineRenderer_H
 
-#include "renderer.h"
+#include "../Graphics/renderer.h"
 
 
 class PlainRenderer

@@ -5,7 +5,7 @@
 #ifndef EDITORGESTURE_H
 #define EDITORGESTURE_H
 
-#include "Gesture.h"
+#include "../../Library/ViewCore/Gesture.h"
 
 class BattleView;
 class EditorModel;

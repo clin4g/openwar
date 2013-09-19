@@ -5,9 +5,9 @@
 #ifndef ButtonRendering_H
 #define ButtonRendering_H
 
-#include "bounds.h"
-#include "texture.h"
-#include "string_shape.h"
+#include "../Algebra/bounds.h"
+#include "../Graphics/texture.h"
+#include "../Renderers/string_shape.h"
 
 
 struct ButtonIcon;

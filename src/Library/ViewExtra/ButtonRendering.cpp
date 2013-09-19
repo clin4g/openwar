@@ -4,8 +4,8 @@
 
 #include "ButtonRendering.h"
 #include "ButtonView.h"
-#include "vertexbuffer.h"
-#include "sprite.h"
+#include "../Graphics/vertexbuffer.h"
+#include "../Renderers/sprite.h"
 
 
 

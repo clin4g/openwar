@@ -9,13 +9,13 @@
 
 #include "BattleScript.h"
 #include "BattleModel.h"
-#include "BattleSimulator.h"
-#include "BillboardTerrainForest.h"
-#include "SmoothTerrainSurface.h"
-#include "TiledTerrainSurface.h"
-#include "SmoothTerrainWater.h"
-#include "SmoothTerrainSky.h"
-#include "GradientRenderer.h"
+#include "Simulator/BattleSimulator.h"
+#include "TerrainForest/BillboardTerrainForest.h"
+#include "SmoothTerrain/SmoothTerrainSurface.h"
+#include "TerrainSurface/TiledTerrainSurface.h"
+#include "SmoothTerrain/SmoothTerrainWater.h"
+#include "TerrainSky/SmoothTerrainSky.h"
+#include "../Library/Renderers/GradientRenderer.h"
 
 
 static BattleScript* _battlescript = nullptr;

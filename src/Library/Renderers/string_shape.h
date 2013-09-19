@@ -7,13 +7,13 @@
 
 #include <map>
 
-#include "bounds.h"
+#include "../Algebra/bounds.h"
 
 #include "animation.h"
-#include "renderer.h"
+#include "../Graphics/renderer.h"
 #include "sprite.h"
-#include "vertex.h"
-#include "texture.h"
+#include "../Graphics/vertex.h"
+#include "../Graphics/texture.h"
 
 
 struct string_font

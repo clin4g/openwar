@@ -5,7 +5,7 @@
 #ifndef TextureRenderer_H
 #define TextureRenderer_H
 
-#include "renderer.h"
+#include "../Graphics/renderer.h"
 
 
 class TextureRenderer

@@ -7,8 +7,8 @@
 
 #include <map>
 
-#include "MovementRules.h"
-#include "TerrainModel.h"
+#include "../Simulator/MovementRules.h"
+#include "../TerrainModel/TerrainModel.h"
 
 
 class BattleModel;

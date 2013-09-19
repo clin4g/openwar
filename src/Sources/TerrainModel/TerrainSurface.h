@@ -5,7 +5,7 @@
 #ifndef TerrainSurface_H
 #define TerrainSurface_H
 
-#include "geometry.h"
+#include "../../Library/Algebra/geometry.h"
 
 
 enum class TerrainFeature { Hills, Water, Trees, Fords };

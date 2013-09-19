@@ -9,7 +9,7 @@
 #include <OpenGL/gl.h>
 #endif
 
-#include "resource.h"
+#include "../resource.h"
 
 class image;
 

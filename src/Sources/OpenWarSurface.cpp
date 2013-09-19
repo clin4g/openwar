@@ -3,18 +3,18 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "OpenWarSurface.h"
-#include "BattleModel.h"
-#include "BattleGesture.h"
+#include "BattleModel/BattleModel.h"
+#include "BattleView/BattleGesture.h"
 #include "BattleScript.h"
-#include "ButtonView.h"
-#include "ButtonGesture.h"
-#include "EditorGesture.h"
-#include "BattleSimulator.h"
-#include "SoundPlayer.h"
-#include "TerrainGesture.h"
-#include "TiledTerrainSurface.h"
-#include "UnitCounter.h"
-#include "GradientRenderer.h"
+#include "../Library/ViewExtra/ButtonView.h"
+#include "../Library/ViewExtra/ButtonGesture.h"
+#include "TerrainView/EditorGesture.h"
+#include "Simulator/BattleSimulator.h"
+#include "../Library/Audio/SoundPlayer.h"
+#include "TerrainView/TerrainGesture.h"
+#include "TerrainSurface/TiledTerrainSurface.h"
+#include "BattleModel/UnitCounter.h"
+#include "../Library/Renderers/GradientRenderer.h"
 
 
 

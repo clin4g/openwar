@@ -5,9 +5,9 @@
 #ifndef TERRAINVIEW_H
 #define TERRAINVIEW_H
 
-#include "View.h"
-#include "geometry.h"
-#include "TerrainSurface.h"
+#include "../../Library/ViewCore/View.h"
+#include "../../Library/Algebra/geometry.h"
+#include "../TerrainModel/TerrainSurface.h"
 
 class PlainLineRenderer;
 

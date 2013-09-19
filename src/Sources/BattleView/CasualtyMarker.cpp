@@ -3,9 +3,9 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "CasualtyMarker.h"
-#include "ColorBillboardRenderer.h"
-#include "TextureBillboardRenderer.h"
-#include "TerrainSurface.h"
+#include "../../Library/Renderers/ColorBillboardRenderer.h"
+#include "../../Library/Renderers/TextureBillboardRenderer.h"
+#include "../TerrainModel/TerrainSurface.h"
 
 
 

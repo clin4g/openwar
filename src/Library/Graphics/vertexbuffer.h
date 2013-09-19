@@ -11,7 +11,7 @@
 #include <OpenGL/gl.h>
 #endif
 
-#include "bounds.h"
+#include "../Algebra/bounds.h"
 #include "vertex.h"
 
 #ifndef CHECK_ERROR_GL

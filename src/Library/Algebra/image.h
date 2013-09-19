@@ -15,7 +15,7 @@
 #include <SDL2/SDL.h>
 #endif
 
-#include "resource.h"
+#include "../resource.h"
 
 
 class image

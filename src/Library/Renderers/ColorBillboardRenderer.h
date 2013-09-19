@@ -5,7 +5,7 @@
 #ifndef ColorBillboardRenderer_H
 #define ColorBillboardRenderer_H
 
-#include "renderer.h"
+#include "../Graphics/renderer.h"
 
 
 class ColorBillboardRenderer

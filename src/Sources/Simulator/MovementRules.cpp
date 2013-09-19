@@ -3,8 +3,8 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "MovementRules.h"
-#include "BattleModel.h"
-#include "geometry.h"
+#include "../BattleModel/BattleModel.h"
+#include "../../Library/Algebra/geometry.h"
 
 
 Formation::Formation() :

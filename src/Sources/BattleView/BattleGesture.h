@@ -7,9 +7,9 @@
 
 #include "bounds.h"
 
-#include "Gesture.h"
-#include "Touch.h"
-#include "BattleModel.h"
+#include "../../Library/ViewCore/Gesture.h"
+#include "../../Library/ViewCore/Touch.h"
+#include "../BattleModel/BattleModel.h"
 #include "BattleView.h"
 
 class UnitTrackingMarker;

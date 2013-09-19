@@ -5,7 +5,7 @@
 #ifndef TOUCH_H
 #define TOUCH_H
 
-#include "sampler.h"
+#include "../Algorithms/sampler.h"
 
 class Gesture;
 class Surface;

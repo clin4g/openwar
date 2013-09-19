@@ -5,7 +5,7 @@
 #ifndef CasualtyMarker_H
 #define CasualtyMarker_H
 
-#include "BattleModel.h"
+#include "../BattleModel/BattleModel.h"
 class ColorBillboardRenderer;
 class BillboardModel;
 

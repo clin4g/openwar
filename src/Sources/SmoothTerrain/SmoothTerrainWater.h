@@ -5,9 +5,9 @@
 #ifndef SmoothTerrainWater_H
 #define SmoothTerrainWater_H
 
-#include "TerrainWater.h"
-#include "renderer.h"
-#include "image.h"
+#include "../TerrainModel/TerrainWater.h"
+#include "../../Library/Graphics/renderer.h"
+#include "../../Library/Algebra/image.h"
 
 
 class SmoothTerrainWater : public TerrainWater

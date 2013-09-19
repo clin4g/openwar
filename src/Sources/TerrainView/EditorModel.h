@@ -2,10 +2,10 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#include "SmoothTerrainSurfaceRenderer.h"
-
 #ifndef EDITORMODEL_H
 #define EDITORMODEL_H
+
+#include "../SmoothTerrain/SmoothTerrainSurfaceRenderer.h"
 
 class BattleView;
 

@@ -6,7 +6,7 @@
 #define TiledTerrainSurfaceRenderer_H
 
 #include "TerrainSurfaceRenderer.h"
-#include "texture.h"
+#include "../../Library/Graphics/texture.h"
 
 class TiledTerrainSurface;
 

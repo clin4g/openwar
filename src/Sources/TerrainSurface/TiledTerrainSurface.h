@@ -7,11 +7,11 @@
 
 #include <map>
 
-#include "TerrainSurface.h"
-#include "bounds.h"
-#include "heightmap.h"
-#include "texture.h"
-#include "image.h"
+#include "../TerrainModel/TerrainSurface.h"
+#include "../../Library/Algebra/bounds.h"
+#include "../../Library/Algorithms/heightmap.h"
+#include "../../Library/Graphics/texture.h"
+#include "../../Library/Algebra/image.h"
 
 
 class TiledTerrainSurface : public TerrainSurface

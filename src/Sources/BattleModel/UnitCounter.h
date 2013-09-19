@@ -5,7 +5,7 @@
 #ifndef UnitCounter_H
 #define UnitCounter_H
 
-#include "bounds.h"
+#include "../../Library/Algebra/bounds.h"
 
 class BattleModel;
 class BattleView;

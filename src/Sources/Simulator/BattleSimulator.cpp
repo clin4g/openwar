@@ -3,9 +3,9 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "BattleSimulator.h"
-#include "SmoothTerrainWater.h"
-#include "TerrainSurface.h"
-#include "geometry.h"
+#include "../SmoothTerrain/SmoothTerrainWater.h"
+#include "../TerrainModel/TerrainSurface.h"
+#include "../../Library/Algebra/geometry.h"
 
 
 

@@ -47,16 +47,16 @@ struct plane
 {
 	union
 	{
-		struct {float a, b, c;};
-		struct {glm::vec3 normal;};
+		struct { float a, b, c; };
+		struct { glm::vec3 normal; };
 	};
 	float d;
 
 	plane() : a(0), b(0), c(0), d(0) {}
-	plane(glm::vec3 n, float k) : normal(n), d(-k) {}
+	plane(glm::vec3 n, float k) : a(n.x), b(n.y), c(n.z), d(-k) {}
 	plane(glm::vec3 n, glm::vec3 p);
 	plane(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3);
-	plane(const plane& p) : normal(p.normal), d(p.d) {}
+	plane(const plane& p) : a(p.a), b(p.b), c(p.c), d(p.d) {}
 
 	glm::vec3 project(const glm::vec3& v) const;
 

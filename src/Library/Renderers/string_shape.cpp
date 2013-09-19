@@ -3,7 +3,7 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "string_shape.h"
-#include "image.h"
+#include "../Algebra/image.h"
 
 
 

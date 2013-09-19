@@ -3,8 +3,8 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include "TiledTerrainSurfaceRenderer.h"
-#include "renderer.h"
-#include "image.h"
+#include "../../Library/Graphics/renderer.h"
+#include "../../Library/Algebra/image.h"
 #include "TiledTerrainSurface.h"
 
 

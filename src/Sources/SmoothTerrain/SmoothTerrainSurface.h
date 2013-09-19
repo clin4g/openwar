@@ -5,9 +5,9 @@
 #ifndef SmoothTerrainSurface_H
 #define SmoothTerrainSurface_H
 
-#include "bounds.h"
-#include "heightmap.h"
-#include "TerrainSurface.h"
+#include "../../Library/Algebra/bounds.h"
+#include "../../Library/Algorithms/heightmap.h"
+#include "../TerrainModel/TerrainSurface.h"
 
 class image;
 

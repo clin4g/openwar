@@ -8,11 +8,11 @@
 #include <map>
 
 #include "SmoothTerrainSurface.h"
-#include "framebuffer.h"
-#include "renderbuffer.h"
-#include "vertexbuffer.h"
-#include "renderer.h"
-#include "TerrainSurfaceRenderer.h"
+#include "../../Library/Graphics/framebuffer.h"
+#include "../../Library/Graphics/renderbuffer.h"
+#include "../../Library/Graphics/vertexbuffer.h"
+#include "../../Library/Graphics/renderer.h"
+#include "../TerrainSurface/TerrainSurfaceRenderer.h"
 
 
 struct terrain_renderers;

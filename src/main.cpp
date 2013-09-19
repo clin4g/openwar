@@ -6,10 +6,10 @@
 #include <SDL2_image/SDL_image.h>
 #endif
 
-#include "OpenWarSurface.h"
-#include "Window.h"
-#include "BattleScript.h"
-#include "BillboardTerrainForest.h"
+#include "Sources/OpenWarSurface.h"
+#include "Library/ViewCore/Window.h"
+#include "Sources/BattleScript.h"
+#include "Sources/TerrainForest/BillboardTerrainForest.h"
 
 
 

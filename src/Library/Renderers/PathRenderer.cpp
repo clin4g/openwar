@@ -8,8 +8,8 @@
 #include "GradientRenderer.h"
 #include "TextureRenderer.h"
 #include "GradientRenderer.h"
-#include "bspline.h"
-#include "geometry.h"
+#include "../Algorithms/bspline.h"
+#include "../Algebra/geometry.h"
 
 
 

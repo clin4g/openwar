@@ -4,8 +4,7 @@
 
 #include "texture.h"
 #include "renderer.h"
-#include "image.h"
-#include "resource.h"
+#include "../Algebra/image.h"
 
 
 

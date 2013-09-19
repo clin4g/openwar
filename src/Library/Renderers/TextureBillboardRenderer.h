@@ -5,7 +5,7 @@
 #ifndef TextureBillboardRenderer_H
 #define TextureBillboardRenderer_H
 
-#include "renderer.h"
+#include "../Graphics/renderer.h"
 #include "BillboardTexture.h"
 
 
