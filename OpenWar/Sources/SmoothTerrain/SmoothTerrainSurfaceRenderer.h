@@ -5,6 +5,8 @@
 #ifndef SmoothTerrainSurfaceRenderer_H
 #define SmoothTerrainSurfaceRenderer_H
 
+#include <map>
+
 #include "SmoothTerrainSurface.h"
 #include "framebuffer.h"
 #include "renderbuffer.h"

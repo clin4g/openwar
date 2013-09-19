@@ -2,6 +2,8 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
+#include <glm/gtc/constants.hpp>
+
 #include "UnitTrackingMarker.h"
 #include "ColorBillboardRenderer.h"
 #include "TextureBillboardRenderer.h"

@@ -5,6 +5,9 @@
 #ifndef GESTURE_H
 #define GESTURE_H
 
+#include <vector>
+#include <glm/glm.hpp>
+
 class Surface;
 class Touch;
 

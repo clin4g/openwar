@@ -5,6 +5,8 @@
 #ifndef resource_H
 #define resource_H
 
+#include <string>
+
 
 class resource
 {

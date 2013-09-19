@@ -5,6 +5,8 @@
 #ifndef FRAMEBUFFER_H
 #define FRAMEBUFFER_H
 
+#include <OpenGL/gl.h>
+
 #ifndef CHECK_ERROR_GL
 extern void CHECK_ERROR_GL();
 #endif

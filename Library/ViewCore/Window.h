@@ -1,8 +1,9 @@
 #ifndef Window_H
 #define Window_H
 
-#import <SDL2/SDL.h>
-#import "Touch.h"
+#include <map>
+#include <SDL2/SDL.h>
+#include "Touch.h"
 
 class Surface;
 

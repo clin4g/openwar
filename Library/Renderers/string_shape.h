@@ -5,6 +5,8 @@
 #ifndef STRING_SHAPE_H
 #define STRING_SHAPE_H
 
+#include <map>
+
 #include "bounds.h"
 
 #include "animation.h"

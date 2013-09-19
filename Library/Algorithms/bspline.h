@@ -5,6 +5,9 @@
 #ifndef BSPLINE_H
 #define BSPLINE_H
 
+#include <vector>
+#include <glm/glm.hpp>
+
 
 extern const glm::mat4x4 bspline_matrix;
 extern const glm::mat4x4 bspline_matrix_transpose;

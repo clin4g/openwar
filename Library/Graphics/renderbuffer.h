@@ -5,6 +5,8 @@
 #ifndef RENDERBUFFER_H
 #define RENDERBUFFER_H
 
+#include <OpenGL/gl.h>
+
 
 struct renderbuffer
 {

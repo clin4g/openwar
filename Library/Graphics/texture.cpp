@@ -5,7 +5,7 @@
 #include "texture.h"
 #include "renderer.h"
 #include "image.h"
-#import "resource.h"
+#include "resource.h"
 
 
 

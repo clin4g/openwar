@@ -1537,6 +1537,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "Open War SDL copy";
 				SDKROOT = macosx10.8;
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)\"";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1568,6 +1569,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "Open War SDL copy";
 				SDKROOT = macosx10.8;
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)\"";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -1710,6 +1712,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "Open War SDL";
 				SDKROOT = macosx10.8;
+				USER_HEADER_SEARCH_PATHS = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1741,6 +1744,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "Open War SDL";
 				SDKROOT = macosx10.8;
+				USER_HEADER_SEARCH_PATHS = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

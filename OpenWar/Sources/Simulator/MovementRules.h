@@ -5,6 +5,9 @@
 #ifndef MovementRules_h
 #define MovementRules_h
 
+#include <vector>
+#include <glm/glm.hpp>
+
 struct Fighter;
 struct Unit;
 

@@ -1,3 +1,9 @@
+// Copyright (C) 2013 Felix Ungman
+//
+// This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
+
+#include <glm/gtc/constants.hpp>
+
 #include "PathRenderer.h"
 #include "GradientRenderer.h"
 #include "TextureRenderer.h"

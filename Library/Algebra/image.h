@@ -5,8 +5,9 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#ifdef OPENWAR_SDL
-#endif
+#include <glm/glm.hpp>
+#include <OpenGL/gl.h>
+#include <SDL2/SDL.h>
 
 #include "resource.h"
 

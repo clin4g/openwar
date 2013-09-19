@@ -2,6 +2,8 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
+#include <glm/gtc/constants.hpp>
+
 #include "BattleView.h"
 #include "UnitCounter.h"
 #include "CasualtyMarker.h"
@@ -16,7 +18,7 @@
 #include "SmoothTerrainSky.h"
 #include "PlainRenderer.h"
 #include "TextureRenderer.h"
-#import "sprite.h"
+#include "sprite.h"
 
 
 

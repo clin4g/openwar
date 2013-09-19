@@ -2,6 +2,11 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
+#include <glm/gtc/constants.hpp>
+
+#include "lauxlib.h"
+#include "lualib.h"
+
 #include "BattleScript.h"
 #include "BattleModel.h"
 #include "BattleSimulator.h"
@@ -11,9 +16,6 @@
 #include "SmoothTerrainWater.h"
 #include "SmoothTerrainSky.h"
 #include "GradientRenderer.h"
-
-#include "lauxlib.h"
-#include "lualib.h"
 
 
 static BattleScript* _battlescript = nullptr;

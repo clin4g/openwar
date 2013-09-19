@@ -5,6 +5,10 @@
 #ifndef VERTEXBUFFER_H
 #define VERTEXBUFFER_H
 
+#include <vector>
+
+#include <OpenGL/gl.h>
+
 #include "bounds.h"
 #include "vertex.h"
 

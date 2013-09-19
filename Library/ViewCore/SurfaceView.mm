@@ -4,7 +4,7 @@
 
 #if !TARGET_OS_IPHONE
 
-#import "SurfaceView.h"
+#include "SurfaceView.h"
 
 #include "Surface.h"
 #include "Gesture.h"

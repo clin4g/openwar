@@ -5,6 +5,8 @@
 #include "SoundPlayer.h"
 #include "SoundLoader.h"
 
+#include <cstdlib>
+
 
 SoundPlayer* SoundPlayer::singleton = nullptr;
 
@@ -184,7 +186,7 @@ void SoundPlayer::PlayGrunts()
 void SoundPlayer::PlayMatchlock()
 {
 	SoundBuffer soundBuffer;
-	switch (rand() & 3)
+	switch (std::rand() & 3)
 	{
 		case 0:
 			soundBuffer = SoundBufferMatchlockFire1;

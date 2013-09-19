@@ -5,6 +5,9 @@
 #ifndef SAMPLER_H
 #define SAMPLER_H
 
+#include <vector>
+#include <glm/glm.hpp>
+
 
 class sampler
 {

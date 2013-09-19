@@ -5,6 +5,8 @@
 #ifndef BATTLEMODEL_H
 #define BATTLEMODEL_H
 
+#include <map>
+
 #include "MovementRules.h"
 #include "TerrainModel.h"
 

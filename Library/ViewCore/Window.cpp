@@ -1,6 +1,8 @@
+#include <OpenGL/gl.h>
+
 #include "Window.h"
 #include "Surface.h"
-#import "Gesture.h"
+#include "Gesture.h"
 
 
 bool Window::_done = false;

@@ -5,6 +5,8 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
+#include <OpenGL/gl.h>
+
 #include "resource.h"
 
 class image;

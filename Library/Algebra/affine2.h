@@ -5,6 +5,8 @@
 #ifndef AFFINE2_H
 #define AFFINE2_H
 
+#include <glm/glm.hpp>
+
 
 struct affine2
 {

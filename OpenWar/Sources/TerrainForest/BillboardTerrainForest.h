@@ -5,6 +5,9 @@
 #ifndef TERRAINFEATUREMODELBILLBOARD_H
 #define TERRAINFEATUREMODELBILLBOARD_H
 
+#include <vector>
+#include <glm/glm.hpp>
+
 #include "TerrainForest.h"
 
 

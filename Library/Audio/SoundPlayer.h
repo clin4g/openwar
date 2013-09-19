@@ -5,6 +5,8 @@
 #ifndef SOUNDPLAYER_H
 #define SOUNDPLAYER_H
 
+#include <OpenAL/al.h>
+#include <OpenAL/alc.h>
 
 
 enum SoundBuffer

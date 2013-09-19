@@ -11,7 +11,7 @@
 #include "UnitMovementMarker.h"
 
 #include "sprite.h"
-#import "PlainRenderer.h"
+#include "PlainRenderer.h"
 
 
 #define SNAP_TO_UNIT_TRESHOLD 22 // meters

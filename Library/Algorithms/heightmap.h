@@ -5,7 +5,7 @@
 #ifndef HEIGHTMAP_H
 #define HEIGHTMAP_H
 
-#include "geometry.h"
+#include "../Algebra/geometry.h"
 
 
 class heightmap

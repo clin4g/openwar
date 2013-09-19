@@ -5,6 +5,8 @@
 #ifndef BOUNDS_H
 #define BOUNDS_H
 
+#include <glm/glm.hpp>
+
 
 template <class T, glm::precision P>
 struct bounds1

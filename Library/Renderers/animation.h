@@ -5,6 +5,8 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
+#include <vector>
+
 #include "bounds.h"
 
 

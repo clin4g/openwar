@@ -5,6 +5,8 @@
 #ifndef TiledTerrainSurface_H
 #define TiledTerrainSurface_H
 
+#include <map>
+
 #include "TerrainSurface.h"
 #include "bounds.h"
 #include "heightmap.h"

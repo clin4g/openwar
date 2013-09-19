@@ -5,6 +5,8 @@
 #ifndef SURFACE_H
 #define SURFACE_H
 
+#include <vector>
+
 #include "bounds.h"
 
 class Gesture;

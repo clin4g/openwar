@@ -5,6 +5,9 @@
 #ifndef BILLBOARDTEXTURE_H
 #define BILLBOARDTEXTURE_H
 
+#include <map>
+#include <vector>
+
 #include "affine2.h"
 #include "image.h"
 #include "texture.h"

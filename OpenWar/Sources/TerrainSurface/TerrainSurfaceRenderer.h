@@ -5,6 +5,7 @@
 #ifndef TerrainSurfaceRenderer_H
 #define TerrainSurfaceRenderer_H
 
+#include <glm/glm.hpp>
 
 
 class TerrainSurfaceRenderer

@@ -1,5 +1,8 @@
-//#include <SDL2/SDL.h>
-//#include <SDL2_image/SDL_image.h>
+// Copyright (C) 2013 Felix Ungman
+//
+// This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
+
+#include <SDL2_image/SDL_image.h>
 
 #include "OpenWarSurface.h"
 #include "Window.h"
@@ -65,8 +68,7 @@ int main(int argc, char *argv[])
     resource::init(argv[0]);
     
 	SDL_Init(SDL_INIT_EVERYTHING);
-	int flags = IMG_INIT_JPG | IMG_INIT_PNG;
-	IMG_Init(flags);
+	IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
 
 	Window* window = new Window();
 

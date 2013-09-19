@@ -2,8 +2,13 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
+#include <glm/gtc/constants.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "TerrainView.h"
-#import "PlainRenderer.h"
+#include "PlainRenderer.h"
 
 
 
