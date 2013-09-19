@@ -2,7 +2,9 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
+#ifdef OPENWAR_SDL
 #include <SDL2_image/SDL_image.h>
+#endif
 
 #include "OpenWarSurface.h"
 #include "Window.h"

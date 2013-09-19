@@ -6,8 +6,14 @@
 #define IMAGE_H
 
 #include <glm/glm.hpp>
+
+#if !TARGET_OS_IPHONE
 #include <OpenGL/gl.h>
+#endif
+
+#ifdef OPENWAR_SDL
 #include <SDL2/SDL.h>
+#endif
 
 #include "resource.h"
 

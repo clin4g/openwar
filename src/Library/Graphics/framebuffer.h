@@ -5,7 +5,9 @@
 #ifndef FRAMEBUFFER_H
 #define FRAMEBUFFER_H
 
+#if !TARGET_OS_IPHONE
 #include <OpenGL/gl.h>
+#endif
 
 #ifndef CHECK_ERROR_GL
 extern void CHECK_ERROR_GL();

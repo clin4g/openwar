@@ -2,7 +2,9 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
+#ifdef OPENWAR_SDL
 #include <SDL2/SDL.h>
+#endif
 #include "resource.h"
 
 
@@ -106,7 +108,7 @@ const char* resource::path() const
 
 bool resource::load(char const* type)
 {
-#ifdef OPENWAR_CPP
+#ifdef OPENWAR_SDL
 
 	SDL_RWops* rw = SDL_RWFromFile(path(), "rb");
 

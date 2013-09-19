@@ -5,7 +5,9 @@
 #ifndef RENDERBUFFER_H
 #define RENDERBUFFER_H
 
+#if !TARGET_OS_IPHONE
 #include <OpenGL/gl.h>
+#endif
 
 
 struct renderbuffer

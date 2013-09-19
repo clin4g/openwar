@@ -7,7 +7,9 @@
 
 #include <vector>
 
+#if !TARGET_OS_IPHONE
 #include <OpenGL/gl.h>
+#endif
 
 #include "bounds.h"
 #include "vertex.h"
