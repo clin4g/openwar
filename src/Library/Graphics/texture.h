@@ -6,7 +6,9 @@
 #define TEXTURE_H
 
 #if !TARGET_OS_IPHONE
-#include <OpenGL/gl.h>
+#include <GL/glew.h>
+#include <GL/gl.h>
+//#include <OpenGL/gl.h>
 #endif
 
 #include "../resource.h"

@@ -2,8 +2,12 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
+#include <iostream>
+
+#include <GL/glew.h>
+
 #ifdef OPENWAR_SDL
-#include <SDL2_image/SDL_image.h>
+#include <SDL2/SDL_image.h>
 #endif
 
 #include "Sources/OpenWarSurface.h"
@@ -67,12 +71,22 @@ static BattleScript* CreateBattleScript()
  
 int main(int argc, char *argv[])
 {
+	std::cout << "Hello" << std::endl;
+	std::cout << argv[0] << std::endl;
+
     resource::init(argv[0]);
-    
+
 	SDL_Init(SDL_INIT_EVERYTHING);
 	IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG);
 
 	Window* window = new Window();
+
+	GLenum err = glewInit();
+	if (err != GLEW_OK)
+	{
+		std::cout << "glewInit() -> " << glewGetErrorString(err) << std::endl;
+		return -1;
+	}
 
 	OpenWarSurface* surface = new OpenWarSurface(glm::vec2(640, 480), 1);
 	window->SetSurface(surface);

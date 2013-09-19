@@ -36,8 +36,7 @@ static affine2 billboard_texcoords(int x, int y, bool flip)
 BattleView::BattleView(Surface* screen, BattleModel* battleModel, renderers* r) : TerrainView(screen, battleModel->terrainSurface),
 _renderers(r),
 _battleModel(battleModel),
-_terrainSurfaceRendererSmooth(nullptr),
-_terrainSurfaceRendererTiled(nullptr),
+_lightNormal(),
 _billboardTexture(nullptr),
 _billboardModel(nullptr),
 _textureBillboardRenderer(nullptr),
@@ -46,7 +45,6 @@ _textureBillboardRenderer2(nullptr),
 _casualtyMarker(0),
 _movementMarkers(),
 _trackingMarkers(),
-_player(PlayerNone),
 _plainLineRenderer(nullptr),
 _plainTriangleRenderer(nullptr),
 _gradientLineRenderer(nullptr),
@@ -54,7 +52,12 @@ _gradientTriangleRenderer(nullptr),
 _gradientTriangleStripRenderer(nullptr),
 _colorBillboardRenderer(nullptr),
 _textureTriangleRenderer(nullptr),
-_textureFacing(nullptr)
+_textureUnitMarkers(nullptr),
+_textureTouchMarker(nullptr),
+_textureFacing(nullptr),
+_terrainSurfaceRendererSmooth(nullptr),
+_terrainSurfaceRendererTiled(nullptr),
+_player(PlayerNone)
 {
 	_textureUnitMarkers = new texture(resource("Texture256x256.png"));
 	_textureTouchMarker = new texture(resource("TouchMarker.png"));

@@ -6,7 +6,7 @@
 #include "bounds.h"
 
 #ifdef OPENWAR_SDL
-#include <SDL2_image/SDL_image.h>
+#include <SDL2/SDL_image.h>
 #endif
 #if TARGET_OS_IPHONE
 #include "../Graphics/renderer.h"
@@ -111,6 +111,7 @@ _format(GL_RGBA)
 {
 #ifdef OPENWAR_SDL
 
+	const char* s = r.path();
 	_surface = IMG_Load(r.path());
 
 	Uint32 format = _surface->format->format;

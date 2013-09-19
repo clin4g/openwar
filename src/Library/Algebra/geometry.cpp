@@ -8,16 +8,21 @@
 
 
 plane::plane(glm::vec3 n, glm::vec3 p) :
-normal(n),
+a(n.x),
+b(n.y),
+c(n.z),
 d(-glm::dot(n, p))
 {
 }
 
 
-plane::plane(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3) :
-normal(glm::normalize(glm::cross(v2 - v1, v3 - v1))),
-d(-glm::dot(normal, v1))
+plane::plane(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3)
 {
+	glm::vec3 n = glm::normalize(glm::cross(v2 - v1, v3 - v1));
+	a = n.x;
+	b = n.y;
+	c = n.z;
+	d = -glm::dot(n, v1);
 }
 
 
@@ -25,15 +30,15 @@ glm::vec3 plane::project(const glm::vec3& v) const
 {
 	glm::mat3x3 m;
 	glm::vec3::value_type* mm = glm::value_ptr(m);
-	mm[0] = 1.0f - normal.x * normal.x;
-	mm[1] = -normal.x * normal.y;
-	mm[2] = -normal.x * normal.z;
-	mm[3] = -normal.y * normal.x;
-	mm[4] = 1.0f - normal.y * normal.y;
-	mm[5] = -normal.y * normal.z;
-	mm[6] = -normal.z * normal.x;
-	mm[7] = -normal.z * normal.y;
-	mm[8] = 1.0f - normal.z * normal.z;
+	mm[0] = 1.0f - a * a;
+	mm[1] = -a * b;
+	mm[2] = -a * c;
+	mm[3] = -b * a;
+	mm[4] = 1.0f - b * b;
+	mm[5] = -b * c;
+	mm[6] = -c * a;
+	mm[7] = -c * b;
+	mm[8] = 1.0f - c * c;
 	return m * v;
 }
 
@@ -47,7 +52,7 @@ static bool almost_zero(float value)
 
 float distance(glm::vec3 v, plane p)
 {
-	return glm::dot(p.normal, v) + p.d;
+	return glm::dot(p.normal(), v) + p.d;
 }
 
 
@@ -55,11 +60,11 @@ const float* intersect(ray r, plane p)
 {
 	static float result;
 
-	float denom = glm::dot(p.normal, r.direction);
+	float denom = glm::dot(p.normal(), r.direction);
 	if (almost_zero(denom))
 		return nullptr;
 
-	float nom = glm::dot(p.normal, r.origin) + p.d;
+	float nom = glm::dot(p.normal(), r.origin) + p.d;
 	result = -(nom / denom);
 	return &result;
 }

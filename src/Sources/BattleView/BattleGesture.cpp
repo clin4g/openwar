@@ -24,12 +24,12 @@ bool BattleGesture::disableUnitTracking = false;
 
 BattleGesture::BattleGesture(BattleView* battleView) :
 _battleView(battleView),
-_trackingMarker(0),
-_trackingTouch(0),
-_modifierTouch(0),
 _tappedUnitCenter(false),
 _tappedDestination(false),
 _tappedModiferArea(false),
+_trackingMarker(0),
+_trackingTouch(0),
+_modifierTouch(0),
 _offsetToMarker(0),
 _allowTargetEnemyUnit(false)
 {

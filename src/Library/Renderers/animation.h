@@ -5,6 +5,7 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
+#include <algorithm>
 #include <vector>
 
 #include "../Algebra/bounds.h"

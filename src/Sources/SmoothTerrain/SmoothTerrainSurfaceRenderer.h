@@ -6,6 +6,7 @@
 #define SmoothTerrainSurfaceRenderer_H
 
 #include <map>
+#include <functional>
 
 #include "SmoothTerrainSurface.h"
 #include "../../Library/Graphics/framebuffer.h"

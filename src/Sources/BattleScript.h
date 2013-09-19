@@ -6,7 +6,8 @@
 #define BattleScript_H
 
 #include "BattleModel/BattleModel.h"
-#include "lua.h"
+
+#include "lua.hpp"
 
 class BattleModel;
 class BattleSimulator;

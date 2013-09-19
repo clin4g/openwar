@@ -5,8 +5,8 @@
 #ifndef OpenWarSurface_H
 #define OpenWarSurface_H
 
-#include "Surface.h"
-#include "EditorModel.h"
+#include "../Library/ViewCore/Surface.h"
+#include "TerrainView/EditorModel.h"
 
 class BattleGesture;
 class BattleModel;

@@ -103,7 +103,7 @@ void TiledTerrainSurface::SetTile(int x, int y, const std::string& texture, int 
 	}
 
 	TiledTerrainSurface::Tile* tile = GetTile(x, y);
-	tile->texture = _textures[_textureNumber[texture]];
+	tile->_texture = _textures[_textureNumber[texture]];
 	tile->rotate = rotate;
 	tile->mirror = mirror;
 }

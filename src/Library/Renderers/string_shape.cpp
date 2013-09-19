@@ -319,7 +319,8 @@ void string_shape::clear()
 }
 
 #if !defined(ENABLE_BIDIRECTIONAL_TEXT)
-#error ENABLE_BIDIRECTIONAL_TEXT not defined
+#define ENABLE_BIDIRECTIONAL_TEXT 0
+//#error ENABLE_BIDIRECTIONAL_TEXT not defined
 #endif
 
 #if ENABLE_BIDIRECTIONAL_TEXT

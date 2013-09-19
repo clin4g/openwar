@@ -86,7 +86,7 @@ void TiledTerrainSurfaceRenderer::Render(const glm::mat4x4& transform, const glm
 
 			texture_uniforms uniforms;
 			uniforms._transform = transform;
-			uniforms._texture = tile->texture;
+			uniforms._texture = tile->_texture;
 
 			renderers::singleton->_texture_renderer3->render(shape, uniforms);
 		}

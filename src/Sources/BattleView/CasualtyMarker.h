@@ -5,6 +5,7 @@
 #ifndef CasualtyMarker_H
 #define CasualtyMarker_H
 
+#include <cstdlib>
 #include "../BattleModel/BattleModel.h"
 class ColorBillboardRenderer;
 class BillboardModel;
@@ -22,7 +23,7 @@ public:
 		int seed;
 
 		Casualty(glm::vec3 position_, Player player_, UnitPlatform platform_) :
-		position(position_), player(player_), platform(platform_), time(0), seed(rand() & 0x7fff) { }
+		position(position_), player(player_), platform(platform_), time(0), seed(std::rand() & 0x7fff) { }
 	};
 
 	std::vector<Casualty> casualties;

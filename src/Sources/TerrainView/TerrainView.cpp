@@ -13,10 +13,10 @@
 
 
 TerrainView::TerrainView(Surface* screen, TerrainSurface* terrainSurfaceModel) : View(screen),
-_terrainSurface(terrainSurfaceModel),
 _cameraTilt((float)M_PI_4),
 _cameraFacing(0),
-_mouseHintVisible(false)
+_mouseHintVisible(false),
+_terrainSurface(terrainSurfaceModel)
 {
 }
 

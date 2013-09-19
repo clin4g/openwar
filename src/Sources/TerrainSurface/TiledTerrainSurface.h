@@ -19,11 +19,11 @@ class TiledTerrainSurface : public TerrainSurface
 public:
 	struct Tile
 	{
-		texture* texture;
+		texture* _texture;
 		int rotate; // counterclockwise
 		bool mirror;
 
-		Tile() : texture(nullptr), rotate(0), mirror(false) { }
+		Tile() : _texture(nullptr), rotate(0), mirror(false) { }
 	};
 
 private:

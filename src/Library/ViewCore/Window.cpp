@@ -1,4 +1,11 @@
-#include <OpenGL/gl.h>
+// Copyright (C) 2013 Felix Ungman
+//
+// This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
+
+#include <ctime>
+#include <GL/glew.h>
+#include <GL/gl.h>
+//#include <OpenGL/gl.h>
 
 #include "Window.h"
 #include "Surface.h"
@@ -11,7 +18,7 @@ std::map<Uint32, Window*> Window::_windows;
 
 static double current_timestamp()
 {
-	return (double)clock() / CLOCKS_PER_SEC;
+	return (double)std::clock() / CLOCKS_PER_SEC;
 }
 
 

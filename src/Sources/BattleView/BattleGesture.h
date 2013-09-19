@@ -5,7 +5,7 @@
 #ifndef BATTLEGESTURE_H
 #define BATTLEGESTURE_H
 
-#include "bounds.h"
+#include "../../Library/Algebra/bounds.h"
 
 #include "../../Library/ViewCore/Gesture.h"
 #include "../../Library/ViewCore/Touch.h"
