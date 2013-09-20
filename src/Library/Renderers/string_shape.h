@@ -7,6 +7,14 @@
 
 #include <map>
 
+#ifndef OPENWAR_USE_SDL
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#else
+#import <AppKit/AppKit.h>
+#endif
+#endif
+
 #include "../Algebra/bounds.h"
 
 #include "animation.h"
@@ -29,7 +37,7 @@ struct string_font
 
 	static image* _image;
 
-#ifndef OPENWAR_SDL
+#ifndef OPENWAR_USE_SDL
 #if TARGET_OS_IPHONE
 	UIFont* _font;
 #else

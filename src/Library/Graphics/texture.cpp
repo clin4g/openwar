@@ -2,6 +2,15 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
+#ifdef OPENWAR_USE_NSBUNDLE_RESOURCES
+#import <Foundation/Foundation.h>
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#else
+#import <AppKit/AppKit.h>
+#endif
+#endif
+
 #include "texture.h"
 #include "renderer.h"
 #include "../Algebra/image.h"
@@ -70,7 +79,7 @@ static bool CheckForExtension(NSString *searchName)
 
 void texture::load(const resource& r)
 {
-#ifdef OPENWAR_SDL
+#ifdef OPENWAR_USE_SDL
 
 	image img(r);
 	img.premultiply_alpha();

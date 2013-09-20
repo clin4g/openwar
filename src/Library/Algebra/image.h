@@ -7,14 +7,23 @@
 
 #include <glm/glm.hpp>
 
-#if !TARGET_OS_IPHONE
+#ifdef OPENWAR_USE_XCODE_FRAMEWORKS
+#if TARGET_OS_IPHONE
+#include <OpenGLES/ES2/gl.h>
+#else
+#include <OpenGL/gl.h>
+#endif
+#else
+#if OPENWAR_USE_GLEW
 #include <GL/glew.h>
+#endif
 #include <GL/gl.h>
-//#include <OpenGL/gl.h>
 #endif
 
-#ifdef OPENWAR_SDL
+#ifdef OPENWAR_USE_SDL
 #include <SDL2/SDL.h>
+#else
+#import <CoreGraphics/CoreGraphics.h>
 #endif
 
 #include "../resource.h"
@@ -22,7 +31,7 @@
 
 class image
 {
-#ifdef OPENWAR_SDL
+#ifdef OPENWAR_USE_SDL
 	SDL_Surface* _surface;
 #else
 	CGContextRef _context;
@@ -36,14 +45,14 @@ public:
 	image(int width, int height);
 	image(const resource& r);
 
-#ifndef OPENWAR_SDL
+#ifndef OPENWAR_USE_SDL
 	image(CGImageRef image);
 	CGContextRef CGContext() const { return _context; }
 #endif
 
 	~image();
 
-#ifdef OPENWAR_SDL
+#ifdef OPENWAR_USE_SDL
 	GLsizei width() const { return (GLsizei)_surface->w; }
 	GLsizei height() const { return (GLsizei)_surface->h; }
 	GLenum format() const { return _format; }
@@ -67,7 +76,7 @@ private:
 };
 
 
-#ifndef OPENWAR_SDL
+#ifndef OPENWAR_USE_SDL
 NSData* ConvertImageToTiff(image* map);
 image* ConvertTiffToImage(NSData* data);
 #endif

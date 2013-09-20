@@ -2,6 +2,10 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#endif
+
 #include "BattleGesture.h"
 #include "../BattleModel/BattleModel.h"
 #include "BattleView.h"
@@ -237,7 +241,7 @@ void BattleGesture::TouchMoved()
 {
 	if (_trackingMarker != nullptr)
 	{
-#if  TARGET_OS_IPHONE
+#if TARGET_OS_IPHONE
 		static int* _icon_size = nullptr;
 		if (_icon_size == nullptr)
 			_icon_size = new int([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone ? 57 : 72);

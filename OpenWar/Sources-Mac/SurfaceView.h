@@ -2,7 +2,11 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
+#include <glm/glm.hpp>
+
 #if !TARGET_OS_IPHONE
+
+#import <GLKit/GLKit.h>
 
 class Surface;
 @protocol SurfaceFactory;

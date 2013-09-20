@@ -2,6 +2,10 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#endif
+
 #include <glm/gtc/constants.hpp>
 
 #include "BattleView.h"

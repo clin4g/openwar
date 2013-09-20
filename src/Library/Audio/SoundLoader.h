@@ -5,11 +5,13 @@
 #ifndef SOUNDLOADER_H
 #define SOUNDLOADER_H
 
+#ifdef OPENWAR_USE_XCODE_FRAMEWORKS
+#include <OpenAL/al.h>
+#include <OpenAL/alc.h>
+#else
 #include <AL/al.h>
 #include <AL/alc.h>
-//#include <OpenAL/al.h>
-//#include <OpenAL/alc.h>
-
+#endif
 
 class SoundLoader
 {

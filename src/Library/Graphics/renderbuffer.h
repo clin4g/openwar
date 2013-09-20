@@ -5,10 +5,17 @@
 #ifndef RENDERBUFFER_H
 #define RENDERBUFFER_H
 
-#if !TARGET_OS_IPHONE
+#ifdef OPENWAR_USE_XCODE_FRAMEWORKS
+#if TARGET_OS_IPHONE
+#include <OpenGLES/ES2/gl.h>
+#else
+#include <OpenGL/gl.h>
+#endif
+#else
+#if OPENWAR_USE_GLEW
 #include <GL/glew.h>
+#endif
 #include <GL/gl.h>
-//#include <OpenGL/gl.h>
 #endif
 
 

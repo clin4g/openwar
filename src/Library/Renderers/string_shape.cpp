@@ -12,7 +12,7 @@ image* string_font::_image = nullptr;
 
 
 string_font::string_font(const char* name, float size, float pixelDensity) :
-#ifndef OPENWAR_SDL
+#ifndef OPENWAR_USE_SDL
 _font(nil),
 #endif
 _pixelDensity(pixelDensity),
@@ -24,7 +24,7 @@ _dirty(false)
 
 	size *= _pixelDensity;
 
-#ifndef OPENWAR_SDL
+#ifndef OPENWAR_USE_SDL
 #if TARGET_OS_IPHONE
 	_font = [[UIFont fontWithName:[NSString stringWithUTF8String:name] size:size] retain];
 #else
@@ -36,7 +36,7 @@ _dirty(false)
 
 
 string_font::string_font(bool bold, float size, float pixelDensity) :
-#ifndef OPENWAR_SDL
+#ifndef OPENWAR_USE_SDL
 _font(nil),
 #endif
 _pixelDensity(pixelDensity),
@@ -48,7 +48,7 @@ _dirty(false)
 
 	size *= _pixelDensity;
 
-#ifndef OPENWAR_SDL
+#ifndef OPENWAR_USE_SDL
 #if TARGET_OS_IPHONE
 	if (bold)
 		_font = [[UIFont boldSystemFontOfSize:size] retain];
@@ -67,7 +67,7 @@ _dirty(false)
 
 string_font::~string_font()
 {
-#ifndef OPENWAR_SDL
+#ifndef OPENWAR_USE_SDL
 	[_font release];
 #endif
 }
@@ -130,7 +130,7 @@ void string_font::initialize()
 
 float string_font::font_size() const
 {
-#ifdef OPENWAR_SDL
+#ifdef OPENWAR_USE_SDL
 
 	return 14;
 
@@ -156,7 +156,7 @@ void string_font::add_character(wchar_t character)
 	if (_items.find(character) != _items.end())
 		return;
 
-#ifndef OPENWAR_SDL
+#ifndef OPENWAR_USE_SDL
 
     unichar uc = (unichar)character;
     
@@ -212,7 +212,7 @@ void string_font::update_texture()
 	if (!_dirty)
 		return;
 
-#ifdef OPENWAR_SDL
+#ifdef OPENWAR_USE_SDL
 
 #else
 
@@ -263,7 +263,7 @@ glm::vec2 string_font::measure(const char* s)
 	float w = 0;
 	float h = 0;
 
-#ifndef OPENWAR_SDL
+#ifndef OPENWAR_USE_SDL
 
 	NSString* string = [NSString stringWithUTF8String:s];
 
@@ -423,7 +423,7 @@ static NSString* ReorderToDisplayDirection(NSString* string)
 
 void string_shape::add(const char* s, glm::mat4x4 transform, float alpha, float delta)
 {
-#ifndef OPENWAR_SDL
+#ifndef OPENWAR_USE_SDL
 
 	NSString* string = [NSString stringWithUTF8String:s];
 

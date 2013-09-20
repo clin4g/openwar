@@ -4,27 +4,11 @@
 
 #define GL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED
 
-#import <AudioToolbox/AudioToolbox.h>
-#import <Cocoa/Cocoa.h>
-#import <GLKit/GLKit.h>
-
-#include <algorithm>
-#include <map>
-#include <set>
-#include <string>
-#include <typeinfo>
-#include <vector>
-
-#include <OpenAL/al.h>
-#include <OpenAL/alc.h>
-
-#define GLM_SWIZZLE
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
 #define ENABLE_BIDIRECTIONAL_TEXT 0
+#define GLM_SWIZZLE
 
-#define OPENWAR_SDL
+#define OPENWAR_USE_SDL
+#define OPENWAR_USE_XCODE_FRAMEWORKS
 
-#include <SDL2/SDL.h>
+//#define OPENWAR_USE_NSBUNDLE_RESOURCES
+//#define OPENWAR_USE_GLEW

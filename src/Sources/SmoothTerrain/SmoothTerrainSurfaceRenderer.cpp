@@ -556,7 +556,7 @@ static texture* create_colors()
 }
 
 
-#ifndef OPENWAR_CPP
+#ifdef OPENWAR_USE_NSBUNDLE_RESOURCES // detect objective-c
 static NSString* FramebufferStatusString(GLenum status)
 {
 	switch (status)
@@ -612,7 +612,7 @@ _mapTexture(nullptr)
 			GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 			if (status != GL_FRAMEBUFFER_COMPLETE)
 			{
-#ifndef OPENWAR_CPP
+#ifdef OPENWAR_USE_NSBUNDLE_RESOURCES
 				NSLog(@"CheckGLFramebuffer %@", FramebufferStatusString(status));
 #endif
 			}

@@ -7,15 +7,20 @@
 
 #include <string>
 
+#ifdef OPENWAR_USE_NSBUNDLE_RESOURCES
+#import <Foundation/Foundation.h>
+#endif
+
 
 class resource
 {
 	static std::string _app_path;
 	static std::string _resources_path;
 
-#if !defined(OPENWAR_SDL)
+#ifdef OPENWAR_USE_NSBUNDLE_RESOURCES
 	NSData* _nsdata;
 #endif
+    
 	std::string _name;
 	std::string _type;
 	const void* _data;

@@ -5,16 +5,29 @@
 #include "image.h"
 #include "bounds.h"
 
-#ifdef OPENWAR_SDL
+#ifdef OPENWAR_USE_SDL
+#ifdef OPENWAR_USE_XCODE_FRAMEWORKS
+#include <SDL2_image/SDL_image.h>
+#else
 #include <SDL2/SDL_image.h>
 #endif
+#endif
+
+#ifdef OPENWAR_USE_NSBUNDLE_RESOURCES
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#else
+#import <AppKit/AppKit.h>
+#endif
+#endif
+
 #if TARGET_OS_IPHONE
 #include "../Graphics/renderer.h"
 #endif
 
 
 image::image(int width, int height) :
-#ifdef OPENWAR_SDL
+#ifdef OPENWAR_USE_SDL
 _surface(nullptr),
 #else
 _context(nil),
@@ -24,7 +37,7 @@ _data(nullptr),
 #endif
 _format(GL_RGBA)
 {
-#ifdef OPENWAR_SDL
+#ifdef OPENWAR_USE_SDL
 
 	_surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
 
@@ -36,7 +49,7 @@ _format(GL_RGBA)
 }
 
 
-#ifdef OPENWAR_SDL
+#ifdef OPENWAR_USE_SDL
 static GLenum sdl_to_gl_pixel_format(Uint32 sdl_pixel_format)
 {
 	switch (sdl_pixel_format)
@@ -99,7 +112,7 @@ static GLenum sdl_to_gl_pixel_format(Uint32 sdl_pixel_format)
 
 
 image::image(const resource& r) :
-#ifdef OPENWAR_SDL
+#ifdef OPENWAR_USE_SDL
 _surface(nullptr),
 #else
 _context(nil),
@@ -109,7 +122,7 @@ _data(nullptr),
 #endif
 _format(GL_RGBA)
 {
-#ifdef OPENWAR_SDL
+#ifdef OPENWAR_USE_SDL
 
 	const char* s = r.path();
 	_surface = IMG_Load(r.path());
@@ -193,7 +206,7 @@ _format(GL_RGBA)
 }
 
 
-#ifndef OPENWAR_SDL
+#ifndef OPENWAR_USE_SDL
 image::image(CGImageRef image) :
 _context(nil),
 _format(GL_RGBA),
@@ -209,7 +222,7 @@ _data(nullptr)
 
 image::~image()
 {
-#ifdef OPENWAR_SDL
+#ifdef OPENWAR_USE_SDL
 
 #else
 
@@ -265,7 +278,7 @@ void image::premultiply_alpha()
 
 
 
-#ifndef OPENWAR_SDL
+#ifndef OPENWAR_USE_SDL
 static CGImageAlphaInfo GetAlphaInfo(GLenum format)
 {
 	switch (format)
@@ -282,7 +295,7 @@ static CGImageAlphaInfo GetAlphaInfo(GLenum format)
 #endif
 
 
-#ifndef OPENWAR_SDL
+#ifndef OPENWAR_USE_SDL
 static int count_components(GLenum format)
 {
 	switch (format)
@@ -304,7 +317,7 @@ static int count_components(GLenum format)
 #endif
 
 
-#ifndef OPENWAR_SDL
+#ifndef OPENWAR_USE_SDL
 void image::init_data_context()
 {
 	int components = count_components(_format);
@@ -317,7 +330,7 @@ void image::init_data_context()
 #endif
 
 
-#ifndef OPENWAR_SDL
+#ifndef OPENWAR_USE_SDL
 NSData* ConvertImageToTiff(image* map)
 {
 #if TARGET_OS_IPHONE
@@ -342,7 +355,7 @@ NSData* ConvertImageToTiff(image* map)
 #endif
 
 
-#ifndef OPENWAR_SDL
+#ifndef OPENWAR_USE_SDL
 image* ConvertTiffToImage(NSData* data)
 {
 #if TARGET_OS_IPHONE

@@ -2,6 +2,9 @@
 
 #if TARGET_OS_IPHONE
 
+#include <map>
+#include <set>
+
 #import "SurfaceViewController.h"
 
 #include "renderer.h"

@@ -2,6 +2,9 @@
 
 #if TARGET_OS_IPHONE
 
+#import <GLKit/GLKit.h>
+#include <glm/glm.hpp>
+
 class Surface;
 @protocol SurfaceFactory;
 

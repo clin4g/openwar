@@ -3,9 +3,15 @@
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
 #include <ctime>
+
+#ifdef OPENWAR_USE_XCODE_FRAMEWORKS
+#include <OpenGL/gl.h>
+#else
+#if OPENWAR_USE_GLEW
 #include <GL/glew.h>
+#endif
 #include <GL/gl.h>
-//#include <OpenGL/gl.h>
+#endif
 
 #include "Window.h"
 #include "Surface.h"

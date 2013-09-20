@@ -4,11 +4,15 @@
 
 #include "SoundLoader.h"
 
+#ifdef OPENWAR_USE_AUDIOTOOLBOX
+#import <Foundation/Foundation.h>
+#import <AudioToolbox/AudioToolbox.h>
+#endif
 
 
 SoundLoader::SoundLoader(const char* name) : format(0), data(0), size(0), freq(0)
 {
-#ifndef OPENWAR_SDL
+#ifdef OPENWAR_USE_AUDIOTOOLBOX
     
 	NSString* fileString = [[NSBundle mainBundle] pathForResource:[NSString stringWithUTF8String:name] ofType:@"wav"];
 	CFURLRef fileUrl = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)fileString, kCFURLPOSIXPathStyle, false);

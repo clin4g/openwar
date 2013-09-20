@@ -102,7 +102,7 @@ void BattleScript::SetGlobalString(const char* name, const char* value)
 
 void BattleScript::AddStandardPath()
 {
-#ifndef OPENWAR_CPP
+#ifdef OPENWAR_USE_NSBUNDLE_RESOURCES
 	NSString* path = [NSBundle mainBundle].resourcePath;
 	path = [path stringByAppendingPathComponent:@"Scripts"];
 	path = [path stringByAppendingPathComponent:@"?.lua"];
@@ -249,7 +249,7 @@ int BattleScript::openwar_terrain_init(lua_State* L)
 		const char* p = n < 2 ? nullptr : lua_tostring(L, 2);
 		const double size = n < 3 ? 1024 : lua_tonumber(L, 3);
 
-#ifdef OPENWAR_SDL
+#ifdef OPENWAR_USE_SDL
 
 		image* map = new image("Maps/DefaultMap.tiff");
 		bounds2f bounds(0, 0, size, size);

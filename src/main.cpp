@@ -4,10 +4,16 @@
 
 #include <iostream>
 
+#if OPENWAR_USE_GLEW
 #include <GL/glew.h>
+#endif
 
-#ifdef OPENWAR_SDL
+#ifdef OPENWAR_USE_SDL
+#ifdef OPENWAR_USE_XCODE_FRAMEWORKS
+#include <SDL2_image/SDL_image.h>
+#else
 #include <SDL2/SDL_image.h>
+#endif
 #endif
 
 #include "Sources/OpenWarSurface.h"
@@ -17,32 +23,7 @@
 
 
 
-#ifdef OPENWAR_CPP
-
-static BattleScript* CreateBattleScript()
-{
-	resource script("Maps/DefaultMap.lua");
-	script.load();
-
-	std::string directory = resource("Maps/").path();
-	std::string package_path = directory + "/?.lua";
-
-	BattleScript* battleScript = new BattleScript();
-	battleScript->SetGlobalNumber("openwar_seed", 0);
-	battleScript->SetGlobalString("openwar_script_directory", directory.c_str());
-	battleScript->AddStandardPath();
-	battleScript->AddPackagePath(package_path.c_str());
-
-	battleScript->Execute((const char*)script.data(), script.size());
-
-	if (battleScript->GetBattleModel()->terrainForest == nullptr)
-		battleScript->GetBattleModel()->terrainForest = new BillboardTerrainForest();
-
-	return battleScript;
-}
-
-#else
-
+#ifdef OPENWAR_USE_NSBUNDLE_RESOURCES
 
 static BattleScript* CreateBattleScript()
 {
@@ -66,6 +47,30 @@ static BattleScript* CreateBattleScript()
 	return battleScript;
 }
 
+#else
+
+static BattleScript* CreateBattleScript()
+{
+	resource script("Maps/DefaultMap.lua");
+	script.load();
+    
+	std::string directory = resource("Maps/").path();
+	std::string package_path = directory + "/?.lua";
+    
+	BattleScript* battleScript = new BattleScript();
+	battleScript->SetGlobalNumber("openwar_seed", 0);
+	battleScript->SetGlobalString("openwar_script_directory", directory.c_str());
+	battleScript->AddStandardPath();
+	battleScript->AddPackagePath(package_path.c_str());
+    
+	battleScript->Execute((const char*)script.data(), script.size());
+    
+	if (battleScript->GetBattleModel()->terrainForest == nullptr)
+		battleScript->GetBattleModel()->terrainForest = new BillboardTerrainForest();
+    
+	return battleScript;
+}
+
 #endif
 
  
@@ -81,13 +86,15 @@ int main(int argc, char *argv[])
 
 	Window* window = new Window();
 
+#if OPENWAR_USE_GLEW
 	GLenum err = glewInit();
 	if (err != GLEW_OK)
 	{
 		std::cout << "glewInit() -> " << glewGetErrorString(err) << std::endl;
 		return -1;
 	}
-
+#endif
+    
 	OpenWarSurface* surface = new OpenWarSurface(glm::vec2(640, 480), 1);
 	window->SetSurface(surface);
 
