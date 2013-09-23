@@ -13,8 +13,10 @@ SoundPlayer* SoundPlayer::singleton = nullptr;
 
 static void _LoadSound(SoundPlayer* soundPlayer, SoundBuffer soundBuffer, const char* name)
 {
+#ifdef OPENWAR_USE_OPENAL
 	SoundLoader sound(name);
 	soundPlayer->LoadSound(soundBuffer, sound.format, sound.data, sound.size, sound.freq);
+#endif
 }
 
 
@@ -23,6 +25,7 @@ void SoundPlayer::Initialize()
 	if (SoundPlayer::singleton == nullptr)
 	{
 		SoundPlayer::singleton = new SoundPlayer();
+#ifdef OPENWAR_USE_OPENAL
 		_LoadSound(SoundPlayer::singleton, SoundBufferArrowsFlying, "ArrowsFlying");
 		_LoadSound(SoundPlayer::singleton, SoundBufferCavalryMarching, "CavalryMarching");
 		_LoadSound(SoundPlayer::singleton, SoundBufferCavalryRunning, "CavalryRunning");
@@ -36,18 +39,23 @@ void SoundPlayer::Initialize()
 		_LoadSound(SoundPlayer::singleton, SoundBufferMatchlockFire2, "MatchlockFire2");
 		_LoadSound(SoundPlayer::singleton, SoundBufferMatchlockFire3, "MatchlockFire3");
 		_LoadSound(SoundPlayer::singleton, SoundBufferMatchlockFire4, "MatchlockFire4");
+#endif
 	}
 }
 
 
 
-SoundPlayer::SoundPlayer() :
+SoundPlayer::SoundPlayer()
+#ifdef OPENWAR_USE_OPENAL
+:
 _device(0),
 _context(0),
 _nextMatchlock(SoundSourceMatchlockFirst),
 _nextArrows(SoundSourceArrowsFirst),
 _nextCookie(1)
+#endif
 {
+#ifdef OPENWAR_USE_OPENAL
 	ALenum error;
 
 	_device = alcOpenDevice(0); // select the "preferred device"
@@ -84,7 +92,7 @@ _nextCookie(1)
 	orientation[2] = -1; //-cos(rads);
 
 	alListenerfv(AL_ORIENTATION, orientation);
-
+#endif
 }
 
 
@@ -100,26 +108,32 @@ SoundPlayer::~SoundPlayer()
 }
 
 
+#ifdef OPENWAR_USE_OPENAL
 void SoundPlayer::LoadSound(SoundBuffer soundBuffer, ALenum format, ALvoid* data, ALsizei size, ALsizei freq)
 {
 	int index = (int)soundBuffer;
 	alBufferData(_buffers[index], format, data, size, freq);
 }
+#endif
 
 
 void SoundPlayer::Pause()
 {
+#ifdef OPENWAR_USE_OPENAL
 	for (int i = 0; i < NUMBER_OF_SOUND_SOURCES; ++i)
 		if (_playing[i])
 			alSourcePause(_sources[i]);
+#endif
 }
 
 
 void SoundPlayer::Resume()
 {
+#ifdef OPENWAR_USE_OPENAL
 	for (int i = 0; i < NUMBER_OF_SOUND_SOURCES; ++i)
 		if (_playing[i])
 			alSourcePlay(_sources[i]);
+#endif
 }
 
 
@@ -253,6 +267,7 @@ void SoundPlayer::StopAll()
 
 int SoundPlayer::PlaySound(SoundSource soundSource, SoundBuffer soundBuffer, bool looping)
 {
+#ifdef OPENWAR_USE_OPENAL
 	ALuint source = _sources[(int)soundSource];
 	ALuint buffer = _buffers[(int)soundBuffer];
 
@@ -275,15 +290,20 @@ int SoundPlayer::PlaySound(SoundSource soundSource, SoundBuffer soundBuffer, boo
 	_cookies[(int)soundSource] = cookie;
 
 	return cookie;
+#else
+	return 0;
+#endif
 }
 
 
 void SoundPlayer::StopSound(SoundSource soundSource)
 {
+#ifdef OPENWAR_USE_OPENAL
 	ALuint source = _sources[(int)soundSource];
 
 	alSourceStop(source);
 
 	_playing[(int)soundSource] = AL_NONE;
 	_cookies[(int)soundSource] = 0;
+#endif
 }

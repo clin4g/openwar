@@ -180,7 +180,7 @@ template <class T> int quadtree<T>::node::get_index()
 	if (this == _parent->_children[1]) return 1;
 	if (this == _parent->_children[2]) return 2;
 	if (this == _parent->_children[3]) return 3;
-	throw -1;
+	return -1;
 }
 
 

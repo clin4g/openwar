@@ -5,13 +5,13 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-
+#ifdef OPENWAR_USE_XCODE_FRAMEWORKS
 #if !TARGET_OS_IPHONE
 #define glGenVertexArraysOES glGenVertexArraysAPPLE
 #define glBindVertexArrayOES glBindVertexArrayAPPLE
 #define glDeleteVertexArraysOES glDeleteVertexArraysAPPLE
 #endif
-
+#endif
 
 
 struct plain_vertex

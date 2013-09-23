@@ -18,7 +18,12 @@
 #if OPENWAR_USE_GLEW
 #include <GL/glew.h>
 #endif
+#ifdef OPENWAR_USE_GLES2
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#else
 #include <GL/gl.h>
+#endif
 #endif
 
 #include "../Algebra/bounds.h"

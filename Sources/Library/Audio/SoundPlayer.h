@@ -5,12 +5,14 @@
 #ifndef SOUNDPLAYER_H
 #define SOUNDPLAYER_H
 
+#ifdef OPENWAR_USE_OPENAL
 #ifdef OPENWAR_USE_XCODE_FRAMEWORKS
 #include <OpenAL/al.h>
 #include <OpenAL/alc.h>
 #else
 #include <AL/al.h>
 #include <AL/alc.h>
+#endif
 #endif
 
 
@@ -55,11 +57,13 @@ enum SoundSource
 
 class SoundPlayer
 {
+#ifdef OPENWAR_USE_OPENAL
 	ALCdevice* _device;
 	ALCcontext* _context;
 	ALuint _buffers[NUMBER_OF_SOUND_BUFFERS];
 	ALuint _sources[NUMBER_OF_SOUND_SOURCES];
 	ALuint _playing[NUMBER_OF_SOUND_SOURCES];
+#endif
 	int _cookies[NUMBER_OF_SOUND_SOURCES];
 	SoundSource _nextMatchlock;
 	SoundSource _nextArrows;
@@ -73,7 +77,9 @@ public:
 	SoundPlayer();
 	~SoundPlayer();
 
+#ifdef OPENWAR_USE_OPENAL
 	void LoadSound(SoundBuffer soundBuffer, ALenum format, ALvoid* data, ALsizei size, ALsizei freq);
+#endif
 
 	void Pause();
 	void Resume();

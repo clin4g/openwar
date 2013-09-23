@@ -31,7 +31,7 @@ class BattleScript
 	BattleModel* _battleModel;
 	BattleSimulator* _battleSimulator;
 	GradientLineRenderer* _renderer;
-	lua_State* _L;
+	lua_State* _state;
 
 public:
 	BattleScript();

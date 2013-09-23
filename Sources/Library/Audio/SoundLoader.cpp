@@ -10,7 +10,10 @@
 #endif
 
 
-SoundLoader::SoundLoader(const char* name) : format(0), data(0), size(0), freq(0)
+SoundLoader::SoundLoader(const char* name)
+#ifdef OPENWAR_USE_OPENAL
+: format(0), data(0), size(0), freq(0)
+#endif
 {
 #ifdef OPENWAR_USE_AUDIOTOOLBOX
     

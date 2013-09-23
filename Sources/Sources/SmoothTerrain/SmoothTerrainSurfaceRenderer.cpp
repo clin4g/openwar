@@ -1285,7 +1285,7 @@ float terrain_viewpoint::compute_lod(bounds3f boundingBox) const
 float terrain_viewpoint::compute_lod(float distance) const
 {
 	float d = 1 + fminf(fmaxf(distance - _near, 0) / (_far - _near), 1);
-	float x = log2f(d);
+	float x = glm::log2(d);
 	return (1 - x) * _near_lod;
 }
 

@@ -22,59 +22,59 @@ static BattleScript* _battlescript = nullptr;
 BattleScript::BattleScript() :
 _battleModel(nullptr),
 _battleSimulator(nullptr),
-_L(nullptr)
+_state(nullptr)
 {
 	_battleModel = new BattleModel();
 	_battleModel->terrainForest = new BillboardTerrainForest();
 
 	_battlescript = this;
 
-	_L = luaL_newstate();
-	luaL_openlibs(_L);
+	_state = luaL_newstate();
+	luaL_openlibs(_state);
 
-	lua_pushcfunction(_L, openwar_terrain_init);
-	lua_setglobal(_L, "openwar_terrain_init");
+	lua_pushcfunction(_state, openwar_terrain_init);
+	lua_setglobal(_state, "openwar_terrain_init");
 
-	lua_pushcfunction(_L, openwar_simulator_init);
-	lua_setglobal(_L, "openwar_simulator_init");
-
-
-	lua_pushcfunction(_L, openwar_render_hint_line);
-	lua_setglobal(_L, "openwar_render_hint_line");
-
-	lua_pushcfunction(_L, openwar_render_hint_circle);
-	lua_setglobal(_L, "openwar_render_hint_circle");
+	lua_pushcfunction(_state, openwar_simulator_init);
+	lua_setglobal(_state, "openwar_simulator_init");
 
 
-	lua_pushcfunction(_L, battle_message);
-	lua_setglobal(_L, "battle_message");
+	lua_pushcfunction(_state, openwar_render_hint_line);
+	lua_setglobal(_state, "openwar_render_hint_line");
 
-	lua_pushcfunction(_L, battle_get_time);
-	lua_setglobal(_L, "battle_get_time");
+	lua_pushcfunction(_state, openwar_render_hint_circle);
+	lua_setglobal(_state, "openwar_render_hint_circle");
 
-	lua_pushcfunction(_L, battle_new_unit);
-	lua_setglobal(_L, "battle_new_unit");
 
-	lua_pushcfunction(_L, battle_set_unit_movement);
-	lua_setglobal(_L, "battle_set_unit_movement");
+	lua_pushcfunction(_state, battle_message);
+	lua_setglobal(_state, "battle_message");
 
-	lua_pushcfunction(_L, battle_get_unit_status);
-	lua_setglobal(_L, "battle_get_unit_status");
+	lua_pushcfunction(_state, battle_get_time);
+	lua_setglobal(_state, "battle_get_time");
 
-	lua_pushcfunction(_L, battle_set_terrain_tile);
-	lua_setglobal(_L, "battle_set_terrain_tile");
+	lua_pushcfunction(_state, battle_new_unit);
+	lua_setglobal(_state, "battle_new_unit");
 
-	lua_pushcfunction(_L, battle_set_terrain_height);
-	lua_setglobal(_L, "battle_set_terrain_height");
+	lua_pushcfunction(_state, battle_set_unit_movement);
+	lua_setglobal(_state, "battle_set_unit_movement");
 
-	lua_pushcfunction(_L, battle_add_terrain_tree);
-	lua_setglobal(_L, "battle_add_terrain_tree");
+	lua_pushcfunction(_state, battle_get_unit_status);
+	lua_setglobal(_state, "battle_get_unit_status");
+
+	lua_pushcfunction(_state, battle_set_terrain_tile);
+	lua_setglobal(_state, "battle_set_terrain_tile");
+
+	lua_pushcfunction(_state, battle_set_terrain_height);
+	lua_setglobal(_state, "battle_set_terrain_height");
+
+	lua_pushcfunction(_state, battle_add_terrain_tree);
+	lua_setglobal(_state, "battle_add_terrain_tree");
 }
 
 
 BattleScript::~BattleScript()
 {
-	lua_close(_L);
+	lua_close(_state);
 
 	delete _battleSimulator;
 
@@ -88,15 +88,15 @@ BattleScript::~BattleScript()
 
 void BattleScript::SetGlobalNumber(const char* name, double value)
 {
-	lua_pushnumber(_L, value);
-	lua_setglobal(_L, name);
+	lua_pushnumber(_state, value);
+	lua_setglobal(_state, name);
 }
 
 
 void BattleScript::SetGlobalString(const char* name, const char* value)
 {
-	lua_pushstring(_L, value);
-	lua_setglobal(_L, name);
+	lua_pushstring(_state, value);
+	lua_setglobal(_state, name);
 }
 
 
@@ -113,32 +113,32 @@ void BattleScript::AddStandardPath()
 
 void BattleScript::AddPackagePath(const char* path)
 {
-	lua_getglobal(_L, "package");
-	if (lua_isnil(_L, -1))
+	lua_getglobal(_state, "package");
+	if (lua_isnil(_state, -1))
 	{
-		lua_pop(_L, 1);
+		lua_pop(_state, 1);
 		return;
 	}
 
-	lua_pushstring(_L, "path");
-	lua_gettable(_L, -2);
-	if (lua_isnil(_L, -1))
+	lua_pushstring(_state, "path");
+	lua_gettable(_state, -2);
+	if (lua_isnil(_state, -1))
 	{
-		lua_pop(_L, 2); // package & path
+		lua_pop(_state, 2); // package & path
 		return;
 	}
 
-	std::string s(lua_tostring(_L, -1));
-	lua_pop(_L, 1);
+	std::string s(lua_tostring(_state, -1));
+	lua_pop(_state, 1);
 
 	s.append(";");
 	s.append(path);
 
-	lua_pushstring(_L, "path");
-	lua_pushstring(_L, s.c_str());
-	lua_settable(_L, -3);
+	lua_pushstring(_state, "path");
+	lua_pushstring(_state, s.c_str());
+	lua_settable(_state, -3);
 
-	lua_pop(_L, 1); // package
+	lua_pop(_state, 1); // package
 }
 
 
@@ -146,13 +146,13 @@ void BattleScript::Execute(const char* script, size_t length)
 {
 	if (script != nullptr)
 	{
-		int error = luaL_loadbuffer(_L, script, length, "line");
-		if (!error) lua_pcall(_L, 0, 0, 0);
+		int error = luaL_loadbuffer(_state, script, length, "line");
+		if (!error) lua_pcall(_state, 0, 0, 0);
 
 		if (error)
 		{
-			//NSLog(@"BattleScript ERROR: %s", lua_tostring(_L, -1));
-			lua_pop(_L, 1);  /* pop error message from the stack */
+			//NSLog(@"BattleScript ERROR: %s", lua_tostring(_state, -1));
+			lua_pop(_state, 1);  /* pop error message from the stack */
 		}
 	}
 }
@@ -160,20 +160,20 @@ void BattleScript::Execute(const char* script, size_t length)
 
 void BattleScript::Tick(double secondsSinceLastUpdate)
 {
-	lua_getglobal(_L, "openwar_battle_tick");
+	lua_getglobal(_state, "openwar_battle_tick");
 
-	if (lua_isnil(_L, -1))
+	if (lua_isnil(_state, -1))
 	{
-		lua_pop(_L, 1);
+		lua_pop(_state, 1);
 	}
 	else
 	{
-		lua_pushnumber(_L, secondsSinceLastUpdate);
-		int error = lua_pcall(_L, 1, 0, 0);
+		lua_pushnumber(_state, secondsSinceLastUpdate);
+		int error = lua_pcall(_state, 1, 0, 0);
 		if (error)
 		{
-			//NSLog(@"BattleScript ERROR: %s", lua_tostring(_L, -1));
-			lua_pop(_L, 1);  /* pop error message from the stack */
+			//NSLog(@"BattleScript ERROR: %s", lua_tostring(_state, -1));
+			lua_pop(_state, 1);  /* pop error message from the stack */
 		}
 	}
 
@@ -183,21 +183,21 @@ void BattleScript::Tick(double secondsSinceLastUpdate)
 
 void BattleScript::RenderHints(GradientLineRenderer* renderer)
 {
-	lua_getglobal(_L, "openwar_render_hints");
+	lua_getglobal(_state, "openwar_render_hints");
 
-	if (lua_isnil(_L, -1))
+	if (lua_isnil(_state, -1))
 	{
-		lua_pop(_L, 1);
+		lua_pop(_state, 1);
 	}
 	else
 	{
 		_renderer = renderer;
 
-		int error = lua_pcall(_L, 0, 0, 0);
+		int error = lua_pcall(_state, 0, 0, 0);
 		if (error)
 		{
-			//NSLog(@"BattleScript ERROR: %s", lua_tostring(_L, -1));
-			lua_pop(_L, 1);  /* pop error message from the stack */
+			//NSLog(@"BattleScript ERROR: %s", lua_tostring(_state, -1));
+			lua_pop(_state, 1);  /* pop error message from the stack */
 		}
 	}
 }

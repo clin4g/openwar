@@ -10,7 +10,11 @@
 #if OPENWAR_USE_GLEW
 #include <GL/glew.h>
 #endif
+#ifdef OPENWAR_USE_GLES2
+#include <GLES2/gl2.h>
+#else
 #include <GL/gl.h>
+#endif
 #endif
 
 #include "Window.h"
@@ -47,8 +51,10 @@ _timestamp(0)
 
 	_glcontext = SDL_GL_CreateContext(_window);
 
+#if !defined(OPENWAR_USE_GLES2)
 	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 	glEnable(GL_POINT_SPRITE);
+#endif
 
 	Uint32 windowID = SDL_GetWindowID(_window);
 

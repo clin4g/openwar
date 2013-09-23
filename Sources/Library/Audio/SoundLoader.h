@@ -5,6 +5,7 @@
 #ifndef SOUNDLOADER_H
 #define SOUNDLOADER_H
 
+#ifdef OPENWAR_USE_OPENAL
 #ifdef OPENWAR_USE_XCODE_FRAMEWORKS
 #include <OpenAL/al.h>
 #include <OpenAL/alc.h>
@@ -12,14 +13,17 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 #endif
+#endif
 
 class SoundLoader
 {
 public:
+#ifdef OPENWAR_USE_OPENAL
 	ALenum format;
 	ALvoid* data;
 	ALsizei size;
 	ALsizei freq;
+#endif
 
 	SoundLoader(const char* name);
 	~SoundLoader();
