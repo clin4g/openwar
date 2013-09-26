@@ -5,13 +5,13 @@
 #ifndef TiledTerrainSurfaceRenderer_H
 #define TiledTerrainSurfaceRenderer_H
 
-#include "TerrainSurfaceRenderer.h"
+#include <glm/glm.hpp>
 #include "../../Library/Graphics/texture.h"
 
 class TiledTerrainSurface;
 
 
-class TiledTerrainSurfaceRenderer : public TerrainSurfaceRenderer
+class TiledTerrainSurfaceRenderer
 {
 	TiledTerrainSurface* _terrainSurfaceModel;
 
@@ -21,7 +21,7 @@ public:
 
 	TiledTerrainSurface* GetTerrainSurfaceModel() const { return _terrainSurfaceModel; }
 
-	virtual void Render(const glm::mat4x4& transform, const glm::vec3& lightNormal);
+	void Render(const glm::mat4x4& transform, const glm::vec3& lightNormal);
 };
 
 

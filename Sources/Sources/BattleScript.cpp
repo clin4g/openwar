@@ -21,7 +21,7 @@ static BattleScript* _battlescript = nullptr;
 
 static void print_log(const char* operation, const char* message)
 {
-#ifdef OPENWAR_USE_XCODE_FRAMEWORKS
+#ifdef OPENWAR_USE_NSBUNDLE_RESOURCES
 	NSLog(@"BattleScript (%s):\n%s", operation, message);
 #endif
 }

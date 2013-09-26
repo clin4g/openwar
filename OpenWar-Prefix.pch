@@ -2,6 +2,8 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
+#include <TargetConditionals.h>
+
 #define GLM_SWIZZLE
 
 #define ENABLE_BIDIRECTIONAL_TEXT 0

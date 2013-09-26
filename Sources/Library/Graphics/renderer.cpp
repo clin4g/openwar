@@ -2,8 +2,10 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#if defined(OPENWAR_USE_XCODE_FRAMEWORKS) && TARGET_OS_IPHONE
+#ifdef OPENWAR_USE_NSBUNDLE_RESOURCES
+#if TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
+#endif
 #endif
 
 #include "renderer.h"
@@ -21,7 +23,7 @@ renderers* renderers::singleton = nullptr;
 
 static void print_log(const char* operation, const char* log)
 {
-#ifdef OPENWAR_USE_XCODE_FRAMEWORKS
+#ifdef OPENWAR_USE_NSBUNDLE_RESOURCES
 	NSLog(@"RENDERER log (%s):\n%s", operation, log);
 #endif
 }

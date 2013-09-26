@@ -13,7 +13,6 @@
 #include "../../Library/Graphics/renderbuffer.h"
 #include "../../Library/Graphics/vertexbuffer.h"
 #include "../../Library/Graphics/renderer.h"
-#include "../TerrainSurface/TerrainSurfaceRenderer.h"
 
 
 struct terrain_renderers;
@@ -56,7 +55,7 @@ struct sobel_uniforms
 
 
 
-class SmoothTerrainSurfaceRenderer : public TerrainSurfaceRenderer
+class SmoothTerrainSurfaceRenderer
 {
 	SmoothTerrainSurface* _terrainSurfaceModel;
 
@@ -87,7 +86,7 @@ public:
 	SmoothTerrainSurface* GetTerrainSurfaceModel() const { return _terrainSurfaceModel; }
 	bounds2f GetSourceBounds() const { return _terrainSurfaceModel->GetBounds(); }
 
-	virtual void Render(const glm::mat4x4& transform, const glm::vec3& lightNormal);
+	void Render(const glm::mat4x4& transform, const glm::vec3& lightNormal);
 
 	void UpdateHeights();
 	void UpdateNormals();
