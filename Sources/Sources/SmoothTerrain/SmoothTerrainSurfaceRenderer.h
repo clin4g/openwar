@@ -18,31 +18,6 @@
 
 struct terrain_renderers;
 
-struct terrain_address
-{
-	int _level; // level 0 has an unsplit chunk (1x1), level 1 is split 2x2, level 2 is split (2x2)x(2x2) and so on.
-	int _x; // 0 <= _x <= 2 ^ _level
-	int _y; // 0 <= _x <= 2 ^ _level
-
-	terrain_address();
-	terrain_address(int level, int x, int y);
-
-	static bool is_valid(int level, int x, int z);
-	terrain_address get_parent();
-	void foreach_neighbor(std::function<void (terrain_address)> action);
-	void foreach_child(std::function<void (terrain_address)> action);
-	void foreach_ancestor(std::function<void (terrain_address)> action);
-
-	bool all_children(std::function<bool (terrain_address)> predicate);
-	bool all_ancestors(std::function<bool (terrain_address)> predicate);
-};
-
-bool operator ==(terrain_address chunk1, terrain_address chunk2);
-bool operator !=(terrain_address chunk1, terrain_address chunk2);
-bool operator <(terrain_address chunk1, terrain_address chunk2);
-
-
-
 struct terrain_vertex
 {
 	glm::vec3 _position;
@@ -52,13 +27,13 @@ struct terrain_vertex
 };
 
 
-struct terrain_edge_vertex
+struct terrain_skirt_vertex
 {
 	glm::vec3 _position;
 	float _height;
 
-	terrain_edge_vertex() {}
-	terrain_edge_vertex(glm::vec3 p, float h) : _position(p), _height(h) { }
+	terrain_skirt_vertex() {}
+	terrain_skirt_vertex(glm::vec3 p, float h) : _position(p), _height(h) { }
 };
 
 
@@ -71,26 +46,6 @@ struct terrain_uniforms
 	const texture* _map;
 };
 
-
-class terrain_chunk
-{
-public:
-	terrain_address _address;
-	terrain_chunk* _parent;
-	terrain_chunk* _neighbors[4];
-	terrain_chunk* _children[4];
-	bool _is_split;
-	int _lod;
-	vertexbuffer<color_vertex3> _lines;
-	vertexbuffer<terrain_vertex> _inside;
-	vertexbuffer<terrain_vertex> _border;
-	bounds3f _bounds;
-
-	terrain_chunk(terrain_address address);
-	bool has_children() const;
-
-	vertexbuffer<terrain_vertex>* triangle_shape(int inside);
-};
 
 
 struct sobel_uniforms
@@ -112,12 +67,12 @@ class SmoothTerrainSurfaceRenderer : public TerrainSurfaceRenderer
 	texture* _depth;
 	texture* _colors;
 	texture* _mapTexture;
+	image* _mapImage;
 
-	std::map<terrain_address, terrain_chunk*> _chunks;
-	std::map<terrain_address, bool> _split;
-	std::map<terrain_address, float> _lod;
-
-	vertexbuffer<terrain_edge_vertex> _shape_terrain_edge;
+	vertexbuffer<color_vertex3> _vboLines;
+	vertexbuffer<terrain_vertex> _vboInside;
+	vertexbuffer<terrain_vertex> _vboBorder;
+	vertexbuffer<terrain_skirt_vertex> _vboSkirt;
 	terrain_renderers* _renderers;
 
 	renderer<plain_vertex, terrain_uniforms>* _ground_shadow_renderer;
@@ -137,62 +92,17 @@ public:
 	virtual void Render(const glm::mat4x4& transform, const glm::vec3& lightNormal);
 
 private:
-	friend class terrain_viewpoint;
+	vertexbuffer<terrain_vertex>* triangle_shape(int inside);
 
 	void UpdateDepthTextureSize();
 	void InitializeEdge();
 
-	void ForEachLeaf(terrain_address chunk, std::function<void(terrain_chunk&)> f);
+	bounds3f GetBounds() const;
 
-	bool IsLoaded(terrain_address chunk);
-	void LoadChunk(terrain_address chunk, float priority);
-	void UnloadChunk(terrain_address chunk);
-
-	void LoadChildren(terrain_address chunk, float priority);
-	void RequestLoadChildrenUnloadGrandChildren(terrain_address chunk, float priority);
-	void RequestUnloadChildren(terrain_address chunk);
-
-	terrain_chunk* CreateNode(terrain_address chunk);
-
-	bool IsSplit(terrain_address chunk);
-	void SetSplit(terrain_address chunk);
-	void ClearSplit(terrain_address chunk);
-	bool CanChunkBeSplitted(terrain_address chunk);
-	bool CanGrandParentBeSplitted(terrain_address chunk);
-
-	void SetLod(terrain_address chunk, float lod);
-	float GetLod(terrain_address chunk);
-
-	bounds3f GetBounds(terrain_address chunk) const;
-
-	void BuildLines(vertexbuffer<color_vertex3>& shape, terrain_address chunk);
-	void BuildTriangles(terrain_chunk* chunk);
+	void BuildLines(vertexbuffer<color_vertex3>& shape);
+	void BuildTriangles();
 
 	terrain_vertex MakeTerrainVertex(float x, float y);
-	color_vertex3 MakeColorVertex(float x, float y);
-};
-
-
-struct terrain_viewpoint
-{
-	SmoothTerrainSurfaceRenderer* _terrainRendering;
-	glm::vec3 _viewpoint;
-	float _near;
-	float _far;
-	int _near_lod;
-	float _distance_lod_max;
-
-	terrain_viewpoint(SmoothTerrainSurfaceRenderer* terrainRendering);
-
-	void set_parameters(float errorLodMax, float maxPixelError, float screenWidth, float horizontalFOVDegrees);
-
-	float compute_lod(bounds3f boundingBox) const;
-	float compute_lod(float distance) const;
-
-	void update();
-	void update(terrain_address chunk);
-
-
 };
 
 

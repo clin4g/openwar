@@ -153,9 +153,11 @@ void OpenWarSurface::Reset(BattleScript* battleScript)
 	//_mode = Mode::Playing;
 	UpdateButtonsAndGestures();
 
-	//_battleSimulator = new BattleSimulator(battleModel);
-	battleScript->GetBattleSimulator()->listener = _battleView;
-	battleScript->GetBattleSimulator()->currentPlayer = Player1;
+	if (battleScript->GetBattleSimulator() != nullptr)
+	{
+		battleScript->GetBattleSimulator()->listener = _battleView;
+		battleScript->GetBattleSimulator()->currentPlayer = Player1;
+	}
 }
 
 

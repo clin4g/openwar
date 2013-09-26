@@ -46,8 +46,8 @@ public:
 	bounds2f Paint(TerrainFeature feature, glm::vec2 position, image* img, float pressure);
 	bounds2f Paint(TerrainFeature feature, glm::vec2 position, float radius, float pressure);
 
-private:
-	glm::ivec2 MapCoord(glm::vec2 position) const;
+	glm::ivec2 MapWorldToImage(glm::vec2 position) const;
+	glm::vec2 MapImageToWorld(glm::ivec2 p) const;
 };
 
 

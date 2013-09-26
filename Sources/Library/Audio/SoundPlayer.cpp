@@ -25,7 +25,6 @@ void SoundPlayer::Initialize()
 	if (SoundPlayer::singleton == nullptr)
 	{
 		SoundPlayer::singleton = new SoundPlayer();
-#ifdef OPENWAR_USE_OPENAL
 		_LoadSound(SoundPlayer::singleton, SoundBufferArrowsFlying, "ArrowsFlying");
 		_LoadSound(SoundPlayer::singleton, SoundBufferCavalryMarching, "CavalryMarching");
 		_LoadSound(SoundPlayer::singleton, SoundBufferCavalryRunning, "CavalryRunning");
@@ -39,7 +38,6 @@ void SoundPlayer::Initialize()
 		_LoadSound(SoundPlayer::singleton, SoundBufferMatchlockFire2, "MatchlockFire2");
 		_LoadSound(SoundPlayer::singleton, SoundBufferMatchlockFire3, "MatchlockFire3");
 		_LoadSound(SoundPlayer::singleton, SoundBufferMatchlockFire4, "MatchlockFire4");
-#endif
 	}
 }
 

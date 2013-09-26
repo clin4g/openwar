@@ -34,7 +34,7 @@ float SmoothTerrainSurface::GetHeight(glm::vec2 position) const
 
 	if (_map != nullptr)
 	{
-		glm::ivec2 coord = MapCoord(position);
+		glm::ivec2 coord = MapWorldToImage(position);
 		glm::vec4 color = _map->get_pixel(coord.x, coord.y);
 
 		float water = color.b;
@@ -76,7 +76,7 @@ const float* SmoothTerrainSurface::Intersect(ray r)
 
 bool SmoothTerrainSurface::IsForest(glm::vec2 position) const
 {
-	glm::ivec2 coord = MapCoord(position);
+	glm::ivec2 coord = MapWorldToImage(position);
 	glm::vec4 c = _map->get_pixel(coord.x, coord.y);
 	return c.g >= 0.5;
 }
@@ -84,9 +84,18 @@ bool SmoothTerrainSurface::IsForest(glm::vec2 position) const
 
 bool SmoothTerrainSurface::IsImpassable(glm::vec2 position) const
 {
-	glm::ivec2 coord = MapCoord(position);
+	glm::ivec2 coord = MapWorldToImage(position);
 	glm::vec4 c = _map->get_pixel(coord.x, coord.y);
-	return c.b >= 0.5 && c.r < 0.5;
+	if (c.b >= 0.5 && c.r < 0.5)
+		return true;
+
+	/*
+	glm::vec3 n = GetNormal(position);
+	if (n.z < 0.83f)
+		return true;
+    */
+
+	return false;
 }
 
 
@@ -138,7 +147,7 @@ float SmoothTerrainSurface::GetHeight(int x, int y) const
 void SmoothTerrainSurface::Extract(glm::vec2 position, image* brush)
 {
 	glm::ivec2 size = brush->size();
-	glm::ivec2 origin = MapCoord(position) - size / 2;
+	glm::ivec2 origin = MapWorldToImage(position) - size / 2;
 
 	for (int x = 0; x < size.x; ++x)
 		for (int y = 0; y < size.y; ++y)
@@ -149,7 +158,7 @@ void SmoothTerrainSurface::Extract(glm::vec2 position, image* brush)
 bounds2f SmoothTerrainSurface::Paint(TerrainFeature feature, glm::vec2 position, image* brush, float pressure)
 {
 	glm::ivec2 size = brush->size();
-	glm::ivec2 center = MapCoord(position);
+	glm::ivec2 center = MapWorldToImage(position);
 	glm::ivec2 origin = center - size / 2;
 	float radius = size.x / 2.0f;
 
@@ -185,7 +194,7 @@ bounds2f SmoothTerrainSurface::Paint(TerrainFeature feature, glm::vec2 position,
 {
 	float abs_pressure = glm::abs(pressure);
 
-	glm::ivec2 center = MapCoord(position);
+	glm::ivec2 center = MapWorldToImage(position);
 
 	float value = pressure > 0 ? 1 : 0;
 	float delta = pressure > 0 ? 0.015f : -0.015f;
@@ -218,10 +227,19 @@ bounds2f SmoothTerrainSurface::Paint(TerrainFeature feature, glm::vec2 position,
 
 
 
-glm::ivec2 SmoothTerrainSurface::MapCoord(glm::vec2 position) const
+glm::ivec2 SmoothTerrainSurface::MapWorldToImage(glm::vec2 position) const
 {
 	glm::vec2 p = (position - _bounds.min) / _bounds.size();
 	glm::ivec2 s = _map->size();
 	return glm::ivec2((int)(p.x * s.x), (int)(p.y * s.y));
 }
 
+
+
+glm::vec2 SmoothTerrainSurface::MapImageToWorld(glm::ivec2 p) const
+{
+	glm::vec2 bs = _bounds.size();
+	glm::ivec2 ms = _map->size();
+	glm::vec2 d = glm::vec2(bs.x / ms.x, bs.y / ms.y);
+	return _bounds.min + glm::vec2(d.x * p.x, d.y * p.y);
+}

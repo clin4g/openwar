@@ -2,7 +2,7 @@
 //
 // This file is part of the openwar platform (GPL v3 or later), see LICENSE.txt
 
-#if TARGET_OS_IPHONE
+#if defined(OPENWAR_USE_XCODE_FRAMEWORKS) && TARGET_OS_IPHONE
 #import <UIKit/UIKit.h>
 #endif
 
@@ -18,6 +18,13 @@ void CHECK_ERROR_GL()
 
 renderers* renderers::singleton = nullptr;
 
+
+static void print_log(const char* operation, const char* log)
+{
+#ifdef OPENWAR_USE_XCODE_FRAMEWORKS
+	NSLog(@"RENDERER log (%s):\n%s", operation, log);
+#endif
+}
 
 
 renderer_specification operator,(renderer_vertex_attribute x, renderer_vertex_attribute y)
@@ -195,7 +202,6 @@ renderer_base::renderer_base(const renderer_specification& specification) :
 	}
 
     if (!link_program(_program)) {
-        //NSLog(@"Failed to link program: %d", _program);
         if (_program) {
             glDeleteProgram(_program);
 	        CHECK_ERROR_GL();
@@ -290,7 +296,7 @@ GLuint renderer_base::compile_shader(GLenum type, const char* source)
 		GLchar *log = (GLchar *)malloc((size_t)logLength);
 		glGetShaderInfoLog(result, logLength, &logLength, log);
 		CHECK_ERROR_GL();
-		//NSLog(@"Shader compile log:\n%s", log);
+		print_log("compile", log);
 		free(log);
 	}
 	#endif
@@ -317,7 +323,7 @@ bool renderer_base::link_program(GLuint program)
         GLchar *log = (GLchar *)malloc((size_t)logLength);
         glGetProgramInfoLog(program, logLength, &logLength, log);
 	    CHECK_ERROR_GL();
-        //NSLog(@"Program link log:\n%s", log);
+		print_log("log", log);
         free(log);
     }
 #endif
@@ -344,7 +350,7 @@ bool renderer_base::validate_program(GLuint program)
 	{
 		GLchar *log = (GLchar *)malloc((size_t)logLength);
 		glGetProgramInfoLog(program, logLength, &logLength, log);
-		//NSLog(@"Program validate log:\n%s", log);
+		print_log("validate", log);
 		free(log);
 	}
 

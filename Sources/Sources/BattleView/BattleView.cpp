@@ -296,9 +296,7 @@ void BattleView::UpdateTerrainTrees(bounds2f bounds)
 				glm::vec2 position = glm::vec2(x + dx, y + dy);
 				if (bounds.contains(position) && glm::distance(position, center) < radius)
 				{
-					if (_terrainSurface->GetHeight(position) > 0
-						&& _terrainSurface->IsForest(position)
-						&& _terrainSurface->GetNormal(position).z >= 0.84)
+					if (_terrainSurface->GetHeight(position) > 0 && _terrainSurface->IsForest(position))
 					{
 						const float adjust = 0.5 - 2.0 / 64.0; // place texture 2 texels below ground
 						_billboardModel->staticBillboards.push_back(Billboard(GetPosition(position, adjust * 5), 0, 5, _billboardModel->_billboardTreeShapes[shape]));
