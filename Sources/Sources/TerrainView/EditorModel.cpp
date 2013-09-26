@@ -93,8 +93,7 @@ void EditorModel::Paint(TerrainFeature feature, glm::vec2 position, bool value)
 	SmoothTerrainSurface* terrainSurface = _terrainSurfaceRenderer->GetTerrainSurfaceModel();
 	bounds2f bounds = terrainSurface->Paint(feature, position, radius, value ? 0.4f : -0.4f);
 
-	_terrainSurfaceRenderer->UpdateHeights(bounds);
-	_terrainSurfaceRenderer->UpdateMapTexture();
+	_terrainSurfaceRenderer->UpdateChanges(bounds);
 	_battleView->UpdateTerrainTrees(bounds);
 	_battleView->GetBattleModel()->terrainWater->Update();
 }
@@ -134,8 +133,7 @@ void EditorModel::SmearPaint(TerrainFeature feature, glm::vec2 position)
 
 	bounds2f bounds = terrainSurface->Paint(feature, position, _brush, 0.5f);
 
-	_terrainSurfaceRenderer->UpdateHeights(bounds);
-	_terrainSurfaceRenderer->UpdateMapTexture();
+	_terrainSurfaceRenderer->UpdateChanges(bounds);
 	_battleView->UpdateTerrainTrees(bounds);
 	_battleView->GetBattleModel()->terrainWater->Update();
 }

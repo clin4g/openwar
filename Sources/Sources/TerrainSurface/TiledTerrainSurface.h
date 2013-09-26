@@ -44,7 +44,6 @@ public:
 	glm::ivec2 GetSize() const { return _size; }
 
 	virtual float GetHeight(glm::vec2 position) const;
-	virtual glm::vec3 GetNormal(glm::vec2 position) const;
 	virtual const float* Intersect(ray r);
 
 	virtual bool IsWater(glm::vec2 position) const;

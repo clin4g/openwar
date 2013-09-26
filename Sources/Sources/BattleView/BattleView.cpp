@@ -223,9 +223,6 @@ static float random_float()
 
 void BattleView::Initialize()
 {
-	if (_terrainSurfaceRendererSmooth != nullptr)
-		_terrainSurfaceRendererSmooth->InitializeTerrainShadow(GetContentBounds());
-
 	InitializeTerrainTrees();
 
 	InitializeCameraPosition(_battleModel->units);

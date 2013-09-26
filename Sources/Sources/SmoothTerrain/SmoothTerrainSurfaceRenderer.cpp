@@ -9,47 +9,71 @@
 
 struct terrain_renderers
 {
-	renderer<terrain_vertex, terrain_uniforms>* _renderer1;
-	renderer<terrain_vertex, terrain_uniforms>* _renderer2;
-	renderer<terrain_skirt_vertex, texture_uniforms>* _renderer3;
-	renderer<terrain_vertex, terrain_uniforms>* _renderer4;
-	renderer<terrain_vertex, terrain_uniforms>* _renderer5;
-	renderer<terrain_skirt_vertex, plain_uniforms>* _renderer6;
-	renderer<texture_vertex, sobel_uniforms>* _renderer7;
+	renderer<terrain_vertex, terrain_uniforms>* _terrain_inside;
+	renderer<terrain_vertex, terrain_uniforms>* _terrain_border;
+	renderer<skirt_vertex, texture_uniforms>* _terrain_skirt;
+	renderer<terrain_vertex, terrain_uniforms>* _depth_inside;
+	renderer<terrain_vertex, terrain_uniforms>* _depth_border;
+	renderer<skirt_vertex, plain_uniforms>* _depth_skirt;
+	renderer<texture_vertex, sobel_uniforms>* _sobel_filter;
+	renderer<plain_vertex, terrain_uniforms>* _ground_shadow;
 
-	terrain_renderers() :
-	_renderer1(nullptr),
-	_renderer2(nullptr),
-	_renderer3(nullptr),
-	_renderer4(nullptr),
-	_renderer5(nullptr),
-	_renderer6(nullptr),
-	_renderer7(nullptr)
-	{
-	}
+	terrain_renderers();
+	~terrain_renderers();
 
 	void render_terrain_inside(vertexbuffer<terrain_vertex>& shape, const terrain_uniforms& uniforms);
 	void render_terrain_border(vertexbuffer<terrain_vertex>& shape, const terrain_uniforms& uniforms);
-	void render_terrain_edge(vertexbuffer<terrain_skirt_vertex>& shape, const texture_uniforms& uniforms);
+	void render_terrain_skirt(vertexbuffer<skirt_vertex>& shape, const texture_uniforms& uniforms);
+
 	void render_depth_inside(vertexbuffer<terrain_vertex>& shape, const terrain_uniforms& uniforms);
 	void render_depth_border(vertexbuffer<terrain_vertex>& shape, const terrain_uniforms& uniforms);
-	void render_depth_edge(vertexbuffer<terrain_skirt_vertex>& shape, const plain_uniforms& uniforms);
-	void render_sobel(vertexbuffer<texture_vertex>& shape, const sobel_uniforms& uniforms);
+	void render_depth_skirt(vertexbuffer<skirt_vertex>& shape, const plain_uniforms& uniforms);
+
+	void render_sobel_filter(vertexbuffer<texture_vertex>& shape, const sobel_uniforms& uniforms);
+
+	void render_ground_shadow(vertexbuffer<plain_vertex>& shape, const terrain_uniforms& uniforms);
 };
+
+
+
+terrain_renderers::terrain_renderers() :
+_terrain_inside(nullptr),
+_terrain_border(nullptr),
+_terrain_skirt(nullptr),
+_depth_inside(nullptr),
+_depth_border(nullptr),
+_depth_skirt(nullptr),
+_sobel_filter(nullptr),
+_ground_shadow(nullptr)
+{
+}
+
+
+terrain_renderers::~terrain_renderers()
+{
+	delete _terrain_inside;
+	delete _terrain_border;
+	delete _terrain_skirt;
+	delete _depth_inside;
+	delete _depth_border;
+	delete _depth_skirt;
+	delete _sobel_filter;
+	delete _ground_shadow;
+}
 
 
 void terrain_renderers::render_terrain_inside(vertexbuffer<terrain_vertex>& shape, const terrain_uniforms& uniforms)
 {
-	if (_renderer1 == nullptr)
+	if (_terrain_inside == nullptr)
 	{
-		_renderer1 = new renderer<terrain_vertex, terrain_uniforms>((
+		_terrain_inside = new renderer<terrain_vertex, terrain_uniforms>((
 			VERTEX_ATTRIBUTE(terrain_vertex, _position),
 			VERTEX_ATTRIBUTE(terrain_vertex, _normal),
 			SHADER_UNIFORM(terrain_uniforms, _transform),
 			SHADER_UNIFORM(terrain_uniforms, _map_bounds),
 			SHADER_UNIFORM(terrain_uniforms, _light_normal),
-			SHADER_UNIFORM(terrain_uniforms, _colors),
-			SHADER_UNIFORM(terrain_uniforms, _map),
+			SHADER_UNIFORM(terrain_uniforms, _colormap),
+			SHADER_UNIFORM(terrain_uniforms, _splatmap),
 			VERTEX_SHADER
 			({
 				uniform mat4 transform;
@@ -60,8 +84,8 @@ void terrain_renderers::render_terrain_inside(vertexbuffer<terrain_vertex>& shap
 				attribute vec3 normal;
 
 				varying vec3 _position;
-				varying vec2 _terraincoord;
 				varying vec2 _colorcoord;
+				varying vec2 _splatcoord;
 				varying float _brightness;
 
 				void main()
@@ -71,8 +95,8 @@ void terrain_renderers::render_terrain_inside(vertexbuffer<terrain_vertex>& shap
 					float brightness = -dot(light_normal, normal);
 
 					_position = position;
-					_terraincoord = (position.xy - map_bounds.xy) / map_bounds.zw;
 					_colorcoord = vec2(brightness, 1.0 - (2.5 + position.z) / 128.0);
+					_splatcoord = (position.xy - map_bounds.xy) / map_bounds.zw;
 					_brightness = brightness;
 
 
@@ -82,48 +106,48 @@ void terrain_renderers::render_terrain_inside(vertexbuffer<terrain_vertex>& shap
 			}),
 			FRAGMENT_SHADER
 			({
-				uniform sampler2D colors;
-				uniform sampler2D map;
+				uniform sampler2D colormap;
+				uniform sampler2D splatmap;
 
 				varying vec3 _position;
-				varying vec2 _terraincoord;
 				varying vec2 _colorcoord;
+				varying vec2 _splatcoord;
 				varying float _brightness;
 
 				void main()
 				{
-					vec3 color = texture2D(colors, _colorcoord).rgb;
-					vec3 mapval = texture2D(map, _terraincoord).rgb;
+					vec3 color = texture2D(colormap, _colorcoord).rgb;
+					vec3 splat = texture2D(splatmap, _splatcoord).rgb;
 
-					float f = step(0.0, _position.z) * smoothstep(0.475, 0.525, mapval.g);
+					float f = step(0.0, _position.z) * smoothstep(0.475, 0.525, splat.g);
 					color = mix(color, vec3(0.2196, 0.3608, 0.1922), 0.25 * f);
 					color = mix(color, vec3(0), 0.03 * step(0.5, 1.0 - _brightness));
-					color = mix(color, vec3(0.4), 0.3333 * step(0.5, mapval.r));
+					color = mix(color, vec3(0.4), 0.3333 * step(0.5, splat.r));
 
 				    gl_FragColor = vec4(color, 1.0);
 				}
 			})
 		));
-		_renderer1->_blend_sfactor = GL_ONE;
-		_renderer1->_blend_dfactor = GL_ZERO;
+		_terrain_inside->_blend_sfactor = GL_ONE;
+		_terrain_inside->_blend_dfactor = GL_ZERO;
 	}
-	_renderer1->render(shape, uniforms);
+	_terrain_inside->render(shape, uniforms);
 }
 
 
 
 void terrain_renderers::render_terrain_border(vertexbuffer<terrain_vertex>& shape, const terrain_uniforms& uniforms)
 {
-	if (_renderer2 == nullptr)
+	if (_terrain_border == nullptr)
 	{
-		_renderer2 = new renderer<terrain_vertex, terrain_uniforms>((
+		_terrain_border = new renderer<terrain_vertex, terrain_uniforms>((
 			VERTEX_ATTRIBUTE(terrain_vertex, _position),
 			VERTEX_ATTRIBUTE(terrain_vertex, _normal),
 			SHADER_UNIFORM(terrain_uniforms, _transform),
 			SHADER_UNIFORM(terrain_uniforms, _light_normal),
 			SHADER_UNIFORM(terrain_uniforms, _map_bounds),
-			SHADER_UNIFORM(terrain_uniforms, _colors),
-			SHADER_UNIFORM(terrain_uniforms, _map),
+			SHADER_UNIFORM(terrain_uniforms, _colormap),
+			SHADER_UNIFORM(terrain_uniforms, _splatmap),
 			VERTEX_SHADER
 			({
 				uniform mat4 transform;
@@ -134,8 +158,8 @@ void terrain_renderers::render_terrain_border(vertexbuffer<terrain_vertex>& shap
 				attribute vec3 normal;
 
 				varying vec3 _position;
-				varying vec2 _terraincoord;
 				varying vec2 _colorcoord;
+				varying vec2 _splatcoord;
 				varying float _brightness;
 
 				void main()
@@ -145,8 +169,8 @@ void terrain_renderers::render_terrain_border(vertexbuffer<terrain_vertex>& shap
 					float brightness = -dot(light_normal, normal);
 
 					_position = position;
-					_terraincoord = (position.xy - map_bounds.xy) / map_bounds.zw;
 					_colorcoord = vec2(brightness, 1.0 - (2.5 + position.z) / 128.0);
+					_splatcoord = (position.xy - map_bounds.xy) / map_bounds.zw;
 					_brightness = brightness;
 
 				    gl_Position = p;
@@ -155,44 +179,46 @@ void terrain_renderers::render_terrain_border(vertexbuffer<terrain_vertex>& shap
 			}),
 			FRAGMENT_SHADER
 			({
-				uniform sampler2D colors;
-				uniform sampler2D map;
+				uniform sampler2D colormap;
+				uniform sampler2D splatmap;
 
 				varying vec3 _position;
-				varying vec2 _terraincoord;
 				varying vec2 _colorcoord;
+				varying vec2 _splatcoord;
 				varying float _brightness;
 
 				void main()
 				{
-					if (distance(_terraincoord, vec2(0.5, 0.5)) > 0.5)
+					if (distance(_splatcoord, vec2(0.5, 0.5)) > 0.5)
 						discard;
 
-					vec3 color = texture2D(colors, _colorcoord).rgb;
+					vec3 color = texture2D(colormap, _colorcoord).rgb;
+					vec3 splat = texture2D(splatmap, _splatcoord).rgb;
 
-					float f = step(0.0, _position.z) * smoothstep(0.475, 0.525, texture2D(map, _terraincoord).g);
+					float f = step(0.0, _position.z) * smoothstep(0.475, 0.525, splat.g);
 					color = mix(color, vec3(0.2196, 0.3608, 0.1922), 0.3 * f);
 					color = mix(color, vec3(0), 0.03 * step(0.5, 1.0 - _brightness));
+					color = mix(color, vec3(0.4), 0.3333 * step(0.5, splat.r));
 
 				    gl_FragColor = vec4(color, 1.0);
 				}
 			})
 		));
-		_renderer2->_blend_sfactor = GL_ONE;
-		_renderer2->_blend_dfactor = GL_ZERO;
+		_terrain_border->_blend_sfactor = GL_ONE;
+		_terrain_border->_blend_dfactor = GL_ZERO;
 	}
-	_renderer2->render(shape, uniforms);
+	_terrain_border->render(shape, uniforms);
 }
 
 
 
-void terrain_renderers::render_terrain_edge(vertexbuffer<terrain_skirt_vertex>& shape, const texture_uniforms& uniforms)
+void terrain_renderers::render_terrain_skirt(vertexbuffer<skirt_vertex>& shape, const texture_uniforms& uniforms)
 {
-	if (_renderer3 == nullptr)
+	if (_terrain_skirt == nullptr)
 	{
-		_renderer3 = new renderer<terrain_skirt_vertex, texture_uniforms>((
-			VERTEX_ATTRIBUTE(terrain_skirt_vertex, _position),
-			VERTEX_ATTRIBUTE(terrain_skirt_vertex, _height),
+		_terrain_skirt = new renderer<skirt_vertex, texture_uniforms>((
+			VERTEX_ATTRIBUTE(skirt_vertex, _position),
+			VERTEX_ATTRIBUTE(skirt_vertex, _height),
 			SHADER_UNIFORM(texture_uniforms, _transform),
 			SHADER_UNIFORM(texture_uniforms, _texture),
 			VERTEX_SHADER
@@ -228,19 +254,19 @@ void terrain_renderers::render_terrain_edge(vertexbuffer<terrain_skirt_vertex>& 
 				}
 			}))
 		);
-		_renderer3->_blend_sfactor = GL_ONE;
-		_renderer3->_blend_dfactor = GL_ZERO;
+		_terrain_skirt->_blend_sfactor = GL_ONE;
+		_terrain_skirt->_blend_dfactor = GL_ZERO;
 	}
-	_renderer3->render(shape, uniforms);
+	_terrain_skirt->render(shape, uniforms);
 }
 
 
 
 void terrain_renderers::render_depth_inside(vertexbuffer<terrain_vertex>& shape, const terrain_uniforms& uniforms)
 {
-	if (_renderer4 == nullptr)
+	if (_depth_inside == nullptr)
 	{
-		_renderer4 = new renderer<terrain_vertex, terrain_uniforms>((
+		_depth_inside = new renderer<terrain_vertex, terrain_uniforms>((
 			VERTEX_ATTRIBUTE(terrain_vertex, _position),
 			VERTEX_ATTRIBUTE(terrain_vertex, _normal),
 			SHADER_UNIFORM(terrain_uniforms, _transform),
@@ -264,19 +290,19 @@ void terrain_renderers::render_depth_inside(vertexbuffer<terrain_vertex>& shape,
 				}
 			})
 		));
-		_renderer4->_blend_sfactor = GL_ONE;
-		_renderer4->_blend_dfactor = GL_ZERO;
+		_depth_inside->_blend_sfactor = GL_ONE;
+		_depth_inside->_blend_dfactor = GL_ZERO;
 	}
-	_renderer4->render(shape, uniforms);
+	_depth_inside->render(shape, uniforms);
 }
 
 
 
 void terrain_renderers::render_depth_border(vertexbuffer<terrain_vertex>& shape, const terrain_uniforms& uniforms)
 {
-	if (_renderer5 == nullptr)
+	if (_depth_border == nullptr)
 	{
-		_renderer5 = new renderer<terrain_vertex, terrain_uniforms>((
+		_depth_border = new renderer<terrain_vertex, terrain_uniforms>((
 			VERTEX_ATTRIBUTE(terrain_vertex, _position),
 			VERTEX_ATTRIBUTE(terrain_vertex, _normal),
 			SHADER_UNIFORM(terrain_uniforms, _transform),
@@ -309,21 +335,21 @@ void terrain_renderers::render_depth_border(vertexbuffer<terrain_vertex>& shape,
 				}
 			})
 		));
-		_renderer5->_blend_sfactor = GL_ONE;
-		_renderer5->_blend_dfactor = GL_ZERO;
+		_depth_border->_blend_sfactor = GL_ONE;
+		_depth_border->_blend_dfactor = GL_ZERO;
 	}
-	_renderer5->render(shape, uniforms);
+	_depth_border->render(shape, uniforms);
 }
 
 
 
-void terrain_renderers::render_depth_edge(vertexbuffer<terrain_skirt_vertex>& shape, const plain_uniforms& uniforms)
+void terrain_renderers::render_depth_skirt(vertexbuffer<skirt_vertex>& shape, const plain_uniforms& uniforms)
 {
-	if (_renderer6 == nullptr)
+	if (_depth_skirt == nullptr)
 	{
-		_renderer6 = new renderer<terrain_skirt_vertex, plain_uniforms>((
-			VERTEX_ATTRIBUTE(terrain_skirt_vertex, _position),
-			VERTEX_ATTRIBUTE(terrain_skirt_vertex, _height),
+		_depth_skirt = new renderer<skirt_vertex, plain_uniforms>((
+			VERTEX_ATTRIBUTE(skirt_vertex, _position),
+			VERTEX_ATTRIBUTE(skirt_vertex, _height),
 			SHADER_UNIFORM(plain_uniforms, _transform),
 			VERTEX_SHADER
 			({
@@ -346,19 +372,18 @@ void terrain_renderers::render_depth_edge(vertexbuffer<terrain_skirt_vertex>& sh
 				}
 			}))
 		);
-		_renderer6->_blend_sfactor = GL_ONE;
-		_renderer6->_blend_dfactor = GL_ZERO;
+		_depth_skirt->_blend_sfactor = GL_ONE;
+		_depth_skirt->_blend_dfactor = GL_ZERO;
 	}
-	_renderer6->render(shape, uniforms);
+	_depth_skirt->render(shape, uniforms);
 }
 
 
-
-void terrain_renderers::render_sobel(vertexbuffer<texture_vertex>& shape, const sobel_uniforms& uniforms)
+void terrain_renderers::render_sobel_filter(vertexbuffer<texture_vertex>& shape, const sobel_uniforms& uniforms)
 {
-	if (_renderer7 == nullptr)
+	if (_sobel_filter == nullptr)
 	{
-		_renderer7 = new renderer<texture_vertex, sobel_uniforms>((
+		_sobel_filter = new renderer<texture_vertex, sobel_uniforms>((
 			VERTEX_ATTRIBUTE(texture_vertex, _position),
 			VERTEX_ATTRIBUTE(texture_vertex, _texcoord),
 			SHADER_UNIFORM(sobel_uniforms, _transform),
@@ -434,17 +459,61 @@ void terrain_renderers::render_sobel(vertexbuffer<texture_vertex>& shape, const 
 				}
 			})
 		));
-		_renderer7->_blend_sfactor = GL_SRC_ALPHA;
-		_renderer7->_blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
+		_sobel_filter->_blend_sfactor = GL_SRC_ALPHA;
+		_sobel_filter->_blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
 	}
-	_renderer7->render(shape, uniforms);
+	_sobel_filter->render(shape, uniforms);
+}
+
+
+void terrain_renderers::render_ground_shadow(vertexbuffer<plain_vertex>& shape, const terrain_uniforms& uniforms)
+{
+	if (_ground_shadow == nullptr)
+	{
+		_ground_shadow = new renderer<plain_vertex, terrain_uniforms>((
+			VERTEX_ATTRIBUTE(plain_vertex, _position),
+				SHADER_UNIFORM(terrain_uniforms, _transform),
+				SHADER_UNIFORM(terrain_uniforms, _map_bounds),
+				VERTEX_SHADER
+			({
+					uniform mat4 transform;
+					uniform vec4 map_bounds;
+					attribute vec2 position;
+					varying vec2 _groundpos;
+
+					void main()
+					{
+						vec4 p = transform * vec4(position, -2.5, 1);
+
+						_groundpos = (position - map_bounds.xy) / map_bounds.zw;
+
+						gl_Position = p;
+						gl_PointSize = 1.0;
+					}
+				}),
+				FRAGMENT_SHADER
+			({
+					varying vec2 _groundpos;
+
+					void main()
+					{
+						float d = distance(_groundpos, vec2(0.5, 0.5)) - 0.5;
+						float a = clamp(0.3 - d * 24.0, 0.0, 0.3);
+
+						gl_FragColor = vec4(0, 0, 0, a);
+					}
+				}))
+		);
+		_ground_shadow->_blend_sfactor = GL_SRC_ALPHA;
+		_ground_shadow->_blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
+	}
+
+	_ground_shadow->render(shape, uniforms);
 }
 
 
 
-
 static int _colorScheme = 0;
-
 
 
 static glm::vec3 heightcolor(float h)
@@ -525,8 +594,7 @@ static glm::vec3 adjust_brightness(glm::vec3 c, float brightness)
 }
 
 
-
-static texture* create_colors()
+static texture* create_colormap()
 {
 	static glm::vec3 r[256];
 
@@ -584,10 +652,15 @@ _framebuffer_height(0),
 _framebuffer(nullptr),
 _colorbuffer(nullptr),
 _depth(nullptr),
-_colors(nullptr),
-_mapTexture(nullptr),
-_mapImage(nullptr)
+_colormap(nullptr),
+_splatmap(nullptr),
+_splatmapImage(nullptr),
+_size(255),
+_heights(nullptr),
+_normals(nullptr)
 {
+	terrainSurfaceModel->_renderer = this;
+
 	_renderers = new terrain_renderers();
 
 	if (render_edges)
@@ -622,179 +695,204 @@ _mapImage(nullptr)
 		}
 	}
 
-	_colors = create_colors();
-	glBindTexture(GL_TEXTURE_2D, _colors->id);
+	_colormap = create_colormap();
+	glBindTexture(GL_TEXTURE_2D, _colormap->id);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	_mapTexture = new texture();
-	UpdateMapTexture();
-
-	_ground_shadow_renderer = new renderer<plain_vertex, terrain_uniforms>((
-		VERTEX_ATTRIBUTE(plain_vertex, _position),
-		SHADER_UNIFORM(terrain_uniforms, _transform),
-		SHADER_UNIFORM(terrain_uniforms, _map_bounds),
-		VERTEX_SHADER
-		({
-			uniform mat4 transform;
-			uniform vec4 map_bounds;
-			attribute vec2 position;
-			varying vec2 _groundpos;
-
-			void main()
-			{
-				vec4 p = transform * vec4(position, -2.5, 1);
-
-				_groundpos = (position - map_bounds.xy) / map_bounds.zw;
-
-				gl_Position = p;
-				gl_PointSize = 1.0;
-			}
-		}),
-		FRAGMENT_SHADER
-		({
-			varying vec2 _groundpos;
-
-			void main()
-			{
-				float d = distance(_groundpos, vec2(0.5, 0.5)) - 0.5;
-				float a = clamp(0.3 - d * 24.0, 0.0, 0.3);
-
-				gl_FragColor = vec4(0, 0, 0, a);
-			}
-		}))
-	);
-	_ground_shadow_renderer->_blend_sfactor = GL_SRC_ALPHA;
-	_ground_shadow_renderer->_blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
+	_heights = new float[_size * _size];
+	_normals = new glm::vec3[_size * _size];
+	UpdateHeights();
+	UpdateNormals();
 
 
+	_splatmap = new texture();
+	UpdateSplatmap();
 
-	BuildLines(_vboLines);
+	InitializeSkirt();
+	InitializeShadow();
+	InitializeLines();
+
 	BuildTriangles();
-
-
-	InitializeEdge();
 }
 
 
 
 SmoothTerrainSurfaceRenderer::~SmoothTerrainSurfaceRenderer()
 {
-	delete _colors;
-	delete _mapTexture;
-	delete _mapImage;
+	delete _colormap;
+	delete _splatmap;
+	delete _splatmapImage;
 	delete _framebuffer;
 	delete _colorbuffer;
 	delete _depth;
-
 	delete _renderers;
-	delete _ground_shadow_renderer;
 }
 
 
 
-void SmoothTerrainSurfaceRenderer::InitializeTerrainShadow(bounds2f bounds)
+void SmoothTerrainSurfaceRenderer::Render(const glm::mat4x4& transform, const glm::vec3& lightNormal)
 {
-	//bounds2f bounds = GetContentBounds();
-	glm::vec2 center = bounds.center();
-	float radius1 = bounds.width() / 2;
-	float radius2 = radius1 * 1.075f;
+	glm::vec4 map_bounds = glm::vec4(GetSourceBounds().min, GetSourceBounds().size());
 
-	_vboTerrainShadow._mode = GL_TRIANGLES;
-	_vboTerrainShadow._vertices.clear();
+	glDepthMask(false);
 
-	int n = 16;
-	for (int i = 0; i < n; ++i)
+	terrain_uniforms shadow_uniforms;
+	shadow_uniforms._transform = transform;
+	shadow_uniforms._map_bounds = map_bounds;
+
+	_renderers->render_ground_shadow(_vboShadow, shadow_uniforms);
+
+	glDepthMask(true);
+
+	terrain_uniforms uniforms;
+	uniforms._transform = transform;
+	uniforms._map_bounds = map_bounds;
+	uniforms._light_normal = lightNormal;
+	uniforms._colormap = _colormap;
+	uniforms._splatmap = _splatmap;
+
+
+	if (_framebuffer != nullptr)
 	{
-		float angle1 = i * 2 * (float)M_PI / n;
-		float angle2 = (i + 1) * 2 * (float)M_PI / n;
+		UpdateDepthTextureSize();
 
-		glm::vec2 p1 = center + radius1 * vector2_from_angle(angle1);
-		glm::vec2 p2 = center + radius2 * vector2_from_angle(angle1);
-		glm::vec2 p3 = center + radius2 * vector2_from_angle(angle2);
-		glm::vec2 p4 = center + radius1 * vector2_from_angle(angle2);
+		bind_framebuffer binding(*_framebuffer);
 
-		_vboTerrainShadow._vertices.push_back(plain_vertex(p1));
-		_vboTerrainShadow._vertices.push_back(plain_vertex(p2));
-		_vboTerrainShadow._vertices.push_back(plain_vertex(p3));
-		_vboTerrainShadow._vertices.push_back(plain_vertex(p3));
-		_vboTerrainShadow._vertices.push_back(plain_vertex(p4));
-		_vboTerrainShadow._vertices.push_back(plain_vertex(p1));
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		terrain_uniforms du;
+		du._transform = uniforms._transform;
+		du._map_bounds = map_bounds;
+
+		_renderers->render_depth_inside(_vboInside, du);
+		_renderers->render_depth_border(_vboBorder, du);
+
+		plain_uniforms pu;
+		pu._transform = uniforms._transform;
+		_renderers->render_depth_skirt(_vboSkirt, pu);
 	}
 
-	_vboTerrainShadow.update(GL_STATIC_DRAW);
+	_renderers->render_terrain_inside(_vboInside, uniforms);
+	_renderers->render_terrain_border(_vboBorder, uniforms);
+
+	bool showLines = this == nullptr;
+	if (showLines)
+	{
+		glDisable(GL_DEPTH_TEST);
+		gradient_uniforms g;
+		g._transform = uniforms._transform;
+		renderers::singleton->_gradient_renderer3->render(_vboLines, g);
+		glEnable(GL_DEPTH_TEST);
+	}
+
+	texture_uniforms tu;
+	tu._transform = uniforms._transform;
+	tu._texture = _colormap;
+	_renderers->render_terrain_skirt(_vboSkirt, tu);
+
+	if (_depth != nullptr)
+	{
+		glDisable(GL_DEPTH_TEST);
+		glDepthMask(false);
+
+		vertexbuffer<texture_vertex> shape;
+		shape._mode = GL_TRIANGLE_STRIP;
+		shape._vertices.push_back(texture_vertex(glm::vec2(-1,  1), glm::vec2(0, 1)));
+		shape._vertices.push_back(texture_vertex(glm::vec2(-1, -1), glm::vec2(0, 0)));
+		shape._vertices.push_back(texture_vertex(glm::vec2( 1,  1), glm::vec2(1, 1)));
+		shape._vertices.push_back(texture_vertex(glm::vec2( 1, -1), glm::vec2(1, 0)));
+
+		sobel_uniforms su;
+		su._transform = glm::mat4x4();
+		su._depth = _depth;
+		_renderers->render_sobel_filter(shape, su);
+
+		glDepthMask(true);
+		glEnable(GL_DEPTH_TEST);
+	}
 }
 
 
-void SmoothTerrainSurfaceRenderer::UpdateHeights(bounds2f bounds)
+void SmoothTerrainSurfaceRenderer::UpdateHeights()
 {
-	for (terrain_vertex& vertex : _vboInside._vertices)
+	bounds2f bounds = _terrainSurfaceModel->GetBounds();
+	glm::vec2 min = bounds.min;
+	glm::vec2 size = bounds.size();
+
+	int n = _size - 1;
+	float k = n;
+	int index = 0;
+	for (int y = 0; y <= n; ++y)
 	{
-		glm::vec2 p = vertex._position.xy();
-		if (bounds.contains(p))
+		for (int x = 0; x <= n; ++x)
 		{
-			vertex._position.z = _terrainSurfaceModel->GetHeight(p);
-			vertex._normal = _terrainSurfaceModel->GetNormal(p);
+			float kx = x / k;
+			float ky = y / k;
+			glm::vec2 p = min + glm::vec2(kx * size.x, ky * size.y);
+
+			_heights[index++] = _terrainSurfaceModel->CalculateHeight(p);
 		}
 	}
-	_vboInside.update(GL_STATIC_DRAW);
-
-	for (terrain_vertex& vertex : _vboBorder._vertices)
-	{
-		glm::vec2 p = vertex._position.xy();
-		if (bounds.contains(p))
-		{
-			vertex._position.z = _terrainSurfaceModel->GetHeight(p);
-			vertex._normal = _terrainSurfaceModel->GetNormal(p);
-		}
-	}
-	_vboBorder.update(GL_STATIC_DRAW);
-
-	for (color_vertex3& vertex : _vboLines._vertices)
-	{
-		glm::vec2 p = vertex._position.xy();
-		if (bounds.contains(p))
-		{
-			vertex._position.z = _terrainSurfaceModel->GetHeight(p);
-		}
-	}
-	_vboLines.update(GL_STATIC_DRAW);
-
-	for (size_t i = 0; i < _vboSkirt._vertices.size(); i += 2)
-	{
-		glm::vec2 p = _vboSkirt._vertices[i]._position.xy();
-		if (bounds.contains(p))
-		{
-			float h = fmaxf(0, _terrainSurfaceModel->GetHeight(p)) + 0.25f;
-			_vboSkirt._vertices[i]._height = h;
-			_vboSkirt._vertices[i]._position.z = h;
-		}
-	}
-
-	_vboSkirt.update(GL_STATIC_DRAW);
 }
 
 
-void SmoothTerrainSurfaceRenderer::UpdateMapTexture()
+void SmoothTerrainSurfaceRenderer::UpdateNormals()
 {
-	const image& map = *_terrainSurfaceModel->GetMap();
+	bounds2f bounds = GetSourceBounds();
+	glm::vec2 min = bounds.min;
+	glm::vec2 size = bounds.size();
 
-	glm::ivec2 size = map.size();
-	if (_mapImage == nullptr)
-		_mapImage = new image(size.x, size.y);
-
-	for (int x = 0; x < size.x; ++x)
-		for (int y = 0; y < size.y; ++y)
+	int n = _size - 1;
+	float k = n;
+	glm::vec2 delta = 2.0f * size / k;
+	int index = 0;
+	for (int y = 0; y < _size; ++y)
+	{
+		for (int x = 0; x < _size; ++x)
 		{
-			glm::vec4 c = map.get_pixel(x, y);
-			glm::vec2 p = _terrainSurfaceModel->MapImageToWorld(glm::ivec2(x, y));
-			c.r = _terrainSurfaceModel->IsImpassable(p) ? 1.0f : 0.0f;
-			_mapImage->set_pixel(x, y, c);
-		}
+			int index_xn = x != 0 ? index - 1 : index;
+			int index_xp = x != n ? index + 1 : index;
+			int index_yn = y != 0 ? index - _size : index;
+			int index_yp = y != n ? index + _size : index;
 
-	_mapTexture->load(*_mapImage);
+			float delta_hx = _heights[index_xp] - _heights[index_xn];
+			float delta_hy = _heights[index_yp] - _heights[index_yn];
+
+			glm::vec3 v1 = glm::vec3(delta.x, 0, delta_hx);
+			glm::vec3 v2 = glm::vec3(0, delta.y, delta_hy);
+
+			_normals[index++] = glm::normalize(glm::cross(v1, v2));
+		}
+	}
+}
+
+
+float SmoothTerrainSurfaceRenderer::InterpolateHeight(glm::vec2 position) const
+{
+	bounds2f bounds = GetSourceBounds();
+	glm::vec2 p = (position - bounds.min) / bounds.size();
+	bounds1i limit(0, _size - 1);
+
+	int x = limit.clamp((int)glm::round(p.x * _size));
+	int y = limit.clamp((int)glm::round(p.y * _size));
+
+	return GetHeight(x, y);
+}
+
+
+glm::vec3 SmoothTerrainSurfaceRenderer::InterpolateNormal(glm::vec2 position) const
+{
+	bounds2f bounds = GetSourceBounds();
+	glm::vec2 p = (position - bounds.min) / bounds.size();
+	bounds1i limit(0, _size - 1);
+
+	int x = limit.clamp((int)glm::round(p.x * _size));
+	int y = limit.clamp((int)glm::round(p.y * _size));
+
+	return GetNormal(x, y);
 }
 
 
@@ -822,9 +920,43 @@ void SmoothTerrainSurfaceRenderer::UpdateDepthTextureSize()
 
 
 
-void SmoothTerrainSurfaceRenderer::InitializeEdge()
+void SmoothTerrainSurfaceRenderer::InitializeShadow()
 {
-	bounds2f bounds = _terrainSurfaceModel->GetBounds();
+	bounds2f bounds = GetSourceBounds();
+	glm::vec2 center = bounds.center();
+	float radius1 = bounds.width() / 2;
+	float radius2 = radius1 * 1.075f;
+
+	_vboShadow._mode = GL_TRIANGLES;
+	_vboShadow._vertices.clear();
+
+	int n = 16;
+	for (int i = 0; i < n; ++i)
+	{
+		float angle1 = i * 2 * (float)M_PI / n;
+		float angle2 = (i + 1) * 2 * (float)M_PI / n;
+
+		glm::vec2 p1 = center + radius1 * vector2_from_angle(angle1);
+		glm::vec2 p2 = center + radius2 * vector2_from_angle(angle1);
+		glm::vec2 p3 = center + radius2 * vector2_from_angle(angle2);
+		glm::vec2 p4 = center + radius1 * vector2_from_angle(angle2);
+
+		_vboShadow._vertices.push_back(plain_vertex(p1));
+		_vboShadow._vertices.push_back(plain_vertex(p2));
+		_vboShadow._vertices.push_back(plain_vertex(p3));
+		_vboShadow._vertices.push_back(plain_vertex(p3));
+		_vboShadow._vertices.push_back(plain_vertex(p4));
+		_vboShadow._vertices.push_back(plain_vertex(p1));
+	}
+
+	_vboShadow.update(GL_STATIC_DRAW);
+}
+
+
+
+void SmoothTerrainSurfaceRenderer::InitializeSkirt()
+{
+	bounds2f bounds = GetSourceBounds();
 	glm::vec2 center = bounds.center();
 	float radius = bounds.width() / 2;
 
@@ -837,10 +969,10 @@ void SmoothTerrainSurfaceRenderer::InitializeEdge()
 	{
 		float a = d * i;
 		glm::vec2 p = center + radius * vector2_from_angle(a);
-		float h = fmaxf(0, _terrainSurfaceModel->GetHeight(p)) + 0.25f;
+		float h = fmaxf(0, InterpolateHeight(p));
 
-		_vboSkirt._vertices.push_back(terrain_skirt_vertex(glm::vec3(p, h), h));
-		_vboSkirt._vertices.push_back(terrain_skirt_vertex(glm::vec3(p, -2.5), h));
+		_vboSkirt._vertices.push_back(skirt_vertex(glm::vec3(p, h), h));
+		_vboSkirt._vertices.push_back(skirt_vertex(glm::vec3(p, -2.5), h));
 	}
 
 	_vboSkirt._vertices.push_back(_vboSkirt._vertices[0]);
@@ -851,138 +983,145 @@ void SmoothTerrainSurfaceRenderer::InitializeEdge()
 
 
 
-void SmoothTerrainSurfaceRenderer::Render(const glm::mat4x4& transform, const glm::vec3& lightNormal)
+void SmoothTerrainSurfaceRenderer::UpdateSplatmap()
 {
-	glm::vec4 map_bounds = glm::vec4(_terrainSurfaceModel->GetBounds().min, _terrainSurfaceModel->GetBounds().size());
+	const image& map = *_terrainSurfaceModel->GetGroundtMap();
 
-	glDepthMask(false);
+	glm::ivec2 size = map.size();
+	if (_splatmapImage == nullptr)
+		_splatmapImage = new image(size.x, size.y);
 
-	terrain_uniforms shadow_uniforms;
-	shadow_uniforms._transform = transform;
-	shadow_uniforms._map_bounds = map_bounds;
-	_ground_shadow_renderer->render(_vboTerrainShadow, shadow_uniforms);
+	for (int x = 0; x < size.x; ++x)
+		for (int y = 0; y < size.y; ++y)
+		{
+			glm::vec4 c = map.get_pixel(x, y);
+			glm::vec2 p = _terrainSurfaceModel->MapImageToWorld(glm::ivec2(x, y));
+			c.r = _terrainSurfaceModel->IsImpassable(p) ? 1.0f : 0.0f;
+			_splatmapImage->set_pixel(x, y, c);
+		}
 
-	glDepthMask(true);
-
-	terrain_uniforms uniforms;
-	uniforms._transform = transform;
-	uniforms._map_bounds = map_bounds;
-	uniforms._light_normal = lightNormal;
-	uniforms._colors = _colors;
-	uniforms._map = _mapTexture;
-
-
-	if (_framebuffer != nullptr)
-	{
-		UpdateDepthTextureSize();
-
-		bind_framebuffer binding(*_framebuffer);
-
-		glClear(GL_DEPTH_BUFFER_BIT);
-
-		terrain_uniforms du;
-		du._transform = uniforms._transform;
-		du._map_bounds = map_bounds;
-
-		_renderers->render_depth_inside(_vboInside, du);
-		_renderers->render_depth_border(_vboBorder, du);
-
-		plain_uniforms pu;
-		pu._transform = uniforms._transform;
-		_renderers->render_depth_edge(_vboSkirt, pu);
-	}
-
-	_renderers->render_terrain_inside(_vboInside, uniforms);
-	_renderers->render_terrain_border(_vboBorder, uniforms);
-
-
-	/*
-	glDisable(GL_DEPTH_TEST);
-	gradient_uniforms g;
-	g._transform = uniforms._transform;
-	renderers::singleton->_gradient_renderer3->render(_vboLines, g);
-	glEnable(GL_DEPTH_TEST);
-	*/
-
-
-	texture_uniforms tu;
-	tu._transform = uniforms._transform;
-	tu._texture = _colors;
-	_renderers->render_terrain_edge(_vboSkirt, tu);
-
-	if (_depth != nullptr)
-	{
-		glDisable(GL_DEPTH_TEST);
-		glDepthMask(false);
-
-		vertexbuffer<texture_vertex> shape;
-		shape._mode = GL_TRIANGLE_STRIP;
-		shape._vertices.push_back(texture_vertex(glm::vec2(-1,  1), glm::vec2(0, 1)));
-		shape._vertices.push_back(texture_vertex(glm::vec2(-1, -1), glm::vec2(0, 0)));
-		shape._vertices.push_back(texture_vertex(glm::vec2( 1,  1), glm::vec2(1, 1)));
-		shape._vertices.push_back(texture_vertex(glm::vec2( 1, -1), glm::vec2(1, 0)));
-
-		sobel_uniforms su;
-		su._transform = glm::mat4x4();
-		su._depth = _depth;
-		_renderers->render_sobel(shape, su);
-
-		glDepthMask(true);
-		glEnable(GL_DEPTH_TEST);
-	}
+	_splatmap->load(*_splatmapImage);
 }
 
 
 
-
-
-
-
-bounds3f SmoothTerrainSurfaceRenderer::GetBounds() const
+void SmoothTerrainSurfaceRenderer::UpdateChanges(bounds2f bounds)
 {
-	return bounds3f(_terrainSurfaceModel->GetBounds(), bounds1f(0, _terrainSurfaceModel->GetMaxHeight()));
+	UpdateHeights();
+	UpdateNormals();
+
+	InitializeSkirt();
+	UpdateSplatmap();
+
+	// inside
+	for (terrain_vertex& vertex : _vboInside._vertices)
+	{
+		glm::vec2 p = vertex._position.xy();
+		if (bounds.contains(p))
+		{
+			vertex._position.z = GetHeight(vertex._x, vertex._y);
+			vertex._normal = GetNormal(vertex._x, vertex._y);
+		}
+	}
+	_vboInside.update(GL_STATIC_DRAW);
+
+	// border
+	for (terrain_vertex& vertex : _vboBorder._vertices)
+	{
+		glm::vec2 p = vertex._position.xy();
+		if (bounds.contains(p))
+		{
+			vertex._position.z = GetHeight(vertex._x, vertex._y);
+			vertex._normal = GetNormal(vertex._x, vertex._y);
+		}
+	}
+	_vboBorder.update(GL_STATIC_DRAW);
+
+	// lines
+	for (color_vertex3& vertex : _vboLines._vertices)
+	{
+		glm::vec2 p = vertex._position.xy();
+		if (bounds.contains(p))
+		{
+			vertex._position.z = InterpolateHeight(p);
+		}
+	}
+	_vboLines.update(GL_STATIC_DRAW);
+
+	// skirt
+	for (size_t i = 0; i < _vboSkirt._vertices.size(); i += 2)
+	{
+		glm::vec2 p = _vboSkirt._vertices[i]._position.xy();
+		if (bounds.contains(p))
+		{
+			float h = fmaxf(0, InterpolateHeight(p));
+			_vboSkirt._vertices[i]._height = h;
+			_vboSkirt._vertices[i]._position.z = h;
+		}
+	}
+	_vboSkirt.update(GL_STATIC_DRAW);
 }
 
 
-#define GURGEL 128
 
-
-void SmoothTerrainSurfaceRenderer::BuildLines(vertexbuffer<color_vertex3>& shape)
+void SmoothTerrainSurfaceRenderer::InitializeLines()
 {
-	bounds2f bounds = GetBounds().xy();
-	glm::vec2 corner = bounds.p11();
+	bounds2f bounds = GetSourceBounds();
+	glm::vec2 corner = bounds.min;
 	glm::vec2 size = bounds.size();
 
-	glm::vec4 black(0, 0, 0, 0.2f);
+	glm::vec4 black(0, 0, 0, 0.06f);
 
-	float d = 0.005f;
-	int nx = GURGEL;
-	int ny = GURGEL;
-
-	shape._mode = GL_LINES;
-	shape._vertices.clear();
-	for (int x = 0; x <= nx; ++x)
-		for (int y = 0; y <= ny; ++y)
+	_vboLines._mode = GL_LINES;
+	_vboLines._vertices.clear();
+	int n = _size - 1;
+	float k = n;
+	for (int x = 0; x <= n; x += 2)
+		for (int y = 0; y <= n; y += 2)
 		{
-			float x1 = corner.x + size.x * x / nx;
-			float x2 = corner.x + size.x * (x + 1) / nx;
-			float y1 = corner.y + size.y * y / ny;
-			float y2 = corner.y + size.y * (y + 1) / ny;
+			float x0 = corner.x + size.x * (x / k);
+			float y0 = corner.y + size.y * (y / k);
+			float h00 = GetHeight(x, y);
 
-			if (y != ny)
+			float x2, h20;
+			if (x != n)
 			{
-				shape._vertices.push_back(color_vertex3(glm::vec3(x1, y1, _terrainSurfaceModel->GetHeight(glm::vec2(x1, y1)) + d), black));
-				shape._vertices.push_back(color_vertex3(glm::vec3(x1, y2, _terrainSurfaceModel->GetHeight(glm::vec2(x1, y2)) + d), black));
+				x2 = corner.x + size.x * ((x + 2) / k);
+				h20 = GetHeight(x + 2, y);
+				_vboLines._vertices.push_back(color_vertex3(glm::vec3(x0, y0, h00), black));
+				_vboLines._vertices.push_back(color_vertex3(glm::vec3(x2, y0, h20), black));
 			}
-			if (x != nx)
+			float y2, h02;
+			if (y != n)
 			{
-				shape._vertices.push_back(color_vertex3(glm::vec3(x1, y1, _terrainSurfaceModel->GetHeight(glm::vec2(x1, y1)) + d), black));
-				shape._vertices.push_back(color_vertex3(glm::vec3(x2, y1, _terrainSurfaceModel->GetHeight(glm::vec2(x2, y1)) + d), black));
+				y2 = corner.y + size.y * ((y + 2) / k);
+				h02 = GetHeight(x, y + 2);
+				_vboLines._vertices.push_back(color_vertex3(glm::vec3(x0, y0, h00), black));
+				_vboLines._vertices.push_back(color_vertex3(glm::vec3(x0, y2, h02), black));
+			}
+
+			if (x != n && y != n)
+			{
+				float x1 = corner.x + size.x * ((x + 1) / k);
+				float y1 = corner.y + size.y * ((y + 1) / k);
+				float h11 = GetHeight(x + 1, y + 1);
+				float h22 = GetHeight(x + 2, y + 2);
+
+				_vboLines._vertices.push_back(color_vertex3(glm::vec3(x0, y0, h00), black));
+				_vboLines._vertices.push_back(color_vertex3(glm::vec3(x1, y1, h11), black));
+
+				_vboLines._vertices.push_back(color_vertex3(glm::vec3(x2, y0, h20), black));
+				_vboLines._vertices.push_back(color_vertex3(glm::vec3(x1, y1, h11), black));
+
+				_vboLines._vertices.push_back(color_vertex3(glm::vec3(x0, y2, h02), black));
+				_vboLines._vertices.push_back(color_vertex3(glm::vec3(x1, y1, h11), black));
+
+				_vboLines._vertices.push_back(color_vertex3(glm::vec3(x2, y2, h22), black));
+				_vboLines._vertices.push_back(color_vertex3(glm::vec3(x1, y1, h11), black));
 			}
 		}
-	shape.update(GL_STATIC_DRAW);
+	_vboLines.update(GL_STATIC_DRAW);
 }
-
 
 
 static int inside_circle(bounds2f bounds, glm::vec2 p)
@@ -1003,13 +1142,9 @@ static int inside_circle(bounds2f bounds, terrain_vertex v1, terrain_vertex v2, 
 
 void SmoothTerrainSurfaceRenderer::BuildTriangles()
 {
-	bounds2f mapBounds = _terrainSurfaceModel->GetBounds();
-	bounds2f bounds = GetBounds().xy();
+	bounds2f bounds = GetSourceBounds();
 	glm::vec2 corner = bounds.p11();
 	glm::vec2 size = bounds.size();
-
-	int nx = GURGEL;
-	int ny = GURGEL;
 
 	_vboInside._mode = GL_TRIANGLES;
 	_vboInside._vertices.clear();
@@ -1017,34 +1152,41 @@ void SmoothTerrainSurfaceRenderer::BuildTriangles()
 	_vboBorder._mode = GL_TRIANGLES;
 	_vboBorder._vertices.clear();
 
-	for (int x = 0; x < nx; ++x)
-		for (int y = 0; y < ny; ++y)
+	int n = _size - 1;
+	float k = n;
+
+	for (int x = 0; x < n; x += 2)
+		for (int y = 0; y < n; y += 2)
 		{
-			float x1 = corner.x + size.x * x / nx;
-			float x2 = corner.x + size.x * (x + 1) / nx;
-			float y1 = corner.y + size.y * y / ny;
-			float y2 = corner.y + size.y * (y + 1) / ny;
+			float x0 = corner.x + size.x * (x / k);
+			float x1 = corner.x + size.x * ((x + 1) / k);
+			float x2 = corner.x + size.x * ((x + 2) / k);
+			float y0 = corner.y + size.y * (y / k);
+			float y1 = corner.y + size.y * ((y + 1) / k);
+			float y2 = corner.y + size.y * ((y + 2) / k);
 
-			terrain_vertex v11 = MakeTerrainVertex(x1, y1);
-			terrain_vertex v12 = MakeTerrainVertex(x1, y2);
-			terrain_vertex v21 = MakeTerrainVertex(x2, y1);
-			terrain_vertex v22 = MakeTerrainVertex(x2, y2);
+			float h00 = GetHeight(x, y);
+			float h02 = GetHeight(x, y + 2);
+			float h20 = GetHeight(x + 2, y);
+			float h11 = GetHeight(x + 1, y + 1);
+			float h22 = GetHeight(x + 2, y + 2);
 
-			vertexbuffer<terrain_vertex>* s = triangle_shape(inside_circle(mapBounds, v11, v22, v12));
-			if (s != nullptr)
-			{
-				s->_vertices.push_back(v11);
-				s->_vertices.push_back(v22);
-				s->_vertices.push_back(v12);
-			}
+			glm::vec3 n00 = GetNormal(x, y);
+			glm::vec3 n02 = GetNormal(x, y + 2);
+			glm::vec3 n20 = GetNormal(x + 2, y);
+			glm::vec3 n11 = GetNormal(x + 1, y + 1);
+			glm::vec3 n22 = GetNormal(x + 2, y + 2);
 
-			s = triangle_shape(inside_circle(mapBounds, v22, v11, v21));
-			if (s != nullptr)
-			{
-				s->_vertices.push_back(v22);
-				s->_vertices.push_back(v11);
-				s->_vertices.push_back(v21);
-			}
+			terrain_vertex v00 = terrain_vertex(x + 0, y + 0, glm::vec3(x0, y0, h00), n00);
+			terrain_vertex v02 = terrain_vertex(x + 0, y + 2, glm::vec3(x0, y2, h02), n02);
+			terrain_vertex v20 = terrain_vertex(x + 2, y + 0, glm::vec3(x2, y0, h20), n20);
+			terrain_vertex v11 = terrain_vertex(x + 1, y + 1, glm::vec3(x1, y1, h11), n11);
+			terrain_vertex v22 = terrain_vertex(x + 2, y + 2, glm::vec3(x2, y2, h22), n22);
+
+			PushTriangle(bounds, v00, v20, v11);
+			PushTriangle(bounds, v20, v22, v11);
+			PushTriangle(bounds, v22, v02, v11);
+			PushTriangle(bounds, v02, v00, v11);
 		}
 
 	_vboInside.update(GL_STATIC_DRAW);
@@ -1052,18 +1194,19 @@ void SmoothTerrainSurfaceRenderer::BuildTriangles()
 }
 
 
-
-terrain_vertex SmoothTerrainSurfaceRenderer::MakeTerrainVertex(float x, float y)
+void SmoothTerrainSurfaceRenderer::PushTriangle(const bounds2f& bounds, const terrain_vertex& v0, const terrain_vertex& v1, const terrain_vertex& v2)
 {
-	glm::vec2 p = glm::vec2(x, y);
-	float z = _terrainSurfaceModel->GetHeight(p);
-	return terrain_vertex(glm::vec3(x, y, z), _terrainSurfaceModel->GetNormal(p));
+	vertexbuffer<terrain_vertex>* s = SelectTerrainVbo(inside_circle(bounds, v0, v1, v2));
+	if (s != nullptr)
+	{
+		s->_vertices.push_back(v0);
+		s->_vertices.push_back(v1);
+		s->_vertices.push_back(v2);
+	}
 }
 
 
-
-
-vertexbuffer<terrain_vertex>* SmoothTerrainSurfaceRenderer::triangle_shape(int inside)
+vertexbuffer<terrain_vertex>* SmoothTerrainSurfaceRenderer::SelectTerrainVbo(int inside)
 {
 	switch (inside)
 	{

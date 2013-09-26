@@ -33,12 +33,6 @@ float TiledTerrainSurface::GetHeight(glm::vec2 position) const
 }
 
 
-glm::vec3 TiledTerrainSurface::GetNormal(glm::vec2 position) const
-{
-	return glm::vec3(0, 0, 1);
-}
-
-
 float const* TiledTerrainSurface::Intersect(ray r)
 {
 	bounds2f bounds = GetBounds();

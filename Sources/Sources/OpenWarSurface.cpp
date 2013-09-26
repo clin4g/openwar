@@ -222,19 +222,19 @@ void OpenWarSurface::Render()
 
 void OpenWarSurface::MouseEnter(glm::vec2 position)
 {
-	//_battleView->ShowMouseHint(position);
+	_battleView->ShowMouseHint(position);
 }
 
 
 void OpenWarSurface::MouseHover(glm::vec2 position)
 {
-	//_battleView->ShowMouseHint(position);
+	_battleView->ShowMouseHint(position);
 }
 
 
 void OpenWarSurface::MouseLeave(glm::vec2 position)
 {
-	//_battleView->HideMouseHint();
+	_battleView->HideMouseHint();
 }
 
 

@@ -20,20 +20,21 @@ struct terrain_renderers;
 
 struct terrain_vertex
 {
+	GLushort _x, _y;
 	glm::vec3 _position;
 	glm::vec3 _normal;
 
-	terrain_vertex(glm::vec3 p, glm::vec3 n) : _position(p), _normal(n) {}
+	terrain_vertex(GLushort x, GLushort y, glm::vec3 p, glm::vec3 n) : _x(x), _y(y), _position(p), _normal(n) {}
 };
 
 
-struct terrain_skirt_vertex
+struct skirt_vertex
 {
 	glm::vec3 _position;
 	float _height;
 
-	terrain_skirt_vertex() {}
-	terrain_skirt_vertex(glm::vec3 p, float h) : _position(p), _height(h) { }
+	skirt_vertex() {}
+	skirt_vertex(glm::vec3 p, float h) : _position(p), _height(h) { }
 };
 
 
@@ -42,10 +43,9 @@ struct terrain_uniforms
 	glm::mat4x4 _transform;
 	glm::vec3 _light_normal;
 	glm::vec4 _map_bounds;
-	const texture* _colors;
-	const texture* _map;
+	const texture* _colormap;
+	const texture* _splatmap;
 };
-
 
 
 struct sobel_uniforms
@@ -65,44 +65,51 @@ class SmoothTerrainSurfaceRenderer : public TerrainSurfaceRenderer
 	framebuffer* _framebuffer;
 	renderbuffer* _colorbuffer;
 	texture* _depth;
-	texture* _colors;
-	texture* _mapTexture;
-	image* _mapImage;
+	texture* _colormap;
+	texture* _splatmap;
+	image* _splatmapImage;
 
-	vertexbuffer<color_vertex3> _vboLines;
+	terrain_renderers* _renderers;
+	vertexbuffer<plain_vertex> _vboShadow;
 	vertexbuffer<terrain_vertex> _vboInside;
 	vertexbuffer<terrain_vertex> _vboBorder;
-	vertexbuffer<terrain_skirt_vertex> _vboSkirt;
-	terrain_renderers* _renderers;
+	vertexbuffer<skirt_vertex> _vboSkirt;
+	vertexbuffer<color_vertex3> _vboLines;
 
-	renderer<plain_vertex, terrain_uniforms>* _ground_shadow_renderer;
-	vertexbuffer<plain_vertex> _vboTerrainShadow;
+	int _size;
+	float* _heights;
+	glm::vec3* _normals;
 
 public:
 	SmoothTerrainSurfaceRenderer(SmoothTerrainSurface* terrainSurfaceModel, bool render_edges);
 	virtual ~SmoothTerrainSurfaceRenderer();
 
 	SmoothTerrainSurface* GetTerrainSurfaceModel() const { return _terrainSurfaceModel; }
-
-	void InitializeTerrainShadow(bounds2f bounds);
-
-	void UpdateHeights(bounds2f bounds);
-	void UpdateMapTexture();
+	bounds2f GetSourceBounds() const { return _terrainSurfaceModel->GetBounds(); }
 
 	virtual void Render(const glm::mat4x4& transform, const glm::vec3& lightNormal);
 
-private:
-	vertexbuffer<terrain_vertex>* triangle_shape(int inside);
+	void UpdateHeights();
+	void UpdateNormals();
 
+	float GetHeight(int x, int y) const { return _heights[x + y * _size]; }
+	glm::vec3 GetNormal(int x, int y) const { return _normals[x + y * _size]; }
+
+	float InterpolateHeight(glm::vec2 position) const;
+	glm::vec3 InterpolateNormal(glm::vec2 position) const;
+
+	void UpdateChanges(bounds2f bounds);
 	void UpdateDepthTextureSize();
-	void InitializeEdge();
+	void UpdateSplatmap();
 
-	bounds3f GetBounds() const;
+	void InitializeShadow();
+	void InitializeSkirt();
+	void InitializeLines();
 
-	void BuildLines(vertexbuffer<color_vertex3>& shape);
+	vertexbuffer<terrain_vertex>* SelectTerrainVbo(int inside);
+
 	void BuildTriangles();
-
-	terrain_vertex MakeTerrainVertex(float x, float y);
+	void PushTriangle(const bounds2f& bounds, const terrain_vertex& v0, const terrain_vertex& v1, const terrain_vertex& v2);
 };
 
 

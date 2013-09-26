@@ -19,6 +19,15 @@
 static BattleScript* _battlescript = nullptr;
 
 
+static void print_log(const char* operation, const char* message)
+{
+#ifdef OPENWAR_USE_XCODE_FRAMEWORKS
+	NSLog(@"BattleScript (%s):\n%s", operation, message);
+#endif
+}
+
+
+
 BattleScript::BattleScript() :
 _battleModel(nullptr),
 _battleSimulator(nullptr),
@@ -147,11 +156,12 @@ void BattleScript::Execute(const char* script, size_t length)
 	if (script != nullptr)
 	{
 		int error = luaL_loadbuffer(_state, script, length, "line");
-		if (!error) lua_pcall(_state, 0, 0, 0);
+		if (!error)
+            error = lua_pcall(_state, 0, 0, 0);
 
 		if (error)
 		{
-			//NSLog(@"BattleScript ERROR: %s", lua_tostring(_state, -1));
+			print_log("ERROR", lua_tostring(_state, -1));
 			lua_pop(_state, 1);  /* pop error message from the stack */
 		}
 	}
@@ -172,7 +182,7 @@ void BattleScript::Tick(double secondsSinceLastUpdate)
 		int error = lua_pcall(_state, 1, 0, 0);
 		if (error)
 		{
-			//NSLog(@"BattleScript ERROR: %s", lua_tostring(_state, -1));
+			print_log("ERROR", lua_tostring(_state, -1));
 			lua_pop(_state, 1);  /* pop error message from the stack */
 		}
 	}
@@ -196,7 +206,7 @@ void BattleScript::RenderHints(GradientLineRenderer* renderer)
 		int error = lua_pcall(_state, 0, 0, 0);
 		if (error)
 		{
-			//NSLog(@"BattleScript ERROR: %s", lua_tostring(_state, -1));
+			print_log("ERROR", lua_tostring(_state, -1));
 			lua_pop(_state, 1);  /* pop error message from the stack */
 		}
 	}
@@ -343,8 +353,8 @@ int BattleScript::battle_message(lua_State* L)
 	int n = lua_gettop(L);
 
 	const char* s = n < 1 ? nullptr : lua_tostring(L, 1);
-	//if (s != nullptr)
-	//	NSLog(@"BattleScript: %s", s);
+	if (s != nullptr)
+		print_log("MESSAGE", s);
 
 	return 0;
 }
@@ -480,7 +490,7 @@ UnitPlatform BattleScript::ToUnitPlatform(lua_State* L, int index)
 		if (std::strcmp(s, "SAM") == 0) return UnitPlatformSam;
 	}
 
-	//NSLog(@"BattleScript::ToUnitPlatform, unknown: <%s>", s);
+	print_log("ToUnitPlatform, unknown", s);
 
 	return UnitPlatformCav;
 }
@@ -498,7 +508,7 @@ UnitWeapon BattleScript::ToUnitUnitWeapon(lua_State* L, int index)
 		if (std::strcmp(s, "ARQ") == 0) return UnitWeaponArq;
 	}
 
-	//NSLog(@"BattleScript::ToUnitUnitWeapon, unknown: <%s>", s);
+	print_log("ToUnitUnitWeapon, unknown", s);
 
 	return UnitWeaponYari;
 }
