@@ -205,7 +205,7 @@ void terrain_renderers::render_terrain_skirt(vertexbuffer<skirt_vertex>& shape, 
 					vec4 p = transform * vec4(position, 1);
 
 					_colorcoord = vec2(0.2, 1.0 - (2.5 + height) / 128.0);
-					_height = (position.z + 2.5) / (height + 2.5);
+					_height = 0.85 * (position.z + 2.5) / (height + 2.5);
 
 				    gl_Position = p;
 				}

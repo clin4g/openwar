@@ -69,10 +69,10 @@ SmoothTerrainSurface::~SmoothTerrainSurface()
 const float* SmoothTerrainSurface::Intersect(ray r)
 {
 	glm::vec3 offset = glm::vec3(_bounds.min, 0);
-	glm::vec3 scale = glm::vec3(glm::vec2(_heightmap.size().x - 1, _heightmap.size().y - 1) / _bounds.size(), 1);
+	glm::vec3 scale = glm::vec3(glm::vec2(_size - 1, _size - 1) / _bounds.size(), 1);
 
 	ray r2 = ray(scale * (r.origin - offset), glm::normalize(scale * r.direction));
-	const float* d = _heightmap.intersect(r2);
+	const float* d = InternalIntersect(r2);
 	if (d == nullptr)
 		return nullptr;
 
@@ -450,6 +450,20 @@ void SmoothTerrainSurface::UpdateHeights()
 			_heights[index++] = CalculateHeight(p);
 		}
 	}
+
+	for (int y = 0; y <= n; y += 2)
+		for (int x = 1; x < n; x += 2)
+		{
+			int i = x + y * _size;
+			_heights[i] = 0.5f * (_heights[i - 1] + _heights[i + 1]);
+		}
+
+	for (int y = 1; y < n; y += 2)
+		for (int x = 0; x <= n; x += 2)
+		{
+			int i = x + y * _size;
+			_heights[i] = 0.5f * (_heights[i - _size] + _heights[i + _size]);
+		}
 }
 
 
@@ -488,6 +502,7 @@ static float nearest_odd(float value)
 	return 1.0f + 2.0f * (int)glm::round(0.5f * (value - 1.0f));
 }
 
+
 float SmoothTerrainSurface::InterpolateHeight(glm::vec2 position) const
 {
 	glm::vec2 p = (position - _bounds.min) / _bounds.size();
@@ -507,7 +522,7 @@ float SmoothTerrainSurface::InterpolateHeight(glm::vec2 position) const
 	float dy = y - y1;
 	if (glm::abs(dx) > glm::abs(dy))
 	{
-		sx2 = sx3 = glm::sign(dx);
+		sx2 = sx3 = dx < 0.0f ? -1.0f : 1.0f;
 		sy2 = -1;
 		sy3 = 1;
 	}
@@ -515,7 +530,7 @@ float SmoothTerrainSurface::InterpolateHeight(glm::vec2 position) const
 	{
 		sx2 = -1;
 		sx3 = 1;
-		sy2 = sy3 = glm::sign(dy);
+		sy2 = sy3 = dy < 0.0f ? -1.0f : 1.0f;
 	}
 
 	float x2 = x1 + sx2;
@@ -524,10 +539,11 @@ float SmoothTerrainSurface::InterpolateHeight(glm::vec2 position) const
 	float y3 = y1 + sy3;
 
 	// calculate barycenteric coordinates k1, k2, k3
+	// note: scale is twice the normal
 
-	float k2 = 0.5f * (dx * sx2 + dy * sy2);
-	float k3 = 0.5f * (dx * sx3 + dy * sy3);
-	float k1 = 1.0f - k2 - k3;
+	float k2 = dx * sx2 + dy * sy2;
+	float k3 = dx * sx3 + dy * sy3;
+	float k1 = 2.0f - k2 - k3;
 
 	// get heigts for triangle vertices
 
@@ -535,7 +551,7 @@ float SmoothTerrainSurface::InterpolateHeight(glm::vec2 position) const
 	float h2 = GetHeight((int)x2, (int)y2);
 	float h3 = GetHeight((int)x3, (int)y3);
 
-	return k1 * h1 + k2 * h2 + k3 * h3;
+	return 0.5f * (k1 * h1 + k2 * h2 + k3 * h3);
 }
 
 
@@ -549,6 +565,112 @@ glm::vec3 SmoothTerrainSurface::InterpolateNormal(glm::vec2 position) const
 
 	return GetNormal(x, y);
 }
+
+
+static bool almost_zero(float value)
+{
+	static const float epsilon = 10 * std::numeric_limits<float>::epsilon();
+	return fabsf(value) < epsilon;
+}
+
+
+const float* SmoothTerrainSurface::InternalIntersect(ray r)
+{
+	static float result;
+
+	bounds1f height = bounds1f(-2.5f, 250);
+	bounds2f bounds(0, 0, _size - 1, _size - 1);
+	bounds2f quad(-0.01f, -0.01f, 1.01f, 1.01f);
+
+	const float* d = ::intersect(r, bounds3f(bounds, height));
+	if (d == nullptr)
+		return nullptr;
+
+	glm::vec3 p = r.point(*d);
+
+	bounds2f bounds_2(0, 0, _size - 2, _size - 2);
+
+	int x = (int)bounds_2.x().clamp(p.x);
+	int y = (int)bounds_2.y().clamp(p.y);
+	int flipX = r.direction.x < 0 ? 0 : 1;
+	int flipY = r.direction.y < 0 ? 0 : 1;
+	int dx = r.direction.x < 0 ? -1 : 1;
+	int dy = r.direction.y < 0 ? -1 : 1;
+
+	while (height.contains(p.z) && bounds_2.contains(x, y))
+	{
+		glm::vec3 p00 = glm::vec3(x, y, GetHeight(x, y));
+		glm::vec3 p10 = glm::vec3(x + 1, y, GetHeight(x + 1, y));
+		glm::vec3 p01 = glm::vec3(x, y + 1, GetHeight(x, y + 1));
+		glm::vec3 p11 = glm::vec3(x + 1, y + 1, GetHeight(x + 1, y + 1));
+
+		if ((x & 1) == (y & 1))
+		{
+			d = ::intersect(r, plane(p00, p10, p11));
+			if (d != nullptr)
+			{
+				glm::vec2 rel = (r.point(*d) - p00).xy();
+				if (quad.contains(rel) && rel.x >= rel.y)
+				{
+					result = *d;
+					return &result;
+				}
+			}
+
+			d = ::intersect(r, plane(p00, p11, p01));
+			if (d != nullptr)
+			{
+				glm::vec2 rel = (r.point(*d) - p00).xy();
+				if (quad.contains(rel) && rel.x <= rel.y)
+				{
+					result = *d;
+					return &result;
+				}
+			}
+		}
+		else
+		{
+			d = ::intersect(r, plane(p11, p01, p10));
+			if (d != nullptr)
+			{
+				glm::vec2 rel = (r.point(*d) - p00).xy();
+				if (quad.contains(rel) && rel.x >= 1 - rel.y)
+				{
+					result = *d;
+					return &result;
+				}
+			}
+
+			d = ::intersect(r, plane(p00, p10, p01));
+			if (d != nullptr)
+			{
+				glm::vec2 rel = (r.point(*d) - p00).xy();
+				if (quad.contains(rel) && rel.x <= 1 - rel.y)
+				{
+					result = *d;
+					return &result;
+				}
+			}
+		}
+
+		float xDist = almost_zero(r.direction.x) ? std::numeric_limits<float>::max() : (x - p.x + flipX) / r.direction.x;
+		float yDist = almost_zero(r.direction.y) ? std::numeric_limits<float>::max() : (y - p.y + flipY) / r.direction.y;
+
+		if (xDist < yDist)
+		{
+			x += dx;
+			p += r.direction * xDist;
+		}
+		else
+		{
+			y += dy;
+			p += r.direction * yDist;
+		}
+	}
+
+	return nullptr;
+}
+
 
 
 void SmoothTerrainSurface::UpdateDepthTextureSize()
@@ -614,7 +736,7 @@ void SmoothTerrainSurface::InitializeSkirt()
 	_vboSkirt._mode = GL_TRIANGLE_STRIP;
 	_vboSkirt._vertices.clear();
 
-	int n = 256;
+	int n = 1024;
 	float d = 2 * (float)M_PI / n;
 	for (int i = 0; i < n; ++i)
 	{
@@ -622,7 +744,7 @@ void SmoothTerrainSurface::InitializeSkirt()
 		glm::vec2 p = center + radius * vector2_from_angle(a);
 		float h = fmaxf(0, InterpolateHeight(p));
 
-		_vboSkirt._vertices.push_back(skirt_vertex(glm::vec3(p, h), h));
+		_vboSkirt._vertices.push_back(skirt_vertex(glm::vec3(p, h + 0.5), h));
 		_vboSkirt._vertices.push_back(skirt_vertex(glm::vec3(p, -2.5), h));
 	}
 

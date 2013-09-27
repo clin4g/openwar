@@ -89,6 +89,8 @@ public:
 	float InterpolateHeight(glm::vec2 position) const;
 	glm::vec3 InterpolateNormal(glm::vec2 position) const;
 
+	const float* InternalIntersect(ray r);
+
 	void UpdateChanges(bounds2f bounds);
 	void UpdateDepthTextureSize();
 	void UpdateSplatmap();
