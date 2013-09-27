@@ -538,18 +538,18 @@ float SmoothTerrainSurface::InterpolateHeight(glm::vec2 position) const
 	float y2 = y1 + sy2;
 	float y3 = y1 + sy3;
 
-	// calculate barycenteric coordinates k1, k2, k3
-	// note: scale is twice the normal
-
-	float k2 = dx * sx2 + dy * sy2;
-	float k3 = dx * sx3 + dy * sy3;
-	float k1 = 2.0f - k2 - k3;
-
 	// get heigts for triangle vertices
 
 	float h1 = GetHeight((int)x1, (int)y1);
 	float h2 = GetHeight((int)x2, (int)y2);
 	float h3 = GetHeight((int)x3, (int)y3);
+
+	// calculate barycentric coordinates k1, k2, k3
+	// note: scale of each k is twice the normal
+
+	float k2 = dx * sx2 + dy * sy2;
+	float k3 = dx * sx3 + dy * sy3;
+	float k1 = 2.0f - k2 - k3;
 
 	return 0.5f * (k1 * h1 + k2 * h2 + k3 * h3);
 }
