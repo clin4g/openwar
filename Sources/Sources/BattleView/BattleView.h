@@ -10,7 +10,7 @@
 
 #include "../BattleModel/BattleModel.h"
 #include "../Simulator/BattleSimulator.h"
-#include "../SmoothTerrain/SmoothTerrainSurfaceRenderer.h"
+#include "../SmoothTerrain/SmoothTerrainSurface.h"
 #include "../TerrainSurface/TiledTerrainSurfaceRenderer.h"
 #include "../TerrainView/TerrainView.h"
 
@@ -61,7 +61,7 @@ class BattleView : public TerrainView, public SimulationListener
 	texture* _textureFacing;
 
 public:
-	SmoothTerrainSurfaceRenderer* _terrainSurfaceRendererSmooth;
+	SmoothTerrainSurface* _smoothTerrainSurface;
 	TiledTerrainSurfaceRenderer* _terrainSurfaceRendererTiled;
 	Player _player;
 

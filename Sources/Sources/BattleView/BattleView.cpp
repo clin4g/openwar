@@ -59,7 +59,7 @@ _textureTriangleRenderer(nullptr),
 _textureUnitMarkers(nullptr),
 _textureTouchMarker(nullptr),
 _textureFacing(nullptr),
-_terrainSurfaceRendererSmooth(nullptr),
+_smoothTerrainSurface(nullptr),
 _terrainSurfaceRendererTiled(nullptr),
 _player(PlayerNone)
 {
@@ -264,7 +264,7 @@ struct random_iterator
 
 void BattleView::UpdateTerrainTrees(bounds2f bounds)
 {
-	if (_terrainSurfaceRendererSmooth != nullptr)
+	if (_smoothTerrainSurface != nullptr)
 	{
 		auto pos2 = std::remove_if(_billboardModel->staticBillboards.begin(), _billboardModel->staticBillboards.end(), [bounds](const Billboard& billboard) {
 			return bounds.contains(billboard.position.xy());
@@ -369,8 +369,8 @@ void BattleView::Render()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
-	if (_terrainSurfaceRendererSmooth != nullptr)
-		_terrainSurfaceRendererSmooth->Render(GetTransform(), _lightNormal);
+	if (_smoothTerrainSurface != nullptr)
+		_smoothTerrainSurface->Render(GetTransform(), _lightNormal);
 
 	if (_terrainSurfaceRendererTiled != nullptr)
 		_terrainSurfaceRendererTiled->Render(GetTransform(), _lightNormal);

@@ -112,8 +112,8 @@ void OpenWarSurface::Reset(BattleScript* battleScript)
 
 	if (_battleView != nullptr)
 	{
-		delete _battleView->_terrainSurfaceRendererSmooth;
-		_battleView->_terrainSurfaceRendererSmooth = nullptr;
+		delete _battleView->_smoothTerrainSurface;
+		_battleView->_smoothTerrainSurface = nullptr;
 
 		delete _battleView->_terrainSurfaceRendererTiled;
 		_battleView->_terrainSurfaceRendererTiled = nullptr;
@@ -133,9 +133,12 @@ void OpenWarSurface::Reset(BattleScript* battleScript)
 	_battleView = new BattleView(this, battleScript->GetBattleModel(), _renderers);
 	_battleView->_player = Player1;
 
-	SmoothTerrainSurface* terrainSurfaceModelSmooth = dynamic_cast<SmoothTerrainSurface*>(battleScript->GetBattleModel()->terrainSurface);
-	if (terrainSurfaceModelSmooth != nullptr)
-		_battleView->_terrainSurfaceRendererSmooth = new SmoothTerrainSurfaceRenderer(terrainSurfaceModelSmooth, true);
+	SmoothTerrainSurface* smoothTerrainSurface = dynamic_cast<SmoothTerrainSurface*>(battleScript->GetBattleModel()->terrainSurface);
+	if (smoothTerrainSurface != nullptr)
+	{
+		_battleView->_smoothTerrainSurface = smoothTerrainSurface;
+		_battleView->_smoothTerrainSurface->EnableRenderEdges();
+	}
 
 	TiledTerrainSurface* terrainSurfaceModelTiled = dynamic_cast<TiledTerrainSurface*>(battleScript->GetBattleModel()->terrainSurface);
 	if (terrainSurfaceModelTiled != nullptr)
@@ -143,7 +146,7 @@ void OpenWarSurface::Reset(BattleScript* battleScript)
 
 	_battleView->Initialize();
 
-	_editorModel = new EditorModel(_battleView, _battleView->_terrainSurfaceRendererSmooth);
+	_editorModel = new EditorModel(_battleView, _battleView->_smoothTerrainSurface);
 	_editorGesture = new EditorGesture(_battleView, _editorModel);
 
 	_battleGesture = new BattleGesture(_battleView);
