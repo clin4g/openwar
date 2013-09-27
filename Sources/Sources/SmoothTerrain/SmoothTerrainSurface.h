@@ -52,41 +52,38 @@ public:
 	virtual bool IsImpassable(glm::vec2 position) const;
 
 
+	void Render(const glm::mat4x4& transform, const glm::vec3& lightNormal);
+
+
 	//
 	// SmoothTerrainSurface
 	//
 
 	image* GetGroundMap() const { return _groundmap; }
 
-	float CalculateHeight(glm::vec2 position) const;
-
 	void Extract(glm::vec2 position, image* brush);
-	bounds2f Paint(TerrainFeature feature, glm::vec2 position, image* img, float pressure);
+	bounds2f Paint(TerrainFeature feature, glm::vec2 position, image* brush, float pressure);
 	bounds2f Paint(TerrainFeature feature, glm::vec2 position, float radius, float pressure);
-
-	glm::ivec2 MapWorldToImage(glm::vec2 position) const;
-	glm::vec2 MapImageToWorld(glm::ivec2 p) const;
-
-	/***/
 
 	void EnableRenderEdges();
 
-	void Render(const glm::mat4x4& transform, const glm::vec3& lightNormal);
-
 	void UpdateHeights();
+	float CalculateHeight(int x, int y) const;
 	void UpdateNormals();
 
 	float GetHeight(int x, int y) const { return _heights[x + y * _size]; }
 	glm::vec3 GetNormal(int x, int y) const { return _normals[x + y * _size]; }
 
 	float InterpolateHeight(glm::vec2 position) const;
-	glm::vec3 InterpolateNormal(glm::vec2 position) const;
 
 	const float* InternalIntersect(ray r);
 
 	void UpdateChanges(bounds2f bounds);
 	void UpdateDepthTextureSize();
 	void UpdateSplatmap();
+
+	float GetForestValue(int x, int y) const;
+	float GetImpassableValue(int x, int y) const;
 
 	void InitializeShadow();
 	void InitializeSkirt();
@@ -97,6 +94,7 @@ public:
 	void BuildTriangles();
 	void PushTriangle(const terrain_vertex& v0, const terrain_vertex& v1, const terrain_vertex& v2);
 
+	glm::ivec2 MapWorldToImage(glm::vec2 position) const;
 };
 
 

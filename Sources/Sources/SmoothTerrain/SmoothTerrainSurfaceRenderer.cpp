@@ -90,10 +90,10 @@ void terrain_renderers::render_terrain_inside(vertexbuffer<terrain_vertex>& shap
 					vec3 color = texture2D(colormap, _colorcoord).rgb;
 					vec3 splat = texture2D(splatmap, _splatcoord).rgb;
 
+					color = mix(color, vec3(0.45), 0.4 * step(0.5, splat.r));
 					float f = step(0.0, _position.z) * smoothstep(0.475, 0.525, splat.g);
 					color = mix(color, vec3(0.2196, 0.3608, 0.1922), 0.25 * f);
 					color = mix(color, vec3(0), 0.03 * step(0.5, 1.0 - _brightness));
-					color = mix(color, vec3(0.4), 0.3333 * step(0.5, splat.r));
 
 				    gl_FragColor = vec4(color, 1.0);
 				}
