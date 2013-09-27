@@ -502,37 +502,31 @@ float SmoothTerrainSurface::InterpolateHeight(glm::vec2 position) const
 
 	// find triangle {(x1, y1), (x2, y2), (x3, y3)} containing (x, y)
 
-	float x2, y2, x3, y3;
+	float sx2, sx3, sy2, sy3;
 	float dx = x - x1;
 	float dy = y - y1;
 	if (glm::abs(dx) > glm::abs(dy))
 	{
-		x2 = x3 = x1 + glm::sign(dx);
-		y2 = y1 - 1;
-		y3 = y1 + 1;
+		sx2 = sx3 = glm::sign(dx);
+		sy2 = -1;
+		sy3 = 1;
 	}
 	else
 	{
-		x2 = x1 - 1;
-		x3 = x1 + 1;
-		y2 = y3 = y1 + glm::sign(dy);
+		sx2 = -1;
+		sx3 = 1;
+		sy2 = sy3 = glm::sign(dy);
 	}
+
+	float x2 = x1 + sx2;
+	float x3 = x1 + sx3;
+	float y2 = y1 + sy2;
+	float y3 = y1 + sy3;
 
 	// calculate barycenteric coordinates k1, k2, k3
 
-	glm::vec2 vx(dx, dy);
-	glm::vec2 v2(x2 - x1, y2 - y1);
-	glm::vec2 v3(x3 - x1, y3 - y1);
-
-	float d22 = glm::dot(v2, v2);
-	float d23 = glm::dot(v2, v3);
-	float d33 = glm::dot(v3, v3);
-	float dx2 = glm::dot(vx, v2);
-	float dx3 = glm::dot(vx, v3);
-
-	float denom = 1.0f / (d22 * d33 - d23 * d23);
-	float k2 = (d33 * dx2 - d23 * dx3) * denom;
-	float k3 = (d22 * dx3 - d23 * dx2) * denom;
+	float k2 = 0.5f * (dx * sx2 + dy * sy2);
+	float k3 = 0.5f * (dx * sx3 + dy * sy3);
 	float k1 = 1.0f - k2 - k3;
 
 	// get heigts for triangle vertices
