@@ -37,7 +37,7 @@ _normals(nullptr)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	_heights = new float[_size * _size];
+	_heights = new float [_size * _size];
 	_normals = new glm::vec3[_size * _size];
 	UpdateHeights();
 	UpdateNormals();
@@ -52,8 +52,6 @@ _normals(nullptr)
 
 	BuildTriangles();
 }
-
-
 
 
 SmoothTerrainSurface::~SmoothTerrainSurface()
@@ -199,7 +197,7 @@ bounds2f SmoothTerrainSurface::Paint(TerrainFeature feature, glm::vec2 position,
 		for (int y = 0; y < size.y; ++y)
 		{
 			glm::ivec2 p = origin + glm::ivec2(x, y);
-			float d = glm::distance(position, _scaleImageToWorld * glm::vec2(p)) /  radius;
+			float d = glm::distance(position, _scaleImageToWorld * glm::vec2(p)) / radius;
 			float k = 1.0f - d * d;
 			if (k > 0)
 			{
@@ -207,10 +205,18 @@ bounds2f SmoothTerrainSurface::Paint(TerrainFeature feature, glm::vec2 position,
 				glm::vec4 c = _groundmap->get_pixel(p.x, p.y);
 				switch (feature)
 				{
-					case TerrainFeature::Hills: c.a = glm::mix(c.a, b.a, k * pressure); break;
-					case TerrainFeature::Trees: c.g = glm::mix(c.g, b.g, k * pressure); break;
-					case TerrainFeature::Water: c.b = glm::mix(c.b, b.b, k * pressure); break;
-					case TerrainFeature::Fords: c.r = glm::mix(c.r, b.r, k * pressure); break;
+					case TerrainFeature::Hills:
+						c.a = glm::mix(c.a, b.a, k * pressure);
+						break;
+					case TerrainFeature::Trees:
+						c.g = glm::mix(c.g, b.g, k * pressure);
+						break;
+					case TerrainFeature::Water:
+						c.b = glm::mix(c.b, b.b, k * pressure);
+						break;
+					case TerrainFeature::Fords:
+						c.r = glm::mix(c.r, b.r, k * pressure);
+						break;
 				}
 				_groundmap->set_pixel(p.x, p.y, c);
 			}
@@ -236,17 +242,25 @@ bounds2f SmoothTerrainSurface::Paint(TerrainFeature feature, glm::vec2 position,
 		for (int y = -10; y <= 10; ++y)
 		{
 			glm::ivec2 p = center + glm::ivec2(x, y);
-			float d = glm::distance(position, _scaleImageToWorld * glm::vec2(p)) /  radius;
+			float d = glm::distance(position, _scaleImageToWorld * glm::vec2(p)) / radius;
 			float k = 1.0f - d * d;
 			if (k > 0)
 			{
 				glm::vec4 c = _groundmap->get_pixel(p.x, p.y);
 				switch (feature)
 				{
-					case TerrainFeature::Hills: c.a = glm::mix(c.a, c.a + delta, k * abs_pressure); break;
-					case TerrainFeature::Trees: c.g = glm::mix(c.g, value, k * abs_pressure); break;
-					case TerrainFeature::Water: c.b = glm::mix(c.b, value, k * abs_pressure); break;
-					case TerrainFeature::Fords: c.r = glm::mix(c.r, value, k * abs_pressure); break;
+					case TerrainFeature::Hills:
+						c.a = glm::mix(c.a, c.a + delta, k * abs_pressure);
+						break;
+					case TerrainFeature::Trees:
+						c.g = glm::mix(c.g, value, k * abs_pressure);
+						break;
+					case TerrainFeature::Water:
+						c.b = glm::mix(c.b, value, k * abs_pressure);
+						break;
+					case TerrainFeature::Fords:
+						c.r = glm::mix(c.r, value, k * abs_pressure);
+						break;
 				}
 				_groundmap->set_pixel(p.x, p.y, c);
 			}
@@ -259,14 +273,12 @@ bounds2f SmoothTerrainSurface::Paint(TerrainFeature feature, glm::vec2 position,
 }
 
 
-
 glm::ivec2 SmoothTerrainSurface::MapWorldToImage(glm::vec2 position) const
 {
 	glm::vec2 p = (position - _bounds.min) / _bounds.size();
 	glm::ivec2 s = _groundmap->size();
 	return glm::ivec2((int)(p.x * s.x), (int)(p.y * s.y));
 }
-
 
 
 glm::vec2 SmoothTerrainSurface::MapImageToWorld(glm::ivec2 p) const
@@ -279,20 +291,24 @@ glm::vec2 SmoothTerrainSurface::MapImageToWorld(glm::ivec2 p) const
 
 
 
-
 #ifdef OPENWAR_USE_NSBUNDLE_RESOURCES // detect objective-c
 static NSString* FramebufferStatusString(GLenum status)
 {
 	switch (status)
 	{
-		case GL_FRAMEBUFFER_COMPLETE: return @"GL_FRAMEBUFFER_COMPLETE";
-		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT: return @"GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT";
-		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: return @"GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT";
+		case GL_FRAMEBUFFER_COMPLETE:
+			return @"GL_FRAMEBUFFER_COMPLETE";
+		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+			return @"GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT";
+		case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+			return @"GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT";
 #ifdef GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS
 		case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS: return @"GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS";
 #endif
-		case GL_FRAMEBUFFER_UNSUPPORTED: return @"GL_FRAMEBUFFER_UNSUPPORTED";
-		default: return [NSString stringWithFormat:@"0x%04x", (unsigned int)status];
+		case GL_FRAMEBUFFER_UNSUPPORTED:
+			return @"GL_FRAMEBUFFER_UNSUPPORTED";
+		default:
+			return [NSString stringWithFormat:@"0x%04x", (unsigned int)status];
 	}
 }
 #endif
@@ -330,7 +346,6 @@ void SmoothTerrainSurface::EnableRenderEdges()
 		}
 	}
 }
-
 
 
 void SmoothTerrainSurface::Render(const glm::mat4x4& transform, const glm::vec3& lightNormal)
@@ -400,10 +415,10 @@ void SmoothTerrainSurface::Render(const glm::mat4x4& transform, const glm::vec3&
 
 		vertexbuffer<texture_vertex> shape;
 		shape._mode = GL_TRIANGLE_STRIP;
-		shape._vertices.push_back(texture_vertex(glm::vec2(-1,  1), glm::vec2(0, 1)));
+		shape._vertices.push_back(texture_vertex(glm::vec2(-1, 1), glm::vec2(0, 1)));
 		shape._vertices.push_back(texture_vertex(glm::vec2(-1, -1), glm::vec2(0, 0)));
-		shape._vertices.push_back(texture_vertex(glm::vec2( 1,  1), glm::vec2(1, 1)));
-		shape._vertices.push_back(texture_vertex(glm::vec2( 1, -1), glm::vec2(1, 0)));
+		shape._vertices.push_back(texture_vertex(glm::vec2(1, 1), glm::vec2(1, 1)));
+		shape._vertices.push_back(texture_vertex(glm::vec2(1, -1), glm::vec2(1, 0)));
 
 		sobel_uniforms su;
 		su._transform = glm::mat4x4();
@@ -468,15 +483,65 @@ void SmoothTerrainSurface::UpdateNormals()
 }
 
 
+static float nearest_odd(float value)
+{
+	return 1.0f + 2.0f * (int)glm::round(0.5f * (value - 1.0f));
+}
+
 float SmoothTerrainSurface::InterpolateHeight(glm::vec2 position) const
 {
 	glm::vec2 p = (position - _bounds.min) / _bounds.size();
-	bounds1i limit(0, _size - 1);
+	float n = _size - 1;
+	float x = p.x * n;
+	float y = p.y * n;
 
-	int x = limit.clamp((int)glm::round(p.x * _size));
-	int y = limit.clamp((int)glm::round(p.y * _size));
+	// find triangle midpoint coordinates (x1, y1)
 
-	return GetHeight(x, y);
+	float x1 = nearest_odd(x);
+	float y1 = nearest_odd(y);
+
+	// find triangle {(x1, y1), (x2, y2), (x3, y3)} containing (x, y)
+
+	float x2, y2, x3, y3;
+	float dx = x - x1;
+	float dy = y - y1;
+	if (glm::abs(dx) > glm::abs(dy))
+	{
+		x2 = x3 = x1 + glm::sign(dx);
+		y2 = y1 - 1;
+		y3 = y1 + 1;
+	}
+	else
+	{
+		x2 = x1 - 1;
+		x3 = x1 + 1;
+		y2 = y3 = y1 + glm::sign(dy);
+	}
+
+	// calculate barycenteric coordinates k1, k2, k3
+
+	glm::vec2 vx(dx, dy);
+	glm::vec2 v2(x2 - x1, y2 - y1);
+	glm::vec2 v3(x3 - x1, y3 - y1);
+
+	float d22 = glm::dot(v2, v2);
+	float d23 = glm::dot(v2, v3);
+	float d33 = glm::dot(v3, v3);
+	float dx2 = glm::dot(vx, v2);
+	float dx3 = glm::dot(vx, v3);
+
+	float denom = 1.0f / (d22 * d33 - d23 * d23);
+	float k2 = (d33 * dx2 - d23 * dx3) * denom;
+	float k3 = (d22 * dx3 - d23 * dx2) * denom;
+	float k1 = 1.0f - k2 - k3;
+
+	// get heigts for triangle vertices
+
+	float h1 = GetHeight((int)x1, (int)y1);
+	float h2 = GetHeight((int)x2, (int)y2);
+	float h3 = GetHeight((int)x3, (int)y3);
+
+	return k1 * h1 + k2 * h2 + k3 * h3;
 }
 
 
@@ -515,7 +580,6 @@ void SmoothTerrainSurface::UpdateDepthTextureSize()
 }
 
 
-
 void SmoothTerrainSurface::InitializeShadow()
 {
 	glm::vec2 center = _bounds.center();
@@ -548,7 +612,6 @@ void SmoothTerrainSurface::InitializeShadow()
 }
 
 
-
 void SmoothTerrainSurface::InitializeSkirt()
 {
 	glm::vec2 center = _bounds.center();
@@ -576,7 +639,6 @@ void SmoothTerrainSurface::InitializeSkirt()
 }
 
 
-
 void SmoothTerrainSurface::UpdateSplatmap()
 {
 	const image& map = *GetGroundMap();
@@ -598,7 +660,6 @@ void SmoothTerrainSurface::UpdateSplatmap()
 }
 
 
-
 void SmoothTerrainSurface::UpdateChanges(bounds2f bounds)
 {
 	UpdateHeights();
@@ -607,7 +668,7 @@ void SmoothTerrainSurface::UpdateChanges(bounds2f bounds)
 	InitializeSkirt();
 	UpdateSplatmap();
 
-	// inside
+// inside
 	for (terrain_vertex& vertex : _vboInside._vertices)
 	{
 		glm::vec2 p = vertex._position.xy();
@@ -619,7 +680,7 @@ void SmoothTerrainSurface::UpdateChanges(bounds2f bounds)
 	}
 	_vboInside.update(GL_STATIC_DRAW);
 
-	// border
+// border
 	for (terrain_vertex& vertex : _vboBorder._vertices)
 	{
 		glm::vec2 p = vertex._position.xy();
@@ -631,7 +692,7 @@ void SmoothTerrainSurface::UpdateChanges(bounds2f bounds)
 	}
 	_vboBorder.update(GL_STATIC_DRAW);
 
-	// lines
+// lines
 	for (color_vertex3& vertex : _vboLines._vertices)
 	{
 		glm::vec2 p = vertex._position.xy();
@@ -642,7 +703,7 @@ void SmoothTerrainSurface::UpdateChanges(bounds2f bounds)
 	}
 	_vboLines.update(GL_STATIC_DRAW);
 
-	// skirt
+// skirt
 	for (size_t i = 0; i < _vboSkirt._vertices.size(); i += 2)
 	{
 		glm::vec2 p = _vboSkirt._vertices[i]._position.xy();
@@ -655,7 +716,6 @@ void SmoothTerrainSurface::UpdateChanges(bounds2f bounds)
 	}
 	_vboSkirt.update(GL_STATIC_DRAW);
 }
-
 
 
 void SmoothTerrainSurface::InitializeLines()
@@ -730,7 +790,6 @@ static int inside_circle(bounds2f bounds, terrain_vertex v1, terrain_vertex v2, 
 		+ inside_circle(bounds, v3._position.xy());
 
 }
-
 
 
 void SmoothTerrainSurface::BuildTriangles()
