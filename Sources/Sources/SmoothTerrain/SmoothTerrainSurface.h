@@ -6,7 +6,6 @@
 #define SmoothTerrainSurface_H
 
 #include "../../Library/Algebra/bounds.h"
-#include "../../Library/Algorithms/heightmap.h"
 #include "../TerrainModel/TerrainSurface.h"
 #include "SmoothTerrainSurfaceRenderer.h"
 
@@ -17,8 +16,6 @@ class SmoothTerrainSurface : public TerrainSurface
 {
 	bounds2f _bounds;
 	image* _groundmap;
-	heightmap _heightmap;
-	glm::vec2 _scaleImageToWorld;
 
 	int _framebuffer_width;
 	int _framebuffer_height;
@@ -27,7 +24,6 @@ class SmoothTerrainSurface : public TerrainSurface
 	texture* _depth;
 	texture* _colormap;
 	texture* _splatmap;
-	image* _splatmapImage;
 
 	terrain_renderers* _renderers;
 	vertexbuffer<plain_vertex> _vboShadow;
@@ -41,7 +37,7 @@ class SmoothTerrainSurface : public TerrainSurface
 	glm::vec3* _normals;
 
 public:
-	SmoothTerrainSurface(bounds2f bounds, image* map);
+	SmoothTerrainSurface(bounds2f bounds, image* groundmap);
 	virtual ~SmoothTerrainSurface();
 
 	//
@@ -61,9 +57,6 @@ public:
 	//
 
 	image* GetGroundMap() const { return _groundmap; }
-
-	void LoadHeightmapFromImage();
-	void SaveHeightmapToImage();
 
 	float CalculateHeight(glm::vec2 position) const;
 

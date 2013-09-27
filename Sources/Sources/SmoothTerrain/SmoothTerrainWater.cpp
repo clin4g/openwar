@@ -5,8 +5,8 @@
 #include "SmoothTerrainWater.h"
 
 
-SmoothTerrainWater::SmoothTerrainWater(bounds2f bounds, image* map) :
-_map(map),
+SmoothTerrainWater::SmoothTerrainWater(bounds2f bounds, image* groundmap) :
+_groundmap(groundmap),
 _bounds(bounds)
 {
 	_water_inside_renderer = new renderer<plain_vertex, ground_texture_uniforms>((
@@ -90,10 +90,11 @@ SmoothTerrainWater::~SmoothTerrainWater()
 
 bool SmoothTerrainWater::IsWater(glm::vec2 position) const
 {
+	glm::ivec2 mapsize = _groundmap->size();
 	glm::vec2 p = (position - _bounds.min) / _bounds.size();
-	int x = (int)(512 * glm::floor(p.x));
-	int y = (int)(512 * glm::floor(p.y));
-	glm::vec4 c = _map->get_pixel(x, y);
+	int x = (int)(mapsize.x * glm::floor(p.x));
+	int y = (int)(mapsize.y * glm::floor(p.y));
+	glm::vec4 c = _groundmap->get_pixel(x, y);
 	return c.b >= 0.5;
 }
 
@@ -101,24 +102,21 @@ bool SmoothTerrainWater::IsWater(glm::vec2 position) const
 
 bool SmoothTerrainWater::ContainsWater(bounds2f bounds) const
 {
-	glm::ivec2 size(512, 512);
-	glm::vec2 min = glm::vec2(size.x - 1, size.y - 1) * (bounds.min - _bounds.min) / _bounds.size();
-	glm::vec2 max = glm::vec2(size.x - 1, size.y - 1) * (bounds.max - _bounds.min) / _bounds.size();
+	glm::ivec2 mapsize = _groundmap->size();
+	glm::vec2 min = glm::vec2(mapsize.x - 1, mapsize.y - 1) * (bounds.min - _bounds.min) / _bounds.size();
+	glm::vec2 max = glm::vec2(mapsize.x - 1, mapsize.y - 1) * (bounds.max - _bounds.min) / _bounds.size();
 	int xmin = (int)floorf(min.x);
 	int ymin = (int)floorf(min.y);
 	int xmax = (int)ceilf(max.x);
 	int ymax = (int)ceilf(max.y);
 
-	if (_map != nullptr)
-	{
-		for (int x = xmin; x <= xmax; ++x)
-			for (int y = ymin; y <= ymax; ++y)
-			{
-				glm::vec4 c = _map->get_pixel(x, y);
-				if (c.b >= 0.5 || c.r >= 0.5)
-					return true;
-			}
-	}
+	for (int x = xmin; x <= xmax; ++x)
+		for (int y = ymin; y <= ymax; ++y)
+		{
+			glm::vec4 c = _groundmap->get_pixel(x, y);
+			if (c.b >= 0.5 || c.r >= 0.5)
+				return true;
+		}
 
 	return false;
 }

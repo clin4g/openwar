@@ -25,11 +25,11 @@ class SmoothTerrainWater : public TerrainWater
 	vertexbuffer<plain_vertex> _shape_water_inside;
 	vertexbuffer<plain_vertex> _shape_water_border;
 
-	image* _map;
+	image* _groundmap;
 	bounds2f _bounds;
 
 public:
-	SmoothTerrainWater(bounds2f bounds, image* map);
+	SmoothTerrainWater(bounds2f bounds, image* groundmap);
 	virtual ~SmoothTerrainWater();
 
 	virtual bool IsWater(glm::vec2 position) const;

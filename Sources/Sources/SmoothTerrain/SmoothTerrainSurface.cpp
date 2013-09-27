@@ -7,10 +7,9 @@
 
 
 
-SmoothTerrainSurface::SmoothTerrainSurface(bounds2f bounds, image* map) :
+SmoothTerrainSurface::SmoothTerrainSurface(bounds2f bounds, image* groundmap) :
 _bounds(bounds),
-_heightmap(glm::ivec2(128, 128)),
-_groundmap(map),
+_groundmap(groundmap),
 _framebuffer_width(0),
 _framebuffer_height(0),
 _framebuffer(nullptr),
@@ -18,30 +17,21 @@ _colorbuffer(nullptr),
 _depth(nullptr),
 _colormap(nullptr),
 _splatmap(nullptr),
-_splatmapImage(nullptr),
 _size(255),
 _heights(nullptr),
 _normals(nullptr)
 {
-	glm::vec2 mapsize = glm::vec2(map->size());
-	_scaleImageToWorld = bounds.size() / mapsize;
-
-	LoadHeightmapFromImage();
+	if (groundmap->size() != glm::ivec2(256, 256))
+		NSLog(@"SmoothTerrainSurface: ILLEGAL SIZE ############# %d x %d", groundmap->size().x, groundmap->size().y);
 
 	_renderers = new terrain_renderers();
-
 	_colormap = terrain_renderers::create_colormap();
-	glBindTexture(GL_TEXTURE_2D, _colormap->id);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	_heights = new float [_size * _size];
 	_normals = new glm::vec3[_size * _size];
+
 	UpdateHeights();
 	UpdateNormals();
-
 
 	_splatmap = new texture();
 	UpdateSplatmap();
@@ -58,7 +48,6 @@ SmoothTerrainSurface::~SmoothTerrainSurface()
 {
 	delete _colormap;
 	delete _splatmap;
-	delete _splatmapImage;
 	delete _framebuffer;
 	delete _colorbuffer;
 	delete _depth;
@@ -102,45 +91,6 @@ bool SmoothTerrainSurface::IsImpassable(glm::vec2 position) const
 		return true;
 
 	return false;
-}
-
-
-void SmoothTerrainSurface::LoadHeightmapFromImage()
-{
-	glm::ivec2 imageSize = _groundmap->size();
-	glm::ivec2 heightSize = _heightmap.size();
-	glm::vec2 scale = glm::vec2(imageSize) / glm::vec2(heightSize);
-
-	for (int heightX = 0; heightX < heightSize.x; ++heightX)
-	{
-		int imageX = (int)(heightX * scale.x);
-		for (int heightY = 0; heightY < heightSize.y; ++heightY)
-		{
-			int imageY = (int)(heightY * scale.y);
-			glm::vec4 c = _groundmap->get_pixel(imageX, imageY);
-			_heightmap.set_height(heightX, heightY, 0.5f + 124.5f * c.a);
-		}
-	}
-}
-
-
-void SmoothTerrainSurface::SaveHeightmapToImage()
-{
-	glm::ivec2 imageSize = _groundmap->size();
-	glm::ivec2 heightSize = _heightmap.size();
-	glm::vec2 scale = glm::vec2(heightSize) / glm::vec2(imageSize);
-
-	for (int imageX = 0; imageX < imageSize.x; ++imageX)
-	{
-		float heightX = imageX * scale.x;
-		for (int imageY = 0; imageY < imageSize.y; ++imageY)
-		{
-			float heightY = imageY * scale.y;
-			glm::vec4 c = _groundmap->get_pixel(imageX, imageY);
-			c.a = (glm::round(_heightmap.interpolate(glm::vec2(heightX, heightY))) - 0.5f) / 124.5f;
-			_groundmap->set_pixel(imageX, imageY, c);
-		}
-	}
 }
 
 
@@ -188,6 +138,7 @@ void SmoothTerrainSurface::Extract(glm::vec2 position, image* brush)
 
 bounds2f SmoothTerrainSurface::Paint(TerrainFeature feature, glm::vec2 position, image* brush, float pressure)
 {
+	glm::vec2 scale = _bounds.size() / glm::vec2(_groundmap->size());
 	glm::ivec2 size = brush->size();
 	glm::ivec2 center = MapWorldToImage(position);
 	glm::ivec2 origin = center - size / 2;
@@ -197,7 +148,7 @@ bounds2f SmoothTerrainSurface::Paint(TerrainFeature feature, glm::vec2 position,
 		for (int y = 0; y < size.y; ++y)
 		{
 			glm::ivec2 p = origin + glm::ivec2(x, y);
-			float d = glm::distance(position, _scaleImageToWorld * glm::vec2(p)) / radius;
+			float d = glm::distance(position, scale * glm::vec2(p)) / radius;
 			float k = 1.0f - d * d;
 			if (k > 0)
 			{
@@ -222,15 +173,13 @@ bounds2f SmoothTerrainSurface::Paint(TerrainFeature feature, glm::vec2 position,
 			}
 		}
 
-	if (feature == TerrainFeature::Hills)
-		LoadHeightmapFromImage();
-
 	return bounds2_from_center(position, radius + 1);
 }
 
 
 bounds2f SmoothTerrainSurface::Paint(TerrainFeature feature, glm::vec2 position, float radius, float pressure)
 {
+	glm::vec2 scale = _bounds.size() / glm::vec2(_groundmap->size());
 	float abs_pressure = glm::abs(pressure);
 
 	glm::ivec2 center = MapWorldToImage(position);
@@ -242,7 +191,7 @@ bounds2f SmoothTerrainSurface::Paint(TerrainFeature feature, glm::vec2 position,
 		for (int y = -10; y <= 10; ++y)
 		{
 			glm::ivec2 p = center + glm::ivec2(x, y);
-			float d = glm::distance(position, _scaleImageToWorld * glm::vec2(p)) / radius;
+			float d = glm::distance(position, scale * glm::vec2(p)) / radius;
 			float k = 1.0f - d * d;
 			if (k > 0)
 			{
@@ -266,9 +215,6 @@ bounds2f SmoothTerrainSurface::Paint(TerrainFeature feature, glm::vec2 position,
 			}
 		}
 
-	if (feature == TerrainFeature::Hills)
-		LoadHeightmapFromImage();
-
 	return bounds2_from_center(position, radius + 1);
 }
 
@@ -285,8 +231,8 @@ glm::vec2 SmoothTerrainSurface::MapImageToWorld(glm::ivec2 p) const
 {
 	glm::vec2 bs = _bounds.size();
 	glm::ivec2 ms = _groundmap->size();
-	glm::vec2 d = glm::vec2(bs.x / ms.x, bs.y / ms.y);
-	return _bounds.min + glm::vec2(d.x * p.x, d.y * p.y);
+	glm::vec2 scale = glm::vec2(bs.x / ms.x, bs.y / ms.y);
+	return _bounds.min + glm::vec2(scale.x * p.x, scale.y * p.y);
 }
 
 
@@ -757,22 +703,32 @@ void SmoothTerrainSurface::InitializeSkirt()
 
 void SmoothTerrainSurface::UpdateSplatmap()
 {
-	const image& map = *GetGroundMap();
+	glm::ivec2 size = _groundmap->size();
 
-	glm::ivec2 size = map.size();
-	if (_splatmapImage == nullptr)
-		_splatmapImage = new image(size.x, size.y);
-
-	for (int x = 0; x < size.x; ++x)
+	GLubyte* data = new GLubyte[4 * size.x * size.y];
+	if (data != nullptr)
+	{
+		GLubyte* p = data;
 		for (int y = 0; y < size.y; ++y)
-		{
-			glm::vec4 c = map.get_pixel(x, y);
-			glm::vec2 p = MapImageToWorld(glm::ivec2(x, y));
-			c.r = IsImpassable(p) ? 1.0f : 0.0f;
-			_splatmapImage->set_pixel(x, y, c);
-		}
+			for (int x = 0; x < size.x; ++x)
+			{
+				glm::vec4 c = _groundmap->get_pixel(x, y);
+				c.r = IsImpassable(MapImageToWorld(glm::ivec2(x, y))) ? 1.0f : 0.0f;
+				*p++ = (GLubyte)(255.0f * c.r);
+				*p++ = (GLubyte)(255.0f * c.g);
+				*p++ = (GLubyte)(255.0f * c.b);
+				*p++ = (GLubyte)(255.0f * c.a);
+			}
 
-	_splatmap->load(*_splatmapImage);
+		glBindTexture(GL_TEXTURE_2D, _splatmap->id);
+		CHECK_ERROR_GL();
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		CHECK_ERROR_GL();
+		glGenerateMipmap(GL_TEXTURE_2D);
+		CHECK_ERROR_GL();
+
+		delete[] data;
+	}
 }
 
 
